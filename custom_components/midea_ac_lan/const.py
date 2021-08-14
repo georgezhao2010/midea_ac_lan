@@ -1,0 +1,10 @@
+DOMAIN = "midea_ac_lan"
+DEVICES = "devices"
+MANAGERS = "managers"
+CONF_K1 = "k1"
+CONF_MAKE_SWITCH = "make_switch"
+FAN_VERY_LOW = "very low"
+FAN_VERY_HIGH = "very high"
+FAN_FULL_SPEED = "full speed"
+TEMPERATURE_MAX = 30
+TEMPERATURE_MIN = 17

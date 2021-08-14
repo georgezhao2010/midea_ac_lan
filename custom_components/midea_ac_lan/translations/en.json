@@ -1,0 +1,30 @@
+{
+    "config": {
+        "error": {
+            "no_devices": "No available devices found on the network",
+            "device_exist": "Device already configured, choice another one"
+        },
+        "step": {
+            "user": {
+                "description": "Do you want to lookup new Midea air conditioner?",
+                "title": "Add new device"
+            },
+            "devinfo": {
+                "data": {
+                    "device": "Device",
+                    "make_switch": "Set AC attributes to sensor and switch entities"
+                },
+                "description": "Choice a device to add",
+                "title": "New device found"
+            },
+            "protocol": {
+                "data": {
+                    "token": "Token",
+                    "k1": "K1"
+                },
+                "description": "Input Token and K1",
+                "title": "Protocol 8370 settings"
+            }
+        }
+    }
+}
