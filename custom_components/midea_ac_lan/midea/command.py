@@ -4,6 +4,7 @@ from .crc8 import calculate
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class CommandRequest:
     def __init__(self):
         self._header = bytearray([

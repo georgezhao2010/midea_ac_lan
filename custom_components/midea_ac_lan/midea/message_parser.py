@@ -1,5 +1,3 @@
-import json
-
 class XAAMessage:
     def __init__(self, body):
         self._body = body
