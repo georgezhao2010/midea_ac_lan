@@ -6,7 +6,6 @@ from Crypto.Util.strxor import strxor
 from Crypto.Random import get_random_bytes
 from hashlib import md5, sha256
 
-VERSION = '0.1.28'
 _LOGGER = logging.getLogger(__name__)
 appKey = '434a209a5ce141c3b726de067835d7f0'
 signKey = 'xhdiwjnchekd4d512chdjx5d8e4c394D2D7S'
@@ -33,7 +32,6 @@ class Security:
         cipher = AES.new(self.encKey, AES.MODE_ECB)
         try:
             decrypted = cipher.decrypt(bytes(raw))
-
             # Remove the padding
             decrypted = unpad(decrypted, self.blockSize)
             return decrypted

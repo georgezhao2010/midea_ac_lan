@@ -1,9 +1,6 @@
-
 import logging
 from .security import Security
 import datetime
-
-VERSION = '0.1.28'
 
 _LOGGER = logging.getLogger(__name__)
 

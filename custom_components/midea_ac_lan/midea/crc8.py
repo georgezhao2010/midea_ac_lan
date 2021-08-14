@@ -1,5 +1,3 @@
-VERSION = '0.1.28'
-
 # The huge CRC table! Aparently this can be generated, but storage space is cheap...
 crc8_854_table = [
     0x00, 0x5E, 0xBC, 0xE2, 0x61, 0x3F, 0xDD, 0x83,

@@ -40,10 +40,8 @@ class ACSwitch(MideaEntity, ToggleEntity):
         if self._config.get("should_poll"):
             self._state = True
         getattr(self._dm, self._config.get("switch"))(True)
-        pass
 
     def turn_off(self):
         if self._config.get("should_poll"):
             self._state = False
         getattr(self._dm, self._config.get("switch"))(False)
-        pass
