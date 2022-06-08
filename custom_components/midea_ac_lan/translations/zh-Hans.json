@@ -1,15 +1,24 @@
 {
     "config": {
         "error": {
-            "no_devices": "未在网络上发现可用设备",
-            "device_exist": "设备已经存在, 请添加其它设备"
+            "no_devices": "未在网络上发现可用新设备",
+            "device_exist": "设备已经存在, 请添加其它设备",
+            "cant_get_token": "无法连接美的云获取设备关键信息(Token和Key)",
+            "config_incorrect": "配置信息不正确, 请检查后重新输入"
         },
         "step": {
             "user": {
-                "description": "要查找并添加新的美的空调吗?",
-                "title": "添加新空调"
+                "data": {
+                    "way": "添加方式"
+                },
+                "description": "选择添加设备的方式",
+                "title": "添加新设备"
             },
-            "devinfo": {
+            "discover": {
+                "description": "要查找并添加新的美的空调吗?",
+                "title": "查找设备"
+            },
+            "auto": {
                 "data": {
                     "device": "设备",
                     "make_switch": "将空调属性生成开关及传感器实体"
@@ -17,13 +26,17 @@
                 "description": "选择设备并添加",
                 "title": "发现新设备"
             },
-            "protocol": {
+            "manually": {
                 "data": {
+                    "device_id": "设备ID",
+                    "host": "地址",
+                    "port": "端口",
+                    "model": "型号",
+                    "protocol": "协议版本",
                     "token": "Token",
-                    "k1": "K1"
-                },
-                "description": "输入Token和K1",
-                "title": "8370协议设置"
+                    "key": "Key",
+                    "make_switch": "将空调属性生成开关及传感器实体"
+                }
             }
         }
     }

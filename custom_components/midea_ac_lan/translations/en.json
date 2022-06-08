@@ -1,15 +1,24 @@
 {
     "config": {
         "error": {
-            "no_devices": "No available devices found on the network",
-            "device_exist": "Device already configured, choice another one"
+            "no_devices": "No new available devices found on the network",
+            "device_exist": "Device already configured, choice another one",
+            "cant_get_token": "Can't connect to Midea cloud to take device‘s key-info(Token and Key)",
+            "config_incorrect": "The configuration is incorrect, please check"
         },
         "step": {
             "user": {
-                "description": "Do you want to lookup new Midea air conditioner?",
+                "data": {
+                    "way": "Way of adding devices"
+                },
+                "description": "Choose a way to add a new Midea air conditioner",
                 "title": "Add new device"
             },
-            "devinfo": {
+            "discover": {
+                "description": "Do you want to lookup for new Midea air conditioner?",
+                "title": "New device Discover "
+            },
+            "auto": {
                 "data": {
                     "device": "Device",
                     "make_switch": "Set AC attributes to sensor and switch entities"
@@ -17,13 +26,17 @@
                 "description": "Choice a device to add",
                 "title": "New device found"
             },
-            "protocol": {
+            "manually": {
                 "data": {
+                    "device_id": "Device ID",
+                    "host": "Host",
+                    "port": "Port",
+                    "model": "Model",
+                    "protocol": "Protocol",
                     "token": "Token",
-                    "k1": "K1"
-                },
-                "description": "Input Token and K1",
-                "title": "Protocol 8370 settings"
+                    "key": "Key",
+                    "make_switch": "Set AC attributes to sensor and switch entities"
+                }
             }
         }
     }

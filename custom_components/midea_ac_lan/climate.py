@@ -2,7 +2,7 @@ import logging
 from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
 from homeassistant.const import (
-    CONF_DEVICE,
+    CONF_DEVICE_ID,
     TEMP_CELSIUS,
     PRECISION_HALVES,
     PRECISION_TENTHS,
@@ -24,7 +24,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    device_id = config_entry.data.get(CONF_DEVICE)
+    device_id = config_entry.data.get(CONF_DEVICE_ID)
     dm = hass.data[DOMAIN][MANAGERS].get(device_id)
     dev = MideaClimate(dm)
     async_add_entities([dev])

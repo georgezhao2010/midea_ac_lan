@@ -1,10 +1,12 @@
 import logging
-
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Util.strxor import strxor
 from Crypto.Random import get_random_bytes
 from hashlib import md5, sha256
+from urllib.parse import urlparse
+import hmac
+import urllib
 
 _LOGGER = logging.getLogger(__name__)
 appKey = '434a209a5ce141c3b726de067835d7f0'
@@ -17,7 +19,7 @@ MSGTYPE_ENCRYPTED_REQUEST = 0x6
 
 
 class Security:
-    def __init__(self):
+    def __init__(self, use_china_server=True):
         self.appKey = appKey.encode()
         self.signKey = signKey.encode()
         self.blockSize = 16
@@ -27,6 +29,15 @@ class Security:
         self._tcp_key = None
         self._request_count = 0
         self._response_count = 0
+
+        self._hmackey = "PROD_VnoClJI9aikS8dyy"
+        self._use_china_server = use_china_server
+        if self._use_china_server:
+            self._iotkey = "prod_secret123@muc"
+            self._loginKey = 'ad0ee21d48a64bf49f4fb583ab76e799'
+        else:
+            self._iotkey = "meicloud"
+            self._loginKey = 'ac21b9f9cbfe4ca5a88562ef25e2b768'
 
     def aes_decrypt(self, raw):
         cipher = AES.new(self.encKey, AES.MODE_ECB)
@@ -129,3 +140,55 @@ class Security:
             packets, incomplete = self.decode_8370(leftover)
             return [data] + packets, incomplete
         return [data], b''
+
+    def sign(self, url, payload):
+        path = urlparse(url).path
+        query = sorted(payload.items(), key=lambda x: x[0])
+        query = urllib.parse.unquote_plus(urllib.parse.urlencode(query))
+        sign = path + query + self._loginKey
+        m = sha256()
+        m.update(sign.encode('ASCII'))
+
+        return m.hexdigest()
+
+    def new_sign(self, data: str, random: str) -> str:
+        msg = self._iotkey
+        if data:
+            msg += data
+        msg += random
+        sign = hmac.new(self._hmackey.encode("ascii"), msg.encode("ascii"), sha256)
+        return sign.hexdigest()
+
+    def encryptPassword(self, loginId, password):
+        m = sha256()
+        m.update(password.encode('ascii'))
+
+        loginHash = loginId + m.hexdigest() + self._loginKey
+        m = sha256()
+        m.update(loginHash.encode('ascii'))
+        return m.hexdigest()
+
+    def encrypt_iam_password(self, loginId, password) -> str:
+        """Encrypts password for cloud API"""
+        md = md5()
+        md.update(password.encode("ascii"))
+        md_second = md5()
+        md_second.update(md.hexdigest().encode("ascii"))
+        if self._use_china_server:
+            return md_second.hexdigest()
+        login_hash = loginId + md_second.hexdigest() + self._loginKey
+        sha = sha256()
+        sha.update(login_hash.encode("ascii"))
+
+        return sha.hexdigest()
+
+    @staticmethod
+    def get_udpid(data):
+        b = sha256(data).digest()
+        b1, b2 = b[:16], b[16:]
+        b3 = bytearray(16)
+        i = 0
+        while i < len(b1):
+            b3[i] = b1[i] ^ b2[i]
+            i += 1
+        return b3.hex()
