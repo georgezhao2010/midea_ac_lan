@@ -40,13 +40,13 @@ MIDEA_ENTITIES = {
         "switch": "set_keep_warm",
         "should_poll": False
     },
-    # "indirect_wind": {
-    #    "type": "switch",
-    #    "name": "Indirect Wind",
-    #    "icon": "hass:weather-windy",
-    #    "switch": "set_indirect_wind",
-    #    "should_poll": False
-    # },
+    "indirect_wind": {
+        "type": "switch",
+        "name": "Indirect Wind",
+        "icon": "hass:weather-windy",
+        "switch": "set_indirect_wind",
+        "should_poll": False
+    },
     "prompt_tone": {
         "type": "switch",
         "name": "Prompt Tone",

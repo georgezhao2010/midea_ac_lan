@@ -1,6 +1,6 @@
 from .midea_entity import MideaEntity, MIDEA_ENTITIES
 from homeassistant.const import (
-    CONF_DEVICE
+    CONF_DEVICE_ID
 )
 from .const import (
     DOMAIN,
@@ -9,7 +9,7 @@ from .const import (
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    device_id = config_entry.data.get(CONF_DEVICE)
+    device_id = config_entry.data.get(CONF_DEVICE_ID)
     dm = hass.data[DOMAIN][MANAGERS].get(device_id)
     devices = []
     for entity_key, config in MIDEA_ENTITIES.items():

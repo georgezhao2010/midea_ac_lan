@@ -1,17 +1,14 @@
-from .const import DOMAIN, DEVICES, MANAGERS, CONF_K1, CONF_MAKE_SWITCH
-try:
-    from homeassistant.core import HomeAssistant
-    from homeassistant.const import CONF_DEVICE, CONF_TOKEN
-except ImportError:
-    class HomeAssistant:
-        pass
-    CONF_DEVICE = "Device"
-    CONF_TOKEN = "Token"
+import logging
+from .const import DOMAIN, MANAGERS, CONF_KEY, CONF_MAKE_SWITCH
 
+from homeassistant.core import HomeAssistant
+from homeassistant.const import CONF_DEVICE_ID, CONF_TOKEN, CONF_HOST, CONF_PORT, CONF_MODEL, CONF_PROTOCOL
 from .state_manager import DeviceManager
 from .midea.discover import discover
 
 DEVICE_TYPES = ["climate", "sensor", "switch"]
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, hass_config: dict):
@@ -20,43 +17,39 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry):
-    device_id = config_entry.data.get(CONF_DEVICE)
-    token = bytearray.fromhex(config_entry.data.get(CONF_TOKEN))
-    key = bytearray.fromhex(config_entry.data.get(CONF_K1))
+    device_id = config_entry.data.get(CONF_DEVICE_ID)
+    token = config_entry.data.get(CONF_TOKEN)
+    key = config_entry.data.get(CONF_KEY)
     make_switch = config_entry.data.get(CONF_MAKE_SWITCH)
+    host = config_entry.data.get(CONF_HOST)
+    port = config_entry.data.get(CONF_PORT)
+    model = config_entry.data.get(CONF_MODEL)
+    protocol = config_entry.data.get(CONF_PROTOCOL)
+    dm = DeviceManager(device_id, host, port, token, key, protocol, model)
+    dm.open(start_thread=True)
     if DOMAIN not in hass.data:
         hass.data[DOMAIN] = {}
-    if DEVICES not in hass.data[DOMAIN]:
-        hass.data[DOMAIN][DEVICES] = []
-    if device_id is not None:
-        hass.data[DOMAIN][DEVICES].append(device_id)
-    devices = discover()
-    device = devices.get(device_id)
-    if device is not None:
-        dm = DeviceManager(device["id"], device["ip"], device["port"], token, key, device["protocol"], device["model"])
-        dm.open(start_thread=True)
-        if MANAGERS not in hass.data[DOMAIN]:
-            hass.data[DOMAIN][MANAGERS] = {}
-        hass.data[DOMAIN][MANAGERS][device_id] = dm
-        if make_switch:
-            for platform in DEVICE_TYPES:
-                hass.async_create_task(hass.config_entries.async_forward_entry_setup(
-                    config_entry, platform))
-        else:
+    if MANAGERS not in hass.data[DOMAIN]:
+        hass.data[DOMAIN][MANAGERS] = {}
+    hass.data[DOMAIN][MANAGERS][device_id] = dm
+    if make_switch:
+        for platform in DEVICE_TYPES:
             hass.async_create_task(hass.config_entries.async_forward_entry_setup(
-                config_entry, "climate"))
+                config_entry, platform))
+    else:
+        hass.async_create_task(hass.config_entries.async_forward_entry_setup(
+            config_entry, "climate"))
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry):
-    device_id = config_entry.data.get(CONF_DEVICE)
+    device_id = config_entry.data.get(CONF_DEVICE_ID)
     make_switch = config_entry.data.get(CONF_MAKE_SWITCH)
     if device_id is not None:
-        hass.data[DOMAIN][DEVICES].remove(device_id)
         dm = hass.data[DOMAIN][MANAGERS].get(device_id)
         if dm is not None:
             dm.close()
-        hass.data[DOMAIN][MANAGERS].remove(device_id)
+        hass.data[DOMAIN][MANAGERS].pop(device_id)
     if make_switch:
         for platform in DEVICE_TYPES:
             await hass.config_entries.async_forward_entry_unload(config_entry, platform)

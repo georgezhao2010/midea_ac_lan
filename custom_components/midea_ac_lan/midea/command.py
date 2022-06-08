@@ -66,6 +66,7 @@ class CommandRequest:
 class CommandSet(CommandRequest):
     def __init__(self):
         super().__init__()
+        self._header[1] = 0x23
         self._header[9] = 0x02
         self._body[0] = 0x40
         self._body[4] = 0x02
@@ -117,11 +118,17 @@ class CommandSet(CommandRequest):
         self._body[9] = 0xff if eco_mode else 0
 
     def set_indirect_wind(self, indirect_wind):
-        # self._body[7] &= 0x19
-        # self._body[7] |= 0x19 if indirect_wind else 0
+        self._body[7] &= 0x19
+        self._body[7] |= 0x19 if indirect_wind else 0
         # self._body[7] = 0x19 if indirect_wind else 0
-        self._body[10] &= 0x08
+        self._body[10] &= (~0x08)
         self._body[10] |= 0x08 if indirect_wind else 0
+        self._body[22] &= (~0x02)
+        self._body[22] |= 0x02 if indirect_wind else 0
+        self._body[22] &= (~0x10)
+        self._body[22] |= 0x10 if indirect_wind else 0
+        self._body[14] &= (~0x10)
+        self._body[14] |= 0x10 if indirect_wind else 0
 
     def set_fahrenheit(self, fahrenheit: bool):
         self._body[10] &= (~0x04)

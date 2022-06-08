@@ -10,6 +10,10 @@ from .midea.packet_builder import PacketBuilder
 _LOGGER = logging.getLogger(__name__)
 
 
+class AuthException(Exception):
+    pass
+
+
 class DeviceState:
     def __init__(self):
         self.prompt_tone = True
@@ -37,8 +41,8 @@ class DeviceManager(threading.Thread):
         self._on_updates = []
         self._timeout_counter = 0
         self._security = Security()
-        self._token = token
-        self._key = key
+        self._token = bytearray.fromhex(token)
+        self._key = bytearray.fromhex(key)
         self._buffer = b''
         self._device_id = device_id
         self._protocol = protocol
@@ -46,21 +50,25 @@ class DeviceManager(threading.Thread):
         self._status = DeviceState()
         self._updates = []
 
+    def set_token_key(self, token, key):
+        self._token = bytearray.fromhex(token)
+        self._key = bytearray.fromhex(key)
 
     def run(self):
         counter = 0
         while self._is_run:
-            with self._lock:
-                while self._socket is None:
-                    _LOGGER.debug(f"Try to connect to device {self._device_id}")
-                    if self.open(False) is False:
-                        time.sleep(10)
-                    if not self._is_run:
-                        if self._socket is not None:
-                            self._socket.close()
-                            self._socket = None
-                        return
+            while self._socket is None:
+                _LOGGER.debug(f"Ready to re-open device")
+                if self.open(False) is False:
+                    time.sleep(10)
+                if not self._is_run:
+                    _LOGGER.debug(f"Thread existing")
+                    if self._socket is not None:
+                        self._socket.close()
+                        self._socket = None
+                    break
             self._timeout_counter = 0
+            _LOGGER.debug(f"Ready to receive loop")
             while self._is_run:
                 try:
                     msg = self._socket.recv(512)
@@ -77,10 +85,9 @@ class DeviceManager(threading.Thread):
                     self._timeout_counter = self._timeout_counter + 1
                     if self._timeout_counter >= 10:
                         _LOGGER.debug(f"Heartbeat timeout detected, reconnecting")
-                        with self._lock:
-                            self._socket.close()
-                            self._socket = None
-                            break
+                        self._socket.close()
+                        self._socket = None
+                        break
                     #Send Heartbeat
                     self.send_heartbeat()
                     if counter >= 5:
@@ -90,16 +97,16 @@ class DeviceManager(threading.Thread):
                         counter = counter + 1
                 except socket.error:
                     _LOGGER.debug(f"Except socket.error {socket.error} raised in socket.recv()")
-                    with self._lock:
-                        self._socket.close()
-                        self._socket = None
-                        break
+                    self._socket.close()
+                    self._socket = None
+                    break
                 except Exception as e:
                     _LOGGER.debug(f"Except {e} raised")
-                    with self._lock:
-                        self._socket.close()
-                        self._socket = None
-                        break
+                    self._socket.close()
+                    self._socket = None
+                    break
+            _LOGGER.debug(f"Receive loop existed")
+        _LOGGER.debug(f"Thread existed")
 
     def send_message(self, data):
         if self._protocol == 3:
@@ -109,8 +116,7 @@ class DeviceManager(threading.Thread):
 
     def send_message_V2(self, data):
         if self._socket is not None:
-            with self._lock:
-                self._socket.send(data)
+            self._socket.send(data)
 
     def send_message_V3(self, data, msg_type=MSGTYPE_ENCRYPTED_REQUEST):
         data = self._security.encode_8370(data, msg_type)
@@ -209,23 +215,28 @@ class DeviceManager(threading.Thread):
 
     def open(self, start_thread):
         result = False
+        _LOGGER.debug(f"Try to connect to device {self._device_id}")
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.settimeout(10)
             self._socket.connect((self._host, self._port))
+            _LOGGER.debug(f"Device {self._device_id} connected at socket {self._socket}")
             #auth
             if self._protocol == 3:
                 self.authenticate()
+            _LOGGER.debug(f"Authenticated")
             self.refresh_status(wait_response=True)
             result = True
         except socket.timeout:
-            _LOGGER.debug(f"Socket connect timeout")
+            _LOGGER.debug(f"Socket connect timed out")
             self._socket.close()
             self._socket = None
         except socket.error:
             _LOGGER.debug(f"Socket connect error {socket.error}")
             self._socket.close()
             self._socket = None
+        except AuthException as e:
+            _LOGGER.error(f"Connection authException error {e}")
         except Exception as e:
             _LOGGER.error(f"Socket connect error {e}")
         if start_thread:
@@ -241,9 +252,10 @@ class DeviceManager(threading.Thread):
     def authenticate(self):
         request = self._security.encode_8370(
             self._token, MSGTYPE_HANDSHAKE_REQUEST)
-        with self._lock:
-            self._socket.send(request)
+        self._socket.send(request)
         response = self._socket.recv(512)
+        if len(response) < 20:
+            raise AuthException();
         response = response[8: 72]
         self._security.tcp_key(response, self._key)
 
@@ -362,4 +374,3 @@ class DeviceManager(threading.Thread):
 
     def add_update(self, update):
         self._updates.append(update)
-
