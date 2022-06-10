@@ -7,9 +7,7 @@ from .midea.message_parser import MessageParser
 from .midea.command import CommandRequest, CommandSet, CommandRequestIndirectWind
 from .midea.packet_builder import PacketBuilder
 
-logging.StreamHandler()
 _LOGGER = logging.getLogger(__name__)
-_LOGGER.setLevel(logging.DEBUG)
 
 class AuthException(Exception):
     pass
