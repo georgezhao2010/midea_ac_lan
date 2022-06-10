@@ -63,6 +63,49 @@ class CommandRequest:
         return data
 
 
+class CommandRequestIndirectWind(CommandRequest):
+    def __init__(self):
+        self._header = bytearray([
+            0xaa,
+            # request is 0x20; setting is 0x23
+            0x23,
+            # device type
+            0xac,
+            0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x02
+        ])
+        self._body = bytearray([
+            0xB0,
+            0x02,
+            0x42,
+            0x00, 0x01,
+            0x02,  #0x01关闭防直吹
+            0x1A, 0x00, 0x01,
+            0x01,  #0x00关闭提示音
+            0x00
+        ])
+
+    def finalize(self):
+        self._header[1] = len(self._body) + 11
+        output = {
+            "header": self._header.hex(),
+            "body": self._body.hex(),
+            "type": int(self._header[9] << 8) + int(self._body[0])
+        }
+        _LOGGER.debug(f"Send message: {str(output)}")
+        data = self._header
+        data.extend(self._body)
+        data.append(calculate(self._body))
+        data.append(self.checksum(data[1:]))
+        return data
+
+    def set_prompt_tone(self, prompt_tone):
+        self._body[9] = 0x01 if prompt_tone else 0x00
+
+    def set_indirect_wind(self, indirect_wind):
+        self._body[5] = 0x02 if indirect_wind else 0x01
+
+
 class CommandSet(CommandRequest):
     def __init__(self):
         super().__init__()
@@ -97,11 +140,8 @@ class CommandSet(CommandRequest):
         self._body[7] |= mode & 0x3f
 
     def set_target_temperature(self, temperature: float):
-        # Clear the temperature bits.
         self._body[2] &= ~ 0x0f
-        # Clear the temperature bits, except the 0.5 bit, which will be set properly in all cases
         self._body[2] |= (int(temperature) & 0xf)
-        # set the +0.5 bit
         if int(round(temperature * 2)) % 2 != 0:
             self._body[2] |= 0x10
         else:
@@ -110,25 +150,13 @@ class CommandSet(CommandRequest):
     def set_keep_warm(self, keep_warm):
         self._body[22] &= (~0x01)
         self._body[22] |= 0x01 if keep_warm else 0
-        pass
 
     def set_eco_mode(self, eco_mode):
-        # self._body[9] &= ~ 0x10
-        # self._body[9] |= 0x10 if eco_mode else 0
         self._body[9] = 0xff if eco_mode else 0
 
     def set_indirect_wind(self, indirect_wind):
-        self._body[7] &= 0x19
-        self._body[7] |= 0x19 if indirect_wind else 0
-        # self._body[7] = 0x19 if indirect_wind else 0
-        self._body[10] &= (~0x08)
-        self._body[10] |= 0x08 if indirect_wind else 0
-        self._body[22] &= (~0x02)
-        self._body[22] |= 0x02 if indirect_wind else 0
         self._body[22] &= (~0x10)
         self._body[22] |= 0x10 if indirect_wind else 0
-        self._body[14] &= (~0x10)
-        self._body[14] |= 0x10 if indirect_wind else 0
 
     def set_fahrenheit(self, fahrenheit: bool):
         self._body[10] &= (~0x04)

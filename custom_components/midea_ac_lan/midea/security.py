@@ -52,7 +52,6 @@ class Security:
             return bytearray(0)
 
     def aes_encrypt(self, raw):
-        # Make sure to pad the data
         raw = pad(raw, self.blockSize)
 
         cipher = AES.new(self.encKey, AES.MODE_ECB)
