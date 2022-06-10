@@ -4,11 +4,12 @@ import threading
 import socket
 from .midea.security import Security, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .midea.message_parser import MessageParser
-from .midea.command import CommandRequest, CommandSet
+from .midea.command import CommandRequest, CommandSet, CommandRequestIndirectWind
 from .midea.packet_builder import PacketBuilder
 
+logging.StreamHandler()
 _LOGGER = logging.getLogger(__name__)
-
+_LOGGER.setLevel(logging.DEBUG)
 
 class AuthException(Exception):
     pass
@@ -202,8 +203,12 @@ class DeviceManager(threading.Thread):
                 "eco_mode":  self._status.eco_mode,
                 "indirect_wind": self._status.indirect_wind
             }
-        elif parser.msg_type == 0x5B5:
+        elif parser.msg_type == 0x5B5 or parser.msg_type == 0x2B0:
             self._status.indirect_wind = parser.indirect_wind
+            if parser.indirect_wind:
+                print("indirect wind on")
+            else:
+                print("indirect wind off")
             updates = {"indirect_wind":  self._status.indirect_wind}
             pass
         else:
@@ -298,10 +303,15 @@ class DeviceManager(threading.Thread):
         cmd.set_target_temperature(self._status.target_temperature)
         cmd.set_keep_warm(self._status.keep_warm)
         cmd.set_eco_mode(self._status.eco_mode)
+        return cmd
+
+    def make_indirectwind_set(self):
+        cmd = CommandRequestIndirectWind()
+        cmd.set_prompt_tone(self._status.prompt_tone)
         cmd.set_indirect_wind(self._status.indirect_wind)
         return cmd
 
-    def set_status(self, cmd: CommandSet):
+    def set_status(self, cmd: CommandRequest):
         data = cmd.finalize()
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
@@ -368,7 +378,7 @@ class DeviceManager(threading.Thread):
 
     def set_indirect_wind(self, indirect_wind):
         _LOGGER.debug(f"Set device {self._device_id} indirect_wind={indirect_wind}")
-        cmd = self.make_command_set()
+        cmd = self.make_indirectwind_set()
         cmd.set_indirect_wind(indirect_wind)
         self.set_status(cmd)
 

@@ -180,6 +180,12 @@ class X05XB5Message(XAAMessage):
         return (self._body[5] & 0x2) == 0x2
 
 
+class X02XB0Message(XAAMessage):
+    @property
+    def indirect_wind(self):
+        return (self._body[6] & 0x2) == 0x2
+
+
 class MessageParser:
     def __init__(self, message):
         self._header = message[:10]
@@ -193,6 +199,8 @@ class MessageParser:
             self._body = X05XA0Message(body)
         elif msg_type == 0x05 and body[0] == 0xB5:
             self._body = X05XB5Message(body)
+        elif msg_type == 0x02 and body[0] == 0xb0:
+            self._body = X02XB0Message(body)
         else:
             self._body = None
 
