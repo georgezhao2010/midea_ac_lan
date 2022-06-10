@@ -2,7 +2,7 @@
   "domain": "midea_ac_lan",
   "name": "Midea AC LAN",
   "config_flow": true,
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "documentation": "https://github.com/georgezhao2010/midea_ac_lan",
   "issue_tracker": "https://github.com/georgezhao2010/midea_ac_lan/issues",
   "iot_class": "local_push",
