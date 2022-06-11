@@ -9,7 +9,7 @@
 使用HACS以自定义存储库方式安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
 
 # 配置
-安装过后，到Home Assistant的集成界面添加集成。
+安装过后，到Home Assistant的集成界面搜索添加集成Midea AC LAN。
 配置可以选择自动或手动配置
 
 ## 自动配置
