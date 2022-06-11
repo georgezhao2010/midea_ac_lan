@@ -24,7 +24,7 @@ class DeviceState:
         self.target_temperature = 20.0
         self.indoor_temperature = 20.0
         self.outdoor_temperature = 20.0
-        self.keep_warm = False
+        self.comfort_mode = False
         self.eco_mode = False
         self.indirect_wind = False
 
@@ -47,6 +47,7 @@ class DeviceManager(threading.Thread):
         self._protocol = protocol
         self._model = model
         self._status = DeviceState()
+        self._entity_id = None
         self._updates = []
 
     def set_token_key(self, token, key):
@@ -147,7 +148,7 @@ class DeviceManager(threading.Thread):
                 self._status.outdoor_temperature = parser.outdoor_temperature
             else:
                 self._status.outdoor_temperature = 0.0
-            self._status.keep_warm = parser.keep_warm
+            self._status.comfort_mode = parser.comfort_mode
             self._status.eco_mode = parser.eco_mode
             if not self._status.power:
                 self._status.indirect_wind = False
@@ -162,7 +163,7 @@ class DeviceManager(threading.Thread):
                 "target_temperature": self._status.target_temperature,
                 "indoor_temperature": self._status.indoor_temperature,
                 "outdoor_temperature": self._status.outdoor_temperature,
-                "keep_warm": self._status.keep_warm,
+                "comfort_mode": self._status.comfort_mode,
                 "eco_mode": self._status.eco_mode,
                 "indirect_wind": self._status.indirect_wind
             }
@@ -184,7 +185,7 @@ class DeviceManager(threading.Thread):
             self._status.swing_vertical = parser.swing_vertical
             self._status.swing_horizontal = parser.swing_horizontal
             self._status.target_temperature = parser.target_temperature
-            self._status.keep_warm = parser.keep_warm
+            self._status.comfort_mode = parser.comfort_mode
             self._status.eco_mode = parser.eco_mode
             if not self._status.power:
                 self._status.indirect_wind = False
@@ -197,7 +198,7 @@ class DeviceManager(threading.Thread):
                 "swing_vertical":  self._status.swing_vertical,
                 "swing_horizontal":  self._status.swing_horizontal,
                 "target_temperature":  self._status.target_temperature,
-                "keep_warm":  self._status.keep_warm,
+                "comfort_mode":  self._status.comfort_mode,
                 "eco_mode":  self._status.eco_mode,
                 "indirect_wind": self._status.indirect_wind
             }
@@ -299,7 +300,7 @@ class DeviceManager(threading.Thread):
         cmd.set_fan_speed(self._status.fan_speed)
         cmd.set_swing(self._status.swing_vertical, self._status.swing_horizontal)
         cmd.set_target_temperature(self._status.target_temperature)
-        cmd.set_keep_warm(self._status.keep_warm)
+        cmd.set_comfort_mode(self._status.comfort_mode)
         cmd.set_eco_mode(self._status.eco_mode)
         return cmd
 
@@ -358,14 +359,16 @@ class DeviceManager(threading.Thread):
 
     def set_fan_speed(self, fan_speed):
         _LOGGER.debug(f"Set device {self._device_id} fan_speed={fan_speed}")
+        if fan_speed == "auto":
+            fan_speed = 102
         cmd = self.make_command_set()
         cmd.set_fan_speed(fan_speed)
         self.set_status(cmd)
 
-    def set_keep_warm(self, keep_warm):
-        _LOGGER.debug(f"Set device {self._device_id} keep_warm={keep_warm}")
+    def set_comfort_mode(self, comfort_mode):
+        _LOGGER.debug(f"Set device {self._device_id} comfort_mode={comfort_mode}")
         cmd = self.make_command_set()
-        cmd.set_keep_warm(keep_warm)
+        cmd.set_comfort_mode(comfort_mode)
         self.set_status(cmd)
 
     def set_eco_mode(self, eco_mode):

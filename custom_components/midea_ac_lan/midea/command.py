@@ -147,9 +147,9 @@ class CommandSet(CommandRequest):
         else:
             self._body[2] &= (~0x10)
 
-    def set_keep_warm(self, keep_warm):
+    def set_comfort_mode(self, comfort_mode):
         self._body[22] &= (~0x01)
-        self._body[22] |= 0x01 if keep_warm else 0
+        self._body[22] |= 0x01 if comfort_mode else 0
 
     def set_eco_mode(self, eco_mode):
         self._body[9] = 0xff if eco_mode else 0

@@ -1,4 +1,5 @@
 DOMAIN = "midea_ac_lan"
+COMPONENT = "component"
 MANAGERS = "managers"
 CONF_KEY = "key"
 CONF_MAKE_SWITCH = "make_switch"
