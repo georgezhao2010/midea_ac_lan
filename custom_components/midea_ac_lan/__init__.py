@@ -1,6 +1,5 @@
 import logging
 from .const import DOMAIN, MANAGERS, CONF_KEY, CONF_MAKE_SWITCH
-
 from homeassistant.core import HomeAssistant
 from homeassistant.const import CONF_DEVICE_ID, CONF_TOKEN, CONF_HOST, CONF_PORT, CONF_MODEL, CONF_PROTOCOL
 from .state_manager import DeviceManager
@@ -39,6 +38,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
     else:
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(
             config_entry, "climate"))
+
     return True
 
 

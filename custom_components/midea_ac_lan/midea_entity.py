@@ -33,11 +33,11 @@ MIDEA_ENTITIES = {
         "switch": "set_eco_mode",
         "should_poll": False
     },
-    "keep_warm": {
+    "comfort_mode": {
         "type": "switch",
         "name": "Comfort Mode",
         "icon": "hass:alpha-c-circle",
-        "switch": "set_keep_warm",
+        "switch": "set_comfort_mode",
         "should_poll": False
     },
     "indirect_wind": {

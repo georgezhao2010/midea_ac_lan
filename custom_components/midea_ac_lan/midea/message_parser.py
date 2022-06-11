@@ -39,7 +39,7 @@ class XAAMessage:
         return 0.0
 
     @property
-    def keep_warm(self):
+    def comfort_mode(self):
         return False
 
     @property
@@ -91,7 +91,7 @@ class X03XC0Message(XAAMessage):
         return int((self._body[12] - 50) / 2) + ((self._body[15] & 0xF0) >> 4) * 0.1
 
     @property
-    def keep_warm(self):
+    def comfort_mode(self):
         return (self._body[22] & 0x1) > 0
 
     @property
@@ -159,7 +159,7 @@ class X05XA0Message(XAAMessage):
         return ((self._body[1] & 0x3E) >> 1) - 4 + 16.0 + (0.5 if self._body[1] & 0x40 > 0 else 0.0)
 
     @property
-    def keep_warm(self):
+    def comfort_mode(self):
         return (self._body[14] & 0x1) == 0x1
 
     @property
@@ -245,8 +245,8 @@ class MessageParser:
         return 0.0 if self._body is None else self._body.outdoor_temperature
 
     @property
-    def keep_warm(self):
-        return False if self._body is None else self._body.keep_warm
+    def comfort_mode(self):
+        return False if self._body is None else self._body.comfort_mode
 
     @property
     def eco_mode(self):
