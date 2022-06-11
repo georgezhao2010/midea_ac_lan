@@ -9,6 +9,7 @@ from .midea.packet_builder import PacketBuilder
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class AuthException(Exception):
     pass
 
@@ -26,6 +27,7 @@ class DeviceState:
         self.outdoor_temperature = 20.0
         self.comfort_mode = False
         self.eco_mode = False
+        self.aux_heat = False
         self.indirect_wind = False
 
 
@@ -128,7 +130,7 @@ class DeviceManager(threading.Thread):
         else:
             messages = [msg]
         for message in messages:
-            # It's not heartbeat
+            # If it's not heartbeat
             if len(message) > 40 + 16 and message[3] != 0x10:
                 message = self._security.aes_decrypt(message[40:-16])
                 parser = MessageParser(message)
@@ -150,6 +152,7 @@ class DeviceManager(threading.Thread):
                 self._status.outdoor_temperature = 0.0
             self._status.comfort_mode = parser.comfort_mode
             self._status.eco_mode = parser.eco_mode
+            self._status.aux_heat = parser.aux_heat
             if not self._status.power:
                 self._status.indirect_wind = False
             elif self._status.swing_vertical:
@@ -165,7 +168,8 @@ class DeviceManager(threading.Thread):
                 "outdoor_temperature": self._status.outdoor_temperature,
                 "comfort_mode": self._status.comfort_mode,
                 "eco_mode": self._status.eco_mode,
-                "indirect_wind": self._status.indirect_wind
+                "aux_heat": self._status.aux_heat,
+                "indirect_wind": self._status.indirect_wind,
             }
         elif parser.msg_type == 0x4A1:
             self._status.indoor_temperature = parser.indoor_temperature
@@ -187,6 +191,7 @@ class DeviceManager(threading.Thread):
             self._status.target_temperature = parser.target_temperature
             self._status.comfort_mode = parser.comfort_mode
             self._status.eco_mode = parser.eco_mode
+            self._status.aux_heat = parser.aux_heat
             if not self._status.power:
                 self._status.indirect_wind = False
             elif self._status.swing_vertical:
@@ -200,14 +205,11 @@ class DeviceManager(threading.Thread):
                 "target_temperature":  self._status.target_temperature,
                 "comfort_mode":  self._status.comfort_mode,
                 "eco_mode":  self._status.eco_mode,
-                "indirect_wind": self._status.indirect_wind
+                "aux_heat": self._status.aux_heat,
+                "indirect_wind": self._status.indirect_wind,
             }
         elif parser.msg_type == 0x5B5 or parser.msg_type == 0x2B0:
             self._status.indirect_wind = parser.indirect_wind
-            if parser.indirect_wind:
-                print("indirect wind on")
-            else:
-                print("indirect wind off")
             updates = {"indirect_wind":  self._status.indirect_wind}
             pass
         else:
@@ -316,49 +318,40 @@ class DeviceManager(threading.Thread):
         self.send_message(msg)
 
     def set_prompt_tone(self, prompt_tone: bool):
-        _LOGGER.debug(f"Set device {self._device_id} prompt_tone={prompt_tone}")
         self._status.prompt_tone = prompt_tone
 
     def set_power(self, power: bool):
-        _LOGGER.debug(f"Set device {self._device_id} power={power}")
         cmd = self.make_command_set()
         cmd.set_power(power)
         self.set_status(cmd)
 
     def set_mode(self, mode: int):
-        _LOGGER.debug(f"Set device {self._device_id} mode={mode}")
         cmd = self.make_command_set()
         cmd.set_mode(mode)
         cmd.set_power(True)
         self.set_status(cmd)
 
     def set_target_temperature(self, temperature: float):
-        _LOGGER.debug(f"Set device {self._device_id} temperature={temperature}")
         cmd = self.make_command_set()
         cmd.set_target_temperature(temperature)
         self.set_status(cmd)
 
     def set_swing_vertical(self, swing_vertical):
-        _LOGGER.debug(f"Set device {self._device_id} swing_vertical={swing_vertical}")
         cmd = self.make_command_set()
         cmd.set_swing(swing_vertical, self._status.swing_horizontal)
         self.set_status(cmd)
 
     def set_swing_horizontal(self, swing_horizontal):
-        _LOGGER.debug(f"Set device {self._device_id} swing_horizontal={swing_horizontal}")
         cmd = self.make_command_set()
         cmd.set_swing(self._status.swing_vertical, swing_horizontal)
         self.set_status(cmd)
 
     def set_swing(self, swing_vertical, swing_horizontal):
-        _LOGGER.debug(f"Set device {self._device_id} swing_vertical={swing_vertical}, "
-                      f"swing_horizontal={swing_horizontal}")
         cmd = self.make_command_set()
         cmd.set_swing(swing_vertical, swing_horizontal)
         self.set_status(cmd)
 
     def set_fan_speed(self, fan_speed):
-        _LOGGER.debug(f"Set device {self._device_id} fan_speed={fan_speed}")
         if fan_speed == "auto":
             fan_speed = 102
         cmd = self.make_command_set()
@@ -366,19 +359,21 @@ class DeviceManager(threading.Thread):
         self.set_status(cmd)
 
     def set_comfort_mode(self, comfort_mode):
-        _LOGGER.debug(f"Set device {self._device_id} comfort_mode={comfort_mode}")
         cmd = self.make_command_set()
         cmd.set_comfort_mode(comfort_mode)
         self.set_status(cmd)
 
     def set_eco_mode(self, eco_mode):
-        _LOGGER.debug(f"Set device {self._device_id} eco_mode={eco_mode}")
         cmd = self.make_command_set()
         cmd.set_eco_mode(eco_mode)
         self.set_status(cmd)
 
+    def set_aux_heat(self, aux_heat):
+        cmd = self.make_command_set()
+        cmd.set_aux_heat(aux_heat)
+        self.set_status(cmd)
+
     def set_indirect_wind(self, indirect_wind):
-        _LOGGER.debug(f"Set device {self._device_id} indirect_wind={indirect_wind}")
         cmd = self.make_indirectwind_set()
         cmd.set_indirect_wind(indirect_wind)
         self.set_status(cmd)

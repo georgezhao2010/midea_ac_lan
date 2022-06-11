@@ -3,9 +3,8 @@ set_fan_speed:
   fields:
     entity_id:
       description: Climate entity want to set
-      example: "climate.116193194711621_climate"
     fan_speed:
-      description: Fan speed (range from 1 to 100 or 'auto')
+      description: New value of fan speed (range from 1 to 100 or 'auto')
       example: "'auto'"
 
 set_eco_mode:
@@ -13,37 +12,29 @@ set_eco_mode:
   fields:
     entity_id:
       description: Climate entity want to set
-      example: "climate.116193194711621_climate"
     eco_mode:
-      description: ECO mode (True or False)
-      example: True
+      description: New value of ECO mode
 
 set_comfort_mode:
   description: Turn on or turn off the comfort mode.
   fields:
     entity_id:
       description: Climate entity want to set
-      example: "climate.116193194711621_climate"
     comfort_mode:
-      description: Comfort mode (True or False)
-      example: True
+      description: New value of Comfort mode
 
 set_prompt_tone:
   description: Turn on or turn off the prompt tone.
   fields:
     entity_id:
       description: Climate entity want to set
-      example: "climate.116193194711621_climate"
     prompt_tone:
-      description: Prompt tone (True or False)
-      example: True
+      description: New value of prompt tone
 
 set_indirect_wind:
   description: Turn on or turn off the indirect wind mode.
   fields:
     entity_id:
       description: Climate entity want to set
-      example: "climate.116193194711621_climate"
     indirect_wind:
-      description: Indirect wind (True or False)
-      example: True
+      description: New value of indirect wind
