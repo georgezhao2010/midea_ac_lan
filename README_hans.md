@@ -51,7 +51,6 @@ midea-discover
 climate.{DEVICEID}_climate | climate | 恒温器实体
 
 ### 额外生成实体
-
 如果选择将空调属性生成开关及传感器实体, 将额外生成以下传感器及开关实体
 
 实体ID | 类型 | 备注
@@ -65,8 +64,9 @@ switch.{DEVICEID}_swing_vertical | switch | 垂直摆风开关
 
 ## 服务
 除climate原有服务外, 还生成以下服务
+
 服务 | 作用 |参数 
---- | --- 
+--- | --- |--- 
 midea_ac_lan.set_fan_speed | 精细设置风扇风速 | entity_id, fan_speed (1-100数字或者"auto")
 midea_ac_lan.set_comfort_mode | 打开或关闭舒省模式 | entity_id, comfort_mode (ture 或 false)
 midea_ac_lan.set_eco_mode | 打开或关闭节能模式 | entity_id, eco_mode (ture 或 false)
@@ -83,6 +83,7 @@ logger:
 ```
 
 # 特别感谢
+
 [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 [@mac-zhou](https://github.com/mac-zhou/midea-msmart)
 
