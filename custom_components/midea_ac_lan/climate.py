@@ -47,28 +47,28 @@ SERVICES = {
         "method": "set_eco_mode",
         "schema": vol.Schema({
             vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("eco_mode"): vol.All(bool, vol.In([True, False]))
+            vol.Required("eco_mode"): cv.boolean
         })
     },
     "set_comfort_mode": {
         "method": "set_comfort_mode",
         "schema": vol.Schema({
             vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("comfort_mode"): vol.All(bool, vol.In([True, False]))
+            vol.Required("comfort_mode"): cv.boolean
         })
     },
     "set_prompt_tone": {
         "method": "set_prompt_tone",
         "schema": vol.Schema({
             vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("prompt_tone"): vol.All(bool, vol.In([True, False]))
+            vol.Required("prompt_tone"): cv.boolean
         })
     },
     "set_indirect_wind": {
         "method": "set_indirect_wind",
         "schema": vol.Schema({
             vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("indirect_wind"): vol.All(bool, vol.In([True, False]))
+            vol.Required("indirect_wind"): cv.boolean
         })
     },
 }
@@ -89,7 +89,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         params = {
             key: value for key, value in service.data.items() if key != ATTR_ENTITY_ID
         }
-        _LOGGER.debug(f"service {service.service} be called witch params {service.data}")
         entity_ids = service.data.get(ATTR_ENTITY_ID)
         devices = []
         if entity_ids:
@@ -106,7 +105,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     for service_name, service_data in SERVICES.items():
         schema = service_data.get("schema")
-        _LOGGER.debug(f"{service_name}:{schema}")
         hass.services.async_register(
             DOMAIN,
             service_name,
@@ -168,11 +166,12 @@ class MideaClimate(MideaEntity, ClimateEntity):
         self._comfort_mode = self._dm.get_status("comfort_mode")
         self._indirect_wind = self._dm.get_status("indirect_wind")
         self._prompt_tone = self._dm.get_status("prompt_tone")
+        self._aux_heat = self._dm.get_status("aux_heat")
         self._dm.entity_id = self.entity_id
 
     @property
     def supported_features(self):
-        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE | SUPPORT_SWING_MODE
+        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE | SUPPORT_SWING_MODE | SUPPORT_AUX_HEAT
 
     @property
     def min_temp(self):
@@ -238,13 +237,15 @@ class MideaClimate(MideaEntity, ClimateEntity):
     def outdoor_temperature(self):
         return self._outdoor_temperature
 
+    @property
+    def is_aux_heat(self):
+        return self._aux_heat
+
     def turn_on(self):
         self._dm.set_power(power=True)
-        _LOGGER.debug("Turn the device on")
 
     def turn_off(self):
         self._dm.set_power(power=False)
-        _LOGGER.debug("Turn the device off")
 
     def set_temperature(self, **kwargs) -> None:
         temperature = float(kwargs[ATTR_TEMPERATURE])
@@ -265,6 +266,12 @@ class MideaClimate(MideaEntity, ClimateEntity):
         swing_vertical = swing & 1 > 0
         swing_horizontal = swing & 2 > 0
         self._dm.set_swing(swing_vertical=swing_vertical, swing_horizontal=swing_horizontal)
+
+    def turn_aux_heat_on(self) -> None:
+        self._dm.set_aux_heat(aux_heat=True)
+
+    def turn_aux_heat_off(self) -> None:
+        self._dm.set_aux_heat(aux_heat=False)
 
     def _update_state(self, status):
         result = False
@@ -326,8 +333,13 @@ class MideaClimate(MideaEntity, ClimateEntity):
             result = True
         if "indirect_wind" in status:
             self._indirect_wind = self._dm.get_status("indirect_wind")
+            result = True
         if "prompt_tone" in status:
             self._prompt_tone = self._dm.get_status("prompt_tone")
+            result = True
+        if "aux_heat" in status:
+            self._aux_heat = self._dm.get_status("aux_heat")
+            result = True
         return result
 
     def update_state(self, status):

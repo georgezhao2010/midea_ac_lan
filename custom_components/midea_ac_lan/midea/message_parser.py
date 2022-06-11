@@ -1,3 +1,7 @@
+import logging
+
+_LOGGER = logging.getLogger(__name__)
+
 class XAAMessage:
     def __init__(self, body):
         self._body = body
@@ -50,6 +54,10 @@ class XAAMessage:
     def indirect_wind(self):
         return False
 
+    @property
+    def aux_heat(self):
+        return False
+
     def __str__(self) -> str:
         return self._body.hex()
 
@@ -99,8 +107,12 @@ class X03XC0Message(XAAMessage):
         return (self._body[9] & 0x10) > 0
 
     @property
+    def aux_heat(self):
+        return (self._body[9] & 0x08) > 0
+
+    @property
     def indirect_wind(self):
-        return (self._body[22] & 0x10) > 0
+        return (self._body[14] & 0x10) > 0
 
 
 class X04XA1Message(XAAMessage):
@@ -167,6 +179,10 @@ class X05XA0Message(XAAMessage):
         return (self._body[9] & 0x10) > 0
 
     @property
+    def aux_heat(self):
+        return (self._body[9] & 0x08) > 0
+
+    @property
     def indirect_wind(self):
         return (self._body[14] & 0x10) > 0
 
@@ -191,6 +207,7 @@ class MessageParser:
         self._header = message[:10]
         body = message[10: -3]
         msg_type = self._header[9]
+        _LOGGER.debug(f"Message parsing header:{self._header.hex()}, body:{body.hex()}")
         if (msg_type == 0x02 or msg_type == 0x03) and body[0] == 0xc0:
             self._body = X03XC0Message(body)
         elif msg_type == 0x04 and body[0] == 0xA1:
@@ -251,6 +268,10 @@ class MessageParser:
     @property
     def eco_mode(self):
         return False if self._body is None else self._body.eco_mode
+
+    @property
+    def aux_heat(self):
+        return False if self._body is None else self._body.aux_heat
 
     @property
     def indirect_wind(self):
