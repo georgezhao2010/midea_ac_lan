@@ -30,7 +30,60 @@
 pip3 install msmart
 midea-discover
 ```
-msmart来自于[@mac-zhou](https://github.com/mac-zhou)的[midea-msmart](https://github.com/mac-zhou/midea-msmart)
+***msmart来自于[@mac-zhou](https://github.com/mac-zhou)的[midea-msmart](https://github.com/mac-zhou/midea-msmart)***
 
-## 将空调属性生成开关及传感器实体
-如果选择了此选项，空调的一些属性将额外生成开关及传感器的实体，便于直接配置在HomeAssistant面板上进行操作
+## 将空调属性生成传感器及开关实体实体
+
+如果选择了此选项，空调的以下属性将额外生成传感器及开关的实体，便于直接配置在HomeAssistant面板上进行操作
+- 室外机温度传感器
+- 舒省模式开关
+- 节能模式开关
+- 防直吹开关
+- 水平摆风开关
+- 垂直摆风开关
+- 操作提示音开关
+
+# 功能
+## 生成实体
+### 默认生成实体
+实体ID | 类型 | 备注
+--- | --- | ---
+climate.{DEVICEID}_climate | climate | 恒温器实体
+
+### 额外生成实体
+
+如果选择将空调属性生成开关及传感器实体, 将额外生成以下传感器及开关实体
+
+实体ID | 类型 | 备注
+--- | --- | ---
+sensor.{DEVICEID}_outdoor_temperature | sensor | 室外机温度
+switch.{DEVICEID}_comfort_mode | switch | 舒省模式开关
+switch.{DEVICEID}_eco_mode | switch | 节能模式开关
+switch.{DEVICEID}_indirect_wind | switch | 防直吹开关
+switch.{DEVICEID}_swing_horizontal | switch | 水平摆风开关
+switch.{DEVICEID}_swing_vertical | switch | 垂直摆风开关
+
+## 服务
+除climate原有服务外, 还生成以下服务
+服务 | 作用 |参数 
+--- | --- 
+midea_ac_lan.set_fan_speed | 精细设置风扇风速 | entity_id, fan_speed (1-100数字或者"auto")
+midea_ac_lan.set_comfort_mode | 打开或关闭舒省模式 | entity_id, comfort_mode (ture 或 false)
+midea_ac_lan.set_eco_mode | 打开或关闭节能模式 | entity_id, eco_mode (ture 或 false)
+midea_ac_lan.set_indirect_wind | 打开或关闭防直吹 | entity_id, indirect_wind (ture 或 false)
+midea_ac_lan.set_prompt_tone | 打开或关闭提示音 | entity_id, prompt_tone (ture 或 false)
+
+# 调试
+要打开调试日志输出，在configuration.yaml中做如下配置
+```
+logger:
+  default: warn
+  logs:
+    custom_components.midea_ac_lan: debug
+```
+
+# 特别感谢
+[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
+[@mac-zhou](https://github.com/mac-zhou/midea-msmart)
+
+
