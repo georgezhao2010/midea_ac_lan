@@ -9,7 +9,7 @@ Control your Midea air conditioners via local area network.
 Use HACS and Install as a custom repository, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. Restart HomeAssistant.
 
 # Configuration
-After installation, Search and add component Midea AC LAN in HomeAssistant integrations page,
+After installation, search and add component Midea AC LAN in HomeAssistant integrations page,
 If component can not found any devices, you can specify the IP address to add the device.
 
 ## Config Autolly
