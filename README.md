@@ -57,14 +57,14 @@ If you selected this item, the following attributes would be made as sensor and 
 
 ## Entities
 ### Default entity
-EntityID | calss | Memo
+EntityID | Class | Memo
 --- | --- | ---
 climate.{DEVICEID}_climate | climate | Climate entity
 
 ### Extra entities
 If you selected `Make attributes as sensor and switch entities`, It will make following extra sensor and switch entitys
 
-EntityID | class | Memo
+EntityID | Class | Memo
 --- | --- | ---
 sensor.{DEVICEID}_outdoor_temperature | sensor | Sensor of outdoor temperature
 switch.{DEVICEID}_comfort_mode | switch | Switch of comfort mode
@@ -77,7 +77,7 @@ switch.{DEVICEID}_prompt_tone | switch | Switch of prompt tone
 ## Sevices
 following ectra services will be made
 
-Services | function | params
+Services | Function | Params
 --- | --- |--- 
 midea_ac_lan.set_fan_speed | Set the fan speed | entity_id, fan_speed (range from 1 to 100 or "auto")
 midea_ac_lan.set_comfort_mode | Turn on/off comfort mode | entity_id, comfort_mode (ture/false)
