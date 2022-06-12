@@ -44,6 +44,13 @@ If you selected this item, the following attributes would be made as sensor and 
 - Switch of prompt tone
 
 # Features
+## Climate features
+- Supports target temperature
+- Supports run mode
+- Supports fan mode
+- Support swing mode
+- Support auxiliary heating
+
 ## Entities
 ### Default entity
 EntityID | calss | Memo
