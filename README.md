@@ -6,7 +6,7 @@ English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/mas
 Control your Midea air conditioners via local area network.
 
 # Installtion
-Use HACS and Install as a custom repository, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your /custom_components/midea_ac_lan in Home Assistant manually. Restart HomeAssistant.
+Use HACS and Install as a custom repository, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. Restart HomeAssistant.
 
 # Configuration
 After installation, Search and Add component Midea AC LAN in HomeAssistant integrations page,
@@ -26,11 +26,11 @@ If auto-discover could not work, you could add the device(s) manually with the f
 - Key
 
 If ID/Token/key information was unknown, you could run the following commands in host.
-
 ```
 pip3 install msmart
 midea-discover
 ```
+
 ***msmart from [midea-msmart](https://github.com/mac-zhou/midea-msmart) of @mac-zhou (https://github.com/mac-zhou)***
 
 ## Make attributes as sensor and switch entities
