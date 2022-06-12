@@ -44,6 +44,13 @@ midea-discover
 - 操作提示音开关
 
 # 功能
+## 支持的温控器操作
+- 支持目标温度设定
+- 支持运行模式设定
+- 支持风扇模式设定
+- 支持摆风模式设定
+- 支持电辅热开关
+
 ## 生成实体
 ### 默认生成实体
 实体ID | 类型 | 备注
@@ -61,6 +68,7 @@ switch.{DEVICEID}_eco_mode | switch | 节能模式开关
 switch.{DEVICEID}_indirect_wind | switch | 防直吹开关
 switch.{DEVICEID}_swing_horizontal | switch | 水平摆风开关
 switch.{DEVICEID}_swing_vertical | switch | 垂直摆风开关
+switch.{DEVICEID}_prompt_tone | switch | 提示音开关
 
 ## 服务
 除climate原有服务外, 还生成以下服务
