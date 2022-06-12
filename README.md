@@ -52,8 +52,8 @@ If you selected this item, the following attributes would be made as sensor and 
 - Supports target temperature
 - Supports run mode
 - Supports fan mode
-- Support swing mode
-- Support auxiliary heating
+- Supports swing mode
+- Supports auxiliary heating
 
 ## Entities
 ### Default entity
