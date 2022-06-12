@@ -94,9 +94,4 @@ logger:
     custom_components.midea_ac_lan: debug
 ```
 
-# 特别感谢
-
-[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
-[@mac-zhou](https://github.com/mac-zhou/midea-msmart)
-
 
