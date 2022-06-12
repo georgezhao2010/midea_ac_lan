@@ -15,13 +15,13 @@
                 "title": "Add new device"
             },
             "discover": {
-                "description": "Do you want to lookup for new Midea air conditioner?",
-                "title": "New device Discover "
+                "description": "Do you want to discover new Midea air conditioner?",
+                "title": "New device discover"
             },
             "auto": {
                 "data": {
-                    "device": "Device",
-                    "make_switch": "Set AC attributes to sensor and switch entities"
+                    "device": "Devices",
+                    "make_switch": "Make attributes as sensor and switch entities"
                 },
                 "description": "Choice a device to add",
                 "title": "New device found"
@@ -35,7 +35,7 @@
                     "protocol": "Protocol",
                     "token": "Token",
                     "key": "Key",
-                    "make_switch": "Set AC attributes to sensor and switch entities"
+                    "make_switch": "Make attributes as sensor and switch entities"
                 }
             }
         }
