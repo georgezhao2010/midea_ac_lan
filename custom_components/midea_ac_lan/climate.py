@@ -23,6 +23,7 @@ from homeassistant.components.climate.const import (
 from .const import (
     DOMAIN,
     MANAGERS,
+    DEVICES,
     TEMPERATURE_MIN,
     TEMPERATURE_MAX,
     FAN_VERY_LOW,
@@ -72,7 +73,7 @@ SERVICES = {
         })
     },
 }
-DEVICES = "devices"
+
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):

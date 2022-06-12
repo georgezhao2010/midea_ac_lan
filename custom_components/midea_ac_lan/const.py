@@ -1,6 +1,7 @@
 DOMAIN = "midea_ac_lan"
 COMPONENT = "component"
 MANAGERS = "managers"
+DEVICES = "devices"
 CONF_KEY = "key"
 CONF_MAKE_SWITCH = "make_switch"
 TEMPERATURE_MAX = 30
