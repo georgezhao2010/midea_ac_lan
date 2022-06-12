@@ -5,6 +5,10 @@ English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/mas
 
 Control your Midea air conditioners via local area network.
 
+This library inspired from the repository at [@mac-zhou](https://github.com/mac-zhou/midea-msmart) which provides similar functionality for Midea air conditioners. This component include verbatim or adapted portions of the code from his great projects.
+
+Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
+
 # Installtion
 Use HACS and Install as a custom repository, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. Restart HomeAssistant.
 
@@ -94,3 +98,6 @@ logger:
 # Special acknowledgement
 [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 [@mac-zhou](https://github.com/mac-zhou/midea-msmart)
+
+
+
