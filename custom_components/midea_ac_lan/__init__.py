@@ -1,5 +1,5 @@
 import logging
-from .const import DOMAIN, MANAGERS, CONF_KEY, CONF_MAKE_SWITCH
+from .const import DOMAIN, MANAGERS, DEVICES, CONF_KEY, CONF_MAKE_SWITCH
 from homeassistant.core import HomeAssistant
 from homeassistant.const import CONF_DEVICE_ID, CONF_TOKEN, CONF_HOST, CONF_PORT, CONF_MODEL, CONF_PROTOCOL
 from .state_manager import DeviceManager
@@ -50,6 +50,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry):
         if dm is not None:
             dm.close()
         hass.data[DOMAIN][MANAGERS].pop(device_id)
+        hass.data[DOMAIN][DEVICES].pop(device_id)
     if make_switch:
         for platform in DEVICE_TYPES:
             await hass.config_entries.async_forward_entry_unload(config_entry, platform)
