@@ -77,7 +77,7 @@ switch.{DEVICEID}_prompt_tone | switch | Switch of prompt tone
 ## Sevices
 following ectra services will be made
 
-Services | 作用 | params
+Services | function | params
 --- | --- |--- 
 midea_ac_lan.set_fan_speed | Set the fan speed | entity_id, fan_speed (range from 1 to 100 or "auto")
 midea_ac_lan.set_comfort_mode | Turn on/off comfort mode | entity_id, comfort_mode (ture/false)
