@@ -5,6 +5,10 @@
 
 通过本地局域网控制你的美的空调
 
+本集成技术来源来自 [@mac-zhou](https://github.com/mac-zhou/midea-msmart) 的存储库，他的美的空调库提供了类似的功能。 该组件包括来自他的项目中经过改写的部分代码。
+
+同时感谢[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
+
 # 安装
 使用HACS以自定义存储库方式安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
 
