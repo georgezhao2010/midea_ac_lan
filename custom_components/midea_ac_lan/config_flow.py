@@ -1,5 +1,5 @@
 import logging
-from .const import DOMAIN, CONF_KEY, CONF_MAKE_SWITCH, OPEN_MIDEA_APP_ACCOUNT, OPEN_MIDEA_APP_PASSWORD
+from .const import DOMAIN, CONF_KEY, CONF_MAKE_SWITCH, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD
 from homeassistant import config_entries
 from homeassistant.const import (
     CONF_DEVICE, CONF_TOKEN, CONF_DEVICE_ID,
@@ -64,7 +64,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.debug(f"Now config device {device}")
             if device.get("protocol") == 3:
                 session = async_create_clientsession(self.hass)
-                cloud = MideaCloud(session, OPEN_MIDEA_APP_ACCOUNT, OPEN_MIDEA_APP_PASSWORD, "oc")
+                cloud = MideaCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD, "oc")
                 if await cloud.login():
                     for byte_order_big in [True, False]:
                         token, key = await cloud.get_token(user_input[CONF_DEVICE], byte_order_big=byte_order_big)
