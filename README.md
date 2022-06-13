@@ -16,7 +16,7 @@ Use HACS and Install as a custom repository, or copy all files in `custom_compon
 After installation, search and add component Midea AC LAN in HomeAssistant integrations page,
 If component can not found any devices, you can specify the IP address to add the device.
 
-## Config Autolly
+## Config automatically
 This component could auto-discover and list Midea M-Smart AC devices in network, select one and add it in. You could repeat the above action to add multiple devices.
 
 ## Config manually
