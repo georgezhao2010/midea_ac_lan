@@ -2,20 +2,20 @@
     "config": {
         "error": {
             "no_devices": "No new available devices found on the network",
-            "device_exist": "Device already configured, choice another one",
+            "device_exist": "Device is already configured",
             "cant_get_token": "Can't connect to Midea cloud to take device‘s key-info(Token and Key)",
             "config_incorrect": "The configuration is incorrect, please check"
         },
         "step": {
             "user": {
                 "data": {
-                    "way": "Way of adding devices"
+                    "way": "Adding devices"
                 },
-                "description": "Choose a way to add a new Midea air conditioner",
+                "description": "Choose 'auto' or 'manual' to add a new device",
                 "title": "Add new device"
             },
             "discover": {
-                "description": "Do you want to discover new Midea air conditioner?",
+                "description": "Discover new Midea air conditioner?",
                 "title": "New device discover"
             },
             "auto": {
@@ -23,10 +23,10 @@
                     "device": "Devices",
                     "make_switch": "Make attributes as sensor and switch entities"
                 },
-                "description": "Choice a device to add",
+                "description": "Choose a device to add",
                 "title": "New device found"
             },
-            "manually": {
+            "manual": {
                 "data": {
                     "device_id": "Device ID",
                     "host": "Host",

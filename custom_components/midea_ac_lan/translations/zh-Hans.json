@@ -26,7 +26,7 @@
                 "description": "选择设备并添加",
                 "title": "发现新设备"
             },
-            "manually": {
+            "manual": {
                 "data": {
                     "device_id": "设备ID",
                     "host": "地址",
