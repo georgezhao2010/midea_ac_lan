@@ -5,7 +5,7 @@
 
 通过本地局域网控制你的美的空调
 
-本集成技术来源来自 [@mac-zhou](https://github.com/mac-zhou/midea-msmart) 的存储库，他的美的空调库提供了类似的功能。 该组件包括来自他的项目中经过改写的部分代码。
+本集成技术来源来自 [@mac-zhou](https://github.com/mac-zhou/midea-msmart)，他的美的midea-msmart提供了类似的功能。 该组件包括来自他的项目中经过改写的部分代码。
 
 同时感谢[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 
