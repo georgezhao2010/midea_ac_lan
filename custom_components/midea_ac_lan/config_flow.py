@@ -13,7 +13,7 @@ import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
 
-ADD_WAY = {"auto": "Auto", "manually": "Manually"}
+ADD_WAY = {"auto": "Auto", "manual": "Manual"}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -32,7 +32,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if user_input["action"] == "auto":
                 return await self.async_step_discover()
             else:
-                return await self.async_step_manually()
+                return await self.async_step_manual()
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
@@ -109,7 +109,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors={"base": error} if error else None
         )
 
-    async def async_step_manually(self, user_input=None, error=None):
+    async def async_step_manual(self, user_input=None, error=None):
         if user_input is not None:
             dm = DeviceManager(user_input[CONF_DEVICE_ID], user_input[CONF_HOST], user_input[CONF_PORT],
                                user_input[CONF_TOKEN], user_input[CONF_KEY], user_input[CONF_PROTOCOL],
