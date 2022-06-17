@@ -132,7 +132,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_user(error="config_incorrect")
 
         return self.async_show_form(
-            step_id="manually",
+            step_id="manual",
             data_schema=vol.Schema({
                 vol.Required(CONF_DEVICE_ID): int,
                 vol.Required(CONF_HOST): str,
