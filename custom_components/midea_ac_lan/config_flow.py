@@ -1,9 +1,9 @@
 import logging
-from .const import DOMAIN, CONF_KEY, CONF_MAKE_SWITCH, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD
+from .const import DOMAIN, CONF_KEY, CONF_MAKE_SWITCH, CONF_MODEL, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD
 from homeassistant import config_entries
 from homeassistant.const import (
     CONF_DEVICE, CONF_TOKEN, CONF_DEVICE_ID,
-    CONF_HOST, CONF_PROTOCOL, CONF_PORT, CONF_MODEL
+    CONF_HOST, CONF_PROTOCOL, CONF_PORT
 )
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .midea.discover import discover
