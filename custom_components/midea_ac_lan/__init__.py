@@ -1,7 +1,7 @@
 import logging
-from .const import DOMAIN, MANAGERS, DEVICES, CONF_KEY, CONF_MAKE_SWITCH
+from .const import DOMAIN, MANAGERS, DEVICES, CONF_KEY, CONF_MAKE_SWITCH, CONF_MODEL
 from homeassistant.core import HomeAssistant
-from homeassistant.const import CONF_DEVICE_ID, CONF_TOKEN, CONF_HOST, CONF_PORT, CONF_MODEL, CONF_PROTOCOL
+from homeassistant.const import CONF_DEVICE_ID, CONF_TOKEN, CONF_HOST, CONF_PORT, CONF_PROTOCOL
 from .state_manager import DeviceManager
 from .midea.discover import discover
 
