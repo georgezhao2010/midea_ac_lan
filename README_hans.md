@@ -36,7 +36,7 @@ midea-discover
 ```
 ***msmart来自于[@mac-zhou](https://github.com/mac-zhou)的[midea-msmart](https://github.com/mac-zhou/midea-msmart)***
 
-## 将空调属性生成传感器及开关实体实体
+## 将空调属性生成传感器及开关实体
 
 如果选择了此选项，空调的以下属性将额外生成传感器及开关的实体，便于直接配置在HomeAssistant面板上进行操作或者通过HomeKit让Siri控制这些开关
 - 室外机温度传感器
