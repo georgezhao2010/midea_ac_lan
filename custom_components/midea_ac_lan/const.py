@@ -3,6 +3,7 @@ COMPONENT = "component"
 MANAGERS = "managers"
 DEVICES = "devices"
 CONF_KEY = "key"
+CONF_MODEL = "model"
 CONF_MAKE_SWITCH = "make_switch"
 TEMPERATURE_MAX = 30
 TEMPERATURE_MIN = 17
