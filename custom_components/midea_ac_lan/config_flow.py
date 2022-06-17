@@ -129,7 +129,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_KEY: user_input[CONF_KEY],
                     })
             else:
-                return await self.async_step_user(error="config_incorrect")
+                return await self.async_step_manual(error="config_incorrect")
 
         return self.async_show_form(
             step_id="manual",
