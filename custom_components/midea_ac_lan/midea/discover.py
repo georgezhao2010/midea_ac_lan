@@ -49,33 +49,33 @@ def discover():
             while True:
                 data, addr = sock.recvfrom(512)
                 ip = addr[0]
-                if len(data) >= 104 and (data[:2].hex() == '5a5a' or data[8:10].hex() == '5a5a'):
-                    if data[:2].hex() == '5a5a':
+                if len(data) >= 104 and (data[:2].hex() == "5a5a" or data[8:10].hex() == "5a5a"):
+                    if data[:2].hex() == "5a5a":
                         protocol = 2
-                    elif data[:2].hex() == '8370':
+                    elif data[:2].hex() == "8370":
                         protocol = 3
-                        if data[8:10].hex() == '5a5a':
+                        if data[8:10].hex() == "5a5a":
                             data = data[8:-16]
                     else:
                         continue
-                    device_id = int.from_bytes(bytes.fromhex(data[20:26].hex()), 'little')
+                    device_id = int.from_bytes(bytes.fromhex(data[20:26].hex()), "little")
                     if device_id in found_devices:
                         continue
                     encrypt_data = data[40:-16]
                     reply = security.aes_decrypt(encrypt_data)
                     ssid = reply[41:41 + reply[40]].decode("utf-8")
-                    device_type = ssid.split('_')[1]
+                    device_type = ssid.split("_")[1]
                     port = bytes2port(reply[4:8])
                     model = reply[20:25].decode("utf-8")
 
-                elif data[:6].hex() == '3c3f786d6c20':
+                elif data[:6].hex() == "3c3f786d6c20":
                     protocol = 1
                     root = ET.fromstring(data.decode(
                         encoding="utf-8", errors="replace"))
-                    child = root.find('body/device')
+                    child = root.find("body/device")
                     m = child.attrib
-                    port, sn, device_type = int(m['port']), m['apc_sn'], str(
-                        hex(int(m['apc_type'])))[2:]
+                    port, sn, device_type = int(m["port"]), m["apc_sn"], str(
+                        hex(int(m["apc_type"])))[2:]
                     response = get_device_info(ip, int(port))
                     device_id = get_id_from_response(response)
                     if len(sn) == 32:
@@ -86,7 +86,7 @@ def discover():
                         model = ""
                 else:
                     continue
-                if device_type != 'ac':
+                if device_type != "ac":
                     continue
                 device = {
                     "id": device_id,
@@ -103,12 +103,12 @@ def discover():
 
 
 def get_id_from_response(response):
-    if response[64:-16][:6].hex() == '3c3f786d6c20':
+    if response[64:-16][:6].hex() == "3c3f786d6c20":
         xml = response[64:-16]
         root = ET.fromstring(xml.decode(encoding="utf-8", errors="replace"))
-        child = root.find('smartDevice')
+        child = root.find("smartDevice")
         m = child.attrib
-        return int.from_bytes(bytearray.fromhex(m['devId']), 'little')
+        return int.from_bytes(bytearray.fromhex(m["devId"]), "little")
     else:
         return 0
 
@@ -138,19 +138,18 @@ def get_device_info(device_ip, device_port: int):
         sock.connect(device_address)
 
         # Send data
-        _LOGGER.debug("Sending to {}:{} {}".format(
-            device_ip, device_port, DEVICE_INFO_MSG.hex()))
+        _LOGGER.debug(f"Sending to {device_ip}:{device_port} {DEVICE_INFO_MSG.hex()}")
         sock.sendall(DEVICE_INFO_MSG)
 
         # Received data
         response = sock.recv(512)
     except socket.error:
-        _LOGGER.info("Couldn't connect with Device {}:{}".format(
-            device_ip, device_port))
+        _LOGGER.info(f"Could't connect with Device {device_ip}:{device_port}")
         return bytearray(0)
     except socket.timeout:
-        _LOGGER.info("Connect the Device {}:{} TimeOut for 8s. don't care about a small amount of this. if many maybe not support".format(
-            device_ip, device_port))
+        _LOGGER.info(f"Connect the device {device_ip}:{device_port} timed out for 8s. "
+                     f"don't care about a small amount of this. if many maybe not support."
+                     )
         return bytearray(0)
     finally:
         sock.close()

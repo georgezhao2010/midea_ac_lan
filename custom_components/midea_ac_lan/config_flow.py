@@ -44,6 +44,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_discover(self, user_input=None, error=None):
         if user_input is not None:
             self.devices = discover()
+            _LOGGER.debug(f"Devices found: {self.devices}")
             self.available_device = []
             for device_id, device in self.devices.items():
                 if not self._already_configured(device_id):
@@ -145,30 +146,3 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }),
             errors={"base": error} if error else None
         )
-    """
-    async def async_step_protocol(self, user_input=None, error=None):
-        if user_input is not None:
-            device = self.devices.get(self.cur_device_id)
-            user_input[CONF_DEVICE_ID] = self.cur_device_id
-            user_input[CONF_MAKE_SWITCH] = device[CONF_MAKE_SWITCH]
-            return self.async_create_entry(
-                title=f"{self.cur_device_id}",
-                data={
-                    CONF_DEVICE_ID: self.cur_device_id,
-                    CONF_PROTOCOL: 3,
-                    CONF_HOST: device.get("ip"),
-                    CONF_PORT: device.get("port"),
-                    CONF_MODEL: device.get("model"),
-                    CONF_MAKE_SWITCH: device[CONF_MAKE_SWITCH],
-                    CONF_TOKEN: user_input[CONF_TOKEN],
-                    CONF_KEY: user_input[CONF_KEY],
-                })
-        return self.async_show_form(
-            step_id="protocol",
-            data_schema=vol.Schema({
-                vol.Required(CONF_TOKEN): str,
-                vol.Required(CONF_KEY): str
-            }),
-            errors={"base": error} if error else None
-        )
-    """

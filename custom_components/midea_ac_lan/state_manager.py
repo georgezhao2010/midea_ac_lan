@@ -42,8 +42,8 @@ class DeviceManager(threading.Thread):
         self._on_updates = []
         self._timeout_counter = 0
         self._security = Security()
-        self._token = bytearray.fromhex(token)
-        self._key = bytearray.fromhex(key)
+        self._token = bytearray.fromhex(token) if token else None
+        self._key = bytearray.fromhex(key) if key else None
         self._buffer = b''
         self._device_id = device_id
         self._protocol = protocol
@@ -53,8 +53,8 @@ class DeviceManager(threading.Thread):
         self._updates = []
 
     def set_token_key(self, token, key):
-        self._token = bytearray.fromhex(token)
-        self._key = bytearray.fromhex(key)
+        self._token = bytearray.fromhex(token) if token else None
+        self._key = bytearray.fromhex(key) if key else None
 
     def run(self):
         counter = 0

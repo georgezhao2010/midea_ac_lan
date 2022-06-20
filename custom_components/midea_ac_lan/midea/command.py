@@ -65,6 +65,7 @@ class CommandRequest:
 
 class CommandRequestIndirectWind(CommandRequest):
     def __init__(self):
+        super().__init__()
         self._header = bytearray([
             0xaa,
             # request is 0x20; setting is 0x23
