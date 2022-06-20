@@ -24,6 +24,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
     port = config_entry.data.get(CONF_PORT)
     model = config_entry.data.get(CONF_MODEL)
     protocol = config_entry.data.get(CONF_PROTOCOL)
+    if protocol == 3 and (key is None or key is None):
+        _LOGGER.error("For V3 devices, the key and the token is required.")
+        return False
     dm = DeviceManager(device_id, host, port, token, key, protocol, model)
     dm.open(start_thread=True)
     if DOMAIN not in hass.data:
