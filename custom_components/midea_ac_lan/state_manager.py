@@ -331,9 +331,12 @@ class DeviceManager(threading.Thread):
         cmd.set_power(True)
         self.set_status(cmd)
 
-    def set_target_temperature(self, temperature: float):
+    def set_target_temperature(self, temperature: float, mode=None):
         cmd = self.make_command_set()
         cmd.set_target_temperature(temperature)
+        if mode:
+            cmd.set_mode(mode)
+        cmd.set_power(True)
         self.set_status(cmd)
 
     def set_swing_vertical(self, swing_vertical):
