@@ -86,7 +86,7 @@ def discover():
                         model = ""
                 else:
                     continue
-                if device_type != "ac":
+                if device_type.lower() != "ac":
                     continue
                 device = {
                     "id": device_id,

@@ -1,23 +1,15 @@
 import logging
-import asyncio
 from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import ATTR_ENTITY_ID
-from homeassistant.components.climate import ClimateEntity
 from homeassistant.const import (
+    ATTR_ENTITY_ID,
     CONF_DEVICE_ID,
     TEMP_CELSIUS,
     PRECISION_HALVES,
     PRECISION_TENTHS,
-    ATTR_TEMPERATURE
-)
-from homeassistant.components.climate.const import (
-    FAN_AUTO,
-    FAN_HIGH,
-    FAN_LOW,
-    FAN_MEDIUM,
+    ATTR_TEMPERATURE,
 )
 
 from .const import (
@@ -249,8 +241,17 @@ class MideaClimate(MideaEntity, ClimateEntity):
         self._dm.set_power(power=False)
 
     def set_temperature(self, **kwargs) -> None:
-        temperature = float(kwargs[ATTR_TEMPERATURE])
-        self._dm.set_target_temperature(temperature)
+        if ATTR_TEMPERATURE not in kwargs:
+            return
+        temperature = float(kwargs.get(ATTR_TEMPERATURE))
+        hvac_mode = kwargs.get(ATTR_HVAC_MODE)
+        _LOGGER.debug(f"set HVAC mode = {hvac_mode} in set_temperature")
+        try:
+            mode = self._modes.index(hvac_mode) if hvac_mode else None
+            self._dm.set_target_temperature(
+                temperature=temperature, mode=mode)
+        except ValueError as e:
+            _LOGGER.error(f"Unknown hvac_mode {hvac_mode} in set_temperature")
 
     def set_fan_mode(self, fan_mode: str) -> None:
         fan_speed = self._fan_speeds.get(fan_mode)
@@ -260,7 +261,10 @@ class MideaClimate(MideaEntity, ClimateEntity):
         if hvac_mode == HVAC_MODE_OFF:
             self.turn_off()
         else:
-            self._dm.set_mode(mode=self._modes.index(hvac_mode))
+            try:
+                self._dm.set_mode(mode=self._modes.index(hvac_mode))
+            except ValueError as e:
+                _LOGGER.error(f"Unknown hvac_mode {hvac_mode} in set_hvac_mode")
 
     def set_swing_mode(self, swing_mode: str) -> None:
         swing = self._swing_modes.index(swing_mode)
