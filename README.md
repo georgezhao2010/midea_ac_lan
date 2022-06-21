@@ -13,7 +13,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported Devices
 - Midea Air Conditioners (V2 or V3), type "AC"
-- Midea Air Conditioner Control Panels, type "CC"
+- ~Midea Air Conditioner Control Panels, type "CC"~
 
 # Installtion
 Use HACS and Install as a custom repository, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. Restart HomeAssistant.
