@@ -86,16 +86,15 @@ def discover():
                         model = ""
                 else:
                     continue
-                if device_type.lower() != "ac":
-                    continue
-                device = {
-                    "id": device_id,
-                    "ip": ip,
-                    "port": port,
-                    "model": model,
-                    "protocol": protocol
-                }
-                found_devices[device_id] = device
+                if device_type.lower() == "ac" or device_type.lower() == "cc":
+                    device = {
+                        "id": device_id,
+                        "ip": ip,
+                        "port": port,
+                        "model": model,
+                        "protocol": protocol
+                    }
+                    found_devices[device_id] = device
 
         except socket.timeout:
             continue
