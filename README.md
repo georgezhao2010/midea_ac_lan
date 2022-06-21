@@ -5,6 +5,8 @@ English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/mas
 
 Control your Midea air conditioners via local area network.
 
+No extra python libs required.
+
 This component inspired from the repository at [@mac-zhou](https://github.com/mac-zhou/midea-msmart) which provides similar functionality for Midea air conditioners. This component include verbatim or adapted portions of the code from his great projects.
 
 Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
