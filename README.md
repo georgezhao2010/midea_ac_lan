@@ -45,6 +45,7 @@ midea-discover
 
 ## Make attributes as sensor and switch entities
 If you selected this item, the following attributes would be made as sensor and switch entities and be displayed on HomeAssistant's frontend UI and easy use for Siri via HomeKit component.
+- Sensor of indoor temperature 
 - Sensor of outdoor temperature 
 - Switch of comfort mode
 - Switch of ECO mode
@@ -72,6 +73,7 @@ If you selected `Make attributes as sensor and switch entities`, It will make fo
 
 EntityID | Class | Memo
 --- | --- | ---
+sensor.{DEVICEID}_indoor_temperature | sensor | Sensor of indoor temperature
 sensor.{DEVICEID}_outdoor_temperature | sensor | Sensor of outdoor temperature
 switch.{DEVICEID}_comfort_mode | switch | Switch of comfort mode
 switch.{DEVICEID}_eco_mode | switch | Switch of ECO mode
