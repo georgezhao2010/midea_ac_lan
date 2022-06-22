@@ -1,16 +1,17 @@
 import logging
 import datetime
+import copy
 from .crc8 import calculate
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class CommandRequest:
-    def __init__(self):
+    def __init__(self, device_type=0xac):
         self._header = bytearray([
             0xaa,
-            # request is 0x20; setting is 0x23
-            0x00,
+            # length
+            0x20,
             # device type
             0xac,
             0x00, 0x00, 0x00, 0x00, 0x00,
@@ -37,44 +38,45 @@ class CommandRequest:
             # when set, this is swing_mode
             0x02,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+            0x00, 0x00, 0x00, 0x00, 0x00
         ])
-        serial = int(datetime.datetime.now().microsecond % 1000 / 4)
-        if serial == 0 or serial == 254:
-            serial = 1
-        self._body[-1] = serial
+        self._header[2] = device_type
 
     @staticmethod
     def checksum(data):
         return (~ sum(data) + 1) & 0xff
 
     def finalize(self):
-        self._header[1] = len(self._body) + 11
-        output = {
-            "header": self._header.hex(),
-            "body": self._body.hex(),
-            "type": int(self._header[9] << 8) + int(self._body[0])
-        }
-        _LOGGER.debug(f"Send message: {str(output)}")
-        data = self._header
+        self._header[1] = len(self._body) + 10 + 1
+        serial = int(datetime.datetime.now().microsecond % 1000 / 4)
+        if serial == 0 or serial == 254:
+            serial = 1
+        self._body[-1] = serial
+        data = copy.deepcopy(self._header)
         data.extend(self._body)
         data.append(calculate(self._body))
         data.append(self.checksum(data[1:]))
+        _LOGGER.debug(f"Finalized command: {data.hex()}")
         return data
 
+    def __str__(self) -> str:
+        output = {
+            "header": self._header.hex(),
+            "body": self._body.hex(),
+            "type": "%#x" % (int(self._header[9] << 8) + int(self._body[0]))
+        }
+        return str(output)
 
-class CommandRequestIndirectWind(CommandRequest):
-    def __init__(self):
-        super().__init__()
-        self._header = bytearray([
-            0xaa,
-            # request is 0x20; setting is 0x23
-            0x23,
-            # device type
-            0xac,
-            0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x02
-        ])
+
+class CommandSet(CommandRequest):
+    def __init__(self, device_type=0xac):
+        super().__init__(device_type=device_type)
+
+
+class CommandNewProtocolSet(CommandSet):
+    def __init__(self, prompt_tone=True, device_type=0xac):
+        super().__init__(device_type=device_type)
+        self._header[9] = 0x02
         self._body = bytearray([
             0xB0,
             0x02,
@@ -85,40 +87,19 @@ class CommandRequestIndirectWind(CommandRequest):
             0x01,  #0x00关闭提示音
             0x00
         ])
-
-    def finalize(self):
-        self._header[1] = len(self._body) + 11
-        output = {
-            "header": self._header.hex(),
-            "body": self._body.hex(),
-            "type": int(self._header[9] << 8) + int(self._body[0])
-        }
-        _LOGGER.debug(f"Send message: {str(output)}")
-        data = self._header
-        data.extend(self._body)
-        data.append(calculate(self._body))
-        data.append(self.checksum(data[1:]))
-        return data
-
-    def set_prompt_tone(self, prompt_tone):
-        self._body[9] = 0x01 if prompt_tone else 0x00
+        self._body[9] = 0x01 if prompt_tone else 0
 
     def set_indirect_wind(self, indirect_wind):
         self._body[5] = 0x02 if indirect_wind else 0x01
 
 
-class CommandSet(CommandRequest):
-    def __init__(self):
-        super().__init__()
-        self._header[1] = 0x23
+class CommandGeneralSet(CommandSet):
+    def __init__(self, prompt_tone=True, device_type=0xac):
+        super().__init__(device_type=device_type)
         self._header[9] = 0x02
         self._body[0] = 0x40
-        self._body[4] = 0x02
-        self._body[6] = 0x02
-
-    def set_prompt_tone(self, prompt_tone: bool):
-        self._body[1] &= (~0x40)  # Clear the audible bits
-        self._body[1] |= 0x40 if prompt_tone else 0
+        self._body[1] = 0xC2 if prompt_tone else 0x80
+        self._body.extend(bytearray([0x00, 0x00, 0x00]))
 
     def set_power(self, power: bool):
         self._body[1] &= (~0x01)  # Clear the power bit
@@ -159,14 +140,6 @@ class CommandSet(CommandRequest):
     def set_aux_heat(self, aux_heat):
         self._body[9] &= (~0x08)
         self._body[9] |= 0x08 if aux_heat else 0
-
-    def set_indirect_wind(self, indirect_wind):
-        self._body[22] &= (~0x10)
-        self._body[22] |= 0x10 if indirect_wind else 0
-
-    def set_fahrenheit(self, fahrenheit: bool):
-        self._body[10] &= (~0x04)
-        self._body[10] |= 0x04 if fahrenheit else 0
 
 
 

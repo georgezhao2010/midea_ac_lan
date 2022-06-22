@@ -3,7 +3,7 @@ from .const import DOMAIN, CONF_KEY, CONF_MAKE_SWITCH, CONF_MODEL, MIDEA_DEFAULT
 from homeassistant import config_entries
 from homeassistant.const import (
     CONF_DEVICE, CONF_TOKEN, CONF_DEVICE_ID,
-    CONF_HOST, CONF_PROTOCOL, CONF_PORT
+    CONF_HOST, CONF_PROTOCOL, CONF_PORT, CONF_TYPE
 )
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .midea.discover import discover

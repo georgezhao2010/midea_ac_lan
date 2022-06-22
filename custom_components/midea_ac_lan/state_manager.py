@@ -4,7 +4,7 @@ import threading
 import socket
 from .midea.security import Security, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .midea.message_parser import MessageParser
-from .midea.command import CommandRequest, CommandSet, CommandRequestIndirectWind
+from .midea.command import CommandRequest, CommandNewProtocolSet, CommandGeneralSet
 from .midea.packet_builder import PacketBuilder
 
 _LOGGER = logging.getLogger(__name__)
@@ -80,7 +80,7 @@ class DeviceManager(threading.Thread):
                     if msg_len == 0:
                         raise socket.error
                     self._timeout_counter = 0
-                    #Message process
+                    # Message process
                     self.process_message(msg)
 
                 except socket.timeout:
@@ -90,15 +90,15 @@ class DeviceManager(threading.Thread):
                         self._socket.close()
                         self._socket = None
                         break
-                    #Send Heartbeat
+                    # Send Heartbeat
                     self.send_heartbeat()
                     if counter >= 5:
                         self.refresh_status()
                         counter = 0
                     else:
                         counter = counter + 1
-                except socket.error:
-                    _LOGGER.debug(f"Except socket.error {socket.error} raised in socket.recv()")
+                except socket.error as e:
+                    _LOGGER.debug(f"Except socket.error {e} raised in socket.recv()")
                     self._socket.close()
                     self._socket = None
                     break
@@ -134,7 +134,11 @@ class DeviceManager(threading.Thread):
             if len(message) > 40 + 16 and message[3] != 0x10:
                 message = self._security.aes_decrypt(message[40:-16])
                 parser = MessageParser(message)
-                self.parse_message(parser)
+                updates = self.parse_message(parser)
+                if updates:
+                    _LOGGER.debug(f"Device status update to: {updates}")
+                    for update in self._updates:
+                        update(updates)
 
     def parse_message(self, parser: MessageParser):
         updates = {}
@@ -214,10 +218,8 @@ class DeviceManager(threading.Thread):
             pass
         else:
             _LOGGER.debug(f"Unknown message {parser}")
-        for update in self._updates:
-            update(updates)
         _LOGGER.debug(f"Received message: {parser}")
-        _LOGGER.debug(updates)
+        return updates
 
     def open(self, start_thread):
         result = False
@@ -237,8 +239,8 @@ class DeviceManager(threading.Thread):
             _LOGGER.debug(f"Socket connect timed out")
             self._socket.close()
             self._socket = None
-        except socket.error:
-            _LOGGER.debug(f"Socket connect error {socket.error}")
+        except socket.error as e:
+            _LOGGER.debug(f"Socket connect error {e}")
             self._socket.close()
             self._socket = None
         except AuthException as e:
@@ -266,8 +268,10 @@ class DeviceManager(threading.Thread):
         self._security.tcp_key(response, self._key)
 
     def refresh_status(self, wait_response=False):
-        cmd = CommandRequest().finalize()
-        msg = PacketBuilder(self._device_id, cmd).finalize()
+        cmd = CommandRequest()
+        data = cmd.finalize()
+        _LOGGER.debug(f"Send message: {cmd}")
+        msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
         if wait_response:
             msg = self._socket.recv(512)
@@ -295,8 +299,7 @@ class DeviceManager(threading.Thread):
         self.send_message(msg)
 
     def make_command_set(self):
-        cmd = CommandSet()
-        cmd.set_prompt_tone(self._status.prompt_tone)
+        cmd = CommandGeneralSet(prompt_tone=self._status.prompt_tone)
         cmd.set_power(self._status.power)
         cmd.set_mode(self._status.mode)
         cmd.set_fan_speed(self._status.fan_speed)
@@ -306,14 +309,9 @@ class DeviceManager(threading.Thread):
         cmd.set_eco_mode(self._status.eco_mode)
         return cmd
 
-    def make_indirectwind_set(self):
-        cmd = CommandRequestIndirectWind()
-        cmd.set_prompt_tone(self._status.prompt_tone)
-        cmd.set_indirect_wind(self._status.indirect_wind)
-        return cmd
-
     def set_status(self, cmd: CommandRequest):
         data = cmd.finalize()
+        _LOGGER.debug(f"Send message: {cmd}")
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
@@ -377,7 +375,7 @@ class DeviceManager(threading.Thread):
         self.set_status(cmd)
 
     def set_indirect_wind(self, indirect_wind):
-        cmd = self.make_indirectwind_set()
+        cmd = CommandNewProtocolSet(prompt_tone=self._status.prompt_tone)
         cmd.set_indirect_wind(indirect_wind)
         self.set_status(cmd)
 
