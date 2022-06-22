@@ -2,6 +2,7 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class XAAMessage:
     def __init__(self, body):
         self._body = body
@@ -202,12 +203,16 @@ class X02XB0Message(XAAMessage):
         return (self._body[6] & 0x2) == 0x2
 
 
+class UnknownMessage(XAAMessage):
+    pass
+
+
 class MessageParser:
     def __init__(self, message):
+        _LOGGER.debug(f"Parsing command: {message.hex()}")
         self._header = message[:10]
-        body = message[10: -3]
+        body = message[10: -2]
         msg_type = self._header[9]
-        _LOGGER.debug(f"Message parsing header:{self._header.hex()}, body:{body.hex()}")
         if (msg_type == 0x02 or msg_type == 0x03) and body[0] == 0xc0:
             self._body = X03XC0Message(body)
         elif msg_type == 0x04 and body[0] == 0xA1:
@@ -219,68 +224,64 @@ class MessageParser:
         elif msg_type == 0x02 and body[0] == 0xb0:
             self._body = X02XB0Message(body)
         else:
-            self._body = None
+            self._body = UnknownMessage(body)
 
     @property
     def msg_type(self):
-        return 0 if self._body is None else int(self._header[9] << 8) + int(self._body.body[0])
-
-    @property
-    def prompt_tone(self):
-        return False if self._body is None else self._body.prompt_tone
+        return int(self._header[9] << 8) + int(self._body.body[0])
 
     @property
     def power(self):
-        return False if self._body is None else self._body.power
+        return self._body.power
 
     @property
     def mode(self):
-        return 0 if self._body is None else self._body.mode
+        return self._body.mode
 
     @property
     def fan_speed(self):
-        return 0 if self._body is None else self._body.fan_speed
+        return self._body.fan_speed
 
     @property
     def swing_vertical(self):
-        return False if self._body is None else self._body.swing_vertical
+        return self._body.swing_vertical
 
     @property
     def swing_horizontal(self):
-        return False if self._body is None else self._body.swing_horizontal
+        return self._body.swing_horizontal
 
     @property
     def target_temperature(self):
-        return 0.0 if self._body is None else self._body.target_temperature
+        return self._body.target_temperature
 
     @property
     def indoor_temperature(self):
-        return 0.0 if self._body is None else self._body.indoor_temperature
+        return self._body.indoor_temperature
 
     @property
     def outdoor_temperature(self):
-        return 0.0 if self._body is None else self._body.outdoor_temperature
+        return self._body.outdoor_temperature
 
     @property
     def comfort_mode(self):
-        return False if self._body is None else self._body.comfort_mode
+        return self._body.comfort_mode
 
     @property
     def eco_mode(self):
-        return False if self._body is None else self._body.eco_mode
+        return self._body.eco_mode
 
     @property
     def aux_heat(self):
-        return False if self._body is None else self._body.aux_heat
+        return self._body.aux_heat
 
     @property
     def indirect_wind(self):
-        return False if self._body is None else self._body.indirect_wind
+        return self._body.indirect_wind
 
     def __str__(self) -> str:
         output = {
             "header": self._header.hex(),
-            "body": f"{self._body}",
-            "type": self.msg_type
+            "body": str(self._body),
+            "type": "%#x" % self.msg_type
         }
         return str(output)

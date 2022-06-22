@@ -86,12 +86,13 @@ def discover():
                         model = ""
                 else:
                     continue
-                if device_type.lower() == "ac" or device_type.lower() == "cc":
+                if device_type.lower() == "ac":  # or device_type.lower() == "cc":  # CC devices is not really supports
                     device = {
                         "id": device_id,
                         "ip": ip,
                         "port": port,
                         "model": model,
+                        "type": device_type.lower(),
                         "protocol": protocol
                     }
                     found_devices[device_id] = device
