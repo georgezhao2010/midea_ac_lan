@@ -54,13 +54,6 @@ MIDEA_ENTITIES = {
         "switch": "set_prompt_tone",
         "should_poll": True
     },
-    "indoor_temperature": {
-        "type": "sensor",
-        "name": "Temperature Indoor",
-        "unit": TEMP_CELSIUS,
-        "device_class": DEVICE_CLASS_TEMPERATURE,
-        "should_poll": False
-    },
     "outdoor_temperature": {
         "type": "sensor",
         "name": "Temperature Outdoor",
