@@ -13,7 +13,7 @@
 
 # 支持设备
 - 美的空调 (V2 or V3), type "AC"
-- 美的空调遥控面板, type "CC"
+- ~美的空调遥控面板, type "CC"~
 
 # 安装
 使用HACS以自定义存储库方式安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
@@ -45,6 +45,7 @@ midea-discover
 ## 将空调属性生成传感器及开关实体
 
 如果选择了此选项，空调的以下属性将额外生成传感器及开关的实体，便于直接配置在HomeAssistant面板上进行操作或者通过HomeKit让Siri控制这些开关
+- 室内温度传感器
 - 室外机温度传感器
 - 舒省模式开关
 - 节能模式开关
@@ -72,6 +73,7 @@ climate.{DEVICEID}_climate | climate | 恒温器实体
 
 实体ID | 类型 | 备注
 --- | --- | ---
+sensor.{DEVICEID}_indoor_temperature | sensor | 室内温度
 sensor.{DEVICEID}_outdoor_temperature | sensor | 室外机温度
 switch.{DEVICEID}_comfort_mode | switch | 舒省模式开关
 switch.{DEVICEID}_eco_mode | switch | 节能模式开关
