@@ -258,13 +258,10 @@ class MideaClimate(MideaEntity, ClimateEntity):
         self._dm.set_fan_speed(fan_speed=fan_speed)
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
-        if hvac_mode == HVAC_MODE_OFF:
-            self.turn_off()
-        else:
-            try:
-                self._dm.set_mode(mode=self._modes.index(hvac_mode))
-            except ValueError as e:
-                _LOGGER.error(f"Unknown hvac_mode {hvac_mode} in set_hvac_mode")
+        try:
+            self._dm.set_mode(mode=self._modes.index(hvac_mode))
+        except ValueError as e:
+            _LOGGER.error(f"Unknown hvac_mode {hvac_mode} in set_hvac_mode")
 
     def set_swing_mode(self, swing_mode: str) -> None:
         swing = self._swing_modes.index(swing_mode)
