@@ -57,20 +57,21 @@ class DeviceManager(threading.Thread):
         self._key = bytearray.fromhex(key) if key else None
 
     def run(self):
-        counter = 0
+
         while self._is_run:
             while self._socket is None:
-                _LOGGER.debug(f"Ready to re-open device")
+                _LOGGER.debug(f"Device [{self._device_id}] ready to re-open device")
                 if self.open(False) is False:
                     time.sleep(10)
                 if not self._is_run:
-                    _LOGGER.debug(f"Thread existing")
+                    _LOGGER.debug(f"Device [{self._device_id}] thread existing")
                     if self._socket is not None:
                         self._socket.close()
                         self._socket = None
                     break
-            self._timeout_counter = 0
-            _LOGGER.debug(f"Ready to receive loop")
+            counter = 0
+            timeout_counter = 0
+            _LOGGER.debug(f"Device [{self._device_id}] ready to receive loop")
             while self._is_run:
                 try:
                     msg = self._socket.recv(512)
@@ -79,18 +80,20 @@ class DeviceManager(threading.Thread):
                     msg_len = len(msg)
                     if msg_len == 0:
                         raise socket.error
-                    self._timeout_counter = 0
+                    timeout_counter = 0
                     # Message process
-                    self.process_message(msg)
-
-                except socket.timeout:
-                    self._timeout_counter = self._timeout_counter + 1
-                    if self._timeout_counter >= 10:
-                        _LOGGER.debug(f"Heartbeat timeout detected, reconnecting")
+                    if not self.process_message(msg):
+                        _LOGGER.debug(f"Device [{self._device_id}] b'ERROR' message received, reconnecting")
                         self._socket.close()
                         self._socket = None
                         break
-                    # Send Heartbeat
+                except socket.timeout:
+                    timeout_counter = timeout_counter + 1
+                    if timeout_counter >= 10:
+                        _LOGGER.debug(f"Device [{self._device_id}] heartbeat timed out detected, reconnecting")
+                        self._socket.close()
+                        self._socket = None
+                        break
                     self.send_heartbeat()
                     if counter >= 5:
                         self.refresh_status()
@@ -98,17 +101,18 @@ class DeviceManager(threading.Thread):
                     else:
                         counter = counter + 1
                 except socket.error as e:
-                    _LOGGER.debug(f"Except socket.error {e} raised in socket.recv()")
+                    _LOGGER.debug(f"Device [{self._device_id}] except socket.error {e} raised in socket.recv()")
                     self._socket.close()
                     self._socket = None
                     break
                 except Exception as e:
-                    _LOGGER.debug(f"Except {e} raised")
-                    self._socket.close()
+                    _LOGGER.debug(f"Device [{self._device_id}] except {e} raised")
+                    if self._socket:
+                        self._socket.close()
                     self._socket = None
                     break
-            _LOGGER.debug(f"Receive loop existed")
-        _LOGGER.debug(f"Thread existed")
+            _LOGGER.debug(f"Device [{self._device_id}] receive loop existed")
+        _LOGGER.debug(f"Device [{self._device_id}] thread existed")
 
     def send_message(self, data):
         if self._protocol == 3:
@@ -130,15 +134,19 @@ class DeviceManager(threading.Thread):
         else:
             messages = [msg]
         for message in messages:
-            # If it's not heartbeat
             if len(message) > 40 + 16 and message[3] != 0x10:
                 message = self._security.aes_decrypt(message[40:-16])
                 parser = MessageParser(message)
                 updates = self.parse_message(parser)
                 if updates:
-                    _LOGGER.debug(f"Device status update to: {updates}")
+                    _LOGGER.debug(f"Device [{self._device_id}] status update to: {updates}")
                     for update in self._updates:
                         update(updates)
+            else:
+                if message == b'ERROR':
+                    return False
+                _LOGGER.debug(f"Device [{self._device_id}] heartbeat detected")
+        return True
 
     def parse_message(self, parser: MessageParser):
         updates = {}
@@ -217,36 +225,36 @@ class DeviceManager(threading.Thread):
             updates = {"indirect_wind":  self._status.indirect_wind}
             pass
         else:
-            _LOGGER.debug(f"Unknown message {parser}")
-        _LOGGER.debug(f"Received message: {parser}")
+            _LOGGER.debug(f"Received unknown message from device [{self._device_id}]: {parser}")
+        _LOGGER.debug(f"Received message from device [{self._device_id}]: {parser}")
         return updates
 
     def open(self, start_thread):
         result = False
-        _LOGGER.debug(f"Try to connect to device {self._device_id}")
+        _LOGGER.debug(f"Try to connect to device [{self._device_id}]")
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.settimeout(10)
             self._socket.connect((self._host, self._port))
-            _LOGGER.debug(f"Device {self._device_id} connected at socket {self._socket}")
+            _LOGGER.debug(f"Device [{self._device_id}] connected at socket {self._socket}")
             #auth
             if self._protocol == 3:
                 self.authenticate()
-            _LOGGER.debug(f"Authenticated")
+            _LOGGER.debug(f"Device [{self._device_id}] authenticated")
             self.refresh_status(wait_response=True)
             result = True
         except socket.timeout:
-            _LOGGER.debug(f"Socket connect timed out")
+            _LOGGER.debug(f"Device [{self._device_id}] socket connect timed out")
             self._socket.close()
             self._socket = None
         except socket.error as e:
-            _LOGGER.debug(f"Socket connect error {e}")
+            _LOGGER.debug(f"Device [{self._device_id}] socket connect error {e}")
             self._socket.close()
             self._socket = None
         except AuthException as e:
-            _LOGGER.error(f"Connection authException error {e}")
+            _LOGGER.error(f"Device [{self._device_id}] connection authException error {e}")
         except Exception as e:
-            _LOGGER.error(f"Socket connect error {e}")
+            _LOGGER.error(f"Device [{self._device_id}] socket connect error {e}")
         if start_thread:
             self._is_run = True
             threading.Thread.start(self)
@@ -270,7 +278,7 @@ class DeviceManager(threading.Thread):
     def refresh_status(self, wait_response=False):
         cmd = CommandRequest()
         data = cmd.finalize()
-        _LOGGER.debug(f"Send message: {cmd}")
+        _LOGGER.debug(f"Send message to device [{self._device_id}]: {cmd}")
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
         if wait_response:
@@ -311,7 +319,7 @@ class DeviceManager(threading.Thread):
 
     def set_status(self, cmd: CommandRequest):
         data = cmd.finalize()
-        _LOGGER.debug(f"Send message: {cmd}")
+        _LOGGER.debug(f"Send message to device [{self._device_id}]: {cmd}")
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
