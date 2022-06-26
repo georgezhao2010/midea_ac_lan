@@ -1,5 +1,4 @@
 {
     "name": "Midea AC LAN",
-    "domains": ["climate", "switch", "sensor"],
     "render_readme": true
 }
