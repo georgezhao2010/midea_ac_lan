@@ -42,7 +42,7 @@ pip3 install msmart
 midea-discover
 ```
 
-***msmart from [midea-msmart](https://github.com/mac-zhou/midea-msmart) of @mac-zhou (https://github.com/mac-zhou)***
+***msmart from [midea-msmart](https://github.com/mac-zhou/midea-msmart) of [@mac-zhou](https://github.com/mac-zhou)***
 
 ## Make attributes as sensor and switch entities
 If you selected this item, the following attributes would be made as sensor and switch entities and be displayed on HomeAssistant's frontend UI and easy use for Siri via HomeKit component.
