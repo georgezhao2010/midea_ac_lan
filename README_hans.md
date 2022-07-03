@@ -1,5 +1,5 @@
 # Midea AC LAN
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
 [English](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README.md) | 简体中文
@@ -17,7 +17,7 @@
 - ~美的空调遥控面板, type "CC"~
 
 # 安装
-使用HACS以自定义存储库方式安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
+在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
 
 # 配置
 安装过后，到Home Assistant的集成界面搜索添加集成Midea AC LAN。
