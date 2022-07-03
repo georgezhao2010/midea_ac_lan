@@ -19,6 +19,7 @@ ADD_WAY = {"auto": "Auto", "manual": "Manual"}
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     available_device = []
     devices = {}
+    found_device = {}
     cur_device_id = None
 
     def _already_configured(self, device_id):
@@ -32,6 +33,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if user_input["action"] == "auto":
                 return await self.async_step_discover()
             else:
+                self.found_device = {}
                 return await self.async_step_manual()
         return self.async_show_form(
             step_id="user",
@@ -75,37 +77,32 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             _LOGGER.debug(f"Successful to take token and key, token = {token}, key = {key}, "
                                           f"byte_order_big = {byte_order_big}")
                             if dm.open(False):
-                                return self.async_create_entry(
-                                    title=f"{device_id}",
-                                    data={
-                                        CONF_DEVICE_ID: device_id,
-                                        CONF_PROTOCOL: 3,
-                                        CONF_HOST: device.get("ip"),
-                                        CONF_PORT: device.get("port"),
-                                        CONF_MODEL: device.get("model"),
-                                        CONF_MAKE_SWITCH: user_input[CONF_MAKE_SWITCH],
-                                        CONF_TOKEN: token,
-                                        CONF_KEY: key,
-                                    })
-
+                                self.found_device = {
+                                    CONF_DEVICE_ID: device_id,
+                                    CONF_PROTOCOL: 3,
+                                    CONF_HOST: device.get("ip"),
+                                    CONF_PORT: device.get("port"),
+                                    CONF_MODEL: device.get("model"),
+                                    CONF_TOKEN: token,
+                                    CONF_KEY: key,
+                                }
+                                return await self.async_step_manual()
+                    return await self.async_step_auto(error="connect_error")
                 return await self.async_step_auto(error="cant_get_token")
             else:
-                return self.async_create_entry(
-                    title=f"{device_id}",
-                    data={
-                        CONF_DEVICE_ID: device_id,
-                        CONF_PROTOCOL: 2,
-                        CONF_HOST: device.get("ip"),
-                        CONF_PORT: device.get("port"),
-                        CONF_MODEL: device.get("model"),
-                        CONF_MAKE_SWITCH: user_input[CONF_MAKE_SWITCH]
-                    })
+                self.found_device = {
+                    CONF_DEVICE_ID: device_id,
+                    CONF_PROTOCOL: 3,
+                    CONF_HOST: device.get("ip"),
+                    CONF_PORT: device.get("port"),
+                    CONF_MODEL: device.get("model"),
+                }
+                return await self.async_step_manual()
         return self.async_show_form(
             step_id="auto",
             data_schema=vol.Schema({
                 vol.Required(CONF_DEVICE, default=sorted(self.available_device)[0]):
                     vol.In(self.available_device),
-                vol.Required(CONF_MAKE_SWITCH, default=True): bool,
             }),
             errors={"base": error} if error else None
         )
@@ -135,13 +132,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="manual",
             data_schema=vol.Schema({
-                vol.Required(CONF_DEVICE_ID): int,
-                vol.Required(CONF_HOST): str,
-                vol.Required(CONF_PORT, default=6444): int,
-                vol.Required(CONF_PROTOCOL, default=3): vol.In({2: "V2", 3: "V3"}),
-                vol.Required(CONF_MODEL, default="Unknown"): str,
-                vol.Optional(CONF_TOKEN): str,
-                vol.Optional(CONF_KEY): str,
+                vol.Required(CONF_DEVICE_ID, default=self.found_device.get(CONF_DEVICE_ID)): int,
+                vol.Required(CONF_HOST, default=self.found_device.get(CONF_HOST)): str,
+                vol.Required(CONF_PORT,
+                             default=self.found_device.get(CONF_PORT) if self.found_device.get(CONF_PORT) else 6444): int,
+                vol.Required(CONF_PROTOCOL,
+                             default=self.found_device.get(CONF_PROTOCOL) if self.found_device.get(CONF_PROTOCOL) else 3): vol.In({2: "V2", 3: "V3"}),
+                vol.Required(CONF_MODEL,
+                             default=self.found_device.get(CONF_MODEL) if self.found_device.get(CONF_MODEL) else "Unknown"): str,
+                vol.Optional(CONF_TOKEN, default=self.found_device.get(CONF_TOKEN)): str,
+                vol.Optional(CONF_KEY, default=self.found_device.get(CONF_KEY)): str,
                 vol.Optional(CONF_MAKE_SWITCH, default=True): bool,
             }),
             errors={"base": error} if error else None
