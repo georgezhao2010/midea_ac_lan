@@ -75,6 +75,7 @@ class DeviceManager(threading.Thread):
             while self._is_run:
                 try:
                     msg = self._socket.recv(512)
+                    _LOGGER.debug(f"Received original message as hex {msg.hex()}")
                     if not self._is_run:
                         break
                     msg_len = len(msg)
@@ -134,7 +135,7 @@ class DeviceManager(threading.Thread):
         else:
             messages = [msg]
         for message in messages:
-            if len(message) > 40 + 16 and message[3] != 0x10:
+            if len(message) > 40 + 16 + 16 and message[3] != 0x10 and message[3] != 0x00:  # Heartbeat of V3
                 message = self._security.aes_decrypt(message[40:-16])
                 parser = MessageParser(message)
                 updates = self.parse_message(parser)
@@ -283,6 +284,7 @@ class DeviceManager(threading.Thread):
         self.send_message(msg)
         if wait_response:
             msg = self._socket.recv(512)
+            _LOGGER.debug(f"Received original message as hex {msg.hex()}")
             msg_len = len(msg)
             if msg_len == 0:
                 raise socket.error

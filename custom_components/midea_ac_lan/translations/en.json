@@ -4,7 +4,8 @@
             "no_devices": "No new available devices found on the network",
             "device_exist": "Device is already configured",
             "cant_get_token": "Can't connect to Midea cloud to take device‘s key-info(Token and Key)",
-            "config_incorrect": "The configuration is incorrect, please check"
+            "config_incorrect": "The configuration is incorrect, please check",
+            "connect_error": "Can't connect to AC device"
         },
         "step": {
             "user": {
@@ -20,8 +21,7 @@
             },
             "auto": {
                 "data": {
-                    "device": "Devices",
-                    "make_switch": "Make attributes as sensor and switch entities"
+                    "device": "Devices"
                 },
                 "description": "Choose a device to add",
                 "title": "New device found"
@@ -36,7 +36,9 @@
                     "token": "Token",
                     "key": "Key",
                     "make_switch": "Make attributes as sensor and switch entities"
-                }
+                },
+                "description": "Configuration of AC device",
+                "title": "New device"
             }
         }
     }
