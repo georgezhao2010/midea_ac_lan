@@ -51,7 +51,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry):
     if device_id is not None:
         dm = hass.data[DOMAIN][MANAGERS].get(device_id)
         if dm is not None:
-            dm.close()
+            dm.close(True)
         hass.data[DOMAIN][MANAGERS].pop(device_id)
         hass.data[DOMAIN][DEVICES].pop(device_id)
     if make_switch:

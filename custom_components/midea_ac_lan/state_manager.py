@@ -74,26 +74,24 @@ class DeviceManager(threading.Thread):
             _LOGGER.debug(f"Device [{self._device_id}] ready to receive loop")
             while self._is_run:
                 try:
-                    msg = self._socket.recv(512)
-                    _LOGGER.debug(f"Received original message as hex {msg.hex()}")
+                    msg = self._socket.recv(1024)
+                    _LOGGER.debug(f"Device [{self._device_id}] received original message as hex {msg.hex()}")
                     if not self._is_run:
                         break
                     msg_len = len(msg)
                     if msg_len == 0:
-                        raise socket.error
+                        raise socket.error("zero-length received")
                     timeout_counter = 0
                     # Message process
                     if not self.process_message(msg):
                         _LOGGER.debug(f"Device [{self._device_id}] b'ERROR' message received, reconnecting")
-                        self._socket.close()
-                        self._socket = None
+                        self._close()
                         break
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
                     if timeout_counter >= 10:
                         _LOGGER.debug(f"Device [{self._device_id}] heartbeat timed out detected, reconnecting")
-                        self._socket.close()
-                        self._socket = None
+                        self._close()
                         break
                     self.send_heartbeat()
                     if counter >= 5:
@@ -103,14 +101,11 @@ class DeviceManager(threading.Thread):
                         counter = counter + 1
                 except socket.error as e:
                     _LOGGER.debug(f"Device [{self._device_id}] except socket.error {e} raised in socket.recv()")
-                    self._socket.close()
-                    self._socket = None
+                    self._close()
                     break
                 except Exception as e:
                     _LOGGER.debug(f"Device [{self._device_id}] except {e} raised")
-                    if self._socket:
-                        self._socket.close()
-                    self._socket = None
+                    self._close()
                     break
             _LOGGER.debug(f"Device [{self._device_id}] receive loop existed")
         _LOGGER.debug(f"Device [{self._device_id}] thread existed")
@@ -253,7 +248,7 @@ class DeviceManager(threading.Thread):
             self._socket.close()
             self._socket = None
         except AuthException as e:
-            _LOGGER.error(f"Device [{self._device_id}] connection authException error {e}")
+            _LOGGER.warning(f"Device [{self._device_id}] authentication error {e}")
         except Exception as e:
             _LOGGER.error(f"Device [{self._device_id}] socket connect error {e}")
         if start_thread:
@@ -261,18 +256,25 @@ class DeviceManager(threading.Thread):
             threading.Thread.start(self)
         return result
 
-    def close(self):
-        self._is_run = False
-        self._socket.close()
+    def _close(self):
+        if self._socket:
+            self._socket.close()
         self._socket = None
+        self._buffer = b''
+
+    def close(self, stop_run=False):
+        self._is_run = not stop_run
+        self._close()
 
     def authenticate(self):
         request = self._security.encode_8370(
             self._token, MSGTYPE_HANDSHAKE_REQUEST)
+        _LOGGER.debug(f"Device [{self._device_id}] Handshaking")
         self._socket.send(request)
         response = self._socket.recv(512)
         if len(response) < 20:
             raise AuthException();
+        _LOGGER.debug(f"Device [{self._device_id}] Handshake completed")
         response = response[8: 72]
         self._security.tcp_key(response, self._key)
 
@@ -284,7 +286,7 @@ class DeviceManager(threading.Thread):
         self.send_message(msg)
         if wait_response:
             msg = self._socket.recv(512)
-            _LOGGER.debug(f"Received original message as hex {msg.hex()}")
+            _LOGGER.debug(f"Device [{self._device_id}] received original message as hex {msg.hex()}")
             msg_len = len(msg)
             if msg_len == 0:
                 raise socket.error
