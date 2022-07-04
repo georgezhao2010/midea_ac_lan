@@ -67,7 +67,6 @@ SERVICES = {
 }
 
 
-
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     dm = hass.data[DOMAIN][MANAGERS].get(device_id)
@@ -104,7 +103,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             service_handler,
             schema=schema
         )
-
 
 
 class MideaClimate(MideaEntity, ClimateEntity):

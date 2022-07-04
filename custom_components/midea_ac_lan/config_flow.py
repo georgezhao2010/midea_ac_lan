@@ -74,8 +74,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         if token and key:
                             dm = DeviceManager(device_id, device.get("ip"), device.get("port"),
                                                token, key, 3, "")
-                            _LOGGER.debug(f"Successful to take token and key, token = {token}, key = {key}, "
-                                          f"byte_order_big = {byte_order_big}")
+                            _LOGGER.debug(f"Successful to take token and key, token: {token}, key: {key}, "
+                                          f"byte_order_big: {byte_order_big}")
                             if dm.open(False):
                                 self.found_device = {
                                     CONF_DEVICE_ID: device_id,
