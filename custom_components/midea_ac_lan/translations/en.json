@@ -28,7 +28,7 @@
             },
             "manual": {
                 "data": {
-                    "device_id": "Device ID",
+                    "device_id": "Appliance Code",
                     "host": "Host",
                     "port": "Port",
                     "model": "Model",
