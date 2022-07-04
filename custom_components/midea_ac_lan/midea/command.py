@@ -7,13 +7,15 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class CommandRequest:
+    _message_serial = 0
+
     def __init__(self, device_type=0xac):
         self._header = bytearray([
             0xaa,
             # length
             0x20,
             # device type
-            0xac,
+            device_type,
             0x00, 0x00, 0x00, 0x00, 0x00,
             0x00,
             # request is 0x03; setting is 0x02
@@ -40,7 +42,6 @@ class CommandRequest:
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00
         ])
-        self._header[2] = device_type
 
     @staticmethod
     def checksum(data):
@@ -48,10 +49,10 @@ class CommandRequest:
 
     def finalize(self):
         self._header[1] = len(self._body) + 10 + 1
-        serial = int(datetime.datetime.now().microsecond % 1000 / 4)
-        if serial == 0 or serial == 254:
-            serial = 1
-        self._body[-1] = serial
+        CommandRequest._message_serial += 1
+        if CommandRequest._message_serial > 254:
+            CommandRequest._message_serial = 1
+        self._body[-1] = CommandRequest._message_serial
         data = copy.deepcopy(self._header)
         data.extend(self._body)
         data.append(calculate(self._body))
@@ -68,15 +69,26 @@ class CommandRequest:
         return str(output)
 
 
+class CommandFeatureRequest(CommandRequest):
+    def __init__(self, device_type=0xac):
+        super().__init__(device_type=device_type)
+        self._body = bytearray([
+            0xB5,
+            0x01,
+            0x11,
+            0x00
+        ])
+
+
 class CommandSet(CommandRequest):
     def __init__(self, device_type=0xac):
         super().__init__(device_type=device_type)
+        self._header[9] = 0x02
 
 
 class CommandNewProtocolSet(CommandSet):
     def __init__(self, prompt_tone=True, device_type=0xac):
         super().__init__(device_type=device_type)
-        self._header[9] = 0x02
         self._body = bytearray([
             0xB0,
             0x02,
@@ -96,7 +108,6 @@ class CommandNewProtocolSet(CommandSet):
 class CommandGeneralSet(CommandSet):
     def __init__(self, prompt_tone=True, device_type=0xac):
         super().__init__(device_type=device_type)
-        self._header[9] = 0x02
         self._body[0] = 0x40
         self._body[1] = 0xC2 if prompt_tone else 0x80
         self._body.extend(bytearray([0x00, 0x00, 0x00]))
