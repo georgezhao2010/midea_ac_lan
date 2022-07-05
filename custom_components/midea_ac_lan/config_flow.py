@@ -109,6 +109,22 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_manual(self, user_input=None, error=None):
         if user_input is not None:
+            self.found_device = {
+                CONF_DEVICE_ID: user_input[CONF_DEVICE_ID],
+                CONF_PROTOCOL: user_input[CONF_PROTOCOL],
+                CONF_HOST: user_input[CONF_HOST],
+                CONF_PORT: user_input[CONF_PORT],
+                CONF_MODEL: user_input[CONF_MODEL],
+                CONF_TOKEN: user_input[CONF_TOKEN],
+                CONF_KEY: user_input[CONF_KEY],
+            }
+            try:
+                bytearray.fromhex(user_input[CONF_TOKEN])
+                bytearray.fromhex(user_input[CONF_KEY])
+            except ValueError:
+                return await self.async_step_manual(error="invalid_token")
+            if user_input[CONF_PROTOCOL] == 3 and (len(user_input[CONF_TOKEN]) == 0 or len(user_input[CONF_KEY]) == 0):
+                return await self.async_step_manual(error="invalid_token")
             dm = DeviceManager(user_input[CONF_DEVICE_ID], user_input[CONF_HOST], user_input[CONF_PORT],
                                user_input[CONF_TOKEN], user_input[CONF_KEY], user_input[CONF_PROTOCOL],
                                user_input[CONF_MODEL])
@@ -140,8 +156,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                              default=self.found_device.get(CONF_PROTOCOL) if self.found_device.get(CONF_PROTOCOL) else 3): vol.In({2: "V2", 3: "V3"}),
                 vol.Required(CONF_MODEL,
                              default=self.found_device.get(CONF_MODEL) if self.found_device.get(CONF_MODEL) else "Unknown"): str,
-                vol.Optional(CONF_TOKEN, default=self.found_device.get(CONF_TOKEN)): str,
-                vol.Optional(CONF_KEY, default=self.found_device.get(CONF_KEY)): str,
+                vol.Optional(CONF_TOKEN, default=self.found_device.get(CONF_TOKEN) if self.found_device.get(CONF_TOKEN) else ""): str,
+                vol.Optional(CONF_KEY, default=self.found_device.get(CONF_KEY) if self.found_device.get(CONF_KEY) else ""): str,
                 vol.Optional(CONF_MAKE_SWITCH, default=True): bool,
             }),
             errors={"base": error} if error else None
