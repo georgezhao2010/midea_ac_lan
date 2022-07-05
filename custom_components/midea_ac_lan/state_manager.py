@@ -16,6 +16,7 @@ class AuthException(Exception):
 
 class DeviceState:
     def __init__(self):
+        self.available = False
         self.prompt_tone = True
         self.power = False
         self.mode = 0
@@ -107,6 +108,7 @@ class DeviceManager(threading.Thread):
                     _LOGGER.debug(f"Device [{self._device_id}] except {e} raised")
                     self._close()
                     break
+            self.enable_devices(False)
             _LOGGER.debug(f"Device [{self._device_id}] receive loop existed")
         _LOGGER.debug(f"Device [{self._device_id}] thread existed")
 
@@ -124,6 +126,15 @@ class DeviceManager(threading.Thread):
         data = self._security.encode_8370(data, msg_type)
         self.send_message_V2(data)
 
+    def enable_devices(self, enable=True):
+        self.update_all({"available": enable})
+
+    def update_all(self, updates):
+        if updates:
+            _LOGGER.debug(f"Device [{self._device_id}] status update to: {updates}")
+            for update in self._updates:
+                update(updates)
+
     def process_message(self, msg):
         if self._protocol == 3:
             messages, self._buffer = self._security.decode_8370(self._buffer + msg)
@@ -134,10 +145,7 @@ class DeviceManager(threading.Thread):
                 message = self._security.aes_decrypt(message[40:-16])
                 parser = MessageParser(message)
                 updates = self.parse_message(parser)
-                if updates:
-                    _LOGGER.debug(f"Device [{self._device_id}] status update to: {updates}")
-                    for update in self._updates:
-                        update(updates)
+                self.update_all(updates)
             else:
                 if message == b'ERROR':
                     return False
@@ -145,7 +153,7 @@ class DeviceManager(threading.Thread):
         return True
 
     def parse_message(self, parser: MessageParser):
-        updates = {}
+        updates = {"available": True}
         if parser.msg_type == 0x2C0 or parser.msg_type == 0x3C0:
             self._status.power = parser.power
             self._status.mode = parser.mode
@@ -165,7 +173,7 @@ class DeviceManager(threading.Thread):
                 self._status.indirect_wind = False
             elif self._status.swing_vertical:
                 self._status.indirect_wind = False
-            updates = {
+            updates.update({
                 "power": self._status.power,
                 "mode": self._status.mode,
                 "fan_speed": self._status.fan_speed,
@@ -178,17 +186,17 @@ class DeviceManager(threading.Thread):
                 "eco_mode": self._status.eco_mode,
                 "aux_heat": self._status.aux_heat,
                 "indirect_wind": self._status.indirect_wind,
-            }
+            })
         elif parser.msg_type == 0x4A1:
             self._status.indoor_temperature = parser.indoor_temperature
             if parser.outdoor_temperature != 102.0:
                 self._status.outdoor_temperature = parser.outdoor_temperature
             else:
                 self._status.outdoor_temperature = 0.0
-            updates = {
+            updates.update({
                 "indoor_temperature":  self._status.indoor_temperature,
                 "outdoor_temperature":  self._status.outdoor_temperature
-            }
+            })
             pass
         elif parser.msg_type == 0x5A0:
             self._status.power = parser.power
@@ -204,7 +212,7 @@ class DeviceManager(threading.Thread):
                 self._status.indirect_wind = False
             elif self._status.swing_vertical:
                 self._status.indirect_wind = False
-            updates = {
+            updates.update({
                 "power":  self._status.power,
                 "mode":  self._status.mode,
                 "fan_speed":  self._status.fan_speed,
@@ -215,10 +223,10 @@ class DeviceManager(threading.Thread):
                 "eco_mode":  self._status.eco_mode,
                 "aux_heat": self._status.aux_heat,
                 "indirect_wind": self._status.indirect_wind,
-            }
+            })
         elif parser.msg_type == 0x5B5 or parser.msg_type == 0x2B0:
             self._status.indirect_wind = parser.indirect_wind
-            updates = {"indirect_wind":  self._status.indirect_wind}
+            updates.update({"indirect_wind":  self._status.indirect_wind})
             pass
         else:
             _LOGGER.debug(f"Received unknown message from device [{self._device_id}]: {parser}")

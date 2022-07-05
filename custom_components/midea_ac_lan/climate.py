@@ -275,6 +275,9 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     def _update_state(self, status):
         result = False
+        if self._available != status.get("available"):
+            self._available = status.get("available")
+            result = True
         if "power" in status:
             self._is_on = status["power"]
             result = True

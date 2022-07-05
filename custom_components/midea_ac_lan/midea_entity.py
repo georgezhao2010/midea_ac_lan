@@ -72,6 +72,7 @@ class MideaEntity(Entity):
         self._entity_key = entity_key
         self._unique_id = f"{DOMAIN}.{self._dm.device_id}_{entity_key}"
         self.entity_id = self._unique_id
+        self._available = False
         self._device_name = f"Midea AC {self._dm.device_id}"
         self._device_info = {
             "manufacturer": "Midea",
@@ -107,6 +108,10 @@ class MideaEntity(Entity):
             else self._device_name
 
     @property
+    def available(self):
+        return self._available
+
+    @property
     def unit_of_measurement(self):
         return self._config.get("unit")
 
@@ -115,12 +120,16 @@ class MideaEntity(Entity):
         return self._config.get("icon")
 
     def _update_state(self, status):
+        result = False
+        if self._available != status.get("available"):
+            self._available = status.get("available")
+            result = True
         if self._entity_key in status:
             value = status[self._entity_key]
             if value != self._state:
                 self._state = value
-                return True
-        return False
+                result = True
+        return result
 
     def update_state(self, status):
         if self._update_state(status):
