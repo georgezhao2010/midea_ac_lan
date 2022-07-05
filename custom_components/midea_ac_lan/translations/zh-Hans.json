@@ -5,7 +5,8 @@
             "device_exist": "设备已经存在, 请添加其它设备",
             "cant_get_token": "无法连接美的云获取设备关键信息(Token和Key)",
             "config_incorrect": "配置信息不正确, 请检查后重新输入",
-            "connect_error": "无法连接到指定设备"
+            "connect_error": "无法连接到指定设备",
+            "invalid_token": "Token或Key格式不正确"
         },
         "step": {
             "user": {

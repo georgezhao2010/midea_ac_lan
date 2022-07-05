@@ -5,7 +5,8 @@
             "device_exist": "Device is already configured",
             "cant_get_token": "Can't connect to Midea cloud to take device‘s key-info(Token and Key)",
             "config_incorrect": "The configuration is incorrect, please check",
-            "connect_error": "Can't connect to AC device"
+            "connect_error": "Can't connect to AC device",
+            "invalid_token": "Token or Key in an incorrect format"
         },
         "step": {
             "user": {
