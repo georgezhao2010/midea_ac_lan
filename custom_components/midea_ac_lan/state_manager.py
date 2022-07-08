@@ -109,8 +109,6 @@ class DeviceManager(threading.Thread):
                     self._close()
                     break
             self.enable_devices(False)
-            _LOGGER.debug(f"Device [{self._device_id}] receive loop existed")
-        _LOGGER.debug(f"Device [{self._device_id}] thread existed")
 
     def send_message(self, data):
         if self._protocol == 3:
@@ -197,7 +195,6 @@ class DeviceManager(threading.Thread):
                 "indoor_temperature":  self._status.indoor_temperature,
                 "outdoor_temperature":  self._status.outdoor_temperature
             })
-            pass
         elif parser.msg_type == 0x5A0:
             self._status.power = parser.power
             self._status.mode = parser.mode
@@ -227,7 +224,6 @@ class DeviceManager(threading.Thread):
         elif parser.msg_type == 0x5B5 or parser.msg_type == 0x2B0:
             self._status.indirect_wind = parser.indirect_wind
             updates.update({"indirect_wind":  self._status.indirect_wind})
-            pass
         else:
             _LOGGER.debug(f"Received unknown message from device [{self._device_id}]: {parser}")
         _LOGGER.debug(f"Received message from device [{self._device_id}]: {parser}")

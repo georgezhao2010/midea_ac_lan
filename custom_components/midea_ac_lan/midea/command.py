@@ -1,5 +1,4 @@
 import logging
-import datetime
 import copy
 from .crc8 import calculate
 

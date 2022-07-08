@@ -43,7 +43,6 @@ class Security:
         cipher = AES.new(self.encKey, AES.MODE_ECB)
         try:
             decrypted = cipher.decrypt(bytes(raw))
-            # Remove the padding
             decrypted = unpad(decrypted, self.blockSize)
             return decrypted
         except ValueError as e:
@@ -53,10 +52,8 @@ class Security:
 
     def aes_encrypt(self, raw):
         raw = pad(raw, self.blockSize)
-
         cipher = AES.new(self.encKey, AES.MODE_ECB)
         encrypted = cipher.encrypt(bytes(raw))
-
         return encrypted
 
     def aes_cbc_decrypt(self, raw, key):
@@ -158,19 +155,18 @@ class Security:
         sign = hmac.new(self._hmackey.encode("ascii"), msg.encode("ascii"), sha256)
         return sign.hexdigest()
 
-    def encryptPassword(self, loginId, password):
+    def encryptPassword(self, loginId, data):
         m = sha256()
-        m.update(password.encode('ascii'))
+        m.update(data.encode("ascii"))
 
         loginHash = loginId + m.hexdigest() + self._loginKey
         m = sha256()
-        m.update(loginHash.encode('ascii'))
+        m.update(loginHash.encode("ascii"))
         return m.hexdigest()
 
-    def encrypt_iam_password(self, loginId, password) -> str:
-        """Encrypts password for cloud API"""
+    def encrypt_iam_password(self, loginId, data) -> str:
         md = md5()
-        md.update(password.encode("ascii"))
+        md.update(data.encode("ascii"))
         md_second = md5()
         md_second.update(md.hexdigest().encode("ascii"))
         if self._use_china_server:

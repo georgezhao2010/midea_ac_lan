@@ -130,30 +130,19 @@ def bytes2port(paramArrayOfbyte):
 
 def get_device_info(device_ip, device_port: int):
     # Create a TCP/IP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(8)
-
+    response = bytearray(0)
     try:
-        # Connect the Device
-        device_address = (device_ip, device_port)
-        sock.connect(device_address)
-
-        # Send data
-        _LOGGER.debug(f"Sending to {device_ip}:{device_port} {DEVICE_INFO_MSG.hex()}")
-        sock.sendall(DEVICE_INFO_MSG)
-
-        # Received data
-        response = sock.recv(512)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(8)
+            device_address = (device_ip, device_port)
+            sock.connect(device_address)
+            _LOGGER.debug(f"Sending to {device_ip}:{device_port} {DEVICE_INFO_MSG.hex()}")
+            sock.sendall(DEVICE_INFO_MSG)
+            response = sock.recv(512)
     except socket.timeout:
         _LOGGER.warning(f"Connect the device {device_ip}:{device_port} timed out for 8s. "
                         f"don't care about a small amount of this. if many maybe not support."
                         )
-        return bytearray(0)
     except socket.error:
         _LOGGER.warning(f"Can't connect to Device {device_ip}:{device_port}")
-        return bytearray(0)
-    finally:
-        sock.close()
-    _LOGGER.debug("Received from {}:{} {}".format(
-        device_ip, device_port, response.hex()))
     return response
