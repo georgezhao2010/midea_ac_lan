@@ -8,7 +8,6 @@ from homeassistant.const import (
     CONF_DEVICE_ID,
     TEMP_CELSIUS,
     PRECISION_HALVES,
-    PRECISION_TENTHS,
     ATTR_TEMPERATURE,
 )
 
