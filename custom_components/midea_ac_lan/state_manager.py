@@ -63,6 +63,7 @@ class DeviceManager(threading.Thread):
             while self._socket is None:
                 _LOGGER.debug(f"Device [{self._device_id}] ready to re-open device")
                 if self.open(False) is False:
+                    self.enable_devices(False)
                     time.sleep(10)
                 if not self._is_run:
                     _LOGGER.debug(f"Device [{self._device_id}] thread existing")
@@ -108,7 +109,6 @@ class DeviceManager(threading.Thread):
                     _LOGGER.debug(f"Device [{self._device_id}] except {e} raised")
                     self._close()
                     break
-            self.enable_devices(False)
 
     def send_message(self, data):
         if self._protocol == 3:
