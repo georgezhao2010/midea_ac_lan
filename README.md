@@ -2,6 +2,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 [![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
+[![Downloads for latest release](https://img.shields.io/github/downloads/georgezhao2010/midea_ac_lan/latest/total.svg)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
 English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README_hans.md)
 
