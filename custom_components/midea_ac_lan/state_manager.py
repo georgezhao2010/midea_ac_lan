@@ -341,9 +341,9 @@ class DeviceManager(threading.Thread):
 
     def set_mode(self, mode: int):
         cmd = self.make_command_set()
-        cmd.set_mode(mode)
         if mode is not None:
             if mode > 0:
+                cmd.set_mode(mode)
                 cmd.set_power(True)
             else:
                 cmd.set_power(False)
@@ -351,9 +351,9 @@ class DeviceManager(threading.Thread):
 
     def set_target_temperature(self, temperature: float, mode=None):
         cmd = self.make_command_set()
-        cmd.set_target_temperature(temperature)
         if mode is not None:
             if mode > 0:
+                cmd.set_target_temperature(temperature)
                 cmd.set_power(True)
             else:
                 cmd.set_power(False)

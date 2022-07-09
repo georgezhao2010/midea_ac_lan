@@ -72,7 +72,7 @@ class MideaEntity(Entity):
         self._entity_key = entity_key
         self._unique_id = f"{DOMAIN}.{self._dm.device_id}_{entity_key}"
         self.entity_id = self._unique_id
-        self._available = False
+        self._available = True
         self._device_name = f"Midea AC {self._dm.device_id}"
         self._device_info = {
             "manufacturer": "Midea",
