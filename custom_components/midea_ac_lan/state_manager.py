@@ -6,6 +6,7 @@ from .midea.security import Security, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPT
 from .midea.message_parser import MessageParser
 from .midea.command import CommandRequest, CommandNewProtocolSet, CommandGeneralSet
 from .midea.packet_builder import PacketBuilder
+from homeassistant.const import TEMP_CELSIUS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -18,6 +19,7 @@ class DeviceState:
     def __init__(self):
         self.available = False
         self.prompt_tone = True
+        self.temp_fahrenheit = False
         self.power = False
         self.mode = 0
         self.fan_speed = 102
@@ -56,6 +58,9 @@ class DeviceManager(threading.Thread):
     def set_token_key(self, token, key):
         self._token = bytearray.fromhex(token) if token else None
         self._key = bytearray.fromhex(key) if key else None
+
+    def set_temp_fahrenheit(self, temp_fahrenheit):
+        self._status.temp_fahrenheit = temp_fahrenheit
 
     def run(self):
 
@@ -167,6 +172,7 @@ class DeviceManager(threading.Thread):
             self._status.comfort_mode = parser.comfort_mode
             self._status.eco_mode = parser.eco_mode
             self._status.aux_heat = parser.aux_heat
+            self._status.temp_fahrenheit = parser.temp_fahrenheit
             if not self._status.power:
                 self._status.indirect_wind = False
             elif self._status.swing_vertical:
@@ -183,6 +189,7 @@ class DeviceManager(threading.Thread):
                 "comfort_mode": self._status.comfort_mode,
                 "eco_mode": self._status.eco_mode,
                 "aux_heat": self._status.aux_heat,
+                "temp_fahrenheit": self._status.temp_fahrenheit,
                 "indirect_wind": self._status.indirect_wind,
             })
         elif parser.msg_type == 0x4A1:
@@ -205,6 +212,7 @@ class DeviceManager(threading.Thread):
             self._status.comfort_mode = parser.comfort_mode
             self._status.eco_mode = parser.eco_mode
             self._status.aux_heat = parser.aux_heat
+            self._status.temp_fahrenheit = parser.temp_fahrenheit
             if not self._status.power:
                 self._status.indirect_wind = False
             elif self._status.swing_vertical:
@@ -219,6 +227,7 @@ class DeviceManager(threading.Thread):
                 "comfort_mode":  self._status.comfort_mode,
                 "eco_mode":  self._status.eco_mode,
                 "aux_heat": self._status.aux_heat,
+                "temp_fahrenheit": self._status.temp_fahrenheit,
                 "indirect_wind": self._status.indirect_wind,
             })
         elif parser.msg_type == 0x5B5 or parser.msg_type == 0x2B0:
@@ -315,7 +324,10 @@ class DeviceManager(threading.Thread):
         self.send_message(msg)
 
     def make_command_set(self):
-        cmd = CommandGeneralSet(prompt_tone=self._status.prompt_tone)
+        cmd = CommandGeneralSet(
+            prompt_tone=self._status.prompt_tone,
+            temp_fahrenheit=self._status.temp_fahrenheit
+        )
         cmd.set_power(self._status.power)
         cmd.set_mode(self._status.mode)
         cmd.set_fan_speed(self._status.fan_speed)
@@ -351,9 +363,9 @@ class DeviceManager(threading.Thread):
 
     def set_target_temperature(self, temperature: float, mode=None):
         cmd = self.make_command_set()
+        cmd.set_target_temperature(temperature)
         if mode is not None:
             if mode > 0:
-                cmd.set_target_temperature(temperature)
                 cmd.set_power(True)
             else:
                 cmd.set_power(False)

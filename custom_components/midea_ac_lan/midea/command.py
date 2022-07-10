@@ -105,10 +105,11 @@ class CommandNewProtocolSet(CommandSet):
 
 
 class CommandGeneralSet(CommandSet):
-    def __init__(self, prompt_tone=True, device_type=0xac):
+    def __init__(self, prompt_tone=True, temp_fahrenheit=True, device_type=0xac):
         super().__init__(device_type=device_type)
         self._body[0] = 0x40
         self._body[1] = 0xC2 if prompt_tone else 0x80
+        self._body[10] = 0x04 if temp_fahrenheit else 0
         self._body.extend(bytearray([0x00, 0x00, 0x00]))
 
     def set_power(self, power: bool):
@@ -150,6 +151,7 @@ class CommandGeneralSet(CommandSet):
     def set_aux_heat(self, aux_heat):
         self._body[9] &= (~0x08)
         self._body[9] |= 0x08 if aux_heat else 0
+
 
 
 
