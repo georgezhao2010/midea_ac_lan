@@ -59,6 +59,10 @@ class XAAMessage:
     def aux_heat(self):
         return False
 
+    @property
+    def temp_fahrenheit(self):
+        return False
+
     def __str__(self) -> str:
         return self._body.hex()
 
@@ -110,6 +114,10 @@ class X03XC0Message(XAAMessage):
     @property
     def aux_heat(self):
         return (self._body[9] & 0x08) > 0
+
+    @property
+    def temp_fahrenheit(self):
+        return (self._body[10] & 0x04) > 0
 
     @property
     def indirect_wind(self):
@@ -182,6 +190,10 @@ class X05XA0Message(XAAMessage):
     @property
     def aux_heat(self):
         return (self._body[9] & 0x08) > 0
+
+    @property
+    def temp_fahrenheit(self):
+        return (self._body[10] & 0x04) > 0
 
     @property
     def indirect_wind(self):
@@ -273,6 +285,10 @@ class MessageParser:
     @property
     def aux_heat(self):
         return self._body.aux_heat
+
+    @property
+    def temp_fahrenheit(self):
+        return self._body.temp_fahrenheit
 
     @property
     def indirect_wind(self):

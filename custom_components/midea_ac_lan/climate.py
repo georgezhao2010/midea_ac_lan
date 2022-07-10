@@ -7,6 +7,7 @@ from homeassistant.const import (
     ATTR_ENTITY_ID,
     CONF_DEVICE_ID,
     TEMP_CELSIUS,
+    TEMP_FAHRENHEIT,
     PRECISION_HALVES,
     ATTR_TEMPERATURE,
 )
@@ -69,7 +70,7 @@ SERVICES = {
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     dm = hass.data[DOMAIN][MANAGERS].get(device_id)
-    dev = MideaClimate(dm)
+    dev = MideaClimate(hass, dm)
     if DEVICES not in hass.data[DOMAIN]:
         hass.data[DOMAIN][DEVICES] = {}
     hass.data[DOMAIN][DEVICES][device_id] = dev
@@ -105,8 +106,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class MideaClimate(MideaEntity, ClimateEntity):
-    def __init__(self, device_manager: DeviceManager):
+    def __init__(self, hass, device_manager: DeviceManager):
         super().__init__(device_manager, "climate")
+        self.hass = hass
+        self._temp_units = TEMP_FAHRENHEIT if self._dm.get_status("temp_fahrenheit") else TEMP_CELSIUS
         self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_FAN_ONLY]
         self._fan_speeds = {FAN_VERY_LOW: 10,
                             FAN_LOW: 30,
@@ -173,7 +176,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     @property
     def temperature_unit(self):
-        return TEMP_CELSIUS
+        return self._temp_units
 
     @property
     def target_temperature_low(self):
@@ -279,6 +282,8 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     def _update_state(self, status):
         result = False
+        if (self._temp_units == TEMP_FAHRENHEIT) != status.get("temp_fahrenheit"):
+            self._temp_units = TEMP_FAHRENHEIT if status.get("temp_fahrenheit") else TEMP_CELSIUS
         if self._available != status.get("available"):
             self._available = status.get("available")
             result = True
