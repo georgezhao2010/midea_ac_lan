@@ -92,7 +92,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 self.found_device = {
                     CONF_DEVICE_ID: device_id,
-                    CONF_PROTOCOL: 3,
+                    CONF_PROTOCOL: 2,
                     CONF_HOST: device.get("ip"),
                     CONF_PORT: device.get("port"),
                     CONF_MODEL: device.get("model"),
