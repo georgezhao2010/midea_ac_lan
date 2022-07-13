@@ -81,8 +81,7 @@ class DeviceManager(threading.Thread):
             _LOGGER.debug(f"Device [{self._device_id}] ready to receive loop")
             while self._is_run:
                 try:
-                    msg = self._socket.recv(1024)
-                    _LOGGER.debug(f"Device [{self._device_id}] received original message as hex {msg.hex()}")
+                    msg = self._socket.recv(512)
                     if not self._is_run:
                         break
                     msg_len = len(msg)
@@ -227,7 +226,6 @@ class DeviceManager(threading.Thread):
                 "comfort_mode":  self._status.comfort_mode,
                 "eco_mode":  self._status.eco_mode,
                 "aux_heat": self._status.aux_heat,
-                "temp_fahrenheit": self._status.temp_fahrenheit,
                 "indirect_wind": self._status.indirect_wind,
             })
         elif parser.msg_type == 0x5B5 or parser.msg_type == 0x2B0:
@@ -299,7 +297,6 @@ class DeviceManager(threading.Thread):
         self.send_message(msg)
         if wait_response:
             msg = self._socket.recv(512)
-            _LOGGER.debug(f"Device [{self._device_id}] received original message as hex {msg.hex()}")
             msg_len = len(msg)
             if msg_len == 0:
                 raise socket.error

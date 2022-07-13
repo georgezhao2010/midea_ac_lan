@@ -192,10 +192,6 @@ class X05XA0Message(XAAMessage):
         return (self._body[9] & 0x08) > 0
 
     @property
-    def temp_fahrenheit(self):
-        return (self._body[10] & 0x04) > 0
-
-    @property
     def indirect_wind(self):
         return (self._body[14] & 0x10) > 0
 
@@ -210,6 +206,9 @@ class X05XB5Message(XAAMessage):
 
 
 class X02XB0Message(XAAMessage):
+    def __init__(self, body):
+        super().__init__(body)
+
     @property
     def indirect_wind(self):
         return (self._body[6] & 0x2) == 0x2
