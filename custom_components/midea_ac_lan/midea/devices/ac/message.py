@@ -2,7 +2,6 @@ import logging
 from enum import IntEnum, Enum
 from ...core.message import (
     NewProtocolParamPack,
-    NewProtocolParamParser,
     MessageRequest,
     MessageResponse,
     MessageBody,
@@ -36,8 +35,8 @@ class MessageStatus(Enum):
 
 
 class NewProtocolParams(IntEnum):
-    indirect_wind = 0x42
-    prompt_tone = 0x1A
+    indirect_wind = 0x4200
+    prompt_tone = 0x1A00
 
 
 class MessageQuery(MessageRequest):
@@ -184,24 +183,31 @@ class XA1MessageBody(MessageBody):
             self.indoor_temperature = TempInteger + TemperatureDot
         else:
             self.indoor_temperature = TempInteger - TemperatureDot
-        TempInteger = int((body[14] - 50) / 2)
-        TemperatureDot = ((body[18] & 0xF0) >> 4) * 0.1 if len(body) > 18 else 0
-        if body[14] > 49:
-            self.outdoor_temperature = TempInteger + TemperatureDot
+        if body[14] == 0xFF:
+            self.outdoor_temperature = 0.0
         else:
-            self.outdoor_temperature = TempInteger - TemperatureDot
+            TempInteger = int((body[14] - 50) / 2)
+            TemperatureDot = ((body[18] & 0xF0) >> 4) * 0.1 if len(body) > 18 else 0
+            if body[14] > 49:
+                self.outdoor_temperature = TempInteger + TemperatureDot
+            else:
+                self.outdoor_temperature = TempInteger - TemperatureDot
 
 
 class XB0MessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        self.indirect_wind = (body[6] & 0x2) == 0x2
+        params = NewProtocolParamPack.parse(body[1:-1], pack_len=5)
+        if NewProtocolParams.indirect_wind in params:
+            self.indirect_wind = (params[NewProtocolParams.indirect_wind][0] == 0x02)
 
 
 class XB5MessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        self.indirect_wind = (body[5] & 0x2) == 0x2
+        params = NewProtocolParamPack.parse(body[1:-1], pack_len=4)
+        if NewProtocolParams.indirect_wind in params:
+            self.indirect_wind = (params[NewProtocolParams.indirect_wind][0] == 0x02)
 
 
 class XC0MessageBody(MessageBody):
@@ -216,9 +222,21 @@ class XC0MessageBody(MessageBody):
         self.eco_mode = (body[9] & 0x10) > 0
         self.aux_heat = (body[9] & 0x08) > 0
         self.temp_fahrenheit = (body[10] & 0x04) > 0
-        self.indoor_temperature = int((body[11] - 50) / 2) + (body[15] & 0xF) * 0.1
-        self.outdoor_temperature = \
-            0.0 if body[12] == 0xFF else int((body[12] - 50) / 2) + ((body[15] & 0xF0) >> 4) * 0.1
+        TempInteger = int((body[11] - 50) / 2)
+        TemperatureDot = (body[15] & 0xF) * 0.1
+        if body[11] > 49:
+            self.indoor_temperature = TempInteger + TemperatureDot
+        else:
+            self.indoor_temperature = TempInteger - TemperatureDot
+        if body[12] == 0xFF:
+            self.outdoor_temperature = 0.0
+        else:
+            TempInteger = int((body[12] - 50) / 2)
+            TemperatureDot = ((body[15] & 0xF0) >> 4) * 0.1
+            if body[14] > 49:
+                self.outdoor_temperature = TempInteger + TemperatureDot
+            else:
+                self.outdoor_temperature = TempInteger - TemperatureDot
         self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 22 else False
 
 

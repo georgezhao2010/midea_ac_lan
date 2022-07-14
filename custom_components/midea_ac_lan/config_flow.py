@@ -17,26 +17,22 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .midea.core.discover import discover
 from .midea.core.cloud import MideaCloud
 from .midea.core.device import MiedaDevice
+from .midea_entity import MIDEA_ENTITIES
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
 
 ADD_WAY = {"auto": "Auto", "manual": "Manual"}
 PROTOCOLS = {2: "V2", 3: "V3"}
-SUPPORTS_TYPE = {0xac: "Air-conditioner of type \"AC\""}
-# maybe add 0xcc in the future {0xac: "AC", 0xcc: "CC"}
-'''
-SUPPORTS_TYPE = {
-    0xac: "Air-conditioner of type \"AC\"",
-    0xcc: "AC control panel of type \"CC\""
-}
-'''
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     available_device = []
     devices = {}
     found_device = {}
+    supports = {}
+    for device_type, device_info in MIDEA_ENTITIES.items():
+        supports[device_type] = device_info["name"]
 
     def _already_configured(self, device_id):
         for entry in self._async_current_entries():
@@ -62,11 +58,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_discover(self, user_input=None, error=None):
         if user_input is not None:
-            self.devices = discover(SUPPORTS_TYPE.keys())
-            self.available_device = []
+            self.devices = discover(self.supports.keys())
+            self.available_device = {}
             for device_id, device in self.devices.items():
                 if not self._already_configured(device_id):
-                    self.available_device.append(device_id)
+                    self.available_device[device_id] = \
+                        f"{device_id} (type {device.get('device_type').to_bytes(1,'big').hex()})"
             if len(self.available_device) > 0:
                 return await self.async_step_auto()
             else:
@@ -80,12 +77,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             device_id = user_input[CONF_DEVICE]
             device = self.devices.get(device_id)
-            _LOGGER.debug(f"Now config device {device}")
             if device.get("protocol") == 3:
                 session = async_create_clientsession(self.hass)
                 cloud = MideaCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD, MIDEA_DEFAULT_SERVER)
                 if await cloud.login():
-                    for byte_order_big in [True, False]:
+                    for byte_order_big in [False, True]:
                         token, key = await cloud.get_token(user_input[CONF_DEVICE], byte_order_big=byte_order_big)
                         if token and key:
                             dm = MiedaDevice(
@@ -172,7 +168,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_HOST: user_input[CONF_HOST],
                         CONF_PORT: user_input[CONF_PORT],
                         CONF_MODEL: user_input[CONF_MODEL],
-                        CONF_MAKE_SWITCH: user_input[CONF_MAKE_SWITCH],
                         CONF_TOKEN: user_input[CONF_TOKEN],
                         CONF_KEY: user_input[CONF_KEY],
                     })
@@ -189,7 +184,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(
                     CONF_TYPE,
                     default=self.found_device.get(CONF_TYPE) if self.found_device.get(CONF_TYPE) else 0xac
-                ): vol.In(SUPPORTS_TYPE),
+                ): vol.In(self.supports),
                 vol.Required(
                     CONF_HOST,
                     default=self.found_device.get(CONF_HOST)
@@ -214,7 +209,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_KEY,
                     default=self.found_device.get(CONF_KEY) if self.found_device.get(CONF_KEY) else ""
                 ): str,
-                vol.Optional(CONF_MAKE_SWITCH, default=True): bool,
             }),
             errors={"base": error} if error else None
         )

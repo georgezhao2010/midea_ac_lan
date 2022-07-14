@@ -51,6 +51,10 @@ class MiedaDevice(threading.Thread):
         return self._device_id
 
     @property
+    def device_type(self):
+        return self._device_type
+
+    @property
     def model(self):
         return self._model
 
@@ -59,11 +63,11 @@ class MiedaDevice(threading.Thread):
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.settimeout(10)
             self._socket.connect((self._host, self._port))
-            _LOGGER.debug(f"[{self._device_id}] connected at socket {self._socket}")
+            _LOGGER.debug(f"[{self._device_id}] Connected")
             # auth
             if self._protocol == 3:
                 self.authenticate()
-            _LOGGER.debug(f"[{self._device_id}] authentication success")
+            _LOGGER.debug(f"[{self._device_id}] Authentication success")
             self.enable_device(True)
             if refresh_status:
                 self.refresh_status(wait_response=True)
@@ -73,7 +77,7 @@ class MiedaDevice(threading.Thread):
         except socket.error:
             pass
         except AuthException:
-            _LOGGER.debug(f"[{self._device_id}] authentication failed")
+            _LOGGER.debug(f"[{self._device_id}] Authentication failed")
         return False
 
     def authenticate(self):
@@ -104,7 +108,7 @@ class MiedaDevice(threading.Thread):
 
     def build_send(self, cmd):
         data = cmd.serialize()
-        _LOGGER.debug(f"Send to [{self._device_id}]: {cmd}")
+        _LOGGER.debug(f"[{self._device_id}] Send: {cmd}")
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
@@ -174,7 +178,7 @@ class MiedaDevice(threading.Thread):
     def run(self):
         while self._is_run:
             while self._socket is None:
-                _LOGGER.debug(f"[{self._device_id}] ready to open")
+                _LOGGER.debug(f"[{self._device_id}] Ready to open")
                 if self.connect(True) is False:
                     if not self._is_run:
                         return
@@ -191,13 +195,13 @@ class MiedaDevice(threading.Thread):
                         raise socket.error("zero-length received")
                     timeout_counter = 0
                     if not self.parse_message(msg):
-                        _LOGGER.debug(f"[{self._device_id}] b'ERROR' message received, reconnecting")
+                        _LOGGER.debug(f"[{self._device_id}] Message b'ERROR' received, reconnecting")
                         self.close_socket()
                         break
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
                     if timeout_counter >= 10:
-                        _LOGGER.debug(f"[{self._device_id}] heartbeat timed out detected, reconnecting")
+                        _LOGGER.debug(f"[{self._device_id}] Heartbeat timed out, reconnecting")
                         self.close_socket()
                         break
                     self.send_heartbeat()
@@ -207,11 +211,11 @@ class MiedaDevice(threading.Thread):
                     else:
                         counter = counter + 1
                 except socket.error as e:
-                    _LOGGER.debug(f"[{self._device_id}] except socket.error {e} raised in socket.recv()")
+                    _LOGGER.debug(f"[{self._device_id}] Except socket.error {e} raised in socket.recv()")
                     self.close_socket()
                     break
                 except Exception as e:
-                    _LOGGER.debug(f"[{self._device_id}] except {e} raised")
+                    _LOGGER.debug(f"[{self._device_id}] Except {e} raised")
                     self.close_socket()
                     break
             self.enable_device(False)

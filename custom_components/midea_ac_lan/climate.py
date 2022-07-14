@@ -23,6 +23,7 @@ from .const import (
     FAN_FULL_SPEED,
 )
 from .midea.devices.ac.device import MideaACDevice
+# from .midea.devices.cc.device import MideaCCDevice
 from .midea_entity import MideaEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -69,11 +70,12 @@ SERVICES = {
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
-    device_type = config_entry.data.get(CONF_TYPE)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
     climate = None
-    if device_type == 0xac:
+    if device.device_type == 0xac:
         climate = MideaACClimate(device)
+    #  elif device.device_type == 0xcc:
+    #      climate = MideaCCDevice(device)
     if climate:
         async_add_entities([climate])
 
@@ -255,88 +257,11 @@ class MideaACClimate(MideaEntity, ClimateEntity):
     def turn_aux_heat_off(self) -> None:
         self._device.aux_heat = False
 
-    '''
-    def _update_state(self, status):
-        result = False
-        if (self._temp_units == TEMP_FAHRENHEIT) != status.get("temp_fahrenheit"):
-            self._temp_units = TEMP_FAHRENHEIT if status.get("temp_fahrenheit") else TEMP_CELSIUS
-        if self._available != status.get("available"):
-            self._available = status.get("available")
-            result = True
-        if "power" in status:
-            self._is_on = status["power"]
-            result = True
-        if "mode" in status:
-            mode = status["mode"]
-            if self._is_on and 0 < mode < len(self._modes):
-                self._state = self._modes[mode]
-            else:
-                self._state = HVAC_MODE_OFF
-            result = True
-        if "fan_speed" in status:
-            self._fan_speed_num = status["fan_speed"]
-            if self._fan_speed_num > 100:
-                self._fan_mode = FAN_AUTO
-            elif self._fan_speed_num == 100:
-                self._fan_mode = FAN_FULL_SPEED
-            elif self._fan_speed_num > 80:
-                self._fan_mode = FAN_VERY_HIGH
-            elif self._fan_speed_num > 60:
-                self._fan_mode = FAN_HIGH
-            elif self._fan_speed_num > 40:
-                self._fan_mode = FAN_MEDIUM
-            elif self._fan_speed_num > 20:
-                self._fan_mode = FAN_LOW
-            else:
-                self._fan_mode = FAN_VERY_LOW
-            result = True
-        if "swing_vertical" in status and "swing_horizontal" in status:
-            swing = 0
-            if status["swing_vertical"]:
-                self._swing_vertical = "on"
-                swing += 1
-            else:
-                self._swing_vertical = "off"
-            if status["swing_horizontal"]:
-                self._swing_horizontal = "on"
-                swing += 2
-            else:
-                self._swing_horizontal = "off"
-            self._swing_mode = self._swing_modes[swing]
-            result = True
-        if "target_temperature" in status:
-            self._target_temperature = status["target_temperature"]
-            result = True
-        if "indoor_temperature" in status:
-            self._indoor_temperature = status["indoor_temperature"]
-            result = True
-        if "outdoor_temperature" in status:
-            self._outdoor_temperature = status["outdoor_temperature"]
-            result = True
-        if "eco_mode" in status:
-            self._eco_mode = self._dm.get_status("eco_mode")
-            result = True
-        if "comfort_mode" in status:
-            self._comfort_mode = self._dm.get_status("comfort_mode")
-            result = True
-        if "indirect_wind" in status:
-            self._indirect_wind = self._dm.get_status("indirect_wind")
-            result = True
-        if "prompt_tone" in status:
-            self._prompt_tone = self._dm.get_status("prompt_tone")
-            result = True
-        if "aux_heat" in status:
-            self._aux_heat = self._dm.get_status("aux_heat")
-            result = True
-        return result
-
     def update_state(self, status):
-        if self._update_state(status):
+        try:
             self.schedule_update_ha_state()
-    '''
-    def update_state(self, status):
-        if self._entity_key in status or "available" in status:
-            self.async_write_ha_state()
+        except AttributeError:
+            pass
     
     @property
     def extra_state_attributes(self) -> dict:

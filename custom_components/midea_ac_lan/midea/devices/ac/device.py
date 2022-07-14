@@ -45,7 +45,7 @@ class MideaACDevice(MiedaDevice):
 
     def process_message(self, msg):
         message = MessageACResponse(msg)
-        _LOGGER.debug(f"Received from [{self.device_id}]: {message}")
+        _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in MessageStatus.__members__:
             if hasattr(message, status):
