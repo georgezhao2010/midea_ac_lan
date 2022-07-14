@@ -6,53 +6,58 @@ from homeassistant.const import (
 )
 
 MIDEA_ENTITIES = {
-    "climate": {
-        "type": "climate",
-        "icon": "hass:air-conditioner",
-        "should_poll": False
+    0xac: {
+        "name": "Midea Air-conditioner",
+        "entities": {
+            "climate": {
+                "type": "climate",
+                "icon": "hass:air-conditioner"
+            },
+            "swing_horizontal": {
+                "type": "switch",
+                "name": "Swing Horizontal",
+                "icon": "hass:arrow-split-vertical"
+            },
+            "swing_vertical": {
+                "type": "switch",
+                "name": "Swing Vertical",
+                "icon": "hass:arrow-split-horizontal"
+            },
+            "eco_mode": {
+                "type": "switch",
+                "name": "ECO Mode",
+                "icon": "hass:alpha-e-circle"
+            },
+            "comfort_mode": {
+                "type": "switch",
+                "name": "Comfort Mode",
+                "icon": "hass:alpha-c-circle"
+            },
+            "indirect_wind": {
+                "type": "switch",
+                "name": "Indirect Wind",
+                "icon": "hass:weather-windy"
+            },
+            "prompt_tone": {
+                "type": "switch",
+                "name": "Prompt Tone",
+                "icon": "hass:bell"
+            },
+            "outdoor_temperature": {
+                "type": "sensor",
+                "name": "Temperature Outdoor",
+                "device_class": DEVICE_CLASS_TEMPERATURE
+            }
+        }
     },
-    "swing_horizontal": {
-        "type": "switch",
-        "name": "Swing Horizontal",
-        "icon": "hass:arrow-split-vertical",
-        "should_poll": False
-    },
-    "swing_vertical": {
-        "type": "switch",
-        "name": "Swing Vertical",
-        "icon": "hass:arrow-split-horizontal",
-        "should_poll": False
-    },
-    "eco_mode": {
-        "type": "switch",
-        "name": "ECO Mode",
-        "icon": "hass:alpha-e-circle",
-        "should_poll": False
-    },
-    "comfort_mode": {
-        "type": "switch",
-        "name": "Comfort Mode",
-        "icon": "hass:alpha-c-circle",
-        "should_poll": False
-    },
-    "indirect_wind": {
-        "type": "switch",
-        "name": "Indirect Wind",
-        "icon": "hass:weather-windy",
-        "should_poll": False
-    },
-    "prompt_tone": {
-        "type": "switch",
-        "name": "Prompt Tone",
-        "icon": "hass:bell",
-        "should_poll": True
-    },
-    "outdoor_temperature": {
-        "type": "sensor",
-        "name": "Temperature Outdoor",
-        "unit": TEMP_CELSIUS,
-        "device_class": DEVICE_CLASS_TEMPERATURE,
-        "should_poll": False
+    0xcc: {
+        "name": "Midea AC control panel (not real support yet)",
+        "entities": {
+            "climate": {
+                "type": "climate",
+                "icon": "hass:air-conditioner"
+            }
+        }
     }
 }
 
@@ -60,19 +65,18 @@ MIDEA_ENTITIES = {
 class MideaEntity(Entity):
     def __init__(self, device, entity_key: str):
         self._device = device
-        # self._dm.add_update(self.update_state)
         self._device.register_update(self.update_state)
-        self._config = MIDEA_ENTITIES[entity_key]
+        self._config = MIDEA_ENTITIES[self._device.device_type]["entities"][entity_key]
         self._entity_key = entity_key
         self._unique_id = f"{DOMAIN}.{self._device.device_id}_{entity_key}"
         self.entity_id = self._unique_id
         self._available = True
-        self._device_name = f"Midea AC {self._device.device_id}"
+        self._device_name = f"Midea {self._device.device_id}"
         self._device_info = {
             "manufacturer": "Midea",
             "model": self._device.model,
             "identifiers": {(DOMAIN, self._device.device_id)},
-            "name": self._device_name
+            "name": MIDEA_ENTITIES[self._device.device_type]["name"]
         }
 
     @property
@@ -112,20 +116,9 @@ class MideaEntity(Entity):
     def icon(self):
         return self._config.get("icon")
 
-    '''
-    def _update_state(self, status):
-        result = False
-        if self._available != status.get("available"):
-            self._available = status.get("available")
-            result = True
-        if self._entity_key in status:
-            value = status[self._entity_key]
-            if value != self._state:
-                self._state = value
-                result = True
-        return result
-    '''
     def update_state(self, status):
         if self._entity_key in status or "available" in status:
-            self.async_write_ha_state()
-        # self.schedule_update_ha_state()
+            try:
+                self.schedule_update_ha_state()
+            except AttributeError:
+                pass

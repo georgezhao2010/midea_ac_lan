@@ -50,6 +50,7 @@ def discover(discover_type=None):
         while True:
             data, addr = sock.recvfrom(512)
             ip = addr[0]
+            _LOGGER.debug(f"Received broadcast from {addr}: {data.hex()}")
             if len(data) >= 104 and (data[:2].hex() == "5a5a" or data[8:10].hex() == "5a5a"):
                 if data[:2].hex() == "5a5a":
                     protocol = 2

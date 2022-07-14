@@ -13,27 +13,36 @@ class MessageCheckSumError(Exception):
 
 
 class NewProtocolParamPack:
-    def __init__(self, param, value: bytearray, length=1):
+    def __init__(self, param, value: bytearray, length=1, pack_len=4):
         self._param = param
         self._length = length
         self._value = value
+        self._pack_len = pack_len
 
     def serialize(self):
-        stream = bytearray([
-            self._param,
-            self._length >> 8,
-            self._length & 0xFF,
-        ])
-        stream.extend(self._value)
+        if self._pack_len == 4:
+            stream = bytearray([self._param >> 8, self._param & 0xFF, self._length]) + self._value
+        else:
+            stream = bytearray([self._param >> 8, self._param & 0xFF, 00, self._length]) + self._value
         return stream
 
     @property
     def value(self):
         return self._value
 
-
-class NewProtocolParamParser:
-    pass
+    @staticmethod
+    def parse(stream, pack_len=5):
+        result = {}
+        pos = 1
+        for pack in range(0, stream[0]):
+            param = stream[pos] << 8 + stream[pos + 1]
+            if pack_len == 5:
+                pos += 1
+            length = stream[pos + 2]
+            value = stream[pos + 3: pos + 3 + length]
+            result[param] = value
+            pos += (3 + length)
+        return result
 
 
 class MessageBase:
@@ -113,7 +122,6 @@ class MessageRequest(MessageBase):
         stream = self.header + self.payload
         stream.append(calculate(self.payload))
         stream.append(MessageBase.checksum(stream[1:]))
-        _LOGGER.debug(f"Message {stream.hex()} serialized")
         return stream
 
 

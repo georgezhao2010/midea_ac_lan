@@ -11,7 +11,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
     sensors = []
-    for entity_key, config in MIDEA_ENTITIES.items():
+    for entity_key, config in MIDEA_ENTITIES[device.device_type]["entities"].items():
         if config["type"] == "sensor":
             sensor = ACSwitch(device, entity_key)
             sensors.append(sensor)

@@ -35,7 +35,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         device_type = 0xac
     token = config_entry.data.get(CONF_TOKEN)
     key = config_entry.data.get(CONF_KEY)
-    make_switch = config_entry.data.get(CONF_MAKE_SWITCH)
     host = config_entry.data.get(CONF_HOST)
     port = config_entry.data.get(CONF_PORT)
     model = config_entry.data.get(CONF_MODEL)
@@ -66,13 +65,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         if DEVICES not in hass.data[DOMAIN]:
             hass.data[DOMAIN][DEVICES] = {}
         hass.data[DOMAIN][DEVICES][device_id] = device
-        if make_switch:
-            for platform in DEVICE_TYPES:
-                hass.async_create_task(hass.config_entries.async_forward_entry_setup(
-                    config_entry, platform))
-        else:
+        for platform in DEVICE_TYPES:
             hass.async_create_task(hass.config_entries.async_forward_entry_setup(
-                config_entry, "climate"))
+                config_entry, platform))
         return True
     return False
 

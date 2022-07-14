@@ -157,7 +157,6 @@ class Security:
     def encryptPassword(self, loginId, data):
         m = sha256()
         m.update(data.encode("ascii"))
-
         loginHash = loginId + m.hexdigest() + self._loginKey
         m = sha256()
         m.update(loginHash.encode("ascii"))
@@ -173,16 +172,11 @@ class Security:
         login_hash = loginId + md_second.hexdigest() + self._loginKey
         sha = sha256()
         sha.update(login_hash.encode("ascii"))
-
         return sha.hexdigest()
 
     @staticmethod
     def get_udpid(data):
-        b = sha256(data).digest()
-        b1, b2 = b[:16], b[16:]
-        b3 = bytearray(16)
-        i = 0
-        while i < len(b1):
-            b3[i] = b1[i] ^ b2[i]
-            i += 1
-        return b3.hex()
+        data = bytearray(sha256(data).digest())
+        for i in range(0, 16):
+            data[i] ^= data[i + 16]
+        return data[0: 16].hex()
