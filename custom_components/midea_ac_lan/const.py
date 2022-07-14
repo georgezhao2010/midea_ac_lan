@@ -1,6 +1,6 @@
 DOMAIN = "midea_ac_lan"
 COMPONENT = "component"
-MANAGERS = "managers"
+DEVICE = "device"
 DEVICES = "devices"
 CONF_KEY = "key"
 CONF_MODEL = "model"
@@ -13,3 +13,4 @@ FAN_FULL_SPEED = "full speed"
 
 MIDEA_DEFAULT_ACCOUNT = 'b99226f1659e9308@hotmail.com'
 MIDEA_DEFAULT_PASSWORD = '_d0e4e9546a738d_'
+MIDEA_DEFAULT_SERVER = "not_cn"

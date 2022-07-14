@@ -1,23 +1,21 @@
 from .midea_entity import MideaEntity, MIDEA_ENTITIES
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import (
-    CONF_DEVICE_ID
-)
+from homeassistant.const import CONF_DEVICE_ID
 from .const import (
     DOMAIN,
-    MANAGERS
+    DEVICES
 )
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
-    dm = hass.data[DOMAIN][MANAGERS].get(device_id)
-    devices = []
+    device = hass.data[DOMAIN][DEVICES].get(device_id)
+    sensors = []
     for entity_key, config in MIDEA_ENTITIES.items():
         if config["type"] == "sensor":
-            dev = ACSwitch(dm, entity_key)
-            devices.append(dev)
-    async_add_entities(devices)
+            sensor = ACSwitch(device, entity_key)
+            sensors.append(sensor)
+    async_add_entities(sensors)
 
 
 class ACSwitch(MideaEntity, SensorEntity):

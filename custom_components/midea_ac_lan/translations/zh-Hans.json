@@ -30,6 +30,7 @@
             "manual": {
                 "data": {
                     "device_id": "设备编号",
+                    "device_type": "设备类型",
                     "host": "地址",
                     "port": "端口",
                     "model": "型号",
