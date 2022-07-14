@@ -59,11 +59,11 @@ class MiedaDevice(threading.Thread):
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.settimeout(10)
             self._socket.connect((self._host, self._port))
-            _LOGGER.debug(f"Device [{self._device_id}] connected at socket {self._socket}")
+            _LOGGER.debug(f"[{self._device_id}] connected at socket {self._socket}")
             # auth
             if self._protocol == 3:
                 self.authenticate()
-            _LOGGER.debug(f"Device [{self._device_id}] authenticated")
+            _LOGGER.debug(f"[{self._device_id}] authentication success")
             self.enable_device(True)
             if refresh_status:
                 self.refresh_status(wait_response=True)
@@ -73,18 +73,18 @@ class MiedaDevice(threading.Thread):
         except socket.error:
             pass
         except AuthException:
-            pass
+            _LOGGER.debug(f"[{self._device_id}] authentication failed")
         return False
 
     def authenticate(self):
         request = self._security.encode_8370(
             self._token, MSGTYPE_HANDSHAKE_REQUEST)
-        _LOGGER.debug(f"Device [{self._device_id}] Handshaking")
+        _LOGGER.debug(f"[{self._device_id}] Handshaking")
         self._socket.send(request)
         response = self._socket.recv(512)
         if len(response) < 20:
             raise AuthException()
-        _LOGGER.debug(f"Device [{self._device_id}] Handshake completed")
+        _LOGGER.debug(f"[{self._device_id}] Handshake completed")
         response = response[8: 72]
         self._security.tcp_key(response, self._key)
 
@@ -104,7 +104,7 @@ class MiedaDevice(threading.Thread):
 
     def build_send(self, cmd):
         data = cmd.serialize()
-        _LOGGER.debug(f"Send to device [{self._device_id}]: {cmd}")
+        _LOGGER.debug(f"Send to [{self._device_id}]: {cmd}")
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
@@ -174,7 +174,7 @@ class MiedaDevice(threading.Thread):
     def run(self):
         while self._is_run:
             while self._socket is None:
-                _LOGGER.debug(f"Device [{self._device_id}] ready to re-open device")
+                _LOGGER.debug(f"[{self._device_id}] ready to open")
                 if self.connect(True) is False:
                     if not self._is_run:
                         return
@@ -188,16 +188,16 @@ class MiedaDevice(threading.Thread):
                     msg = self._socket.recv(512)
                     msg_len = len(msg)
                     if msg_len == 0:
-                        raise socket.error("Zero-length received")
+                        raise socket.error("zero-length received")
                     timeout_counter = 0
                     if not self.parse_message(msg):
-                        _LOGGER.debug(f"Device [{self._device_id}] b'ERROR' message received, reconnecting")
+                        _LOGGER.debug(f"[{self._device_id}] b'ERROR' message received, reconnecting")
                         self.close_socket()
                         break
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
                     if timeout_counter >= 10:
-                        _LOGGER.debug(f"Device [{self._device_id}] heartbeat timed out detected, reconnecting")
+                        _LOGGER.debug(f"[{self._device_id}] heartbeat timed out detected, reconnecting")
                         self.close_socket()
                         break
                     self.send_heartbeat()
@@ -207,11 +207,11 @@ class MiedaDevice(threading.Thread):
                     else:
                         counter = counter + 1
                 except socket.error as e:
-                    _LOGGER.debug(f"Device [{self._device_id}] except socket.error {e} raised in socket.recv()")
+                    _LOGGER.debug(f"[{self._device_id}] except socket.error {e} raised in socket.recv()")
                     self.close_socket()
                     break
                 except Exception as e:
-                    _LOGGER.debug(f"Device [{self._device_id}] except {e} raised")
+                    _LOGGER.debug(f"[{self._device_id}] except {e} raised")
                     self.close_socket()
                     break
             self.enable_device(False)

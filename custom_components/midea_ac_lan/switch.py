@@ -4,7 +4,7 @@ from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.const import (
     STATE_ON,
     STATE_OFF,
-    DEVICE_ID,
+    CONF_DEVICE_ID,
 )
 from .const import (
     DOMAIN,
@@ -15,7 +15,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    device_id = config_entry.data.get(DEVICE_ID)
+    device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
     switches = []
     for entity_key, config in MIDEA_ENTITIES.items():

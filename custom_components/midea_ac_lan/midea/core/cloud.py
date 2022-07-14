@@ -64,7 +64,7 @@ class MideaCloud:
             with self._api_lock:
                 r = await self.session.request("POST", url, headers=headers, data=json.dumps(data))
                 raw = await r.read()
-                _LOGGER.debug(f"Response: {raw}")
+                _LOGGER.debug(f"Endpoint: {endpoint}, Response: {str(raw)}")
                 response = json.loads(raw)
         except Exception as e:
             response = {"code": -1}

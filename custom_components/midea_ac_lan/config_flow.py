@@ -63,7 +63,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_discover(self, user_input=None, error=None):
         if user_input is not None:
             self.devices = discover(SUPPORTS_TYPE.keys())
-            _LOGGER.debug(f"Devices found: {self.devices}")
             self.available_device = []
             for device_id, device in self.devices.items():
                 if not self._already_configured(device_id):
