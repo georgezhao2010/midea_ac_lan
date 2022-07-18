@@ -132,5 +132,9 @@ class MideaEntity(Entity):
         return result
 
     def update_state(self, status):
-        if self._update_state(status):
-            self.schedule_update_ha_state()
+        try:
+            if self._update_state(status):
+                self.schedule_update_ha_state()
+        except Exception:
+            pass
+

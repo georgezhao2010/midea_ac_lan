@@ -353,10 +353,6 @@ class MideaClimate(MideaEntity, ClimateEntity):
             result = True
         return result
 
-    def update_state(self, status):
-        if self._update_state(status):
-            self.schedule_update_ha_state()
-
     @property
     def extra_state_attributes(self) -> dict:
         ret = {

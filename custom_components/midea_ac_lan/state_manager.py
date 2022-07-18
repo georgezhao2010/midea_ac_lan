@@ -66,19 +66,17 @@ class DeviceManager(threading.Thread):
 
         while self._is_run:
             while self._socket is None:
-                _LOGGER.debug(f"Device [{self._device_id}] ready to re-open device")
+                _LOGGER.debug(f"Device [{self._device_id}] ready to open device")
                 if self.open(False) is False:
                     self.enable_devices(False)
                     time.sleep(10)
                 if not self._is_run:
-                    _LOGGER.debug(f"Device [{self._device_id}] thread existing")
                     if self._socket is not None:
                         self._socket.close()
                         self._socket = None
                     break
             counter = 0
             timeout_counter = 0
-            _LOGGER.debug(f"Device [{self._device_id}] ready to receive loop")
             while self._is_run:
                 try:
                     msg = self._socket.recv(512)
@@ -95,12 +93,12 @@ class DeviceManager(threading.Thread):
                         break
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
-                    if timeout_counter >= 10:
+                    if timeout_counter >= 12:
                         _LOGGER.debug(f"Device [{self._device_id}] heartbeat timed out detected, reconnecting")
                         self._close()
                         break
                     self.send_heartbeat()
-                    if counter >= 5:
+                    if counter >= 6:
                         self.refresh_status()
                         counter = 0
                     else:
@@ -151,7 +149,6 @@ class DeviceManager(threading.Thread):
             else:
                 if message == b'ERROR':
                     return False
-                _LOGGER.debug(f"Device [{self._device_id}] heartbeat detected")
         return True
 
     def parse_message(self, parser: MessageParser):
@@ -188,8 +185,7 @@ class DeviceManager(threading.Thread):
                 "comfort_mode": self._status.comfort_mode,
                 "eco_mode": self._status.eco_mode,
                 "aux_heat": self._status.aux_heat,
-                "temp_fahrenheit": self._status.temp_fahrenheit,
-                "indirect_wind": self._status.indirect_wind,
+                "temp_fahrenheit": self._status.temp_fahrenheit
             })
         elif parser.msg_type == 0x4A1:
             self._status.indoor_temperature = parser.indoor_temperature
@@ -226,7 +222,6 @@ class DeviceManager(threading.Thread):
                 "comfort_mode":  self._status.comfort_mode,
                 "eco_mode":  self._status.eco_mode,
                 "aux_heat": self._status.aux_heat,
-                "indirect_wind": self._status.indirect_wind,
             })
         elif parser.msg_type == 0x5B5 or parser.msg_type == 0x2B0:
             self._status.indirect_wind = parser.indirect_wind
