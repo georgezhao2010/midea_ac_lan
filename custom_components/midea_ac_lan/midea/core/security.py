@@ -57,10 +57,10 @@ class Security:
         return encrypted
 
     def aes_cbc_decrypt(self, raw, key):
-        return AES.new(key, AES.MODE_CBC, iv=self.iv).decrypt(raw)
+        return AES.new(key=key, mode=AES.MODE_CBC, iv=self.iv).decrypt(raw)
 
     def aes_cbc_encrypt(self, raw, key):
-        return AES.new(key, AES.MODE_CBC, iv=self.iv).encrypt(raw)
+        return AES.new(key=key, mode=AES.MODE_CBC, iv=self.iv).encrypt(raw)
 
     def enc_key(self):
         return md5(self.signKey).digest()
@@ -100,7 +100,7 @@ class Security:
         self._request_count += 1
         if msgtype in (MSGTYPE_ENCRYPTED_RESPONSE, MSGTYPE_ENCRYPTED_REQUEST):
             sign = sha256(header + data).digest()
-            data = self.aes_cbc_encrypt(data, self._tcp_key) + sign
+            data = self.aes_cbc_encrypt(raw=data, key=self._tcp_key) + sign
         return header + data
 
     def decode_8370(self, data):
@@ -124,7 +124,7 @@ class Security:
         if msgtype in (MSGTYPE_ENCRYPTED_RESPONSE, MSGTYPE_ENCRYPTED_REQUEST):
             sign = data[-32:]
             data = data[:-32]
-            data = self.aes_cbc_decrypt(data, self._tcp_key)
+            data = self.aes_cbc_decrypt(raw=data, key=self._tcp_key)
             if sha256(header + data).digest() != sign:
                 raise Exception("sign does not match")
             if padding:

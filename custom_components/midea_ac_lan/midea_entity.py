@@ -1,8 +1,10 @@
 from .const import DOMAIN
 from homeassistant.helpers.entity import Entity
 from homeassistant.const import (
+    DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_HUMIDITY,
     TEMP_CELSIUS,
-    DEVICE_CLASS_TEMPERATURE
+    PERCENTAGE
 )
 
 MIDEA_ENTITIES = {
@@ -11,42 +13,100 @@ MIDEA_ENTITIES = {
         "entities": {
             "climate": {
                 "type": "climate",
-                "icon": "hass:air-conditioner"
-            },
-            "swing_horizontal": {
-                "type": "switch",
-                "name": "Swing Horizontal",
-                "icon": "hass:arrow-split-vertical"
-            },
-            "swing_vertical": {
-                "type": "switch",
-                "name": "Swing Vertical",
-                "icon": "hass:arrow-split-horizontal"
-            },
-            "eco_mode": {
-                "type": "switch",
-                "name": "ECO Mode",
-                "icon": "hass:alpha-e-circle"
-            },
-            "comfort_mode": {
-                "type": "switch",
-                "name": "Comfort Mode",
-                "icon": "hass:alpha-c-circle"
-            },
-            "indirect_wind": {
-                "type": "switch",
-                "name": "Indirect Wind",
-                "icon": "hass:weather-windy"
+                "icon": "mdi:air-conditioner"
             },
             "prompt_tone": {
                 "type": "switch",
                 "name": "Prompt Tone",
-                "icon": "hass:bell"
+                "icon": "mdi:bell"
+            },
+            "swing_vertical": {
+                "type": "switch",
+                "name": "Swing Vertical",
+                "icon": "mdi:arrow-split-horizontal"
+            },
+            "swing_horizontal": {
+                "type": "switch",
+                "name": "Swing Horizontal",
+                "icon": "mdi:arrow-split-vertical"
+            },
+            "strong_mode": {
+                "type": "switch",
+                "name": "Strong mode",
+                "icon": "mdi:alpha-s-circle"
+            },
+            "smart_eye": {
+                "type": "switch",
+                "name": "Smart eye",
+                "icon": "mdi:eye"
+            },
+            "dry": {
+                "type": "switch",
+                "name": "Dry",
+                "icon": "mdi:air-filter"
+            },
+            "eco_mode": {
+                "type": "switch",
+                "name": "ECO Mode",
+                "icon": "mdi:alpha-e-circle"
+            },
+            "aux_heat": {
+                "type": "switch",
+                "name": "Aux Heat",
+                "icon": "mdi:heat-wave"
+            },
+            "sleep_mode": {
+                "type": "switch",
+                "name": "Sleep Mode",
+                "icon": "mdi:power-sleep"
+            },
+            "turbo_mode": {
+                "type": "switch",
+                "name": "Turbo Mode",
+                "icon": "mdi:alpha-t-circle"
+            },
+            "night_light": {
+                "type": "switch",
+                "name": "Night Light",
+                "icon": "mdi:lightbulb"
+            },
+            "natural_wind": {
+                "type": "switch",
+                "name": "Natural Wind",
+                "icon": "mdi:tailwind"
+            },
+            "comfort_mode": {
+                "type": "switch",
+                "name": "Comfort Mode",
+                "icon": "mdi:alpha-c-circle"
+            },
+            "indirect_wind": {
+                "type": "switch",
+                "name": "Indirect Wind",
+                "icon": "mdi:tailwind"
+            },
+            "breezyless":{
+                "type": "switch",
+                "name": "Breezyless",
+                "icon": "mdi:tailwind"
+            },
+            "indoor_humidity": {
+                "type": "sensor",
+                "name": "Humidity Indoor",
+                "device_class": DEVICE_CLASS_HUMIDITY,
+                "unit": PERCENTAGE
+            },
+            "indoor_temperature": {
+                "type": "sensor",
+                "name": "Temperature Indoor",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS
             },
             "outdoor_temperature": {
                 "type": "sensor",
                 "name": "Temperature Outdoor",
-                "device_class": DEVICE_CLASS_TEMPERATURE
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS
             }
         }
     },
@@ -96,10 +156,6 @@ class MideaEntity(Entity):
         return getattr(self._device, self._entity_key)
 
     @property
-    def device_class(self):
-        return self._config.get("device_class")
-
-    @property
     def name(self):
         return f"{self._device_name} {self._config.get('name')}" if "name" in self._config \
             else self._device_name
@@ -109,10 +165,6 @@ class MideaEntity(Entity):
         return self._device.available
 
     @property
-    def unit_of_measurement(self):
-        return self._config.get("unit")
-
-    @property
     def icon(self):
         return self._config.get("icon")
 
@@ -120,5 +172,5 @@ class MideaEntity(Entity):
         if self._entity_key in status or "available" in status:
             try:
                 self.schedule_update_ha_state()
-            except AttributeError:
+            except Exception:
                 pass

@@ -1,4 +1,5 @@
 import threading
+from enum import Enum
 from .security import Security, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
 import socket
@@ -13,6 +14,10 @@ class AuthException(Exception):
 
 
 class ResponseException(Exception):
+    pass
+
+
+class DeviceProperties(Enum):
     pass
 
 
@@ -73,9 +78,9 @@ class MiedaDevice(threading.Thread):
                 self.refresh_status(wait_response=True)
             return True
         except socket.timeout:
-            pass
+            _LOGGER.debug(f"[{self._device_id}] Connection timed out")
         except socket.error:
-            pass
+            _LOGGER.debug(f"[{self._device_id}] Connection error")
         except AuthException:
             _LOGGER.debug(f"[{self._device_id}] Authentication failed")
         return False
@@ -88,7 +93,6 @@ class MiedaDevice(threading.Thread):
         response = self._socket.recv(512)
         if len(response) < 20:
             raise AuthException()
-        _LOGGER.debug(f"[{self._device_id}] Handshake completed")
         response = response[8: 72]
         self._security.tcp_key(response, self._key)
 
@@ -108,20 +112,19 @@ class MiedaDevice(threading.Thread):
 
     def build_send(self, cmd):
         data = cmd.serialize()
-        _LOGGER.debug(f"[{self._device_id}] Send: {cmd}")
+        _LOGGER.debug(f"[{self._device_id}] Sending: {cmd}")
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
     def refresh_status(self, wait_response=False):
-        cmd = self.build_query()
-        self.build_send(cmd)
-        if wait_response:
-            msg = self._socket.recv(512)
-            msg_len = len(msg)
-            if msg_len == 0:
-                raise socket.error
-            if not self.parse_message(msg):
-                raise ResponseException
+        cmds = self.build_query()
+        for cmd in cmds:
+            self.build_send(cmd)
+            if wait_response:
+                msg = self._socket.recv(512)
+                if len(msg) > 0:
+                    if not self.parse_message(msg):
+                        raise ResponseException
 
     def parse_message(self, msg):
         if self._protocol == 3:
@@ -129,7 +132,7 @@ class MiedaDevice(threading.Thread):
         else:
             messages = [msg]
         for message in messages:
-            if len(message) > 40 + 16 + 16 and message[3] != 0x10 and message[3] != 0x00:  # Heartbeat of V3
+            if len(message) > 40 + 16 + 16 and message[3] != 0x10 and message[3] != 0x00:  # Heartbeat of V3 or V2
                 message = self._security.aes_decrypt(message[40:-16])
                 self.process_message(message)
             else:
@@ -178,7 +181,6 @@ class MiedaDevice(threading.Thread):
     def run(self):
         while self._is_run:
             while self._socket is None:
-                _LOGGER.debug(f"[{self._device_id}] Ready to open")
                 if self.connect(True) is False:
                     if not self._is_run:
                         return
@@ -211,13 +213,21 @@ class MiedaDevice(threading.Thread):
                     else:
                         counter = counter + 1
                 except socket.error as e:
-                    _LOGGER.debug(f"[{self._device_id}] Except socket.error {e} raised in socket.recv()")
+                    _LOGGER.debug(f"[{self._device_id}] Socket error {e} raised")
                     self.close_socket()
                     break
                 except Exception as e:
-                    _LOGGER.debug(f"[{self._device_id}] Except {e} raised")
+                    _LOGGER.debug(f"[{self._device_id}] Error {e} raised")
                     self.close_socket()
                     break
             self.enable_device(False)
 
+    @property
+    def attributes(self):
+        ret = {}
+        for status in DeviceProperties.__members__:
+            if hasattr(self, status):
+                ret[status] = getattr(self, status)
+
+        return ret
 

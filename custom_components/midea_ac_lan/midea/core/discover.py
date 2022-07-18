@@ -60,11 +60,14 @@ def discover(discover_type=None):
                         data = data[8:-16]
                 else:
                     continue
+
+                original = data[20:26].hex()
                 device_id = int.from_bytes(bytes.fromhex(data[20:26].hex()), "little")
                 if device_id in found_devices:
                     continue
                 encrypt_data = data[40:-16]
                 reply = security.aes_decrypt(encrypt_data)
+                _LOGGER.debug(f"Reply = {reply.hex()}")
                 ssid = reply[41:41 + reply[40]].decode("utf-8")
                 device_type = ssid.split("_")[1]
                 port = bytes2port(reply[4:8])
@@ -79,7 +82,7 @@ def discover(discover_type=None):
                 port, sn, device_type = int(m["port"]), m["apc_sn"], str(
                     hex(int(m["apc_type"])))[2:]
                 response = get_device_info(ip, int(port))
-                device_id = get_id_from_response(response)
+                device_id, original = get_id_from_response(response)
                 if len(sn) == 32:
                     model = sn[12:17]
                 elif len(sn) == 22:
@@ -88,6 +91,8 @@ def discover(discover_type=None):
                     model = ""
             else:
                 continue
+
+            _LOGGER.debug(f"Device ID original = {original}")
             device = {
                 "device_id": device_id,
                 "device_type": int(device_type, 16),
@@ -112,9 +117,9 @@ def get_id_from_response(response):
         root = ET.fromstring(xml.decode(encoding="utf-8", errors="replace"))
         child = root.find("smartDevice")
         m = child.attrib
-        return int.from_bytes(bytearray.fromhex(m["devId"]), "little")
+        return int.from_bytes(bytearray.fromhex(m["devId"]), "little"), m["devId"]
     else:
-        return 0
+        return 0, None
 
 
 def bytes2port(paramArrayOfbyte):
