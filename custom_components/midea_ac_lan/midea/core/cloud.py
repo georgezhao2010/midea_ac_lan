@@ -116,7 +116,9 @@ class MideaCloud:
             udpid = Security.get_udpid(device_id.to_bytes(6, "big"))
         else:
             udpid = Security.get_udpid(device_id.to_bytes(6, "little"))
-
+        _LOGGER.debug(f"The udpid of deivce [{device_id}] generated "
+                      f"with byte order '{'big' if byte_order_big else 'little'}': "
+                      f"{udpid}")
         response = await self.api_request(
             "/v1/iot/secure/getToken",
             {"udpid": udpid}

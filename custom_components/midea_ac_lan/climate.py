@@ -1,10 +1,7 @@
 import logging
 from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
-import voluptuous as vol
-import homeassistant.helpers.config_validation as cv
 from homeassistant.const import (
-    ATTR_ENTITY_ID,
     TEMP_CELSIUS,
     TEMP_FAHRENHEIT,
     PRECISION_HALVES,
@@ -28,45 +25,6 @@ from .midea_entity import MideaEntity
 
 _LOGGER = logging.getLogger(__name__)
 
-SERVICES = {
-    "set_fan_speed": {
-        "method": "set_fan_speed",
-        "schema": vol.Schema({
-            vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("fan_speed"): vol.Any(vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
-                                               vol.All(str, vol.In([FAN_AUTO])))
-        })
-    },
-    "set_eco_mode": {
-        "method": "set_eco_mode",
-        "schema": vol.Schema({
-            vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("eco_mode"): cv.boolean
-        })
-    },
-    "set_comfort_mode": {
-        "method": "set_comfort_mode",
-        "schema": vol.Schema({
-            vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("comfort_mode"): cv.boolean
-        })
-    },
-    "set_prompt_tone": {
-        "method": "set_prompt_tone",
-        "schema": vol.Schema({
-            vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("prompt_tone"): cv.boolean
-        })
-    },
-    "set_indirect_wind": {
-        "method": "set_indirect_wind",
-        "schema": vol.Schema({
-            vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-            vol.Required("indirect_wind"): cv.boolean
-        })
-    },
-}
-
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
@@ -78,33 +36,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     #      climate = MideaCCDevice(device)
     if climate:
         async_add_entities([climate])
-
-    def service_handler(service):
-        service_call_data = SERVICES.get(service.service)
-        params = {
-            key: value for key, value in service.data.items() if key != ATTR_ENTITY_ID
-        }
-        entity_ids = service.data.get(ATTR_ENTITY_ID)
-        devices = []
-        if entity_ids:
-            devices = [
-                dev
-                for dev in hass.data[DOMAIN][DEVICES].values()
-                if device.entity_id in entity_ids
-            ]
-
-        for dev in devices:
-            if dev and hasattr(dev, service_call_data["method"]):
-                getattr(dev, service_call_data["method"])(**params)
-
-    for service_name, service_data in SERVICES.items():
-        schema = service_data.get("schema")
-        hass.services.async_register(
-            DOMAIN,
-            service_name,
-            service_handler,
-            schema=schema
-        )
 
 
 class MideaACClimate(MideaEntity, ClimateEntity):
@@ -260,19 +191,10 @@ class MideaACClimate(MideaEntity, ClimateEntity):
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()
-        except AttributeError:
+        except Exception:
             pass
     
     @property
     def extra_state_attributes(self) -> dict:
-        ret = {
-            "eco_mode": "on" if self._device.eco_mode else "off",
-            "comfort_mode": "on" if self._device.comfort_mode else "off",
-            "indirect_wind": "on" if self._device.indirect_wind else "off",
-            "prompt_tone": "on" if self._device.prompt_tone else "off",
-            "fan_speed": "auto" if self._device.fan_speed > 100 else self._device.fan_speed,
-            "swing_horizontal": self._device.swing_horizontal,
-            "swing_vertical": self._device.swing_vertical
-        }
-        return ret
+        return self._device.attributes
 
