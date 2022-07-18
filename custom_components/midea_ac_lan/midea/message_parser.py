@@ -101,7 +101,7 @@ class X03XC0Message(XAAMessage):
 
     @property
     def outdoor_temperature(self):
-        return int((self._body[12] - 50) / 2) + ((self._body[15] & 0xF0) >> 4) * 0.1
+        return 0.0 if self._body[12] == 0xFF else int((self._body[12] - 50) / 2) + ((self._body[15] & 0xF0) >> 4) * 0.1
 
     @property
     def comfort_mode(self):
@@ -118,10 +118,6 @@ class X03XC0Message(XAAMessage):
     @property
     def temp_fahrenheit(self):
         return (self._body[10] & 0x04) > 0
-
-    @property
-    def indirect_wind(self):
-        return (self._body[14] & 0x10) > 0 if len(self._body) > 14 else False
 
 
 class X04XA1Message(XAAMessage):
@@ -190,10 +186,6 @@ class X05XA0Message(XAAMessage):
     @property
     def aux_heat(self):
         return (self._body[9] & 0x08) > 0
-
-    @property
-    def indirect_wind(self):
-        return (self._body[14] & 0x10) > 0
 
 
 class X05XB5Message(XAAMessage):
