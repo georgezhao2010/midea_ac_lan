@@ -119,7 +119,6 @@ class MideaACDevice(MiedaDevice):
         message.night_light = self._night_light
         message.natural_wind = self._natural_wind
         message.temp_fahrenheit = self.temp_fahrenheit
-        message.screen_display = self.screen_display
         message.comfort_mode = self.comfort_mode
         return message
 
