@@ -2,16 +2,23 @@ import logging
 from .const import (
     DOMAIN,
     CONF_KEY,
-    CONF_MAKE_SWITCH,
     CONF_MODEL,
     MIDEA_DEFAULT_ACCOUNT,
     MIDEA_DEFAULT_PASSWORD,
     MIDEA_DEFAULT_SERVER
 )
 from homeassistant import config_entries
+from homeassistant.core import callback
 from homeassistant.const import (
-    CONF_DEVICE, CONF_TOKEN, CONF_DEVICE_ID, CONF_TYPE,
-    CONF_HOST, CONF_PROTOCOL, CONF_PORT
+    CONF_DEVICE,
+    CONF_TOKEN,
+    CONF_DEVICE_ID,
+    CONF_TYPE,
+    CONF_HOST,
+    CONF_PROTOCOL,
+    CONF_PORT,
+    CONF_SWITCHES,
+    CONF_SENSORS,
 )
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .midea.core.discover import discover
@@ -19,6 +26,7 @@ from .midea.core.cloud import MideaCloud
 from .midea.core.device import MiedaDevice
 from .midea_entity import MIDEA_ENTITIES
 import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -211,4 +219,46 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ): str,
             }),
             errors={"base": error} if error else None
+        )
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        return OptionsFlowHandler(config_entry)
+
+
+class OptionsFlowHandler(config_entries.OptionsFlow):
+    def __init__(self, config_entry: config_entries.ConfigEntry):
+        self.config_entry = config_entry
+
+    async def async_step_init(self, user_input=None):
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+        device_type = self.config_entry.data.get(CONF_TYPE)
+        sensors = {}
+        switches = {}
+        for attribute, attribute_config in MIDEA_ENTITIES.get(device_type).get("entities").items():
+            if attribute_config.get("type") == "sensor":
+                sensors[attribute] = attribute_config.get("name")
+            elif attribute_config.get("type") == "switch":
+                switches[attribute] = attribute_config.get("name")
+        extra_sensors = self.config_entry.options.get(
+            CONF_SENSORS, []
+        )
+        extra_switches = self.config_entry.options.get(
+            CONF_SWITCHES, []
+        )
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema({
+                vol.Required(
+                    CONF_SENSORS,
+                    default=extra_sensors,
+                ): cv.multi_select(sensors),
+                vol.Required(
+                    CONF_SWITCHES,
+                    default=extra_switches,
+                ): cv.multi_select(switches),
+            })
         )

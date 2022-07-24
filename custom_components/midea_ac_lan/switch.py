@@ -5,6 +5,7 @@ from homeassistant.const import (
     STATE_ON,
     STATE_OFF,
     CONF_DEVICE_ID,
+    CONF_SWITCHES
 )
 from .const import (
     DOMAIN,
@@ -17,9 +18,12 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
+    extra_switches = config_entry.options.get(
+        CONF_SWITCHES, []
+    )
     switches = []
     for entity_key, config in MIDEA_ENTITIES[device.device_type]["entities"].items():
-        if config["type"] == "switch":
+        if config["type"] == "switch" and entity_key in extra_switches:
             dev = ACSwitch(device, entity_key)
             switches.append(dev)
     async_add_entities(switches)

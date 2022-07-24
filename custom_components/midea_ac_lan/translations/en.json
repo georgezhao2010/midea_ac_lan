@@ -42,5 +42,17 @@
                 "title": "New device"
             }
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "Sensors",
+                    "switches": "Switches"
+                },
+                "description": "Make attributes as extra sensors and switches",
+                "title": "Extra entities"
+            }
+        }
     }
 }

@@ -62,7 +62,7 @@ class MessagePowerQuery(MessageRequest):
         ])
 
 
-class MessageToggleDisplay(MessageRequest):
+class MessageSwitchDisplay(MessageRequest):
     def __init__(self):
         super().__init__(
             device_type=0xAC,
@@ -115,13 +115,11 @@ class MessageGeneralSet(MessageRequest):
         self.fan_speed = 102
         self.swing_vertical = False
         self.swing_horizontal = False
-        self.strong_mode = False
+        self.turbo_mode = False
         self.smart_eye = False
         self.dry = False
         self.aux_heat = False
         self.eco_mode = False
-        self.sleep_mode = False
-        self.turbo_mode = False
         self.temp_fahrenheit = False
         self.night_light = False
         self.natural_wind = False
@@ -143,15 +141,13 @@ class MessageGeneralSet(MessageRequest):
                      (0x0c if self.swing_vertical else 0) | \
                      (0x03 if self.swing_horizontal else 0)
         # Byte 8, turbo
-        strong = 0x20 if self.strong_mode else 0
+        turbo_mode = 0x20 if self.turbo_mode else 0
         # Byte 9 aux_heat eco_mode
         smart_eye = 0x01 if self.smart_eye else 0
         dry = 0x04 if self.dry else 0
         aux_heat = 0x08 if self.aux_heat else 0
         eco_mode = 0x80 if self.eco_mode else 0
         # Byte 10 temp_fahrenheit
-        sleep_mode = 0x01 if self.sleep_mode else 0
-        turbo_mode = 0x02 if self.turbo_mode else 0
         temp_fahrenheit = 0x04 if self.temp_fahrenheit else 0
         night_light = 0x10 if self.night_light else 0
         # Byte 17 natural_wind
@@ -165,9 +161,9 @@ class MessageGeneralSet(MessageRequest):
             fan_speed,
             0x00, 0x00, 0x00,
             swing_mode,
-            strong,
+            turbo_mode,
             smart_eye | dry | aux_heat | eco_mode,
-            sleep_mode | turbo_mode | temp_fahrenheit | night_light,
+            temp_fahrenheit | night_light,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00,
             natural_wind,
@@ -188,25 +184,30 @@ class MessageNewProtocolSet(MessageRequest):
 
     @property
     def _body(self):
-        payload = bytearray([0x02])
+        pack_count = 0
+        payload = bytearray([0x00])
         if self.breezyless is not None:
+            pack_count += 1
             payload.extend(
                 NewProtocolParamPack.pack(
                     param=NewProtocolParams.breezyless,
                     value=bytearray([0x01 if self.breezyless else 0x00])
                 ))
         if self.indirect_wind is not None:
+            pack_count += 1
             payload.extend(
                 NewProtocolParamPack.pack(
                     param=NewProtocolParams.indirect_wind,
                     value=bytearray([0x02 if self.indirect_wind else 0x01])
                 ))
         if self.prompt_tone is not None:
+            pack_count += 1
             payload.extend(
                 NewProtocolParamPack.pack(
                     param=NewProtocolParams.prompt_tone,
                     value=bytearray([0x01 if self.prompt_tone else 0x00])
             ))
+        payload[0] = pack_count
         return payload
 
 
@@ -219,15 +220,14 @@ class XA0MessageBody(MessageBody):
         self.fan_speed = body[3] & 0x7f
         self.swing_vertical = (body[7] & 0xC) > 0
         self.swing_horizontal = (body[7] & 0x3) > 0
-        self.strong_mode = (body[8] & 0x20) > 0
+        self.turbo_mode = (body[8] & 0x20) > 0
         self.smart_eye = (body[9] & 0x01) > 0
         self.dry = (body[9] & 0x04) > 0
         self.aux_heat = (body[9] & 0x08) > 0
         self.eco_mode = (body[9] & 0x10) > 0
-        self.sleep_mode = (body[10] & 0x01) > 0
-        self.turbo_mode = (body[10] & 0x02) > 0
         self.night_light = (body[10] & 0x10) > 0
         self.natural_wind = (body[10] & 0x40) > 0
+        self.screen_display = (body[11] & 0x7 != 0x7)
         self.comfort_mode = (body[14] & 0x1) > 0
 
 
@@ -277,14 +277,12 @@ class XC0MessageBody(MessageBody):
         self.fan_speed = body[3] & 0x7f
         self.swing_vertical = (body[7] & 0xC) > 0
         self.swing_horizontal = (body[7] & 0x3) > 0
-        self.strong_mode = (body[8] & 0x20) > 0
+        self.turbo_mode = (body[8] & 0x20) > 0
         self.smart_eye = (body[8] & 0x40) > 0
         self.natural_wind = (body[9] & 0x2) > 0
         self.dry = (body[9] & 0x4) > 0
         self.eco_mode = (body[9] & 0x10) > 0
         self.aux_heat = (body[9] & 0x08) > 0
-        self.sleep_mode = (body[10] & 0x01) > 0
-        self.turbo_mode = (body[10] & 0x02) > 0
         self.temp_fahrenheit = (body[10] & 0x04) > 0
         self.night_light = (body[10] & 0x10) > 0
         TempInteger = int((body[11] - 50) / 2)
@@ -302,6 +300,7 @@ class XC0MessageBody(MessageBody):
                 self.outdoor_temperature = TempInteger + TemperatureDot
             else:
                 self.outdoor_temperature = TempInteger - TemperatureDot
+        self.screen_display = (body[14] & 0x70 != 0x70)
         self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 22 else False
 
 
@@ -317,15 +316,14 @@ class MessageACResponse(MessageResponse):
             self.fan_speed = self._body.fan_speed
             self.swing_vertical = self._body.swing_vertical
             self.swing_horizontal = self._body.swing_horizontal
-            self.strong_mode = self._body.strong_mode
+            self.turbo_mode = self._body.turbo_mode
             self.smart_eye = self._body.smart_eye
             self.dry = self._body.dry
             self.aux_heat = self._body.aux_heat
             self.eco_mode = self._body.eco_mode
-            self.sleep_mode = self._body.sleep_mode
-            self.turbo_mode = self._body.turbo_mode
             self.night_light = self._body.night_light
             self.natural_wind = self._body.natural_wind
+            self.screen_display = self._body.screen_display
             self.comfort_mode = self._body.comfort_mode
         elif self._body_type == 0xA1:
             self._body = XA1MessageBody(body)
@@ -348,18 +346,17 @@ class MessageACResponse(MessageResponse):
             self.fan_speed = self._body.fan_speed
             self.swing_vertical = self._body.swing_vertical
             self.swing_horizontal = self._body.swing_horizontal
-            self.strong = self._body.strong_mode
+            self.turbo_mode = self._body.turbo_mode
             self.smart_eye = self._body.smart_eye
             self.natural_wind = self._body.natural_wind
             self.dry = self._body.dry
             self.aux_heat = self._body.aux_heat
             self.eco_mode = self._body.eco_mode
-            self.sleep_mode = self._body.sleep_mode
-            self.turbo_mode = self._body.turbo_mode
             self.temp_fahrenheit = self._body.temp_fahrenheit
             self.night_light = self._body.night_light
             self.indoor_temperature = self._body.indoor_temperature
             self.outdoor_temperature = self._body.outdoor_temperature
+            self.screen_display = self._body.screen_display
             self.comfort_mode = self._body.comfort_mode
         else:
             self._body = MessageBody(body)

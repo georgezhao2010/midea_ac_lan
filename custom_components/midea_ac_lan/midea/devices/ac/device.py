@@ -1,6 +1,7 @@
 import logging
 from .message import (
     MessageQuery,
+    MessageSwitchDisplay,
     MessageNewProtocolQuery,
     MessageACResponse,
     MessageGeneralSet,
@@ -20,16 +21,15 @@ class DeviceProperties(Enum):
 
     swing_vertical = "swing_vertical"
     swing_horizontal = "swing_horizontal"
-    strong_mode = "strong_mode"
+    turbo_mode = "turbo_mode"
     smart_eye = "smart_eye"
     dry = "dry"
     eco_mode = "eco_mode"
     aux_heat = "aux_heat"
-    sleep_mode = "sleep_mode"
-    turbo_mode = "turbo_mode"
     night_light = "night_light"
     natural_wind = "natural_wind"
     temp_fahrenheit = "temp_fahrenheit"
+    screen_display = "screen_display"
     comfort_mode = "comfort_mode"
 
     indoor_temperature = "indoor_temperature"
@@ -67,13 +67,11 @@ class MideaACDevice(MiedaDevice):
         self._fan_speed = 102
         self._swing_vertical = False
         self._swing_horizontal = False
-        self._strong_mode = False
+        self._turbo_mode = False
         self._smart_eye = False
         self._dry = False
         self._eco_mode = False
         self._aux_heat = False
-        self._sleep_mode = False
-        self._turbo_mode = False
         self._night_light = False
         self._natural_wind = False
         self._temp_fahrenheit = temp_fahrenheit
@@ -82,6 +80,7 @@ class MideaACDevice(MiedaDevice):
         self._breezyless = False
         self._indoor_humidity = 0.0
         self._indirect_wind = False
+        self._screen_display = False
         self._comfort_mode = False
 
     def build_query(self):
@@ -101,7 +100,6 @@ class MideaACDevice(MiedaDevice):
             new_status["indirect_wind"] = False
         self._available = True
         new_status["available"] = True
-        _LOGGER.debug(f"[{self._device_id}] Status update: {new_status}")
         self.update_all(new_status)
 
     def make_message_set(self):
@@ -113,17 +111,15 @@ class MideaACDevice(MiedaDevice):
         message.fan_speed = self.fan_speed
         message.swing_vertical = self.swing_vertical
         message.swing_horizontal = self.swing_horizontal
-        message.strong_mode = self._strong_mode
+        message.turbo_mode = self._turbo_mode
         message.smart_eye = self._smart_eye
         message.dry = self._dry
         message.eco_mode = self.eco_mode
         message.aux_heat = self.aux_heat
-        message.sleep_mode = self._sleep_mode
-        message.turbo_mode = self._turbo_mode
         message.night_light = self._night_light
         message.natural_wind = self._natural_wind
         message.temp_fahrenheit = self.temp_fahrenheit
-        # message.lcd_display = True
+        message.screen_display = self.screen_display
         message.comfort_mode = self.comfort_mode
         return message
 
@@ -136,7 +132,6 @@ class MideaACDevice(MiedaDevice):
         message = self.make_message_set()
         message.power = power
         self.build_send(message)
-
 
     @property
     def mode(self):
@@ -213,13 +208,13 @@ class MideaACDevice(MiedaDevice):
         self.build_send(message)
 
     @property
-    def strong_mode(self):
-        return self._strong_mode
+    def turbo_mode(self):
+        return self._turbo_mode
 
-    @strong_mode.setter
-    def strong_mode(self, strong_mode):
+    @turbo_mode.setter
+    def turbo_mode(self, turbo_mode):
         message = self.make_message_set()
-        message.strong_mode = strong_mode
+        message.turbo_mode = turbo_mode
         self.build_send(message)
 
     @property
@@ -263,26 +258,6 @@ class MideaACDevice(MiedaDevice):
         self.build_send(message)
 
     @property
-    def sleep_mode(self):
-        return self._sleep_mode
-
-    @sleep_mode.setter
-    def sleep_mode(self, sleep_mode):
-        message = self.make_message_set()
-        message.sleep_mode = sleep_mode
-        self.build_send(message)
-
-    @property
-    def turbo_mode(self):
-        return self._turbo_mode
-
-    @turbo_mode.setter
-    def turbo_mode(self, turbo_mode):
-        message = self.make_message_set()
-        message.turbo_mode = turbo_mode
-        self.build_send(message)
-
-    @property
     def night_light(self):
         return self._night_light
 
@@ -305,6 +280,15 @@ class MideaACDevice(MiedaDevice):
     @property
     def temp_fahrenheit(self):
         return self._temp_fahrenheit
+
+    @property
+    def screen_display(self):
+        return self._screen_display
+
+    @screen_display.setter
+    def screen_display(self, screen_display):
+        message = MessageSwitchDisplay()
+        self.build_send(message)
 
     @property
     def comfort_mode(self):

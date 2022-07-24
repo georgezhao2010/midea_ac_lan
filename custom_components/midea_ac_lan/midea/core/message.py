@@ -10,6 +10,10 @@ class MessageLenError(Exception):
     pass
 
 
+class MessageBodyError(Exception):
+    pass
+
+
 class MessageCheckSumError(Exception):
     pass
 
@@ -59,12 +63,6 @@ class MessageBase(ABC):
     def body(self):
         raise NotImplementedError
 
-    def serialize(self):
-        stream = self.header + self.body
-        stream.append(calculate(self.body))
-        stream.append(MessageBase.checksum(stream[1:]))
-        return stream
-
     def __str__(self) -> str:
         output = {
             "header": self.header.hex(),
@@ -86,6 +84,7 @@ class MessageRequest(MessageBase):
         MessageRequest._message_serial += 1
         if MessageRequest._message_serial >= 254:
             MessageRequest._message_serial = 1
+        self._message_id = MessageRequest._message_serial
 
     @property
     def header(self):
@@ -117,12 +116,22 @@ class MessageRequest(MessageBase):
 
     @property
     def body(self):
-        return bytearray([self._body_type]) + self._body + bytearray([MessageRequest._message_serial])
+        return bytearray([self._body_type]) + self._body + bytearray([self._message_id])
+
+    def serialize(self):
+        stream = self.header + self.body
+        stream.append(calculate(self.body))
+        stream.append(MessageBase.checksum(stream[1:]))
+        return stream
 
 
 class MessageBody:
     def __init__(self, body):
         self.data = body
+
+    @property
+    def body_type(self):
+        return self.data[0]
 
 
 class MessageResponse(MessageBase):
@@ -137,8 +146,8 @@ class MessageResponse(MessageBase):
         self._message_type = self._header[-1]
         self._device_type = self._header[2]
         body = message[10: -2]
-        self._body_type = body[0]
         self._body = MessageBody(body)
+        self._body_type = self._body.body_type
 
     @property
     def header(self):

@@ -4,7 +4,6 @@ import homeassistant.helpers.config_validation as cv
 from .const import (
     DOMAIN,
     CONF_KEY,
-    CONF_MAKE_SWITCH,
     CONF_MODEL,
     DEVICES,
 )
@@ -66,6 +65,15 @@ SERVICES = {
     },
 }
 '''
+
+
+async def update_listener(hass, config_entry):
+    for platform in ["sensor", "switch"]:
+        await hass.config_entries.async_forward_entry_unload(config_entry, platform)
+    for platform in ["sensor", "switch"]:
+        hass.async_create_task(hass.config_entries.async_forward_entry_setup(
+            config_entry, platform))
+
 
 async def async_setup(hass: HomeAssistant, hass_config: dict):
     hass.data.setdefault(DOMAIN, {})
@@ -138,24 +146,22 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         if DEVICES not in hass.data[DOMAIN]:
             hass.data[DOMAIN][DEVICES] = {}
         hass.data[DOMAIN][DEVICES][device_id] = device
-        for platform in DEVICE_TYPES:
+        for platform in ["sensor", "switch", "climate"]:
             hass.async_create_task(hass.config_entries.async_forward_entry_setup(
                 config_entry, platform))
+        config_entry.add_update_listener(update_listener)
         return True
     return False
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
-    make_switch = config_entry.data.get(CONF_MAKE_SWITCH)
     if device_id is not None:
         dm = hass.data[DOMAIN][DEVICES].get(device_id)
         if dm is not None:
             dm.close()
         hass.data[DOMAIN][DEVICES].pop(device_id)
-    if make_switch:
-        for platform in DEVICE_TYPES:
-            await hass.config_entries.async_forward_entry_unload(config_entry, platform)
-    else:
-        await hass.config_entries.async_forward_entry_unload(config_entry, "climate")
+    del hass.data[config_entry.entry_id]
+    for platform in ["sensor", "switch", "climate"]:
+        await hass.config_entries.async_forward_entry_unload(config_entry, platform)
     return True
