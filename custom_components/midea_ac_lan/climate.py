@@ -31,11 +31,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     device = hass.data[DOMAIN][DEVICES].get(device_id)
     climate = None
     if device.device_type == 0xac:
-        climate = MideaACClimate(device)
+        async_add_entities([MideaACClimate(device)])
     #  elif device.device_type == 0xcc:
-    #      climate = MideaCCDevice(device)
-    if climate:
-        async_add_entities([climate])
+    #      async_add_entities([MideaCCDevice(device)])
 
 
 class MideaACClimate(MideaEntity, ClimateEntity):
@@ -69,7 +67,8 @@ class MideaACClimate(MideaEntity, ClimateEntity):
 
     @property
     def temperature_unit(self):
-        return TEMP_FAHRENHEIT if self._device.temp_fahrenheit else TEMP_CELSIUS
+        # return TEMP_FAHRENHEIT if self._device.temp_fahrenheit else TEMP_CELSIUS
+        return TEMP_CELSIUS
 
     @property
     def target_temperature_low(self):
@@ -168,7 +167,8 @@ class MideaACClimate(MideaEntity, ClimateEntity):
 
     def set_fan_mode(self, fan_mode: str) -> None:
         fan_speed = self._fan_speeds.get(fan_mode)
-        self._device.fan_speed = fan_speed
+        if fan_speed:
+            self._device.fan_speed = fan_speed
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         if hvac_mode == HVAC_MODE_OFF:

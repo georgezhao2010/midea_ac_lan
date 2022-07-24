@@ -4,7 +4,6 @@ DEVICE = "device"
 DEVICES = "devices"
 CONF_KEY = "key"
 CONF_MODEL = "model"
-CONF_MAKE_SWITCH = "make_switch"
 TEMPERATURE_MAX = 30
 TEMPERATURE_MIN = 17
 FAN_VERY_LOW = "very low"

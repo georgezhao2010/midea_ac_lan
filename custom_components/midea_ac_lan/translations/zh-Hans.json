@@ -42,5 +42,17 @@
                 "title": "新设备"
             }
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "传感器",
+                    "switches": "开关"
+                },
+                "description": "将属性变为扩展的传感器及开关",
+                "title": "扩展实体"
+            }
+        }
     }
 }

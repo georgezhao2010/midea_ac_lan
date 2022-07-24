@@ -15,30 +15,20 @@ MIDEA_ENTITIES = {
                 "type": "climate",
                 "icon": "mdi:air-conditioner"
             },
-            "prompt_tone": {
+            "aux_heat": {
                 "type": "switch",
-                "name": "Prompt Tone",
-                "icon": "mdi:bell"
+                "name": "Aux Heat",
+                "icon": "mdi:heat-wave"
             },
-            "swing_vertical": {
+            "breezyless":{
                 "type": "switch",
-                "name": "Swing Vertical",
-                "icon": "mdi:arrow-split-horizontal"
+                "name": "Breezyless",
+                "icon": "mdi:tailwind"
             },
-            "swing_horizontal": {
+            "comfort_mode": {
                 "type": "switch",
-                "name": "Swing Horizontal",
-                "icon": "mdi:arrow-split-vertical"
-            },
-            "strong_mode": {
-                "type": "switch",
-                "name": "Strong mode",
-                "icon": "mdi:alpha-s-circle"
-            },
-            "smart_eye": {
-                "type": "switch",
-                "name": "Smart eye",
-                "icon": "mdi:eye"
+                "name": "Comfort Mode",
+                "icon": "mdi:alpha-c-circle"
             },
             "dry": {
                 "type": "switch",
@@ -50,45 +40,55 @@ MIDEA_ENTITIES = {
                 "name": "ECO Mode",
                 "icon": "mdi:alpha-e-circle"
             },
-            "aux_heat": {
+            "indirect_wind": {
                 "type": "switch",
-                "name": "Aux Heat",
-                "icon": "mdi:heat-wave"
-            },
-            "sleep_mode": {
-                "type": "switch",
-                "name": "Sleep Mode",
-                "icon": "mdi:power-sleep"
-            },
-            "turbo_mode": {
-                "type": "switch",
-                "name": "Turbo Mode",
-                "icon": "mdi:alpha-t-circle"
-            },
-            "night_light": {
-                "type": "switch",
-                "name": "Night Light",
-                "icon": "mdi:lightbulb"
+                "name": "Indirect Wind",
+                "icon": "mdi:tailwind"
             },
             "natural_wind": {
                 "type": "switch",
                 "name": "Natural Wind",
                 "icon": "mdi:tailwind"
             },
-            "comfort_mode": {
+            "night_light": {
                 "type": "switch",
-                "name": "Comfort Mode",
-                "icon": "mdi:alpha-c-circle"
+                "name": "Night Light",
+                "icon": "mdi:lightbulb"
             },
-            "indirect_wind": {
+            "prompt_tone": {
                 "type": "switch",
-                "name": "Indirect Wind",
-                "icon": "mdi:tailwind"
+                "name": "Prompt Tone",
+                "icon": "mdi:bell"
             },
-            "breezyless":{
+            "screen_display": {
                 "type": "switch",
-                "name": "Breezyless",
-                "icon": "mdi:tailwind"
+                "name": "Screen Display",
+                "icon": "mdi:television-ambient-light"
+            },
+            # "sleep_mode": {
+            #    "type": "switch",
+            #    "name": "Sleep Mode",
+            #    "icon": "mdi:power-sleep"
+            # },
+            "smart_eye": {
+                "type": "switch",
+                "name": "Smart eye",
+                "icon": "mdi:eye"
+            },
+            "swing_horizontal": {
+                "type": "switch",
+                "name": "Swing Horizontal",
+                "icon": "mdi:arrow-split-vertical"
+            },
+            "swing_vertical": {
+                "type": "switch",
+                "name": "Swing Vertical",
+                "icon": "mdi:arrow-split-horizontal"
+            },
+            "turbo_mode": {
+                "type": "switch",
+                "name": "Turbo Mode",
+                "icon": "mdi:alpha-t-circle"
             },
             "indoor_humidity": {
                 "type": "sensor",

@@ -154,6 +154,7 @@ class MiedaDevice(threading.Thread):
         self._updates.append(update)
 
     def update_all(self, status):
+        _LOGGER.debug(f"[{self._device_id}] Status update: {status}")
         for update in self._updates:
             update(status)
 
