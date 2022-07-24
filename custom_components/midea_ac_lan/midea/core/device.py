@@ -69,7 +69,6 @@ class MiedaDevice(threading.Thread):
             self._socket.settimeout(10)
             self._socket.connect((self._host, self._port))
             _LOGGER.debug(f"[{self._device_id}] Connected")
-            # auth
             if self._protocol == 3:
                 self.authenticate()
             _LOGGER.debug(f"[{self._device_id}] Authentication success")

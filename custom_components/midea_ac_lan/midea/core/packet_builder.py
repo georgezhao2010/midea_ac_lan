@@ -46,7 +46,6 @@ class PacketBuilder:
         return self.packet
 
     def encode32(self, data: bytearray):
-        # 16 bytes encode32
         return self.security.encode32_data(data)
 
     @staticmethod

@@ -133,7 +133,6 @@ def bytes2port(paramArrayOfbyte):
 
 
 def get_device_info(device_ip, device_port: int):
-    # Create a TCP/IP socket
     response = bytearray(0)
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:

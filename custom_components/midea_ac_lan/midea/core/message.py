@@ -137,10 +137,7 @@ class MessageBody:
 class MessageResponse(MessageBase):
     def __init__(self, message):
         super().__init__()
-        if message is None:
-            raise MessageLenError
-        length = len(message)
-        if length < 10 + 3:
+        if message is None or len(message)  < 10 + 3:
             raise MessageLenError
         self._header = message[:self.HEADER_LENGTH]
         self._message_type = self._header[-1]
