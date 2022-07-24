@@ -22,8 +22,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class ACSwitch(MideaEntity, SensorEntity):
-    pass
-
     @property
     def device_class(self):
         return self._config.get("device_class")

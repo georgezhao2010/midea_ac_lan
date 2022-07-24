@@ -111,7 +111,7 @@ MIDEA_ENTITIES = {
         }
     },
     0xcc: {
-        "name": "Midea AC control panel (not real support yet)",
+        "name": "Midea AC control panel (not supported yet)",
         "entities": {
             "climate": {
                 "type": "climate",

@@ -43,4 +43,3 @@ class ACSwitch(MideaEntity, ToggleEntity):
 
     def turn_off(self):
         setattr(self._device, self._entity_key, False)
-

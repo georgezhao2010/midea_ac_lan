@@ -143,7 +143,6 @@ class Security:
         sign = path + query + self._loginKey
         m = sha256()
         m.update(sign.encode("ASCII"))
-
         return m.hexdigest()
 
     def new_sign(self, data: str, random: str) -> str:

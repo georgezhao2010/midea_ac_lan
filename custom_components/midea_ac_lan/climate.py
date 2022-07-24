@@ -29,7 +29,6 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
-    climate = None
     if device.device_type == 0xac:
         async_add_entities([MideaACClimate(device)])
     #  elif device.device_type == 0xcc:
@@ -197,4 +196,3 @@ class MideaACClimate(MideaEntity, ClimateEntity):
     @property
     def extra_state_attributes(self) -> dict:
         return self._device.attributes
-
