@@ -1,0 +1,20 @@
+set_fan_speed:
+  description: Set the fan speed of climate.
+  fields:
+    entity_id:
+      description: entity_id of climate entity
+    fan_speed:
+      description: fan speed want to set (range from 1 to 100 or 'auto')
+      example: "'auto'"
+
+set_attribute:
+  description: Set the attribute of climate.
+  fields:
+    entity_id:
+      description: entity_id of climate entity
+    attribute:
+      description: attribute name want to set
+      example: "eco_mode"
+    value:
+      description: attribute value want to set
+      example: true

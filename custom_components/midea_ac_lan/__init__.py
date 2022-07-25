@@ -1,4 +1,6 @@
 import logging
+import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
 from .const import (
     DOMAIN,
     CONF_KEY,
@@ -15,10 +17,41 @@ from homeassistant.const import (
     CONF_TYPE,
     TEMP_FAHRENHEIT,
     ATTR_DEVICE_ID,
+    ATTR_ENTITY_ID
 )
 from .midea.devices.ac.device import MideaACDevice
 
 _LOGGER = logging.getLogger(__name__)
+
+SERVICE_ATTRIBUTES = [
+    "aux_heat",
+    "breezyless",
+    "comfort_mode",
+    "dry",
+    "eco_mode",
+    "indirect_wind",
+    "natural_wind",
+    "night_light",
+    "prompt_tone",
+    "screen_display",
+    "smart_eye",
+    "swing_horizontal",
+    "swing_vertical",
+    "turbo_mode",
+]
+
+SERVICES_SCHEMA = {
+    "set_fan_speed": vol.Schema({
+        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+        vol.Required("fan_speed"): vol.Any(vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
+                                           vol.All(str, vol.In(["auto"])))
+    }),
+    "set_attribute": vol.Schema({
+        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+        vol.Required("attribute"): vol.In(SERVICE_ATTRIBUTES),
+        vol.Required("value"): cv.boolean
+    })
+}
 
 
 async def update_listener(hass, config_entry):
@@ -31,6 +64,50 @@ async def update_listener(hass, config_entry):
 
 async def async_setup(hass: HomeAssistant, hass_config: dict):
     hass.data.setdefault(DOMAIN, {})
+
+    def service_set_fan_speed(service):
+        entity_ids = service.data.get(ATTR_ENTITY_ID)
+        fan_speed = service.data.get("fan_speed")
+        if fan_speed == 'auto':
+            fan_speed = 102
+        devices = []
+        if entity_ids:
+            devices = [
+                dev
+                for dev in hass.data[DOMAIN][DEVICES].values()
+                if dev.entity.entity_id in entity_ids
+            ]
+        for dev in devices:
+            setattr(dev, "fan_speed", fan_speed)
+
+    def service_set_attribute(service):
+        entity_ids = service.data.get(ATTR_ENTITY_ID)
+        attribute = service.data.get("attribute")
+        value = service.data.get("value")
+        if attribute in SERVICE_ATTRIBUTES:
+            devices = []
+            if entity_ids:
+                devices = [
+                    dev
+                    for dev in hass.data[DOMAIN][DEVICES].values()
+                    if dev.entity.entity_id in entity_ids
+                ]
+            for dev in devices:
+                if hasattr(dev, attribute):
+                    setattr(dev, attribute, value)
+
+    hass.services.async_register(
+        DOMAIN,
+        "set_fan_speed",
+        service_set_fan_speed,
+        schema=SERVICES_SCHEMA["set_fan_speed"]
+    )
+    hass.services.async_register(
+        DOMAIN,
+        "set_attribute",
+        service_set_attribute,
+        schema=SERVICES_SCHEMA["set_attribute"]
+    )
     return True
 
 

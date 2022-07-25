@@ -1,6 +1,5 @@
 DOMAIN = "midea_ac_lan"
 COMPONENT = "component"
-DEVICE = "device"
 DEVICES = "devices"
 CONF_KEY = "key"
 CONF_MODEL = "model"
