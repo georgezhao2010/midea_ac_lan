@@ -90,13 +90,37 @@ switch.{DEVICEID}_turbo_mode | switch | Turbo Mode
 ## Sevices
 following ectra services will be made
 
-Services | Function | Params
---- | --- |--- 
-midea_ac_lan.set_fan_speed | Set the fan speed | entity_id, fan_speed (range from 1 to 100 or "auto")
-midea_ac_lan.set_comfort_mode | Turn on/off comfort mode | entity_id, comfort_mode (ture/false)
-midea_ac_lan.set_eco_mode | Turn on/off ECO mode | entity_id, eco_mode (ture/false)
-midea_ac_lan.set_indirect_wind | Turn on/off indirect wind | entity_id, indirect_wind (ture/false)
-midea_ac_lan.set_prompt_tone | Turn on/off prompt tone | entity_id, prompt_tone (ture/false)
+### midea_ac_lan.set_fan_speed
+Set fan speed of AC fan. Service data:
+Name | Description
+--- | ---
+entity_id | The entity_id of cliamte entity.
+fan_speed | Range 1 to 100 or auto
+
+Example
+```
+service: midea_ac_lan.set_fan_speed
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  fan_speed: auto
+```
+
+### midea_ac_lan.set_attribute
+Set the attribute of AC. Service data:
+Name | Description
+--- | ---
+entity_id | The entity_id of cliamte entity.
+attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+value | true or false
+
+Example
+```
+service: midea_ac_lan.set_fan_speed
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  attribute: eco_mode
+  value: true
+```
 
 # Debug
 
