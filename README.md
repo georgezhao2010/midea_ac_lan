@@ -61,13 +61,13 @@ Only one cliamate entity will be generated after configration. If you want to ma
 
 ## Entities
 ### Default entity
-EntityID | Class | Memo
+EntityID | Class | Description
 --- | --- | ---
 climate.{DEVICEID}_climate | Climate | Climate entity
 
 ### Extra entities
 
-EntityID | Class | Memo
+EntityID | Class | Description
 --- | --- | ---
 sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity
 sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature
