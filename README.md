@@ -88,7 +88,7 @@ switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
 switch.{DEVICEID}_turbo_mode | switch | Turbo Mode
 
 ## Sevices
-following ectra services will be made
+following extra services will be made
 
 ### midea_ac_lan.set_fan_speed
 Set fan speed of AC fan. Service data:
