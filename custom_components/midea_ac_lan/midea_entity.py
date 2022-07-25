@@ -17,7 +17,7 @@ MIDEA_ENTITIES = {
             },
             "aux_heat": {
                 "type": "switch",
-                "name": "Aux Heat",
+                "name": "Aux Heating",
                 "icon": "mdi:heat-wave"
             },
             "breezyless":{
@@ -92,19 +92,19 @@ MIDEA_ENTITIES = {
             },
             "indoor_humidity": {
                 "type": "sensor",
-                "name": "Humidity Indoor",
+                "name": "Indoor Humidity",
                 "device_class": DEVICE_CLASS_HUMIDITY,
                 "unit": PERCENTAGE
             },
             "indoor_temperature": {
                 "type": "sensor",
-                "name": "Temperature Indoor",
+                "name": "Indoor Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },
             "outdoor_temperature": {
                 "type": "sensor",
-                "name": "Temperature Outdoor",
+                "name": "Outdoor Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             }
@@ -138,6 +138,10 @@ class MideaEntity(Entity):
             "identifiers": {(DOMAIN, self._device.device_id)},
             "name": MIDEA_ENTITIES[self._device.device_type]["name"]
         }
+    
+    @property
+    def device(self):
+        return self._device
 
     @property
     def device_info(self):

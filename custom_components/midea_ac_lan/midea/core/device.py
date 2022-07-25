@@ -46,6 +46,7 @@ class MiedaDevice(threading.Thread):
         self._updates = []
         self._is_run = False
         self._available = True
+        self._entity = None
 
     @property
     def available(self):
@@ -62,6 +63,14 @@ class MiedaDevice(threading.Thread):
     @property
     def model(self):
         return self._model
+
+    @property
+    def entity(self):
+        return self._entity
+
+    @entity.setter
+    def entity(self, entity):
+        self._entity = entity
 
     def connect(self, refresh_status=True):
         try:

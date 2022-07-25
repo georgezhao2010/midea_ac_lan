@@ -38,6 +38,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class MideaACClimate(MideaEntity, ClimateEntity):
     def __init__(self, device: MideaACDevice):
         super().__init__(device, "climate")
+        self._device.entity = self
         self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_FAN_ONLY]
         self._fan_speeds = {FAN_VERY_LOW: 10,
                             FAN_LOW: 30,
