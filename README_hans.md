@@ -48,7 +48,14 @@ midea-discover
 
 ## 将空调属性生成传感器及开关实体
 
-配置完成后, 默认将只生成一个climate实体。如果需要将climate的属性生成为扩展的传感器及开关实体，在Midea AC LAN集成卡片上点击'选项'，并选择要生成的传感器及开关(如果你的空调支持该属性)。所有传感器及开关列表见[额外生成实体](#%E9%A2%9D%E5%A4%96%E7%94%9F%E6%88%90%E5%AE%9E%E4%BD%93)
+如果选择了此选项，空调的以下属性将额外生成传感器及开关的实体，便于直接配置在HomeAssistant面板上进行操作或者通过HomeKit让Siri控制这些开关
+- 室外机温度传感器
+- 舒省模式开关
+- 节能模式开关
+- 防直吹开关
+- 水平摆风开关
+- 垂直摆风开关
+- 操作提示音开关
 
 # 功能
 ## 支持的温控器操作
@@ -65,26 +72,17 @@ midea-discover
 climate.{DEVICEID}_climate | climate | 恒温器实体
 
 ### 额外生成实体
+如果选择将空调属性生成开关及传感器实体, 将额外生成以下传感器及开关实体
 
-EntityID | 类型 | 名称 | 备注
---- | --- | --- | --- 
-sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity | 湿度
-switch.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
-switch.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature | 室外机温度
-switch.{DEVICEID}_aux_heat | Switches | Aux Heating | 电辅热
-switch.{DEVICEID}_breezyless | Switches | Breezyless | 无风感
-switch.{DEVICEID}_comfort_mode | Switches | Comfort Mode | 舒省模式
-switch.{DEVICEID}_dry | Switches | Dry | 干燥
-switch.{DEVICEID}_eco_mode | Switches | ECO Mode | ECO模式
-switch.{DEVICEID}_indirect_wind | Switches | Indirect Wind | 防直吹
-switch.{DEVICEID}_natural_wind | Switches | Natural Wind | 自然风
-switch.{DEVICEID}_night_light | Switches | Night Light | 夜灯
-switch.{DEVICEID}_prompt_tone | Switches | Prompt Tone | 提示音
-switch.{DEVICEID}_screen_display | Switches | Screen Display | 屏幕显示
-switch.{DEVICEID}_smart_eye | Switches | Smart eye | 智慧眼
-switch.{DEVICEID}_swing_horizontal | Switches | Swing Horizontal | 水平摆风
-switch.{DEVICEID}_swing_vertical | Switches | Swing Vertical | 垂直摆风
-switch.{DEVICEID}_turbo_mode | Switches | Turbo Mode | 强劲模式
+实体ID | 类型 | 备注
+--- | --- | ---
+sensor.{DEVICEID}_outdoor_temperature | sensor | 室外机温度
+switch.{DEVICEID}_comfort_mode | switch | 舒省模式开关
+switch.{DEVICEID}_eco_mode | switch | 节能模式开关
+switch.{DEVICEID}_indirect_wind | switch | 防直吹开关
+switch.{DEVICEID}_swing_horizontal | switch | 水平摆风开关
+switch.{DEVICEID}_swing_vertical | switch | 垂直摆风开关
+switch.{DEVICEID}_prompt_tone | switch | 提示音开关
 
 ## 服务
 除climate原有服务外, 还生成以下服务
