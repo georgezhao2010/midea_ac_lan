@@ -115,7 +115,7 @@ value | true or false
 
 Example
 ```
-service: midea_ac_lan.set_fan_speed
+service: midea_ac_lan.set_attribute
 data:
   entity_id: climate.XXXXXXXXXXXX_climate
   attribute: eco_mode
