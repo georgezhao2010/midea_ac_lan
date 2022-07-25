@@ -63,29 +63,29 @@ Only one cliamate entity will be generated after configration. If you want to ma
 ### Default entity
 EntityID | Class | Memo
 --- | --- | ---
-climate.{DEVICEID}_climate | climate | Climate entity
+climate.{DEVICEID}_climate | Climate | Climate entity
 
 ### Extra entities
 
 EntityID | Class | Memo
 --- | --- | ---
 sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity
-switch.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature
-switch.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature
-switch.{DEVICEID}_aux_heat | Switches | Aux Heating
-switch.{DEVICEID}_breezyless | Switches | Breezyless
-switch.{DEVICEID}_comfort_mode | Switches | Comfort Mode
-switch.{DEVICEID}_dry | Switches | Dry
-switch.{DEVICEID}_eco_mode | Switches | ECO Mode
-switch.{DEVICEID}_indirect_wind | Switches | Indirect Wind
-switch.{DEVICEID}_natural_wind | Switches | Natural Wind
-switch.{DEVICEID}_night_light | Switches | Night Light
-switch.{DEVICEID}_prompt_tone | Switches | Prompt Tone
-switch.{DEVICEID}_screen_display | Switches | Screen Display
-switch.{DEVICEID}_smart_eye | Switches | Smart eye
-switch.{DEVICEID}_swing_horizontal | Switches | Swing Horizontal
-switch.{DEVICEID}_swing_vertical | Switches | Swing Vertical
-switch.{DEVICEID}_turbo_mode | Switches | Turbo Mode
+sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature
+sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature
+switch.{DEVICEID}_aux_heat | switch | Aux Heating
+switch.{DEVICEID}_breezyless | switch | Breezyless
+switch.{DEVICEID}_comfort_mode | switch | Comfort Mode
+switch.{DEVICEID}_dry | switch | Dry
+switch.{DEVICEID}_eco_mode | switch | ECO Mode
+switch.{DEVICEID}_indirect_wind | switch | Indirect Wind
+switch.{DEVICEID}_natural_wind | switch | Natural Wind
+switch.{DEVICEID}_night_light | switch | Night Light
+switch.{DEVICEID}_prompt_tone | switch | Prompt Tone
+switch.{DEVICEID}_screen_display | switch | Screen Display
+switch.{DEVICEID}_smart_eye | switch | Smart eye
+switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
+switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
+switch.{DEVICEID}_turbo_mode | switch | Turbo Mode
 
 ## Sevices
 following ectra services will be made
