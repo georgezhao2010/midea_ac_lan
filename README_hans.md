@@ -87,15 +87,39 @@ switch.{DEVICEID}_swing_vertical | Switch | Swing Vertical | 垂直摆风
 switch.{DEVICEID}_turbo_mode | Switch | Turbo Mode | 强劲模式
 
 ## 服务
-除climate原有服务外, 还生成以下服务
+生成以下扩展服务
 
-服务 | 作用 |参数 
---- | --- |--- 
-midea_ac_lan.set_fan_speed | 精细设置风扇风速 | entity_id, fan_speed (1-100数字或者"auto")
-midea_ac_lan.set_comfort_mode | 打开或关闭舒省模式 | entity_id, comfort_mode (ture 或 false)
-midea_ac_lan.set_eco_mode | 打开或关闭节能模式 | entity_id, eco_mode (ture 或 false)
-midea_ac_lan.set_indirect_wind | 打开或关闭防直吹 | entity_id, indirect_wind (ture 或 false)
-midea_ac_lan.set_prompt_tone | 打开或关闭提示音 | entity_id, prompt_tone (ture 或 false)
+### midea_ac_lan.set_fan_speed
+设置空调风速, 服务数据:
+名称 | 描述
+--- | ---
+entity_id | Cliamte实体的entity_id.
+fan_speed | 范围为1-100, 或者auto
+
+示例
+```
+service: midea_ac_lan.set_fan_speed
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  fan_speed: auto
+```
+
+### midea_ac_lan.set_attribute
+设置空调属性, 服务数据:
+名称 | 描述
+--- | ---
+entity_id | Cliamte实体的entity_id.
+attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+value | true 或 false
+
+示例
+```
+service: midea_ac_lan.set_attribute
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  attribute: eco_mode
+  value: true
+```
 
 # 调试
 要打开调试日志输出，在configuration.yaml中做如下配置
