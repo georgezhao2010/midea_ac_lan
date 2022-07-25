@@ -71,20 +71,20 @@ EntityID | 类型 | 名称 | 备注
 sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity | 湿度
 switch.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
 switch.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature | 室外机温度
-switch.{DEVICEID}_aux_heat | Switches | Aux Heating | 电辅热
-switch.{DEVICEID}_breezyless | Switches | Breezyless | 无风感
-switch.{DEVICEID}_comfort_mode | Switches | Comfort Mode | 舒省模式
-switch.{DEVICEID}_dry | Switches | Dry | 干燥
-switch.{DEVICEID}_eco_mode | Switches | ECO Mode | ECO模式
-switch.{DEVICEID}_indirect_wind | Switches | Indirect Wind | 防直吹
-switch.{DEVICEID}_natural_wind | Switches | Natural Wind | 自然风
-switch.{DEVICEID}_night_light | Switches | Night Light | 夜灯
-switch.{DEVICEID}_prompt_tone | Switches | Prompt Tone | 提示音
-switch.{DEVICEID}_screen_display | Switches | Screen Display | 屏幕显示
-switch.{DEVICEID}_smart_eye | Switches | Smart eye | 智慧眼
-switch.{DEVICEID}_swing_horizontal | Switches | Swing Horizontal | 水平摆风
-switch.{DEVICEID}_swing_vertical | Switches | Swing Vertical | 垂直摆风
-switch.{DEVICEID}_turbo_mode | Switches | Turbo Mode | 强劲模式
+switch.{DEVICEID}_aux_heat | Switch | Aux Heating | 电辅热
+switch.{DEVICEID}_breezyless | Switch | Breezyless | 无风感
+switch.{DEVICEID}_comfort_mode | Switch | Comfort Mode | 舒省模式
+switch.{DEVICEID}_dry | Switch | Dry | 干燥
+switch.{DEVICEID}_eco_mode | Switch | ECO Mode | ECO模式
+switch.{DEVICEID}_indirect_wind | Switch | Indirect Wind | 防直吹
+switch.{DEVICEID}_natural_wind | Switch | Natural Wind | 自然风
+switch.{DEVICEID}_night_light | Switch | Night Light | 夜灯
+switch.{DEVICEID}_prompt_tone | Switch | Prompt Tone | 提示音
+switch.{DEVICEID}_screen_display | Switch | Screen Display | 屏幕显示
+switch.{DEVICEID}_smart_eye | Switch | Smart eye | 智慧眼
+switch.{DEVICEID}_swing_horizontal | Switch | Swing Horizontal | 水平摆风
+switch.{DEVICEID}_swing_vertical | Switch | Swing Vertical | 垂直摆风
+switch.{DEVICEID}_turbo_mode | Switch | Turbo Mode | 强劲模式
 
 ## 服务
 除climate原有服务外, 还生成以下服务
