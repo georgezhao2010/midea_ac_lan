@@ -69,8 +69,8 @@ climate.{DEVICEID}_climate | Climate | 恒温器实体
 EntityID | 类型 | 名称 | 备注
 --- | --- | --- | --- 
 sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity | 湿度
-switch.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
-switch.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature | 室外机温度
+sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
+sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature | 室外机温度
 switch.{DEVICEID}_aux_heat | Switch | Aux Heating | 电辅热
 switch.{DEVICEID}_breezyless | Switch | Breezyless | 无风感
 switch.{DEVICEID}_comfort_mode | Switch | Comfort Mode | 舒省模式
