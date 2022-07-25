@@ -47,15 +47,9 @@ midea-discover
 
 ***msmart from [midea-msmart](https://github.com/mac-zhou/midea-msmart) of [@mac-zhou](https://github.com/mac-zhou)***
 
-## Make attributes as sensor and switch entities
-If you selected this item, the following attributes would be made as sensor and switch entities and be displayed on HomeAssistant's frontend UI and easy use for Siri via HomeKit component.
-- Sensor of outdoor temperature 
-- Switch of comfort mode
-- Switch of ECO mode
-- Switch of indirect wind
-- Switch of horizontal swing
-- Switch of vertical swing
-- Switch of prompt tone
+## Make attributes as sensors and switches
+
+Only one cliamate entity will be generated after configration. If you want to make the attributes of climate to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported). All entities listed in [Extra entities](#extra-entities).
 
 # Features
 ## Climate features
@@ -72,17 +66,26 @@ EntityID | Class | Memo
 climate.{DEVICEID}_climate | climate | Climate entity
 
 ### Extra entities
-If you selected `Make attributes as sensor and switch entities`, It will make following extra sensor and switch entitys
 
 EntityID | Class | Memo
 --- | --- | ---
-sensor.{DEVICEID}_outdoor_temperature | sensor | Sensor of outdoor temperature
-switch.{DEVICEID}_comfort_mode | switch | Switch of comfort mode
-switch.{DEVICEID}_eco_mode | switch | Switch of ECO mode
-switch.{DEVICEID}_indirect_wind | switch | Switch of indirect wind
-switch.{DEVICEID}_swing_horizontal | switch | Switch of horizontal swing
-switch.{DEVICEID}_swing_vertical | switch | Switch of vertical swing
-switch.{DEVICEID}_prompt_tone | switch | Switch of prompt tone
+sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity
+switch.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature
+switch.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature
+switch.{DEVICEID}_aux_heat | Switches | Aux Heating
+switch.{DEVICEID}_breezyless | Switches | Breezyless
+switch.{DEVICEID}_comfort_mode | Switches | Comfort Mode
+switch.{DEVICEID}_dry | Switches | Dry
+switch.{DEVICEID}_eco_mode | Switches | ECO Mode
+switch.{DEVICEID}_indirect_wind | Switches | Indirect Wind
+switch.{DEVICEID}_natural_wind | Switches | Natural Wind
+switch.{DEVICEID}_night_light | Switches | Night Light
+switch.{DEVICEID}_prompt_tone | Switches | Prompt Tone
+switch.{DEVICEID}_screen_display | Switches | Screen Display
+switch.{DEVICEID}_smart_eye | Switches | Smart eye
+switch.{DEVICEID}_swing_horizontal | Switches | Swing Horizontal
+switch.{DEVICEID}_swing_vertical | Switches | Swing Vertical
+switch.{DEVICEID}_turbo_mode | Switches | Turbo Mode
 
 ## Sevices
 following ectra services will be made
@@ -104,6 +107,3 @@ logger:
   logs:
     custom_components.midea_ac_lan: debug
 ```
-
-
-
