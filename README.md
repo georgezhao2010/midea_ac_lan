@@ -7,7 +7,9 @@ English | [简体中文](README_hans.md)
 
 Control your Midea air conditioners via local area network.
 
-No extra python libs required.
+- Automated device discover and configuration based HA config flow UI.
+- Extra sensors and swithes.
+- Synchronize status with the device by long TCP connection in time.
 
 This component inspired from the repository at [@mac-zhou](https://github.com/mac-zhou/midea-msmart) which provides similar functionality for Midea air conditioners. This component include verbatim or adapted portions of the code from his great projects.
 
