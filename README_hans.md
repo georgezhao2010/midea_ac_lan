@@ -3,7 +3,7 @@
 [![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
-[English](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README.md) | 简体中文
+[English](README.md) | 简体中文
 
 通过本地局域网控制你的美的空调
 
@@ -60,13 +60,13 @@ midea-discover
 
 ## 生成实体
 ### 默认生成实体
-实体ID | 类型 | 备注
+实体ID | 类型 | 描述
 --- | --- | ---
 climate.{DEVICEID}_climate | Climate | 恒温器实体
 
 ### 额外生成实体
 
-EntityID | 类型 | 名称 | 备注
+EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
 sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity | 湿度
 sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
