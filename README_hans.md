@@ -62,7 +62,7 @@ midea-discover
 ### 默认生成实体
 实体ID | 类型 | 备注
 --- | --- | ---
-climate.{DEVICEID}_climate | climate | 恒温器实体
+climate.{DEVICEID}_climate | Climate | 恒温器实体
 
 ### 额外生成实体
 
