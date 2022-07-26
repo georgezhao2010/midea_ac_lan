@@ -17,6 +17,10 @@ class ResponseException(Exception):
     pass
 
 
+class RefreshFailed(Exception):
+    pass
+
+
 class DeviceProperties(Enum):
     pass
 
@@ -47,6 +51,7 @@ class MiedaDevice(threading.Thread):
         self._is_run = False
         self._available = True
         self._entity = None
+        self._unsupported_protocol = []
 
     @property
     def available(self):
@@ -91,6 +96,8 @@ class MiedaDevice(threading.Thread):
             _LOGGER.debug(f"[{self._device_id}] Connection error")
         except AuthException:
             _LOGGER.debug(f"[{self._device_id}] Authentication failed")
+        except RefreshFailed:
+            _LOGGER.debug(f"[{self._device_id}] Refresh status is all timed out")
         return False
 
     def authenticate(self):
@@ -126,13 +133,27 @@ class MiedaDevice(threading.Thread):
 
     def refresh_status(self, wait_response=False):
         cmds = self.build_query()
+        error_count = 0
         for cmd in cmds:
-            self.build_send(cmd)
-            if wait_response:
-                msg = self._socket.recv(512)
-                if len(msg) > 0:
-                    if not self.parse_message(msg):
-                        raise ResponseException
+            if cmd.__class__.__name__ not in self._unsupported_protocol:
+                self.build_send(cmd)
+                if wait_response:
+                    try:
+                        msg = self._socket.recv(512)
+                        if len(msg) > 0:
+                            if not self.parse_message(msg):
+                                raise ResponseException
+                    except socket.timeout:
+                        error_count += 1
+                        self._unsupported_protocol.append(cmd.__class__.__name__)
+                        _LOGGER.debug(f"[{self._device_id}] does not supports "
+                                      f"the protocol {cmd.__class__.__name__}, has been ignored")
+                    except ResponseException:
+                        error_count += 1
+            else:
+                error_count += 1
+        if error_count == len(cmds):
+            raise RefreshFailed
 
     def parse_message(self, msg):
         if self._protocol == 3:
@@ -183,6 +204,7 @@ class MiedaDevice(threading.Thread):
 
     def close_socket(self):
         if self._socket:
+            self._unsupported_protocol = []
             self._socket.close()
             self._socket = None
             self._buffer = b""
@@ -198,8 +220,15 @@ class MiedaDevice(threading.Thread):
                     time.sleep(5)
             counter = 0
             timeout_counter = 0
+            send_heartbeat = False
             while True:
                 try:
+                    if counter >= 6:
+                        self.refresh_status()
+                        counter = 0
+                    if send_heartbeat:
+                        self.send_heartbeat()
+                        send_heartbeat = False
                     msg = self._socket.recv(512)
                     msg_len = len(msg)
                     if msg_len == 0:
@@ -211,16 +240,12 @@ class MiedaDevice(threading.Thread):
                         break
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
-                    if timeout_counter >= 10:
+                    if timeout_counter >= 12:
                         _LOGGER.debug(f"[{self._device_id}] Heartbeat timed out, reconnecting")
                         self.close_socket()
                         break
-                    self.send_heartbeat()
-                    if counter >= 5:
-                        self.refresh_status()
-                        counter = 0
-                    else:
-                        counter = counter + 1
+                    send_heartbeat = True
+                    counter = counter + 1
                 except socket.error as e:
                     _LOGGER.debug(f"[{self._device_id}] Socket error {e} raised")
                     self.close_socket()
