@@ -193,9 +193,9 @@ class MiedaDevice(threading.Thread):
                 if self.connect(True) is False:
                     if not self._is_run:
                         return
+                    self.close_socket()
                     self.enable_device(False)
                     time.sleep(5)
-                    continue
             counter = 0
             timeout_counter = 0
             while True:
