@@ -163,7 +163,6 @@ async def async_unload_entry(hass: HomeAssistant, config_entry):
         if dm is not None:
             dm.close()
         hass.data[DOMAIN][DEVICES].pop(device_id)
-    del hass.data[config_entry.entry_id]
     for platform in ["sensor", "switch", "climate"]:
         await hass.config_entries.async_forward_entry_unload(config_entry, platform)
     return True
