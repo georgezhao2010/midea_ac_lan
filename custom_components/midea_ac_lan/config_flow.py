@@ -234,6 +234,8 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
         device_type = self.config_entry.data.get(CONF_TYPE)
+        if device_type is None:
+            device_type = 0xac
         sensors = {}
         switches = {}
         for attribute, attribute_config in MIDEA_ENTITIES.get(device_type).get("entities").items():
