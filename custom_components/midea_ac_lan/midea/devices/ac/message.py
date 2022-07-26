@@ -1,22 +1,14 @@
 import logging
-from enum import IntEnum, Enum
+from enum import IntEnum
 from ...core.message import (
+    MessageType,
     NewProtocolParamPack,
     MessageRequest,
     MessageResponse,
     MessageBody,
-    MessageLenError,
-    MessageCheckSumError
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class MessageType(IntEnum):
-    set = 0x02,
-    query = 0x03,
-    notify1 = 0x04,
-    notify2 = 0x05
 
 
 class NewProtocolParams(IntEnum):
