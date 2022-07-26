@@ -20,7 +20,7 @@ from .const import (
     FAN_FULL_SPEED,
 )
 from .midea.devices.ac.device import MideaACDevice
-# from .midea.devices.cc.device import MideaCCDevice
+from .midea.devices.cc.device import MideaCCDevice
 from .midea_entity import MideaEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -35,19 +35,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     #      async_add_entities([MideaCCDevice(device)])
 
 
-class MideaACClimate(MideaEntity, ClimateEntity):
-    def __init__(self, device: MideaACDevice):
+class MideaClimate(MideaEntity, ClimateEntity):
+    def __init__(self, device):
         super().__init__(device, "climate")
         self._device.entity = self
-        self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_FAN_ONLY]
-        self._fan_speeds = {FAN_VERY_LOW: 10,
-                            FAN_LOW: 30,
-                            FAN_MEDIUM: 50,
-                            FAN_HIGH: 70,
-                            FAN_VERY_HIGH: 90,
-                            FAN_FULL_SPEED: 100,
-                            FAN_AUTO: 102}
-        self._swing_modes = [SWING_OFF, SWING_VERTICAL, SWING_HORIZONTAL, SWING_BOTH]
 
     @property
     def state(self):
@@ -106,39 +97,12 @@ class MideaACClimate(MideaEntity, ClimateEntity):
             return HVAC_MODE_OFF
 
     @property
-    def fan_mode(self) -> str:
-        if self._device.fan_speed > 100:
-            return FAN_AUTO
-        elif self._device.fan_speed == 100:
-            return FAN_FULL_SPEED
-        elif self._device.fan_speed > 80:
-            return FAN_VERY_HIGH
-        elif self._device.fan_speed > 60:
-            return FAN_HIGH
-        elif self._device.fan_speed > 40:
-            return FAN_MEDIUM
-        elif self._device.fan_speed > 20:
-            return FAN_LOW
-        else:
-            return FAN_VERY_LOW
-
-    @property
-    def swing_mode(self):
-        swing_mode = 1 if self._device.swing_vertical else 0 + \
-            2 if self._device.swing_horizontal else 0
-        return self._swing_modes[swing_mode]
-
-    @property
     def target_temperature(self):
         return self._device.target_temperature
 
     @property
     def current_temperature(self):
         return self._device.indoor_temperature
-
-    @property
-    def outdoor_temperature(self):
-        return self._device.outdoor_temperature
 
     @property
     def is_aux_heat(self):
@@ -163,12 +127,7 @@ class MideaACClimate(MideaEntity, ClimateEntity):
                 self._device.set_target_temperature(
                     target_temperature=temperature, mode=mode)
             except ValueError as e:
-                _LOGGER.error(f"Unknown hvac_mode {hvac_mode} in set_temperature")
-
-    def set_fan_mode(self, fan_mode: str) -> None:
-        fan_speed = self._fan_speeds.get(fan_mode)
-        if fan_speed:
-            self._device.fan_speed = fan_speed
+                _LOGGER.error(f"Unknown hvac_mode {hvac_mode}")
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         if hvac_mode == HVAC_MODE_OFF:
@@ -176,11 +135,15 @@ class MideaACClimate(MideaEntity, ClimateEntity):
         else:
             self._device.mode = self._modes.index(hvac_mode)
 
-    def set_swing_mode(self, swing_mode: str) -> None:
-        swing = self._swing_modes.index(swing_mode)
-        swing_vertical = swing & 1 > 0
-        swing_horizontal = swing & 2 > 0
-        self._device.set_swing(swing_vertical=swing_vertical, swing_horizontal=swing_horizontal)
+    def update_state(self, status):
+        try:
+            self.schedule_update_ha_state()
+        except Exception:
+            pass
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        return self._device.attributes
 
     def turn_aux_heat_on(self) -> None:
         self._device.aux_heat = True
@@ -188,12 +151,85 @@ class MideaACClimate(MideaEntity, ClimateEntity):
     def turn_aux_heat_off(self) -> None:
         self._device.aux_heat = False
 
-    def update_state(self, status):
-        try:
-            self.schedule_update_ha_state()
-        except Exception:
-            pass
-    
+
+class MideaACClimate(MideaClimate):
+    def __init__(self, device: MideaACDevice):
+        super().__init__(device)
+        self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_FAN_ONLY]
+        self._fan_speeds = {FAN_VERY_LOW: 10,
+                            FAN_LOW: 30,
+                            FAN_MEDIUM: 50,
+                            FAN_HIGH: 70,
+                            FAN_VERY_HIGH: 90,
+                            FAN_FULL_SPEED: 100,
+                            FAN_AUTO: 102}
+        self._swing_modes = [SWING_OFF, SWING_VERTICAL, SWING_HORIZONTAL, SWING_BOTH]
+
     @property
-    def extra_state_attributes(self) -> dict:
-        return self._device.attributes
+    def fan_mode(self) -> str:
+        if self._device.fan_speed > 100:
+            return FAN_AUTO
+        elif self._device.fan_speed == 100:
+            return FAN_FULL_SPEED
+        elif self._device.fan_speed > 80:
+            return FAN_VERY_HIGH
+        elif self._device.fan_speed > 60:
+            return FAN_HIGH
+        elif self._device.fan_speed > 40:
+            return FAN_MEDIUM
+        elif self._device.fan_speed > 20:
+            return FAN_LOW
+        else:
+            return FAN_VERY_LOW
+
+    @property
+    def swing_mode(self):
+        swing_mode = 1 if self._device.swing_vertical else 0 + \
+            2 if self._device.swing_horizontal else 0
+        return self._swing_modes[swing_mode]
+
+    @property
+    def outdoor_temperature(self):
+        return self._device.outdoor_temperature
+
+    def set_fan_mode(self, fan_mode: str) -> None:
+        fan_speed = self._fan_speeds.get(fan_mode)
+        if fan_speed:
+            self._device.fan_speed = fan_speed
+
+    def set_swing_mode(self, swing_mode: str) -> None:
+        swing = self._swing_modes.index(swing_mode)
+        swing_vertical = swing & 1 > 0
+        swing_horizontal = swing & 2 > 0
+        self._device.set_swing(swing_vertical=swing_vertical, swing_horizontal=swing_horizontal)
+
+
+class MideaCCClimate(MideaClimate):
+    def __init__(self, device: MideaCCDevice):
+        super().__init__(device)
+        self._modes = [HVAC_MODE_OFF, HVAC_MODE_FAN_ONLY, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_AUTO]
+        self._fan_speeds = {FAN_VERY_LOW: 0x02,
+                            FAN_LOW: 0x04,
+                            FAN_MEDIUM: 0x08,
+                            FAN_HIGH: 0x10,
+                            FAN_VERY_HIGH: 0x20,
+                            FAN_FULL_SPEED: 0x40,
+                            FAN_AUTO: 0x80}
+        self._swing_modes = [SWING_OFF, SWING_VERTICAL, SWING_HORIZONTAL, SWING_BOTH]
+
+    @property
+    def fan_mode(self) -> str:
+        if self._device.fan_speed == 0x80:
+            return FAN_AUTO
+        elif self._device.fan_speed == 0x40:
+            return FAN_FULL_SPEED
+        elif self._device.fan_speed == 0x20:
+            return FAN_VERY_HIGH
+        elif self._device.fan_speed == 0x10:
+            return FAN_HIGH
+        elif self._device.fan_speed == 0x08:
+            return FAN_MEDIUM
+        elif self._device.fan_speed == 0x04:
+            return FAN_LOW
+        else:
+            return FAN_VERY_LOW
