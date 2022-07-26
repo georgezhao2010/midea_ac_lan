@@ -3,11 +3,13 @@
 [![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
-[English](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README.md) | 简体中文
+[English](README.md) | 简体中文
 
 通过本地局域网控制你的美的空调
 
-不用额外安装python库，不用写配置文件，可自动完成配置过程
+- 通过HomeAssistant UI完成空调的自动搜索和配置.
+- 生成额外的传感器和开关方便进行设备控制.
+- 与空调保持TCP长连接以便实时同步设备状态.
 
 本集成技术来源来自 [@mac-zhou](https://github.com/mac-zhou/midea-msmart)，他的美的midea-msmart提供了类似的功能。 该组件包括来自他的项目中经过改写的部分代码。
 
@@ -48,14 +50,7 @@ midea-discover
 
 ## 将空调属性生成传感器及开关实体
 
-如果选择了此选项，空调的以下属性将额外生成传感器及开关的实体，便于直接配置在HomeAssistant面板上进行操作或者通过HomeKit让Siri控制这些开关
-- 室外机温度传感器
-- 舒省模式开关
-- 节能模式开关
-- 防直吹开关
-- 水平摆风开关
-- 垂直摆风开关
-- 操作提示音开关
+配置完成后, 默认将只生成一个climate实体。如果需要将climate的属性生成为扩展的传感器及开关实体，在Midea AC LAN集成卡片上点击'选项'，并选择要生成的传感器及开关(如果你的空调支持该属性)。所有传感器及开关列表见[额外生成实体](#%E9%A2%9D%E5%A4%96%E7%94%9F%E6%88%90%E5%AE%9E%E4%BD%93)
 
 # 功能
 ## 支持的温控器操作
@@ -67,33 +62,66 @@ midea-discover
 
 ## 生成实体
 ### 默认生成实体
-实体ID | 类型 | 备注
+实体ID | 类型 | 描述
 --- | --- | ---
-climate.{DEVICEID}_climate | climate | 恒温器实体
+climate.{DEVICEID}_climate | Climate | 恒温器实体
 
 ### 额外生成实体
-如果选择将空调属性生成开关及传感器实体, 将额外生成以下传感器及开关实体
 
-实体ID | 类型 | 备注
---- | --- | ---
-sensor.{DEVICEID}_outdoor_temperature | sensor | 室外机温度
-switch.{DEVICEID}_comfort_mode | switch | 舒省模式开关
-switch.{DEVICEID}_eco_mode | switch | 节能模式开关
-switch.{DEVICEID}_indirect_wind | switch | 防直吹开关
-switch.{DEVICEID}_swing_horizontal | switch | 水平摆风开关
-switch.{DEVICEID}_swing_vertical | switch | 垂直摆风开关
-switch.{DEVICEID}_prompt_tone | switch | 提示音开关
+EntityID | 类型 | 名称 | 描述
+--- | --- | --- | --- 
+sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity | 湿度
+sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
+sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature | 室外机温度
+switch.{DEVICEID}_aux_heat | Switch | Aux Heating | 电辅热
+switch.{DEVICEID}_breezyless | Switch | Breezyless | 无风感
+switch.{DEVICEID}_comfort_mode | Switch | Comfort Mode | 舒省模式
+switch.{DEVICEID}_dry | Switch | Dry | 干燥
+switch.{DEVICEID}_eco_mode | Switch | ECO Mode | ECO模式
+switch.{DEVICEID}_indirect_wind | Switch | Indirect Wind | 防直吹
+switch.{DEVICEID}_natural_wind | Switch | Natural Wind | 自然风
+switch.{DEVICEID}_night_light | Switch | Night Light | 夜灯
+switch.{DEVICEID}_prompt_tone | Switch | Prompt Tone | 提示音
+switch.{DEVICEID}_screen_display | Switch | Screen Display | 屏幕显示
+switch.{DEVICEID}_smart_eye | Switch | Smart eye | 智慧眼
+switch.{DEVICEID}_swing_horizontal | Switch | Swing Horizontal | 水平摆风
+switch.{DEVICEID}_swing_vertical | Switch | Swing Vertical | 垂直摆风
+switch.{DEVICEID}_turbo_mode | Switch | Turbo Mode | 强劲模式
 
 ## 服务
-除climate原有服务外, 还生成以下服务
+生成以下扩展服务
 
-服务 | 作用 |参数 
---- | --- |--- 
-midea_ac_lan.set_fan_speed | 精细设置风扇风速 | entity_id, fan_speed (1-100数字或者"auto")
-midea_ac_lan.set_comfort_mode | 打开或关闭舒省模式 | entity_id, comfort_mode (ture 或 false)
-midea_ac_lan.set_eco_mode | 打开或关闭节能模式 | entity_id, eco_mode (ture 或 false)
-midea_ac_lan.set_indirect_wind | 打开或关闭防直吹 | entity_id, indirect_wind (ture 或 false)
-midea_ac_lan.set_prompt_tone | 打开或关闭提示音 | entity_id, prompt_tone (ture 或 false)
+### midea_ac_lan.set_fan_speed
+设置空调风速, 服务数据:
+名称 | 描述
+--- | ---
+entity_id | Cliamte实体的entity_id.
+fan_speed | 范围为1-100, 或者auto
+
+示例
+```
+service: midea_ac_lan.set_fan_speed
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  fan_speed: auto
+```
+
+### midea_ac_lan.set_attribute
+设置空调属性, 服务数据:
+名称 | 描述
+--- | ---
+entity_id | Cliamte实体的entity_id.
+attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+value | true 或 false
+
+示例
+```
+service: midea_ac_lan.set_attribute
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  attribute: eco_mode
+  value: true
+```
 
 # 调试
 要打开调试日志输出，在configuration.yaml中做如下配置

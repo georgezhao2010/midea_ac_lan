@@ -30,7 +30,7 @@ class PacketBuilder:
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         ])
         self.packet[12:20] = self.packet_time()
-        self.packet[20:28] = device_id.to_bytes(8, 'little')
+        self.packet[20:28] = device_id.to_bytes(8, "little")
         self.command = command
 
     def finalize(self, msg_type=1):
@@ -40,13 +40,12 @@ class PacketBuilder:
         else:
             self.packet.extend(self.security.aes_encrypt(self.command)[:48])
         # PacketLenght
-        self.packet[4:6] = (len(self.packet) + 16).to_bytes(2, 'little')
+        self.packet[4:6] = (len(self.packet) + 16).to_bytes(2, "little")
         # Append a basic checksum data(16 bytes) to the packet
         self.packet.extend(self.encode32(self.packet))
         return self.packet
 
     def encode32(self, data: bytearray):
-        # 16 bytes encode32
         return self.security.encode32_data(data)
 
     @staticmethod
@@ -55,7 +54,7 @@ class PacketBuilder:
 
     @staticmethod
     def packet_time():
-        t = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')[
+        t = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")[
             :16]
         b = bytearray()
         for i in range(0, len(t), 2):

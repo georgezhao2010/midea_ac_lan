@@ -11,7 +11,7 @@ _LOGGER = logging.getLogger(__name__)
 
 CLIENT_TYPE = 1                 # Android
 FORMAT = 2                      # JSON
-LANGUAGE = 'en_US'
+LANGUAGE = "en_US"
 APP_ID = "1010"
 SRC = "1010"
 
@@ -35,51 +35,45 @@ class MideaCloud:
         headers = {}
         if data is None:
             data = {
-                'appId': APP_ID,
-                'format': FORMAT,
-                'clientType': CLIENT_TYPE,
-                'language': LANGUAGE,
-                'src': SRC,
-                'stamp': datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+                "appId": APP_ID,
+                "format": FORMAT,
+                "clientType": CLIENT_TYPE,
+                "language": LANGUAGE,
+                "src": SRC,
+                "stamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
             }
-        # Add the method parameters for the endpoint
         data.update(args)
 
-        # Add the login information to the payload
         if not data.get("reqId"):
             data.update({
-                'reqId': token_hex(16),
+                "reqId": token_hex(16),
             })
 
         url = self.server + endpoint
         random = str(int(time.time()))
 
-        # Add the sign to the header
         sign = self.security.new_sign(json.dumps(data), random)
         headers.update({
-            'Content-Type': 'application/json',
-            'secretVersion': '1',
-            'sign': sign,
-            'random': random,
-            'accessToken': self.access_token
+            "Content-Type": "application/json",
+            "secretVersion": "1",
+            "sign": sign,
+            "random": random,
+            "accessToken": self.access_token
         })
         try:
             with self._api_lock:
                 r = await self.session.request("POST", url, headers=headers, data=json.dumps(data))
                 raw = await r.read()
-                _LOGGER.debug(f"Response: {raw}")
+                _LOGGER.debug(f"Endpoint: {endpoint}, Response: {str(raw)}")
                 response = json.loads(raw)
         except Exception as e:
             response = {"code": -1}
         # Check for errors, raise if there are any
         if int(response["code"]) == 0 and "data" in response:
-            return response['data']
+            return response["data"]
         return None
 
     async def get_login_id(self):
-        """
-        Get the login ID from the email address
-        """
         response = await self.api_request(
             "/v1/user/login/id/get",
             {"loginAccount": self.username}
@@ -90,11 +84,8 @@ class MideaCloud:
         return False
 
     async def login(self):
-        """
-        Performs a user login with the credentials supplied to the constructor
-        """
         result = await self.get_login_id()
-        if(result):
+        if result:
             login_session = await self.api_request(
                 "/mj/user/login",
                 data={
@@ -116,20 +107,22 @@ class MideaCloud:
                 }
             )
             if login_session:
-                self.access_token = login_session['mdata']['accessToken']
+                self.access_token = login_session["mdata"]["accessToken"]
                 return True
+        return False
 
-    async def get_token(self, id: int, byte_order_big=False):
+    async def get_token(self, device_id: int, byte_order_big=False):
         if byte_order_big:
-            udpid = Security.get_udpid(id.to_bytes(6, 'big'))
+            udpid = Security.get_udpid(device_id.to_bytes(6, "big"))
         else:
-            udpid = Security.get_udpid(id.to_bytes(6, 'little'))
-
+            udpid = Security.get_udpid(device_id.to_bytes(6, "little"))
+        _LOGGER.debug(f"The udpid of deivce [{device_id}] generated "
+                      f"with byte order '{'big' if byte_order_big else 'little'}': {udpid}")
         response = await self.api_request(
-            '/v1/iot/secure/getToken',
-            {'udpid': udpid}
+            "/v1/iot/secure/getToken",
+            {"udpid": udpid}
         )
-        for token in response['tokenlist']:
-            if token['udpId'] == udpid:
-                return token['token'], token['key']
+        for token in response["tokenlist"]:
+            if token["udpId"] == udpid:
+                return token["token"], token["key"]
         return None, None
