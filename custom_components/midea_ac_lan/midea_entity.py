@@ -9,7 +9,7 @@ from homeassistant.const import (
 
 MIDEA_ENTITIES = {
     0xac: {
-        "name": "Midea Air-conditioner",
+        "name": "Air-conditioner",
         "entities": {
             "climate": {
                 "type": "climate",
@@ -111,7 +111,7 @@ MIDEA_ENTITIES = {
         }
     },
     0xcc: {
-        "name": "Midea AC control panel (not supported yet)",
+        "name": "AC control panel (not supported yet)",
         "entities": {
             "climate": {
                 "type": "climate",
