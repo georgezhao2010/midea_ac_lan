@@ -1,6 +1,6 @@
 import logging
 from abc import ABC
-
+from enum import IntEnum
 from .crc8 import calculate
 
 _LOGGER = logging.getLogger(__name__)
@@ -16,6 +16,13 @@ class MessageBodyError(Exception):
 
 class MessageCheckSumError(Exception):
     pass
+
+
+class MessageType(IntEnum):
+    set = 0x02,
+    query = 0x03,
+    notify1 = 0x04,
+    notify2 = 0x05
 
 
 class NewProtocolParamPack:
