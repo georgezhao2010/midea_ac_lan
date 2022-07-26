@@ -31,7 +31,9 @@ DEVICE_INFO_MSG = bytearray([
 ])
 
 
-def discover():
+def discover(discover_type=None):
+    if discover_type is None:
+        discover_type = []
     security = Security()
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -48,6 +50,7 @@ def discover():
         while True:
             data, addr = sock.recvfrom(512)
             ip = addr[0]
+            _LOGGER.debug(f"Received broadcast from {addr}: {data.hex()}")
             if len(data) >= 104 and (data[:2].hex() == "5a5a" or data[8:10].hex() == "5a5a"):
                 if data[:2].hex() == "5a5a":
                     protocol = 2
@@ -62,6 +65,7 @@ def discover():
                     continue
                 encrypt_data = data[40:-16]
                 reply = security.aes_decrypt(encrypt_data)
+                _LOGGER.debug(f"Declassified reply: {reply.hex()}")
                 ssid = reply[41:41 + reply[40]].decode("utf-8")
                 device_type = ssid.split("_")[1]
                 port = bytes2port(reply[4:8])
@@ -86,18 +90,18 @@ def discover():
             else:
                 continue
             device = {
-                "id": device_id,
-                "ip": ip,
+                "device_id": device_id,
+                "device_type": int(device_type, 16),
+                "host": ip,
                 "port": port,
                 "model": model,
-                "type": device_type.lower(),
                 "protocol": protocol
             }
-            if device_type.lower() == "ac":  # or device_type.lower() == "cc":  # CC devices is not really supports
+            if len(discover_type) == 0 or device.get("device_type") in discover_type:
                 found_devices[device_id] = device
                 _LOGGER.debug(f"Found a supported device: {device}")
             else:
-                _LOGGER.debug(f"Found a not supported device: {device}")
+                _LOGGER.debug(f"Found a unsupported device: {device}")
     except socket.timeout:
         pass
     return found_devices
@@ -129,7 +133,6 @@ def bytes2port(paramArrayOfbyte):
 
 
 def get_device_info(device_ip, device_port: int):
-    # Create a TCP/IP socket
     response = bytearray(0)
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -141,7 +144,7 @@ def get_device_info(device_ip, device_port: int):
             response = sock.recv(512)
     except socket.timeout:
         _LOGGER.warning(f"Connect the device {device_ip}:{device_port} timed out for 8s. "
-                        f"don't care about a small amount of this. if many maybe not support."
+                        f"Don't care about a small amount of this. if many maybe not support."
                         )
     except socket.error:
         _LOGGER.warning(f"Can't connect to Device {device_ip}:{device_port}")

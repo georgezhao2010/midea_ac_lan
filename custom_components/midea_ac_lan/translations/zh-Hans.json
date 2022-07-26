@@ -30,16 +30,28 @@
             "manual": {
                 "data": {
                     "device_id": "设备编号",
+                    "type": "设备类型",
                     "host": "地址",
                     "port": "端口",
                     "model": "型号",
                     "protocol": "协议版本",
                     "token": "Token",
-                    "key": "Key",
-                    "make_switch": "将空调属性生成开关及传感器实体"
+                    "key": "Key"
                 },
                 "description": "配置空调的参数设置",
                 "title": "新设备"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "传感器",
+                    "switches": "开关"
+                },
+                "description": "将属性实体化为扩展的传感器及开关",
+                "title": "扩展实体"
             }
         }
     }

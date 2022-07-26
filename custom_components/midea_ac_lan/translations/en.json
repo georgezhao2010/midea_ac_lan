@@ -30,16 +30,28 @@
             "manual": {
                 "data": {
                     "device_id": "Appliance Code",
+                    "type": "Type",
                     "host": "Host",
                     "port": "Port",
                     "model": "Model",
                     "protocol": "Protocol",
                     "token": "Token",
-                    "key": "Key",
-                    "make_switch": "Make attributes as sensor and switch entities"
+                    "key": "Key"
                 },
                 "description": "Configuration of AC device",
                 "title": "New device"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "Sensors",
+                    "switches": "Switches"
+                },
+                "description": "Make attributes as extra sensors and switches",
+                "title": "Extra entities"
             }
         }
     }

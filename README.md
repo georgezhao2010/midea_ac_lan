@@ -3,11 +3,13 @@
 [![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
-English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README_hans.md)
+English | [简体中文](README_hans.md)
 
 Control your Midea air conditioners via local area network.
 
-No extra python libs required.
+- Automated device discover and configuration based HA config flow UI.
+- Extra sensors and swithes.
+- Synchronize status with the device by long TCP connection in time.
 
 This component inspired from the repository at [@mac-zhou](https://github.com/mac-zhou/midea-msmart) which provides similar functionality for Midea air conditioners. This component include verbatim or adapted portions of the code from his great projects.
 
@@ -47,15 +49,9 @@ midea-discover
 
 ***msmart from [midea-msmart](https://github.com/mac-zhou/midea-msmart) of [@mac-zhou](https://github.com/mac-zhou)***
 
-## Make attributes as sensor and switch entities
-If you selected this item, the following attributes would be made as sensor and switch entities and be displayed on HomeAssistant's frontend UI and easy use for Siri via HomeKit component.
-- Sensor of outdoor temperature 
-- Switch of comfort mode
-- Switch of ECO mode
-- Switch of indirect wind
-- Switch of horizontal swing
-- Switch of vertical swing
-- Switch of prompt tone
+## Make attributes as sensors and switches
+
+Only one cliamate entity will be generated after configration. If you want to make the attributes of climate to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported). All entities listed in [Extra entities](#extra-entities).
 
 # Features
 ## Climate features
@@ -67,33 +63,66 @@ If you selected this item, the following attributes would be made as sensor and 
 
 ## Entities
 ### Default entity
-EntityID | Class | Memo
+EntityID | Class | Description
 --- | --- | ---
-climate.{DEVICEID}_climate | climate | Climate entity
+climate.{DEVICEID}_climate | Climate | Climate entity
 
 ### Extra entities
-If you selected `Make attributes as sensor and switch entities`, It will make following extra sensor and switch entitys
 
-EntityID | Class | Memo
+EntityID | Class | Description
 --- | --- | ---
-sensor.{DEVICEID}_outdoor_temperature | sensor | Sensor of outdoor temperature
-switch.{DEVICEID}_comfort_mode | switch | Switch of comfort mode
-switch.{DEVICEID}_eco_mode | switch | Switch of ECO mode
-switch.{DEVICEID}_indirect_wind | switch | Switch of indirect wind
-switch.{DEVICEID}_swing_horizontal | switch | Switch of horizontal swing
-switch.{DEVICEID}_swing_vertical | switch | Switch of vertical swing
-switch.{DEVICEID}_prompt_tone | switch | Switch of prompt tone
+sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity
+sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature
+sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature
+switch.{DEVICEID}_aux_heat | switch | Aux Heating
+switch.{DEVICEID}_breezyless | switch | Breezyless
+switch.{DEVICEID}_comfort_mode | switch | Comfort Mode
+switch.{DEVICEID}_dry | switch | Dry
+switch.{DEVICEID}_eco_mode | switch | ECO Mode
+switch.{DEVICEID}_indirect_wind | switch | Indirect Wind
+switch.{DEVICEID}_natural_wind | switch | Natural Wind
+switch.{DEVICEID}_night_light | switch | Night Light
+switch.{DEVICEID}_prompt_tone | switch | Prompt Tone
+switch.{DEVICEID}_screen_display | switch | Screen Display
+switch.{DEVICEID}_smart_eye | switch | Smart eye
+switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
+switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
+switch.{DEVICEID}_turbo_mode | switch | Turbo Mode
 
 ## Sevices
-following ectra services will be made
+following extra services will be made
 
-Services | Function | Params
---- | --- |--- 
-midea_ac_lan.set_fan_speed | Set the fan speed | entity_id, fan_speed (range from 1 to 100 or "auto")
-midea_ac_lan.set_comfort_mode | Turn on/off comfort mode | entity_id, comfort_mode (ture/false)
-midea_ac_lan.set_eco_mode | Turn on/off ECO mode | entity_id, eco_mode (ture/false)
-midea_ac_lan.set_indirect_wind | Turn on/off indirect wind | entity_id, indirect_wind (ture/false)
-midea_ac_lan.set_prompt_tone | Turn on/off prompt tone | entity_id, prompt_tone (ture/false)
+### midea_ac_lan.set_fan_speed
+Set fan speed of AC fan. Service data:
+Name | Description
+--- | ---
+entity_id | The entity_id of cliamte entity.
+fan_speed | Range 1 to 100 or auto
+
+Example
+```
+service: midea_ac_lan.set_fan_speed
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  fan_speed: auto
+```
+
+### midea_ac_lan.set_attribute
+Set the attribute of AC. Service data:
+Name | Description
+--- | ---
+entity_id | The entity_id of cliamte entity.
+attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+value | true or false
+
+Example
+```
+service: midea_ac_lan.set_attribute
+data:
+  entity_id: climate.XXXXXXXXXXXX_climate
+  attribute: eco_mode
+  value: true
+```
 
 # Debug
 
