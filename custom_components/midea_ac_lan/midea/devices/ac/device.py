@@ -331,7 +331,7 @@ class MideaACDevice(MiedaDevice):
 
     @property
     def indoor_humidity(self):
-        return self._breezyless
+        return self._indoor_humidity
 
     @property
     def attributes(self):
