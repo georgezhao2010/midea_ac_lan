@@ -17,7 +17,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported Devices
 
- Name | Type | Document
+ Name | Type | Documents
  --- | --- | ---
  Air Conditioners | AC | [AC.md](doc/AC.md)
  AC Control Panels | CC | [CC.md](doc/CC.md)
