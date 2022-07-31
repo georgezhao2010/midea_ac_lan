@@ -7,6 +7,7 @@ from .const import (
     CONF_MODEL,
     DEVICES,
 )
+from .midea_devices import MIDEA_DEVICES
 from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     CONF_TOKEN,
@@ -19,39 +20,9 @@ from homeassistant.const import (
     ATTR_DEVICE_ID,
     ATTR_ENTITY_ID
 )
-from .midea.devices.ac.device import MideaACDevice
+from .midea.devices import device_selector
 
 _LOGGER = logging.getLogger(__name__)
-
-SERVICE_ATTRIBUTES = [
-    "aux_heat",
-    "breezyless",
-    "comfort_mode",
-    "dry",
-    "eco_mode",
-    "indirect_wind",
-    "natural_wind",
-    "night_light",
-    "prompt_tone",
-    "screen_display",
-    "smart_eye",
-    "swing_horizontal",
-    "swing_vertical",
-    "turbo_mode",
-]
-
-SERVICES_SCHEMA = {
-    "set_fan_speed": vol.Schema({
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required("fan_speed"): vol.Any(vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
-                                           vol.All(str, vol.In(["auto"])))
-    }),
-    "set_attribute": vol.Schema({
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required("attribute"): vol.In(SERVICE_ATTRIBUTES),
-        vol.Required("value"): cv.boolean
-    })
-}
 
 
 async def update_listener(hass, config_entry):
@@ -64,6 +35,11 @@ async def update_listener(hass, config_entry):
 
 async def async_setup(hass: HomeAssistant, hass_config: dict):
     hass.data.setdefault(DOMAIN, {})
+    attributes = []
+    for device_entities in MIDEA_DEVICES.values():
+        for attribute_name, attribute in device_entities.get("entities").items():
+            if attribute.get("type") == "switch" and attribute_name not in attributes:
+                attributes.append(attribute_name)
 
     def service_set_fan_speed(service):
         entity_ids = service.data.get(ATTR_ENTITY_ID)
@@ -75,16 +51,16 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
             devices = [
                 dev
                 for dev in hass.data[DOMAIN][DEVICES].values()
-                if dev.entity.entity_id in entity_ids
+                if dev.entity.entity_id in entity_ids and dev.device_type == 0xac
             ]
         for dev in devices:
             setattr(dev, "fan_speed", fan_speed)
 
     def service_set_attribute(service):
         entity_ids = service.data.get(ATTR_ENTITY_ID)
-        attribute = service.data.get("attribute")
+        attr = service.data.get("attribute")
         value = service.data.get("value")
-        if attribute in SERVICE_ATTRIBUTES:
+        if attr in attributes:
             devices = []
             if entity_ids:
                 devices = [
@@ -93,20 +69,33 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
                     if dev.entity.entity_id in entity_ids
                 ]
             for dev in devices:
-                if hasattr(dev, attribute):
-                    setattr(dev, attribute, value)
+                if hasattr(dev, attr):
+                    setattr(dev, attr, value)
 
     hass.services.async_register(
         DOMAIN,
         "set_fan_speed",
         service_set_fan_speed,
-        schema=SERVICES_SCHEMA["set_fan_speed"]
+        schema=vol.Schema(
+            {
+                vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+                vol.Required("fan_speed"): vol.Any(vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
+                                                   vol.All(str, vol.In(["auto"])))
+            }
+        )
     )
+
     hass.services.async_register(
         DOMAIN,
         "set_attribute",
         service_set_attribute,
-        schema=SERVICES_SCHEMA["set_attribute"]
+        schema=vol.Schema(
+            {
+                vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+                vol.Required("attribute"): vol.In(attributes),
+                vol.Required("value"): cv.boolean
+            }
+        )
     )
     return True
 
@@ -115,32 +104,26 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device_type = config_entry.data.get(CONF_TYPE)
     if device_type is None:
-        device_type = 0xac
+        device_type = 0xAC
     token = config_entry.data.get(CONF_TOKEN)
     key = config_entry.data.get(CONF_KEY)
     host = config_entry.data.get(CONF_HOST)
     port = config_entry.data.get(CONF_PORT)
     model = config_entry.data.get(CONF_MODEL)
     protocol = config_entry.data.get(CONF_PROTOCOL)
-    _LOGGER.debug("Starting set up")
     if protocol == 3 and (key is None or key is None):
         _LOGGER.error("For V3 devices, the key and the token is required.")
         return False
-    device = None
-    if device_type == 0xac:
-        device = MideaACDevice(
-            device_id=device_id,
-            device_type=device_type,
-            host=host,
-            port=port,
-            token=token,
-            key=key,
-            protocol=protocol,
-            model=model,
-            temp_fahrenheit=hass.config.units.temperature_unit == TEMP_FAHRENHEIT
-        )
-    elif device_type == 0xcc:
-        pass
+    device = device_selector(
+        device_id=device_id,
+        device_type=device_type,
+        host=host,
+        port=port,
+        token=token,
+        key=key,
+        protocol=protocol,
+        model=model
+    )
     if device:
         device.open()
         if DOMAIN not in hass.data:

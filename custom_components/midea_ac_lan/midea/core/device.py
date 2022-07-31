@@ -146,8 +146,8 @@ class MiedaDevice(threading.Thread):
                     except socket.timeout:
                         error_count += 1
                         self._unsupported_protocol.append(cmd.__class__.__name__)
-                        _LOGGER.debug(f"[{self._device_id}] does not supports "
-                                      f"the protocol {cmd.__class__.__name__}, has been ignored")
+                        _LOGGER.debug(f"[{self._device_id}] Does not supports "
+                                      f"the protocol {cmd.__class__.__name__}, ignored")
                     except ResponseException:
                         error_count += 1
             else:
@@ -203,11 +203,11 @@ class MiedaDevice(threading.Thread):
             self.close_socket()
 
     def close_socket(self):
+        self._unsupported_protocol = []
+        self._buffer = b""
         if self._socket:
-            self._unsupported_protocol = []
             self._socket.close()
             self._socket = None
-            self._buffer = b""
 
     def run(self):
         while self._is_run:
