@@ -167,7 +167,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 model=user_input[CONF_MODEL])
             if dm.connect(refresh_status=False):
                 dm.close_socket()
-                _LOGGER.debug("device configuration completed")
                 return self.async_create_entry(
                     title=f"{user_input[CONF_DEVICE_ID]}",
                     data={
@@ -182,7 +181,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     })
             else:
                 return await self.async_step_manual(error="config_incorrect")
-        _LOGGER.debug(f"found_device = {self.found_device}")
         return self.async_show_form(
             step_id="manual",
             data_schema=vol.Schema({
