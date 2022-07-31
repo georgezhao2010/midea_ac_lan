@@ -11,13 +11,13 @@
 - 生成额外的传感器和开关方便进行设备控制.
 - 与空调保持TCP长连接以便实时同步设备状态.
 
-本集成技术来源来自 [@mac-zhou](https://github.com/mac-zhou/midea-msmart)，他的美的midea-msmart提供了类似的功能。 该组件包括来自他的项目中经过改写的部分代码。
+本集成部分技术来源来自 [@mac-zhou](https://github.com/mac-zhou/midea-msmart)，他的美的midea-msmart提供了类似的功能。 该组件包括来自他的项目中经过改写的部分代码。
 
 同时感谢[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 
-# 支持设备
-- 美的空调 (V2 or V3), type "AC"
-- ~美的空调遥控面板, type "CC"~
+# 支持的设备
+- [美的空调](doc/AC_hans.md), type "AC"
+- [美的中央空调86控制面板](doc/CC_hans.md), type "CC"
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
@@ -48,80 +48,10 @@ midea-discover
 ```
 ***msmart来自于[@mac-zhou](https://github.com/mac-zhou)的[midea-msmart](https://github.com/mac-zhou/midea-msmart)***
 
-## 将空调属性生成传感器及开关实体
+## 将属性生成传感器及开关实体
 
-配置完成后, 默认将只生成一个climate实体。如果需要将climate的属性生成为扩展的传感器及开关实体，在Midea AC LAN集成卡片上点击'选项'，并选择要生成的传感器及开关(如果你的空调支持该属性)。所有传感器及开关列表见[额外生成实体](#%E9%A2%9D%E5%A4%96%E7%94%9F%E6%88%90%E5%AE%9E%E4%BD%93)
+配置完成后, 默认将只生成一个climate实体。如果需要将climate的属性生成为扩展的传感器及开关实体，在Midea AC LAN集成卡片上点击'选项'，并选择要生成的传感器及开关(如果你的空调支持该属性)。
 
-# 功能
-## 支持的温控器操作
-- 支持目标温度设定
-- 支持运行模式设定
-- 支持风扇模式设定
-- 支持摆风模式设定
-- 支持电辅热
-
-## 生成实体
-### 默认生成实体
-实体ID | 类型 | 描述
---- | --- | ---
-climate.{DEVICEID}_climate | Climate | 恒温器实体
-
-### 额外生成实体
-
-EntityID | 类型 | 名称 | 描述
---- | --- | --- | --- 
-sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity | 湿度
-sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
-sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature | 室外机温度
-switch.{DEVICEID}_aux_heat | Switch | Aux Heating | 电辅热
-switch.{DEVICEID}_breezyless | Switch | Breezyless | 无风感
-switch.{DEVICEID}_comfort_mode | Switch | Comfort Mode | 舒省模式
-switch.{DEVICEID}_dry | Switch | Dry | 干燥
-switch.{DEVICEID}_eco_mode | Switch | ECO Mode | ECO模式
-switch.{DEVICEID}_indirect_wind | Switch | Indirect Wind | 防直吹
-switch.{DEVICEID}_natural_wind | Switch | Natural Wind | 自然风
-switch.{DEVICEID}_night_light | Switch | Night Light | 夜灯
-switch.{DEVICEID}_prompt_tone | Switch | Prompt Tone | 提示音
-switch.{DEVICEID}_screen_display | Switch | Screen Display | 屏幕显示
-switch.{DEVICEID}_smart_eye | Switch | Smart eye | 智慧眼
-switch.{DEVICEID}_swing_horizontal | Switch | Swing Horizontal | 水平摆风
-switch.{DEVICEID}_swing_vertical | Switch | Swing Vertical | 垂直摆风
-switch.{DEVICEID}_turbo_mode | Switch | Turbo Mode | 强劲模式
-
-## 服务
-生成以下扩展服务
-
-### midea_ac_lan.set_fan_speed
-设置空调风速, 服务数据:
-名称 | 描述
---- | ---
-entity_id | Cliamte实体的entity_id.
-fan_speed | 范围为1-100, 或者auto
-
-示例
-```
-service: midea_ac_lan.set_fan_speed
-data:
-  entity_id: climate.XXXXXXXXXXXX_climate
-  fan_speed: auto
-```
-
-### midea_ac_lan.set_attribute
-设置空调属性, 服务数据:
-名称 | 描述
---- | ---
-entity_id | Cliamte实体的entity_id.
-attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
-value | true 或 false
-
-示例
-```
-service: midea_ac_lan.set_attribute
-data:
-  entity_id: climate.XXXXXXXXXXXX_climate
-  attribute: eco_mode
-  value: true
-```
 
 # 调试
 要打开调试日志输出，在configuration.yaml中做如下配置

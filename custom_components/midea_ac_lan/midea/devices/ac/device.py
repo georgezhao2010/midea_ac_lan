@@ -41,25 +41,26 @@ class DeviceProperties(Enum):
 
 
 class MideaACDevice(MiedaDevice):
-    def __init__(self,
-                 device_id: int,
-                 device_type: int,
-                 host: str,
-                 port: int,
-                 token: str,
-                 key: str,
-                 protocol: int,
-                 model: str,
-                 temp_fahrenheit):
-        super().__init__(device_id=device_id,
-                         device_type=device_type,
-                         host=host,
-                         port=port,
-                         token=token,
-                         key=key,
-                         protocol=protocol,
-                         model=model)
-
+    def __init__(
+            self,
+            device_id: int,
+            host: str,
+            port: int,
+            token: str,
+            key: str,
+            protocol: int,
+            model: str
+    ):
+        super().__init__(
+            device_id=device_id,
+            device_type=0xAC,
+            host=host,
+            port=port,
+            token=token,
+            key=key,
+            protocol=protocol,
+            model=model
+        )
         self._prompt_tone = True
         self._power = False
         self._mode = 0
@@ -74,7 +75,7 @@ class MideaACDevice(MiedaDevice):
         self._aux_heat = False
         self._night_light = False
         self._natural_wind = False
-        self._temp_fahrenheit = temp_fahrenheit
+        self._temp_fahrenheit = False
         self._indoor_temperature = 0.0
         self._outdoor_temperature = 0.0
         self._breezyless = False
@@ -116,9 +117,9 @@ class MideaACDevice(MiedaDevice):
         message.dry = self._dry
         message.eco_mode = self.eco_mode
         message.aux_heat = self.aux_heat
-        message.night_light = self._night_light
-        message.natural_wind = self._natural_wind
-        message.temp_fahrenheit = self.temp_fahrenheit
+        message.night_light = self.night_light
+        message.natural_wind = self.natural_wind
+        message.temp_fahrenheit = self._temp_fahrenheit
         message.comfort_mode = self.comfort_mode
         return message
 
@@ -341,3 +342,7 @@ class MideaACDevice(MiedaDevice):
                 ret[status] = getattr(self, status)
 
         return ret
+
+
+class MideaAppliance(MideaACDevice):
+    pass

@@ -91,13 +91,13 @@ def discover(discover_type=None):
                 continue
             device = {
                 "device_id": device_id,
-                "device_type": int(device_type, 16),
+                "type": int(device_type, 16),
                 "host": ip,
                 "port": port,
                 "model": model,
                 "protocol": protocol
             }
-            if len(discover_type) == 0 or device.get("device_type") in discover_type:
+            if len(discover_type) == 0 or device.get("type") in discover_type:
                 found_devices[device_id] = device
                 _LOGGER.debug(f"Found a supported device: {device}")
             else:

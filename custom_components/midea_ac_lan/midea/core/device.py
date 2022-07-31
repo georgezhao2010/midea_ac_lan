@@ -146,8 +146,8 @@ class MiedaDevice(threading.Thread):
                     except socket.timeout:
                         error_count += 1
                         self._unsupported_protocol.append(cmd.__class__.__name__)
-                        _LOGGER.debug(f"[{self._device_id}] does not supports "
-                                      f"the protocol {cmd.__class__.__name__}, has been ignored")
+                        _LOGGER.debug(f"[{self._device_id}] Does not supports "
+                                      f"the protocol {cmd.__class__.__name__}, ignored")
                     except ResponseException:
                         error_count += 1
             else:
@@ -203,11 +203,11 @@ class MiedaDevice(threading.Thread):
             self.close_socket()
 
     def close_socket(self):
+        self._unsupported_protocol = []
+        self._buffer = b""
         if self._socket:
-            self._unsupported_protocol = []
             self._socket.close()
             self._socket = None
-            self._buffer = b""
 
     def run(self):
         while self._is_run:
@@ -218,21 +218,22 @@ class MiedaDevice(threading.Thread):
                     self.close_socket()
                     self.enable_device(False)
                     time.sleep(5)
-            counter = 0
             timeout_counter = 0
-            send_heartbeat = False
+            previous_refresh = time.time()
+            previous_heartbeat = 0
             while True:
                 try:
-                    if counter >= 6:
+                    now = time.time()
+                    if now - previous_refresh >= 60:
                         self.refresh_status()
-                        counter = 0
-                    if send_heartbeat:
+                        previous_refresh = now
+                    if now - previous_heartbeat >= 10:
                         self.send_heartbeat()
-                        send_heartbeat = False
+                        previous_heartbeat = now
                     msg = self._socket.recv(512)
                     msg_len = len(msg)
                     if msg_len == 0:
-                        raise socket.error("zero-length received")
+                        raise socket.error("Connection closed, reconnecting")
                     timeout_counter = 0
                     if not self.parse_message(msg):
                         _LOGGER.debug(f"[{self._device_id}] Message b'ERROR' received, reconnecting")
@@ -244,8 +245,6 @@ class MiedaDevice(threading.Thread):
                         _LOGGER.debug(f"[{self._device_id}] Heartbeat timed out, reconnecting")
                         self.close_socket()
                         break
-                    send_heartbeat = True
-                    counter = counter + 1
                 except socket.error as e:
                     _LOGGER.debug(f"[{self._device_id}] Socket error {e} raised")
                     self.close_socket()

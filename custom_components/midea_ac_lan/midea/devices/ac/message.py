@@ -2,26 +2,75 @@ import logging
 from enum import IntEnum
 from ...core.message import (
     MessageType,
-    NewProtocolParamPack,
     MessageRequest,
     MessageResponse,
     MessageBody,
 )
+from ...core.crc8 import calculate
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class NewProtocolParams(IntEnum):
-    indoor_humidity = 0x15        # 2126
-    breezyless = 0x18             # 1975
+    indoor_humidity = 0x15
+    breezyless = 0x18
     prompt_tone = 0x1A
     indirect_wind = 0x42
 
 
-class MessageQuery(MessageRequest):
-    def __init__(self):
+class NewProtocolParamPack:
+    @staticmethod
+    def pack(param, value: bytearray, length=1, pack_len=4):
+        if pack_len == 4:
+            stream = bytearray([param & 0xFF, param >> 8, length]) + value
+        else:
+            stream = bytearray([param & 0xFF, param >> 8, 0x00, length]) + value
+        return stream
+
+    @staticmethod
+    def parse(stream, pack_len=5):
+        result = {}
+        pos = 1
+        for pack in range(0, stream[0]):
+            param = stream[pos] + (stream[pos + 1] << 8)
+            if pack_len == 5:
+                pos += 1
+            length = stream[pos + 2]
+            if length > 0:
+                value = stream[pos + 3: pos + 3 + length]
+                result[param] = value
+            pos += (3 + length)
+        return result
+
+
+class MessageACBase(MessageRequest):
+    _message_serial = 0
+
+    def __init__(self, message_type, body_type):
         super().__init__(
             device_type=0xAC,
+            message_type=message_type,
+            body_type=body_type
+        )
+        MessageACBase._message_serial += 1
+        if MessageACBase._message_serial >= 254:
+            MessageACBase._message_serial = 1
+        self._message_id = MessageACBase._message_serial
+
+    @property
+    def _body(self):
+        raise NotImplementedError
+
+    @property
+    def body(self):
+        body = bytearray([self._body_type]) + self._body + bytearray([self._message_id])
+        body.append(calculate(body))
+        return body
+
+
+class MessageQuery(MessageACBase):
+    def __init__(self):
+        super().__init__(
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -38,10 +87,9 @@ class MessageQuery(MessageRequest):
         ])
 
 
-class MessagePowerQuery(MessageRequest):
+class MessagePowerQuery(MessageACBase):
     def __init__(self):
         super().__init__(
-            device_type=0xAC,
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -53,10 +101,9 @@ class MessagePowerQuery(MessageRequest):
         ])
 
 
-class MessageSwitchDisplay(MessageRequest):
+class MessageSwitchDisplay(MessageACBase):
     def __init__(self):
         super().__init__(
-            device_type=0xAC,
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -71,10 +118,9 @@ class MessageSwitchDisplay(MessageRequest):
         ])
 
 
-class MessageNewProtocolQuery(MessageRequest):
+class MessageNewProtocolQuery(MessageACBase):
     def __init__(self):
         super().__init__(
-            device_type=0xAC,
             message_type=MessageType.query,
             body_type=0xB1)
 
@@ -92,10 +138,9 @@ class MessageNewProtocolQuery(MessageRequest):
         return _body
 
 
-class MessageGeneralSet(MessageRequest):
+class MessageGeneralSet(MessageACBase):
     def __init__(self):
         super().__init__(
-            device_type=0xAC,
             message_type=MessageType.set,
             body_type=0x40)
         self.power = False
@@ -217,28 +262,28 @@ class XA0MessageBody(MessageBody):
         self.eco_mode = (body[9] & 0x10) > 0
         self.night_light = (body[10] & 0x10) > 0
         self.natural_wind = (body[10] & 0x40) > 0
-        self.screen_display = (body[11] & 0x7 != 0x7)
+        self.screen_display = ((body[11] & 0x7) != 0x7) and self.power
         self.comfort_mode = (body[14] & 0x1) > 0
 
 
 class XA1MessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        TempInteger = int((body[13] - 50) / 2)
-        TemperatureDot = (body[18] & 0xF) * 0.1 if len(body) > 18 else 0
+        temperature_integer = int((body[13] - 50) / 2)
+        temperature_dot = (body[18] & 0xF) * 0.1 if len(body) > 18 else 0
         if body[13] > 49:
-            self.indoor_temperature = TempInteger + TemperatureDot
+            self.indoor_temperature = temperature_integer + temperature_dot
         else:
-            self.indoor_temperature = TempInteger - TemperatureDot
+            self.indoor_temperature = temperature_integer - temperature_dot
         if body[14] == 0xFF:
             self.outdoor_temperature = 0.0
         else:
-            TempInteger = int((body[14] - 50) / 2)
-            TemperatureDot = ((body[18] & 0xF0) >> 4) * 0.1 if len(body) > 18 else 0
+            temperature_integer = int((body[14] - 50) / 2)
+            temperature_dot = ((body[18] & 0xF0) >> 4) * 0.1 if len(body) > 18 else 0
             if body[14] > 49:
-                self.outdoor_temperature = TempInteger + TemperatureDot
+                self.outdoor_temperature = temperature_integer + temperature_dot
             else:
-                self.outdoor_temperature = TempInteger - TemperatureDot
+                self.outdoor_temperature = temperature_integer - temperature_dot
         self.indoor_humidity = body[17]
 
 
@@ -290,14 +335,14 @@ class XC0MessageBody(MessageBody):
                 self.outdoor_temperature = TempInteger + TemperatureDot
             else:
                 self.outdoor_temperature = TempInteger - TemperatureDot
-        self.screen_display = (body[14] & 0x70 != 0x70)
+        self.screen_display = ((body[14] >> 4 & 0x7) != 0x7) and self.power
         self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 22 else False
 
 
 class MessageACResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[10: -2]
+        body = message[self.HEADER_LENGTH: -1]
         if self._body_type == 0xA0:
             self._body = XA0MessageBody(body)
             self.power = self._body.power
@@ -348,5 +393,3 @@ class MessageACResponse(MessageResponse):
             self.outdoor_temperature = self._body.outdoor_temperature
             self.screen_display = self._body.screen_display
             self.comfort_mode = self._body.comfort_mode
-        else:
-            self._body = MessageBody(body)
