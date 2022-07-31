@@ -1,5 +1,5 @@
-import logging
-from .midea_entity import MideaEntity, MIDEA_ENTITIES
+from .midea_entity import MideaEntity
+from .midea_devices import MIDEA_DEVICES
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.const import (
     STATE_ON,
@@ -12,8 +12,6 @@ from .const import (
     DEVICES,
 )
 
-_LOGGER = logging.getLogger(__name__)
-
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
@@ -22,14 +20,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         CONF_SWITCHES, []
     )
     switches = []
-    for entity_key, config in MIDEA_ENTITIES[device.device_type]["entities"].items():
+    for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
         if config["type"] == "switch" and entity_key in extra_switches:
-            dev = ACSwitch(device, entity_key)
+            dev = MideaSwitch(device, entity_key)
             switches.append(dev)
     async_add_entities(switches)
 
 
-class ACSwitch(MideaEntity, ToggleEntity):
+class MideaSwitch(MideaEntity, ToggleEntity):
     @property
     def is_on(self) -> bool:
         return getattr(self._device, self._entity_key)

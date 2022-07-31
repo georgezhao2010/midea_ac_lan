@@ -24,7 +24,7 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .midea.core.discover import discover
 from .midea.core.cloud import MideaCloud
 from .midea.core.device import MiedaDevice
-from .midea_entity import MIDEA_ENTITIES
+from .midea_devices import MIDEA_DEVICES
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 
@@ -39,7 +39,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     devices = {}
     found_device = {}
     supports = {}
-    for device_type, device_info in MIDEA_ENTITIES.items():
+    for device_type, device_info in MIDEA_DEVICES.items():
         supports[device_type] = device_info["name"]
 
     def _already_configured(self, device_id):
@@ -71,7 +71,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             for device_id, device in self.devices.items():
                 if not self._already_configured(device_id):
                     self.available_device[device_id] = \
-                        f"{device_id} (type {device.get('device_type').to_bytes(1,'big').hex()})"
+                        f"{device_id} (Type {device.get(CONF_TYPE).to_bytes(1,'big').hex().upper()})"
             if len(self.available_device) > 0:
                 return await self.async_step_auto()
             else:
@@ -85,7 +85,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             device_id = user_input[CONF_DEVICE]
             device = self.devices.get(device_id)
-            if device.get("protocol") == 3:
+            if device.get(CONF_PROTOCOL) == 3:
                 session = async_create_clientsession(self.hass)
                 cloud = MideaCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD, MIDEA_DEFAULT_SERVER)
                 if await cloud.login():
@@ -94,22 +94,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         if token and key:
                             dm = MiedaDevice(
                                 device_id=device_id,
-                                device_type=device.get("device_type"),
-                                host=device.get("host"),
-                                port=device.get("port"),
+                                device_type=device.get(CONF_TYPE),
+                                host=device.get(CONF_HOST),
+                                port=device.get(CONF_PORT),
                                 token=token,
                                 key=key,
                                 protocol=3,
-                                model=device.get("model"))
+                                model=device.get(CONF_MODEL))
                             _LOGGER.debug(f"Successful to take token and key, token: {token}, key: {key}, "
                                           f"byte_order_big: {byte_order_big}")
                             if dm.connect(refresh_status=False):
                                 self.found_device = {
                                     CONF_DEVICE_ID: device_id,
+                                    CONF_TYPE: device.get(CONF_TYPE),
                                     CONF_PROTOCOL: 3,
-                                    CONF_HOST: device.get("host"),
-                                    CONF_PORT: device.get("port"),
-                                    CONF_MODEL: device.get("model"),
+                                    CONF_HOST: device.get(CONF_HOST),
+                                    CONF_PORT: device.get(CONF_PORT),
+                                    CONF_MODEL: device.get(CONF_MODEL),
                                     CONF_TOKEN: token,
                                     CONF_KEY: key,
                                 }
@@ -120,11 +121,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 self.found_device = {
                     CONF_DEVICE_ID: device_id,
-                    CONF_TYPE: device.get("device_type"),
+                    CONF_TYPE: device.get(CONF_TYPE),
                     CONF_PROTOCOL: 2,
-                    CONF_HOST: device.get("host"),
-                    CONF_PORT: device.get("port"),
-                    CONF_MODEL: device.get("model"),
+                    CONF_HOST: device.get(CONF_HOST),
+                    CONF_PORT: device.get(CONF_PORT),
+                    CONF_MODEL: device.get(CONF_MODEL),
                 }
                 return await self.async_step_manual()
         return self.async_show_form(
@@ -181,6 +182,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     })
             else:
                 return await self.async_step_manual(error="config_incorrect")
+        _LOGGER.debug(f"found_device = {self.found_device}")
         return self.async_show_form(
             step_id="manual",
             data_schema=vol.Schema({
@@ -238,7 +240,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             device_type = 0xac
         sensors = {}
         switches = {}
-        for attribute, attribute_config in MIDEA_ENTITIES.get(device_type).get("entities").items():
+        for attribute, attribute_config in MIDEA_DEVICES.get(device_type).get("entities").items():
             if attribute_config.get("type") == "sensor":
                 sensors[attribute] = attribute_config.get("name")
             elif attribute_config.get("type") == "switch":
