@@ -7,7 +7,7 @@ from homeassistant.const import (
 
 MIDEA_DEVICES = {
     0xac: {
-        "name": "Air conditioner",
+        "name": "Air Conditioner",
         "entities": {
             "climate": {
                 "type": "climate",
@@ -109,7 +109,7 @@ MIDEA_DEVICES = {
         }
     },
     0xcc: {
-        "name": "AC control panel",
+        "name": "AC Control Panel",
         "entities": {
             "climate": {
                 "type": "climate",
