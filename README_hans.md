@@ -7,9 +7,9 @@
 
 通过本地局域网控制你的美的设备
 
-- 通过HomeAssistant UI完成空调的自动搜索和配置.
+- 通过HomeAssistant UI完成设备的自动搜索和配置.
 - 生成额外的传感器和开关方便进行设备控制.
-- 与空调保持TCP长连接以便实时同步设备状态.
+- 与设备保持TCP长连接以便实时同步设备状态.
 
 本集成部分技术来源来自 [@mac-zhou](https://github.com/mac-zhou/midea-msmart)，他的美的midea-msmart提供了类似的功能。 该组件包括来自他的项目中经过改写的部分代码。
 
