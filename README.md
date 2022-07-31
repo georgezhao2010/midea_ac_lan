@@ -5,7 +5,7 @@
 
 English | [简体中文](README_hans.md)
 
-Control your Midea devices via local area network.
+Control your Midea M-Smart devices via local area network.
 
 - Automated device discover and configuration based HA config flow UI.
 - Extra sensors and swithes.
