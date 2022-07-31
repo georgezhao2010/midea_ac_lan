@@ -31,9 +31,9 @@ After installation, search anad add component Midea AC LAN in HomeAssistant inte
 If component can not found any devices, you can specify the IP address to add the device.
 
 ## Config automatically
-This component could auto-discover and list Midea M-Smart AC devices in network, select one and add it in. You could repeat the above action to add multiple devices.
+This component could auto-discover and list Midea M-Smart devices in network, select one and add it in. You could repeat the above action to add multiple devices.
 
-**Automatic configuration requires your air-conditioners and your Home Assistant must be in the same sub-network. Otherwise, devices cannot be auto-discovered.  Check this by yourself.**
+**Automatic configuration requires your devices and your Home Assistant must be in the same sub-network. Otherwise, devices cannot be auto-discovered.  Check this by yourself.**
 
 ## Config manually
 If auto-discover could not work, you could add the device(s) manually with the following information.
