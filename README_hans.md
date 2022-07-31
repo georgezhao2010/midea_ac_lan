@@ -16,8 +16,12 @@
 同时感谢[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 
 # 支持的设备
-- [美的空调](doc/AC_hans.md), type "AC"
-- [美的中央空调86控制面板](doc/CC_hans.md), type "CC"
+
+ 名称 | 类型 | 文档
+ --- | --- | ---
+ 空调器 | AC | [AC_hans.md](doc/AC.md)
+ 中央空调86控制面板 | CC | [CC_hans.md](doc/CC.md)
+ 电热水器 | E2 | 尚不支持
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
