@@ -1,4 +1,5 @@
-from .midea_entity import MideaEntity, MIDEA_ENTITIES
+from .midea_entity import MideaEntity
+from .midea_devices import MIDEA_DEVICES
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import CONF_DEVICE_ID, CONF_SENSORS
 from .const import (
@@ -14,14 +15,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         CONF_SENSORS, []
     )
     sensors = []
-    for entity_key, config in MIDEA_ENTITIES[device.device_type]["entities"].items():
+    for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
         if config["type"] == "sensor" and entity_key in extra_sensors:
-            sensor = ACSwitch(device, entity_key)
+            sensor = MideaSensor(device, entity_key)
             sensors.append(sensor)
     async_add_entities(sensors)
 
 
-class ACSwitch(MideaEntity, SensorEntity):
+class MideaSensor(MideaEntity, SensorEntity):
     @property
     def device_class(self):
         return self._config.get("device_class")

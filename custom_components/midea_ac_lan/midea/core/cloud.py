@@ -122,7 +122,8 @@ class MideaCloud:
             "/v1/iot/secure/getToken",
             {"udpid": udpid}
         )
-        for token in response["tokenlist"]:
-            if token["udpId"] == udpid:
-                return token["token"], token["key"]
+        if response and "tokenlist" in response:
+            for token in response["tokenlist"]:
+                if token["udpId"] == udpid:
+                    return token["token"], token["key"]
         return None, None
