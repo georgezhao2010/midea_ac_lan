@@ -16,14 +16,14 @@ This component inspired from the repository at [@mac-zhou](https://github.com/ma
 Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported Devices
-- Midea Air Conditioners (V2 or V3), type "AC"
-- ~Midea Air Conditioner Control Panels, type "CC"~
+- [Midea Air Conditioners](doc/AC.md), type "AC"
+- [Midea AC Control Panels](doc/CC.md), type "CC"
 
 # Installtion
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. Restart HomeAssistant.
 
 # Configuration
-After installation, search and add component Midea AC LAN in HomeAssistant integrations page,
+After installation, search anad add component Midea AC LAN in HomeAssistant integrations page,
 If component can not found any devices, you can specify the IP address to add the device.
 
 ## Config automatically
@@ -51,78 +51,7 @@ midea-discover
 
 ## Make attributes as sensors and switches
 
-Only one cliamate entity will be generated after configration. If you want to make the attributes of climate to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported). All entities listed in [Extra entities](#extra-entities).
-
-# Features
-## Climate features
-- Supports target temperature
-- Supports run mode
-- Supports fan mode
-- Supports swing mode
-- Supports auxiliary heating
-
-## Entities
-### Default entity
-EntityID | Class | Description
---- | --- | ---
-climate.{DEVICEID}_climate | Climate | Climate entity
-
-### Extra entities
-
-EntityID | Class | Description
---- | --- | ---
-sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity
-sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature
-sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature
-switch.{DEVICEID}_aux_heat | switch | Aux Heating
-switch.{DEVICEID}_breezyless | switch | Breezyless
-switch.{DEVICEID}_comfort_mode | switch | Comfort Mode
-switch.{DEVICEID}_dry | switch | Dry
-switch.{DEVICEID}_eco_mode | switch | ECO Mode
-switch.{DEVICEID}_indirect_wind | switch | Indirect Wind
-switch.{DEVICEID}_natural_wind | switch | Natural Wind
-switch.{DEVICEID}_night_light | switch | Night Light
-switch.{DEVICEID}_prompt_tone | switch | Prompt Tone
-switch.{DEVICEID}_screen_display | switch | Screen Display
-switch.{DEVICEID}_smart_eye | switch | Smart eye
-switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
-switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
-switch.{DEVICEID}_turbo_mode | switch | Turbo Mode
-
-## Sevices
-following extra services will be made
-
-### midea_ac_lan.set_fan_speed
-Set fan speed of AC fan. Service data:
-Name | Description
---- | ---
-entity_id | The entity_id of cliamte entity.
-fan_speed | Range 1 to 100 or auto
-
-Example
-```
-service: midea_ac_lan.set_fan_speed
-data:
-  entity_id: climate.XXXXXXXXXXXX_climate
-  fan_speed: auto
-```
-
-### midea_ac_lan.set_attribute
-Set the attribute of AC. Service data:
-Name | Description
---- | ---
-entity_id | The entity_id of cliamte entity.
-attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
-value | true or false
-
-Example
-```
-service: midea_ac_lan.set_attribute
-data:
-  entity_id: climate.XXXXXXXXXXXX_climate
-  attribute: eco_mode
-  value: true
-```
+Only one cliamate entity will be generated after configration. If you want to make the attributes of climate to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported).
 
 # Debug
 
