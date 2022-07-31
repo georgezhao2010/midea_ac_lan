@@ -17,7 +17,7 @@
                 "title": "Add new device"
             },
             "discover": {
-                "description": "Discover new Midea air conditioner?",
+                "description": "Discover new Midea devices?",
                 "title": "New device discover"
             },
             "auto": {
