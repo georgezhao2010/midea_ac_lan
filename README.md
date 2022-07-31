@@ -55,7 +55,7 @@ midea-discover
 
 ## Make attributes as sensors and switches
 
-Only one cliamate entity will be generated after configration. If you want to make the attributes of climate to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported).
+Only one main entity (e.g. climate entity) will be generated after configuration. If you want to make the attributes to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported).
 
 # Debug
 
