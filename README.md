@@ -5,7 +5,7 @@
 
 English | [简体中文](README_hans.md)
 
-Control your Midea air conditioners via local area network.
+Control your Midea devices via local area network.
 
 - Automated device discover and configuration based HA config flow UI.
 - Extra sensors and swithes.
@@ -16,8 +16,12 @@ This component inspired from the repository at [@mac-zhou](https://github.com/ma
 Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported Devices
-- [Midea Air Conditioners](doc/AC.md), type "AC"
-- [Midea AC Control Panels](doc/CC.md), type "CC"
+
+ Name | Type | Document
+ --- | --- | ---
+ Air Conditioners | AC | [AC.md](doc/AC.md)
+ AC Control Panels | CC | [CC.md](doc/CC.md)
+ Electric Water Heaters | E2 | not supported yet
 
 # Installtion
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. Restart HomeAssistant.
