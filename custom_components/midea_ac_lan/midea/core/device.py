@@ -233,7 +233,7 @@ class MiedaDevice(threading.Thread):
                     msg = self._socket.recv(512)
                     msg_len = len(msg)
                     if msg_len == 0:
-                        raise socket.error("Connection ")
+                        raise socket.error("Connection closed, reconnecting")
                     timeout_counter = 0
                     if not self.parse_message(msg):
                         _LOGGER.debug(f"[{self._device_id}] Message b'ERROR' received, reconnecting")
