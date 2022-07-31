@@ -71,7 +71,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             for device_id, device in self.devices.items():
                 if not self._already_configured(device_id):
                     self.available_device[device_id] = \
-                        f"{device_id} (Type {device.get(CONF_TYPE).to_bytes(1,'big').hex().upper()})"
+                        f"{device_id} ({self.supports.get(device.get(CONF_TYPE))})"
             if len(self.available_device) > 0:
                 return await self.async_step_auto()
             else:
