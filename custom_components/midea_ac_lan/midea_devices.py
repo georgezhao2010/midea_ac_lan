@@ -18,6 +18,11 @@ MIDEA_DEVICES = {
                 "name": "Aux Heating",
                 "icon": "mdi:heat-wave"
             },
+            "boost_mode": {
+                "type": "switch",
+                "name": "Boost Mode",
+                "icon": "mdi:alpha-b-circle"
+            },
             "breezyless":{
                 "type": "switch",
                 "name": "Breezyless",
@@ -82,11 +87,6 @@ MIDEA_DEVICES = {
                 "type": "switch",
                 "name": "Swing Vertical",
                 "icon": "mdi:arrow-split-horizontal"
-            },
-            "turbo_mode": {
-                "type": "switch",
-                "name": "Turbo Mode",
-                "icon": "mdi:alpha-t-circle"
             },
             "indoor_humidity": {
                 "type": "sensor",
