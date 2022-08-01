@@ -21,7 +21,7 @@ class DeviceProperties(Enum):
 
     swing_vertical = "swing_vertical"
     swing_horizontal = "swing_horizontal"
-    turbo_mode = "turbo_mode"
+    boost_mode = "boost_mode"
     smart_eye = "smart_eye"
     dry = "dry"
     eco_mode = "eco_mode"
@@ -68,7 +68,7 @@ class MideaACDevice(MiedaDevice):
         self._fan_speed = 102
         self._swing_vertical = False
         self._swing_horizontal = False
-        self._turbo_mode = False
+        self._boost_mode = False
         self._smart_eye = False
         self._dry = False
         self._eco_mode = False
@@ -112,7 +112,7 @@ class MideaACDevice(MiedaDevice):
         message.fan_speed = self.fan_speed
         message.swing_vertical = self.swing_vertical
         message.swing_horizontal = self.swing_horizontal
-        message.turbo_mode = self._turbo_mode
+        message.boost_mode = self._boost_mode
         message.smart_eye = self._smart_eye
         message.dry = self._dry
         message.eco_mode = self.eco_mode
@@ -208,13 +208,13 @@ class MideaACDevice(MiedaDevice):
         self.build_send(message)
 
     @property
-    def turbo_mode(self):
-        return self._turbo_mode
+    def boost_mode(self):
+        return self._boost_mode
 
-    @turbo_mode.setter
-    def turbo_mode(self, turbo_mode):
+    @boost_mode.setter
+    def boost_mode(self, boost_mode):
         message = self.make_message_set()
-        message.turbo_mode = turbo_mode
+        message.boost_mode = boost_mode
         self.build_send(message)
 
     @property

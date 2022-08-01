@@ -150,7 +150,7 @@ class MessageGeneralSet(MessageACBase):
         self.fan_speed = 102
         self.swing_vertical = False
         self.swing_horizontal = False
-        self.turbo_mode = False
+        self.boost_mode = False
         self.smart_eye = False
         self.dry = False
         self.aux_heat = False
@@ -176,7 +176,7 @@ class MessageGeneralSet(MessageACBase):
                      (0x0c if self.swing_vertical else 0) | \
                      (0x03 if self.swing_horizontal else 0)
         # Byte 8, turbo
-        turbo_mode = 0x20 if self.turbo_mode else 0
+        boost_mode = 0x20 if self.boost_mode else 0
         # Byte 9 aux_heat eco_mode
         smart_eye = 0x01 if self.smart_eye else 0
         dry = 0x04 if self.dry else 0
@@ -196,7 +196,7 @@ class MessageGeneralSet(MessageACBase):
             fan_speed,
             0x00, 0x00, 0x00,
             swing_mode,
-            turbo_mode,
+            boost_mode,
             smart_eye | dry | aux_heat | eco_mode,
             temp_fahrenheit | night_light,
             0x00, 0x00, 0x00, 0x00,
@@ -254,7 +254,7 @@ class XA0MessageBody(MessageBody):
         self.fan_speed = body[3] & 0x7f
         self.swing_vertical = (body[7] & 0xC) > 0
         self.swing_horizontal = (body[7] & 0x3) > 0
-        self.turbo_mode = (body[8] & 0x20) > 0
+        self.boost_mode = (body[8] & 0x20) > 0
         self.smart_eye = (body[9] & 0x01) > 0
         self.dry = (body[9] & 0x04) > 0
         self.aux_heat = (body[9] & 0x08) > 0
@@ -311,7 +311,7 @@ class XC0MessageBody(MessageBody):
         self.fan_speed = body[3] & 0x7f
         self.swing_vertical = (body[7] & 0xC) > 0
         self.swing_horizontal = (body[7] & 0x3) > 0
-        self.turbo_mode = (body[8] & 0x20) > 0
+        self.boost_mode = (body[8] & 0x20) > 0
         self.smart_eye = (body[8] & 0x40) > 0
         self.natural_wind = (body[9] & 0x2) > 0
         self.dry = (body[9] & 0x4) > 0
@@ -350,7 +350,7 @@ class MessageACResponse(MessageResponse):
             self.fan_speed = self._body.fan_speed
             self.swing_vertical = self._body.swing_vertical
             self.swing_horizontal = self._body.swing_horizontal
-            self.turbo_mode = self._body.turbo_mode
+            self.boost_mode = self._body.boost_mode
             self.smart_eye = self._body.smart_eye
             self.dry = self._body.dry
             self.aux_heat = self._body.aux_heat
@@ -380,7 +380,7 @@ class MessageACResponse(MessageResponse):
             self.fan_speed = self._body.fan_speed
             self.swing_vertical = self._body.swing_vertical
             self.swing_horizontal = self._body.swing_horizontal
-            self.turbo_mode = self._body.turbo_mode
+            self.boost_mode = self._body.boost_mode
             self.smart_eye = self._body.smart_eye
             self.natural_wind = self._body.natural_wind
             self.dry = self._body.dry

@@ -51,7 +51,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     @property
     def supported_features(self):
-        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE | SUPPORT_SWING_MODE | SUPPORT_AUX_HEAT
+        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE | SUPPORT_SWING_MODE | SUPPORT_AUX_HEAT | SUPPORT_PRESET_MODE
 
     @property
     def min_temp(self):
@@ -105,6 +105,24 @@ class MideaClimate(MideaEntity, ClimateEntity):
         return self._device.aux_heat
 
     @property
+    def preset_modes(self):
+        return self._preset_modes
+
+    @property
+    def preset_mode(self):
+        if hasattr(self._device, "comfort_mode") and self._device.comfort_mode:
+            mode = PRESET_COMFORT
+        elif hasattr(self._device, "eco_mode") and self._device.eco_mode:
+            mode = PRESET_ECO
+        elif hasattr(self._device, "boost_mode") and self._device.boost_mode:
+            mode = PRESET_BOOST
+        elif hasattr(self._device, "sleep_mode") and self._device.sleep_mode:
+            mode = PRESET_SLEEP
+        else:
+            mode = PRESET_NONE
+        return mode
+
+    @property
     def extra_state_attributes(self) -> dict:
         return self._device.attributes
 
@@ -135,6 +153,25 @@ class MideaClimate(MideaEntity, ClimateEntity):
         else:
             self._device.mode = self._modes.index(hvac_mode)
 
+    def set_preset_mode(self, preset_mode: str) -> None:
+        old_mode = self.preset_mode
+        if preset_mode == PRESET_COMFORT:
+            self._device.comfort_mode = True
+        elif preset_mode == PRESET_SLEEP:
+            self._device.sleep_mode = True
+        elif preset_mode == PRESET_ECO:
+            self._device.eco_mode = True
+        elif preset_mode == PRESET_BOOST:
+            self._device.boost_mode = True
+        elif old_mode == PRESET_COMFORT:
+            self._device.comfort_mode = False
+        elif old_mode == PRESET_SLEEP:
+            self._device.sleep_mode = False
+        elif old_mode == PRESET_ECO:
+            self._device.eco_mode = False
+        elif old_mode == PRESET_BOOST:
+            self._device.boost_mode = False
+
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()
@@ -161,6 +198,7 @@ class MideaACClimate(MideaClimate):
             FAN_AUTO: 102
         }
         self._swing_modes = [SWING_OFF, SWING_VERTICAL, SWING_HORIZONTAL, SWING_BOTH]
+        self._preset_modes = [PRESET_NONE, PRESET_COMFORT, PRESET_ECO, PRESET_BOOST]
 
     @property
     def fan_modes(self):
@@ -228,6 +266,7 @@ class MideaCCClimate(MideaClimate):
             FAN_AUTO: 0x80
         }
         self._swing_modes = [SWING_OFF, SWING_ON]
+        self._preset_modes = [PRESET_NONE, PRESET_SLEEP, PRESET_ECO]
 
     @property
     def fan_modes(self):
