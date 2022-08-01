@@ -245,7 +245,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         for attribute, attribute_config in MIDEA_DEVICES.get(device_type).get("entities").items():
             if attribute_config.get("type") == "sensor":
                 sensors[attribute] = attribute_config.get("name")
-            elif attribute_config.get("type") == "switch" and attribute_config.get("name") != "turbo_mode":
+            elif attribute_config.get("type") == "switch":
                 switches[attribute] = attribute_config.get("name")
         extra_sensors = self.config_entry.options.get(
             CONF_SENSORS, []
