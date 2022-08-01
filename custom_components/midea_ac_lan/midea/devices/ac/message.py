@@ -207,10 +207,9 @@ class MessageGeneralSet(MessageACBase):
         ])
 
 
-class MessageNewProtocolSet(MessageRequest):
+class MessageNewProtocolSet(MessageACBase):
     def __init__(self):
         super().__init__(
-            device_type=0xAC,
             message_type=MessageType.set,
             body_type=0xB0)
         self.indirect_wind = None
