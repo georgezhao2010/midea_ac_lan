@@ -34,7 +34,7 @@ class MideaEntity(Entity):
 
     @property
     def should_poll(self):
-        return False  # self._config.get("should_poll")
+        return False
 
     @property
     def state(self):

@@ -30,8 +30,8 @@ import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-ADD_WAY = {"auto": "Auto", "manual": "Manual"}
-PROTOCOLS = {2: "V2", 3: "V3"}
+ADD_WAY = {"auto": "Auto", "manual": "Manual", "by_ip": "By IP"}
+PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -42,10 +42,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     for device_type, device_info in MIDEA_DEVICES.items():
         supports[device_type] = device_info["name"]
 
-    def _already_configured(self, device_id):
+    def _already_configured(self, device_id, host):
         for entry in self._async_current_entries():
-            _LOGGER.debug(entry.data)
-            if device_id == entry.data.get(CONF_DEVICE_ID):
+            if device_id == entry.data.get(CONF_DEVICE_ID) or host == entry.data.get(CONF_HOST):
                 return True
         return False
 
@@ -53,9 +52,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             if user_input["action"] == "auto":
                 return await self.async_step_discover()
-            else:
+            elif user_input["action"] == "manual":
                 self.found_device = {}
                 return await self.async_step_manual()
+            else:
+                return await self.async_step_byip()
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
@@ -69,7 +70,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.devices = discover(self.supports.keys())
             self.available_device = {}
             for device_id, device in self.devices.items():
-                if not self._already_configured(device_id):
+                if not self._already_configured(device_id, device.get(CONF_HOST)):
                     self.available_device[device_id] = \
                         f"{device_id} ({self.supports.get(device.get(CONF_TYPE))})"
             if len(self.available_device) > 0:
@@ -78,6 +79,26 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_user(error="no_devices")
         return self.async_show_form(
             step_id="discover",
+            errors={"base": error} if error else None
+        )
+
+    async def async_step_byip(self, user_input=None, error=None):
+        if user_input is not None:
+            self.devices = discover(self.supports.keys(), host=user_input[CONF_HOST])
+            self.available_device = {}
+            for device_id, device in self.devices.items():
+                if not self._already_configured(device_id, device.get(CONF_HOST)):
+                    self.available_device[device_id] = \
+                        f"{device_id} ({self.supports.get(device.get(CONF_TYPE))})"
+            if len(self.available_device) > 0:
+                return await self.async_step_auto()
+            else:
+                return await self.async_step_byip(error="no_devices")
+        return self.async_show_form(
+            step_id="byip",
+            data_schema=vol.Schema({
+                vol.Required(CONF_HOST): str
+            }),
             errors={"base": error} if error else None
         )
 

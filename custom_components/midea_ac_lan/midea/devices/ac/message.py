@@ -262,7 +262,7 @@ class XA0MessageBody(MessageBody):
         self.night_light = (body[10] & 0x10) > 0
         self.natural_wind = (body[10] & 0x40) > 0
         self.screen_display = ((body[11] & 0x7) != 0x7) and self.power
-        self.comfort_mode = (body[14] & 0x1) > 0
+        self.comfort_mode = (body[14] & 0x1) > 0 if len(body) > 16 else False
 
 
 class XA1MessageBody(MessageBody):
@@ -335,7 +335,7 @@ class XC0MessageBody(MessageBody):
             else:
                 self.outdoor_temperature = TempInteger - TemperatureDot
         self.screen_display = ((body[14] >> 4 & 0x7) != 0x7) and self.power
-        self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 22 else False
+        self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 24 else False
 
 
 class MessageACResponse(MessageResponse):
