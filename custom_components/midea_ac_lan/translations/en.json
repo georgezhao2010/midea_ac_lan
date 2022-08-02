@@ -13,12 +13,19 @@
                 "data": {
                     "way": "Adding devices"
                 },
-                "description": "Choose 'auto' or 'manual' to add a new device",
+                "description": "Choose 'Auto' or 'Manual' to add a new device",
                 "title": "Add new device"
             },
             "discover": {
                 "description": "Discover new Midea devices?",
                 "title": "New device discover"
+            },
+            "byip": {
+                "description": "Input IP address for device",
+                "title": "By IP",
+                "data": {
+                    "host": "Host"
+                }
             },
             "auto": {
                 "data": {

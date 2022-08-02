@@ -1,5 +1,8 @@
 import logging
 import socket
+import ifaddr
+import time
+from ipaddress import IPv4Network
 from .security import Security
 try:
     import xml.etree.cElementTree as ET
@@ -31,23 +34,24 @@ DEVICE_INFO_MSG = bytearray([
 ])
 
 
-def discover(discover_type=None):
+def discover(discover_type=None, host=None):
     if discover_type is None:
         discover_type = []
     security = Security()
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    try:
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-    except AttributeError:
-        # Will be raised when executed in Windows. Safe to ignore.
-        pass
-    sock.settimeout(8)
+    sock.settimeout(5)
     found_devices = {}
-    try:
-        sock.sendto(BROADCAST_MSG, ("255.255.255.255", 6445))
-        sock.sendto(BROADCAST_MSG, ("255.255.255.255", 20086))
-        while True:
+    if host is None:
+        addrs = enum_all_broadcast()
+    else:
+        addrs = [host]
+
+    for addr in addrs:
+        sock.sendto(BROADCAST_MSG, (addr, 6445))
+        sock.sendto(BROADCAST_MSG, (addr, 20086))
+    while True:
+        try:
             data, addr = sock.recvfrom(512)
             ip = addr[0]
             _LOGGER.debug(f"Received broadcast from {addr}: {data.hex()}")
@@ -70,7 +74,6 @@ def discover(discover_type=None):
                 device_type = ssid.split("_")[1]
                 port = bytes2port(reply[4:8])
                 model = reply[20:25].decode("utf-8")
-
             elif data[:6].hex() == "3c3f786d6c20":
                 protocol = 1
                 root = ET.fromstring(data.decode(
@@ -99,11 +102,13 @@ def discover(discover_type=None):
             }
             if len(discover_type) == 0 or device.get("type") in discover_type:
                 found_devices[device_id] = device
-                _LOGGER.debug(f"Found a supported device: {device}")
+                print(f"Found a supported device: {device}")
             else:
                 _LOGGER.debug(f"Found a unsupported device: {device}")
-    except socket.timeout:
-        pass
+        except socket.timeout:
+            break
+        except socket.error:
+            pass
     return found_devices
 
 
@@ -149,3 +154,15 @@ def get_device_info(device_ip, device_port: int):
     except socket.error:
         _LOGGER.warning(f"Can't connect to Device {device_ip}:{device_port}")
     return response
+
+
+def enum_all_broadcast():
+    nets = []
+    adapters = ifaddr.get_adapters()
+    for adapter in adapters:
+        for ip in adapter.ips:
+            if ip.is_IPv4 and ip.network_prefix < 32:
+                localNet = IPv4Network(f"{ip.ip}/{ip.network_prefix}", strict=False)
+                if localNet.is_private and not localNet.is_loopback and not localNet.is_link_local:
+                    nets.append(str(localNet.broadcast_address))
+    return nets

@@ -20,6 +20,13 @@
                 "description": "要查找并添加新的美的设备吗?",
                 "title": "查找设备"
             },
+            "byip": {
+                "description": "输入设备的IP地址",
+                "title": "指定IP",
+                "data": {
+                    "host": "地址"
+                }
+            },
             "auto": {
                 "data": {
                     "device": "设备"
