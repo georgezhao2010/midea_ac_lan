@@ -4,6 +4,7 @@
 - 支持运行模式设定
 - 支持风扇模式设定
 - 支持摆风模式设定
+- 支持预设模式设定
 - 支持电辅热
 
 ## 生成实体
@@ -20,6 +21,7 @@ sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity | 湿度
 sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
 sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature | 室外机温度
 switch.{DEVICEID}_aux_heat | Switch | Aux Heating | 电辅热
+switch.{DEVICEID}_boost_mode | Switch | Boost Mode | 强劲模式
 switch.{DEVICEID}_breezyless | Switch | Breezyless | 无风感
 switch.{DEVICEID}_comfort_mode | Switch | Comfort Mode | 舒省模式
 switch.{DEVICEID}_dry | Switch | Dry | 干燥
@@ -32,7 +34,6 @@ switch.{DEVICEID}_screen_display | Switch | Screen Display | 屏幕显示
 switch.{DEVICEID}_smart_eye | Switch | Smart eye | 智慧眼
 switch.{DEVICEID}_swing_horizontal | Switch | Swing Horizontal | 水平摆风
 switch.{DEVICEID}_swing_vertical | Switch | Swing Vertical | 垂直摆风
-switch.{DEVICEID}_turbo_mode | Switch | Turbo Mode | 强劲模式
 
 ## 服务
 生成以下扩展服务

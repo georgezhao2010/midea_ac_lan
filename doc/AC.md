@@ -4,6 +4,7 @@
 - Supports run mode
 - Supports fan mode
 - Supports swing mode
+- Supports preset mode
 - Supports auxiliary heating
 
 ## Entities
@@ -20,6 +21,7 @@ sensor.{DEVICEID}_indoor_humidity | Sensor | Indoor humidity
 sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature
 sensor.{DEVICEID}_outdoor_temperature | Sensor | Outdoor Temperature
 switch.{DEVICEID}_aux_heat | switch | Aux Heating
+switch.{DEVICEID}_boost_mode | switch | Boost Mode
 switch.{DEVICEID}_breezyless | switch | Breezyless
 switch.{DEVICEID}_comfort_mode | switch | Comfort Mode
 switch.{DEVICEID}_dry | switch | Dry
@@ -32,7 +34,7 @@ switch.{DEVICEID}_screen_display | switch | Screen Display
 switch.{DEVICEID}_smart_eye | switch | Smart eye
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
-switch.{DEVICEID}_turbo_mode | switch | Turbo Mode
+
 
 ## Services
 following extra services will be made
