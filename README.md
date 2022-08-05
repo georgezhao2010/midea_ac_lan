@@ -22,6 +22,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
  Air Conditioners | AC | [AC.md](doc/AC.md)
  AC Control Panels | CC | [CC.md](doc/CC.md)
  Electric Water Heater | E2 | not supported yet
+ Gas Water Heater | E3 | not supported yet
 
 # Installtion
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. Restart HomeAssistant.
