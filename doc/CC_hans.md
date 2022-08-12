@@ -1,39 +1,47 @@
-# 功能
-## 支持的温控器操作
+# 中央空调线控器
+## 特性
 - 支持目标温度设定
 - 支持运行模式设定
 - 支持风扇模式设定
 - 支持摆风模式设定
 - 支持电辅热
 
+### 支持的模式
+- 睡眠模式
+- 节能模式
+
 ## 生成实体
 ### 默认生成实体
 实体ID | 类型 | 描述
 --- | --- | ---
-climate.{DEVICEID}_climate | Climate | 恒温器实体
+climate.{DEVICEID}_climate | climate | 恒温器实体
 
 ### 额外生成实体
 
 EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
-sensor.{DEVICEID}_indoor_temperature | Sensor | Indoor Temperature | 室内温度
-switch.{DEVICEID}_aux_heat | Switch | Aux Heating | 电辅热
-switch.{DEVICEID}_eco_mode | Switch | ECO Mode | ECO模式
-switch.{DEVICEID}_night_light | Switch | Night Light | 夜灯
-switch.{DEVICEID}_sleep_mode | Switch | Sleep Mode | 睡眠模式
-switch.{DEVICEID}_swing | Switch | Swing | 垂直摆风
+sensor.{DEVICEID}_indoor_temperature | sensor | Indoor Temperature | 室内温度
+switch.{DEVICEID}_aux_heat | switch | Aux Heating | 电辅热
+switch.{DEVICEID}_eco_mode | switch | ECO Mode | ECO模式
+switch.{DEVICEID}_night_light | switch | Night Light | 夜灯
+switch.{DEVICEID}_power | switch | Power | 电源开关
+switch.{DEVICEID}_sleep_mode | switch | Sleep Mode | 睡眠模式
+switch.{DEVICEID}_swing | switch | Swing | 摆风
 
 ## 服务
 生成以下扩展服务
 
 ### midea_ac_lan.set_attribute
+
+[![Service](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=midea_ac_lan.set_attribute)
+
 设置空调属性, 服务数据:
 
 名称 | 描述
 --- | ---
-entity_id | The entity_id of cliamte entity.
-attribute | "aux_heat"<br/>"eco_mode"<br/>"night_light"<br/>"sleep_mode"<br/>"swing"
-value | true or false
+entity_id | climate实体的entity_id.
+attribute | "aux_heat"<br/>"eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing"
+value | true 或 false
 
 示例
 ```
