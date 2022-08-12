@@ -1,155 +1,292 @@
 from homeassistant.const import (
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_HUMIDITY,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_ENERGY,
     TEMP_CELSIUS,
-    PERCENTAGE
+    POWER_WATT,
+    PERCENTAGE,
+    ENERGY_KILO_WATT_HOUR
 )
-
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from .midea.devices.ac.device import DeviceAttributes as ACAttributes
+from .midea.devices.cc.device import DeviceAttributes as CCAttributes
+from .midea.devices.e2.device import DeviceAttributes as E2Attributes
+from .midea.devices.e3.device import DeviceAttributes as E3Attributes
 MIDEA_DEVICES = {
-    0xac: {
+    0xAC: {
         "name": "Air Conditioner",
         "entities": {
             "climate": {
                 "type": "climate",
                 "icon": "mdi:air-conditioner"
             },
-            "aux_heat": {
+            ACAttributes.aux_heat: {
                 "type": "switch",
                 "name": "Aux Heating",
                 "icon": "mdi:heat-wave"
             },
-            "boost_mode": {
+            ACAttributes.boost_mode: {
                 "type": "switch",
                 "name": "Boost Mode",
                 "icon": "mdi:alpha-b-circle"
             },
-            "breezyless":{
+            ACAttributes.breezyless: {
                 "type": "switch",
                 "name": "Breezyless",
                 "icon": "mdi:tailwind"
             },
-            "comfort_mode": {
+            ACAttributes.comfort_mode: {
                 "type": "switch",
                 "name": "Comfort Mode",
                 "icon": "mdi:alpha-c-circle"
             },
-            "dry": {
+            ACAttributes.dry: {
                 "type": "switch",
                 "name": "Dry",
                 "icon": "mdi:air-filter"
             },
-            "eco_mode": {
+            ACAttributes.eco_mode: {
                 "type": "switch",
                 "name": "ECO Mode",
                 "icon": "mdi:alpha-e-circle"
             },
-            "indirect_wind": {
+            ACAttributes.indirect_wind: {
                 "type": "switch",
                 "name": "Indirect Wind",
                 "icon": "mdi:tailwind"
             },
-            "natural_wind": {
+            ACAttributes.natural_wind: {
                 "type": "switch",
                 "name": "Natural Wind",
                 "icon": "mdi:tailwind"
             },
-            "night_light": {
+            ACAttributes.night_light: {
                 "type": "switch",
                 "name": "Night Light",
                 "icon": "mdi:lightbulb"
             },
-            "prompt_tone": {
+            ACAttributes.prompt_tone: {
                 "type": "switch",
                 "name": "Prompt Tone",
                 "icon": "mdi:bell"
             },
-            "screen_display": {
+            ACAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            ACAttributes.screen_display: {
                 "type": "switch",
                 "name": "Screen Display",
                 "icon": "mdi:television-ambient-light"
             },
-            # "sleep_mode": {
-            #    "type": "switch",
-            #    "name": "Sleep Mode",
-            #    "icon": "mdi:power-sleep"
+            # ACAttributes.sleep_mode: {
+            #     "type": "switch",
+            #     "name": "Sleep Mode",
+            #     "icon": "mdi:power-sleep"
             # },
-            "smart_eye": {
+            ACAttributes.smart_eye: {
                 "type": "switch",
                 "name": "Smart eye",
                 "icon": "mdi:eye"
             },
-            "swing_horizontal": {
+            ACAttributes.swing_horizontal: {
                 "type": "switch",
                 "name": "Swing Horizontal",
                 "icon": "mdi:arrow-split-vertical"
             },
-            "swing_vertical": {
+            ACAttributes.swing_vertical: {
                 "type": "switch",
                 "name": "Swing Vertical",
                 "icon": "mdi:arrow-split-horizontal"
             },
-            "indoor_humidity": {
+            ACAttributes.indoor_humidity: {
                 "type": "sensor",
                 "name": "Indoor Humidity",
                 "device_class": DEVICE_CLASS_HUMIDITY,
                 "unit": PERCENTAGE
             },
-            "indoor_temperature": {
+            ACAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },
-            "outdoor_temperature": {
+            ACAttributes.outdoor_temperature: {
                 "type": "sensor",
                 "name": "Outdoor Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
+            },
+            ACAttributes.total_energy_consumption: {
+                "type": "sensor",
+                "name": "Total Energy Consumption",
+                "device_class": DEVICE_CLASS_ENERGY,
+                "unit": ENERGY_KILO_WATT_HOUR
+            },
+            ACAttributes.current_energy_consumption: {
+                "type": "sensor",
+                "name": "Current Energy Consumption",
+                "device_class": DEVICE_CLASS_ENERGY,
+                "unit": ENERGY_KILO_WATT_HOUR
+            },
+            ACAttributes.realtime_power: {
+                "type": "sensor",
+                "name": "Realtime Power",
+                "device_class": DEVICE_CLASS_POWER,
+                "unit": POWER_WATT
             }
         }
     },
-    0xcc: {
+    0xCC: {
         "name": "AC Control Panel",
         "entities": {
             "climate": {
                 "type": "climate",
                 "icon": "hass:air-conditioner"
             },
-            "aux_heat": {
+            CCAttributes.aux_heat: {
                 "type": "switch",
                 "name": "Aux Heating",
                 "icon": "mdi:heat-wave"
             },
-            "eco_mode": {
+            CCAttributes.eco_mode: {
                 "type": "switch",
                 "name": "ECO Mode",
                 "icon": "mdi:alpha-e-circle"
             },
-            "night_light": {
+            CCAttributes.night_light: {
                 "type": "switch",
                 "name": "Night Light",
                 "icon": "mdi:lightbulb"
             },
-            "sleep_mode": {
-               "type": "switch",
-               "name": "Sleep Mode",
-               "icon": "mdi:power-sleep"
+            CCAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
             },
-            # "ventilation": {
-            #    "type": "switch",
-            #    "name": "Ventilation",
-            #    "icon": "mdi:tailwind"
-            # },
-            "swing": {
+            CCAttributes.sleep_mode: {
+                "type": "switch",
+                "name": "Sleep Mode",
+                "icon": "mdi:power-sleep"
+            },
+            CCAttributes.swing: {
                 "type": "switch",
                 "name": "Swing",
                 "icon": "mdi:arrow-split-horizontal"
             },
-            "indoor_temperature": {
+            CCAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
+            },
+        }
+    },
+    0xE2: {
+        "name": "Electric Water Heater",
+        "entities": {
+            "water_heater": {
+                "type": "water_heater",
+                "icon": "mdi:meter-electric-outline"
+            },
+            E2Attributes.heating: {
+                "type": "binary_sensor",
+                "name": "Heating",
+                "icon": "mdi:heat-wave",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E2Attributes.heat_insulating: {
+                "type": "binary_sensor",
+                "name": "Heat Insulating",
+                "icon": "mdi:menu",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E2Attributes.protection: {
+                "type": "binary_sensor",
+                "name": "Protection",
+                "icon": "mdi:shield-check",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E2Attributes.heating_power: {
+                "type": "sensor",
+                "name": "Heating Power",
+                "device_class": DEVICE_CLASS_POWER,
+                "unit": POWER_WATT
+            },
+            E2Attributes.temperature: {
+                "type": "sensor",
+                "name": "Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS
+            },
+            E2Attributes.auto_cut_out: {
+                "type": "switch",
+                "name": "Auto cut out",
+                "icon": "mdi:power-plug-off"
+            },
+            E2Attributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            E2Attributes.variable_heating: {
+                "type": "switch",
+                "name": "Variable Heating",
+                "icon": "mdi:waves"
+            },
+            E2Attributes.whole_tank_heating: {
+                "type": "switch",
+                "name": "Whole Tank Heating",
+                "icon": "mdi:restore"
+            }
+        }
+    },
+    0xE3: {
+        "name": "Gas Water Heater",
+        "entities": {
+            "water_heater": {
+                "type": "water_heater",
+                "icon": "mdi:meter-gas"
+            },
+            E3Attributes.burning_state: {
+                "type": "binary_sensor",
+                "name": "Burning State",
+                "icon": "mdi:fire",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E3Attributes.protection: {
+                "type": "binary_sensor",
+                "name": "Protection",
+                "icon": "mdi:shield-check",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E3Attributes.temperature: {
+                "type": "sensor",
+                "name": "Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS
+            },
+            E3Attributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            E3Attributes.smart_volume: {
+                "type": "switch",
+                "name": "Smart Volume",
+                "icon": "mdi:recycle"
+            },
+            E3Attributes.zero_cold_water: {
+                "type": "switch",
+                "name": "Zero Cold Water",
+                "icon": "mdi:restore"
+            },
+            E3Attributes.zero_cold_pulse: {
+                "type": "switch",
+                "name": "Zero Cold Water (Pulse)",
+                "icon": "mdi:restore-alert"
             },
         }
     }

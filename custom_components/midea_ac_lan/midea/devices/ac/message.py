@@ -78,9 +78,7 @@ class MessageQuery(MessageACBase):
     def _body(self):
         return bytearray([
             0x81, 0x00, 0xFF, 0x03,
-            0xFF, 0x00,
-            # 0x02 - Indoor Temperature; 0x03 - Outdoor Temperature
-            0x02,
+            0xFF, 0x00,0x02,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00
@@ -96,8 +94,21 @@ class MessagePowerQuery(MessageACBase):
     @property
     def _body(self):
         return bytearray([
+            0x21, 0x01, 0x44, 0x00, 0x01
+        ])
+
+    @property
+    def body(self):
+        body = bytearray([self._body_type]) + self._body
+        body.append(calculate(body))
+        return body
+
+
+class MessageRunTimeQuery(MessagePowerQuery):
+    @property
+    def _body(self):
+        return bytearray([
             0x21, 0x01, 0x40, 0x00, 0x01
-            # 0x21, 0x01, 0x44, 0x00, 0x01
         ])
 
 
@@ -156,6 +167,7 @@ class MessageGeneralSet(MessageACBase):
         self.aux_heat = False
         self.eco_mode = False
         self.temp_fahrenheit = False
+        self.sleep_mode = False
         self.night_light = False
         self.natural_wind = False
         self.comfort_mode = False
@@ -184,6 +196,7 @@ class MessageGeneralSet(MessageACBase):
         eco_mode = 0x80 if self.eco_mode else 0
         # Byte 10 temp_fahrenheit
         temp_fahrenheit = 0x04 if self.temp_fahrenheit else 0
+        sleep_mode = 0x01 if self.sleep_mode else 0
         night_light = 0x10 if self.night_light else 0
         # Byte 17 natural_wind
         natural_wind = 0x40 if self.natural_wind else 0
@@ -198,7 +211,7 @@ class MessageGeneralSet(MessageACBase):
             swing_mode,
             boost_mode,
             smart_eye | dry | aux_heat | eco_mode,
-            temp_fahrenheit | night_light,
+            temp_fahrenheit | night_light | sleep_mode,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00,
             natural_wind,
@@ -259,6 +272,7 @@ class XA0MessageBody(MessageBody):
         self.dry = (body[9] & 0x04) > 0
         self.aux_heat = (body[9] & 0x08) > 0
         self.eco_mode = (body[9] & 0x10) > 0
+        self.sleep_mode = (body[10] & 0x01) > 0
         self.night_light = (body[10] & 0x10) > 0
         self.natural_wind = (body[10] & 0x40) > 0
         self.screen_display = ((body[11] & 0x7) != 0x7) and self.power
@@ -318,6 +332,7 @@ class XC0MessageBody(MessageBody):
         self.eco_mode = (body[9] & 0x10) > 0
         self.aux_heat = (body[9] & 0x08) > 0
         self.temp_fahrenheit = (body[10] & 0x04) > 0
+        self.sleep_mode = (body[10] & 0x01) > 0
         self.night_light = (body[10] & 0x10) > 0
         TempInteger = int((body[11] - 50) / 2)
         TemperatureDot = (body[15] & 0xF) * 0.1
@@ -338,6 +353,40 @@ class XC0MessageBody(MessageBody):
         self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 24 else False
 
 
+class XC1MessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        if body[3] == 0x44:
+            self.total_energy_consumption = XC1MessageBody.parse_consumption(
+                body[4], body[5], body[6], body[7]
+            )
+            self.current_energy_consumption = XC1MessageBody.parse_consumption(
+                body[12], body[13], body[14], body[15]
+            )
+            self.realtime_power = XC1MessageBody.parse_power(
+                body[16], body[17], body[18]
+            )
+        elif body[3] == 0x40:
+            pass
+
+    @staticmethod
+    def parse_value(byte):
+        return (byte >> 4) * 10 + (byte & 0x0F)
+
+    @staticmethod
+    def parse_power(byte1, byte2, byte3):
+        return float(XC1MessageBody.parse_value(byte1) * 10000 +
+                     XC1MessageBody.parse_value(byte2) * 100 +
+                     XC1MessageBody.parse_value(byte3)) / 10
+
+    @staticmethod
+    def parse_consumption(byte1, byte2, byte3, byte4):
+        return float(XC1MessageBody.parse_value(byte1) * 1000000 +
+                     XC1MessageBody.parse_value(byte2) * 10000 +
+                     XC1MessageBody.parse_value(byte3) * 100 +
+                     XC1MessageBody.parse_value(byte4)) / 10
+
+
 class MessageACResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
@@ -355,6 +404,7 @@ class MessageACResponse(MessageResponse):
             self.dry = self._body.dry
             self.aux_heat = self._body.aux_heat
             self.eco_mode = self._body.eco_mode
+            self.sleep_mode = self._body.sleep_mode
             self.night_light = self._body.night_light
             self.natural_wind = self._body.natural_wind
             self.screen_display = self._body.screen_display
@@ -364,7 +414,7 @@ class MessageACResponse(MessageResponse):
             self.indoor_temperature = self._body.indoor_temperature
             self.outdoor_temperature = self._body.outdoor_temperature
             self.indoor_humidity = self._body.indoor_humidity
-        elif self._body_type == 0xB0 or self._body_type == 0xB1 or self._body_type == 0xB5:
+        elif self._body_type in [0xB0, 0xB1, 0xB5]:
             self._body = XBXMessageBody(body, self._body_type)
             if hasattr(self._body, "indirect_wind"):
                 self.indirect_wind = self._body.indirect_wind
@@ -387,8 +437,17 @@ class MessageACResponse(MessageResponse):
             self.aux_heat = self._body.aux_heat
             self.eco_mode = self._body.eco_mode
             self.temp_fahrenheit = self._body.temp_fahrenheit
+            self.sleep_mode = self._body.sleep_mode
             self.night_light = self._body.night_light
             self.indoor_temperature = self._body.indoor_temperature
             self.outdoor_temperature = self._body.outdoor_temperature
             self.screen_display = self._body.screen_display
             self.comfort_mode = self._body.comfort_mode
+        elif self._body_type == 0xC1:
+            self._body = XC1MessageBody(body)
+            if hasattr(self._body, "total_energy_consumption"):
+                self.total_energy_consumption = self._body.total_energy_consumption
+            if hasattr(self._body, "current_energy_consumption"):
+                self.current_energy_consumption = self._body.current_energy_consumption
+            if hasattr(self._body, "realtime_power"):
+                self.realtime_power = self._body.realtime_power

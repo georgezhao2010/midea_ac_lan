@@ -12,12 +12,12 @@ class MideaEntity(Entity):
         self._unique_id = f"{DOMAIN}.{self._device.device_id}_{entity_key}"
         self.entity_id = self._unique_id
         self._available = True
-        self._device_name = f"Midea {self._device.device_id}"
+        self._device_name = self._device.name
         self._device_info = {
             "manufacturer": "Midea",
-            "model": self._device.model,
+            "model": MIDEA_DEVICES[self._device.device_type]["name"] + " " + self._device.model,
             "identifiers": {(DOMAIN, self._device.device_id)},
-            "name": MIDEA_DEVICES[self._device.device_type]["name"]
+            "name": self._device_name
         }
     
     @property
@@ -38,7 +38,7 @@ class MideaEntity(Entity):
 
     @property
     def state(self):
-        return getattr(self._device, self._entity_key)
+        return self._device.get_attribute(self._entity_key)
 
     @property
     def name(self):

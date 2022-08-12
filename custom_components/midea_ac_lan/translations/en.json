@@ -24,7 +24,7 @@
                 "description": "Input IP address for device",
                 "title": "By IP",
                 "data": {
-                    "host": "Host"
+                    "ip_address": "AP address"
                 }
             },
             "auto": {
@@ -36,9 +36,10 @@
             },
             "manual": {
                 "data": {
-                    "device_id": "Appliance Code",
+                    "name": "name (e.g. Living room AC)",
+                    "device_id": "Appliance code",
                     "type": "Type",
-                    "host": "Host",
+                    "ip_address": "IP address",
                     "port": "Port",
                     "model": "Model",
                     "protocol": "Protocol",

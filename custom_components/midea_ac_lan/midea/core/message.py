@@ -22,7 +22,9 @@ class MessageType(IntEnum):
     set = 0x02,
     query = 0x03,
     notify1 = 0x04,
-    notify2 = 0x05
+    notify2 = 0x05,
+    querySN = 0x07,
+    queryDeviceInfo = 0xA0
 
 
 class MessageBase(ABC):
@@ -45,12 +47,20 @@ class MessageBase(ABC):
     def body(self):
         raise NotImplementedError
 
+    @property
+    def message_type(self):
+        return self._message_type
+
+    @property
+    def body_type(self):
+        return self._body_type
+
     def __str__(self) -> str:
         output = {
             "header": self.header.hex(),
             "body": self.body.hex(),
             "message type": "%02x" % self._message_type,
-            "body type": "%02x" % self._body_type
+            "body type": ("%02x" % self._body_type) if self._body_type is not None else "None"
         }
         return str(output)
 
@@ -100,6 +110,22 @@ class MessageRequest(MessageBase):
         return stream
 
 
+class MessageQueryDeviceInfo(MessageRequest):
+    def __init__(self, device_type):
+        super().__init__(
+            device_type=device_type,
+            message_type=MessageType.queryDeviceInfo,
+            body_type=None)
+
+    @property
+    def _body(self):
+        return bytearray([0x00] * 19)
+
+    @property
+    def body(self):
+        return self._body
+
+
 class MessageBody:
     def __init__(self, body):
         self.data = body
@@ -107,6 +133,15 @@ class MessageBody:
     @property
     def body_type(self):
         return self.data[0]
+
+
+class DeviceInfoMessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        self.device_type = body[1]
+        self.sub_type = body[3] << 8 + body[2]
+        sn_len = body[4]
+        self.sn = str(body[5: 5 + sn_len], encoding="utf-8")
 
 
 class MessageResponse(MessageBase):
@@ -128,3 +163,14 @@ class MessageResponse(MessageBase):
     @property
     def body(self):
         return self._body.data
+
+
+class MessageDeviceInfoResponse(MessageResponse):
+    def __init__(self, message):
+        super().__init__(message)
+        if self._message_type == MessageType.queryDeviceInfo:
+            body = message[self.HEADER_LENGTH: -1]
+            self._body = DeviceInfoMessageBody(body)
+            self.device_type = self._body.device_type
+            self.sub_type = self._body.sub_type
+            self.sn = self._body.sn

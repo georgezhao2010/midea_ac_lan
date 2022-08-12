@@ -1,7 +1,6 @@
 import logging
 import socket
 import ifaddr
-import time
 from ipaddress import IPv4Network
 from .security import Security
 try:
@@ -34,7 +33,7 @@ DEVICE_INFO_MSG = bytearray([
 ])
 
 
-def discover(discover_type=None, host=None):
+def discover(discover_type=None, ip_address=None):
     if discover_type is None:
         discover_type = []
     security = Security()
@@ -42,10 +41,10 @@ def discover(discover_type=None, host=None):
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.settimeout(5)
     found_devices = {}
-    if host is None:
+    if ip_address is None:
         addrs = enum_all_broadcast()
     else:
-        addrs = [host]
+        addrs = [ip_address]
 
     for addr in addrs:
         sock.sendto(BROADCAST_MSG, (addr, 6445))
@@ -95,14 +94,14 @@ def discover(discover_type=None, host=None):
             device = {
                 "device_id": device_id,
                 "type": int(device_type, 16),
-                "host": ip,
+                "ip_address": ip,
                 "port": port,
                 "model": model,
                 "protocol": protocol
             }
             if len(discover_type) == 0 or device.get("type") in discover_type:
                 found_devices[device_id] = device
-                print(f"Found a supported device: {device}")
+                _LOGGER.debug(f"Found a supported device: {device}")
             else:
                 _LOGGER.debug(f"Found a unsupported device: {device}")
         except socket.timeout:

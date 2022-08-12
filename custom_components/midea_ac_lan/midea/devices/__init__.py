@@ -2,9 +2,10 @@ from importlib import import_module
 
 
 def device_selector(
+    name: str,
     device_id: int,
     device_type: int,
-    host: str,
+    ip_address: str,
     port: int,
     token: str,
     key: str,
@@ -14,8 +15,9 @@ def device_selector(
     try:
         module = import_module(f".{'%02x' % device_type}.device", __package__)
         device = module.MideaAppliance(
+            name=name,
             device_id=device_id,
-            host=host,
+            ip_address=ip_address,
             port=port,
             token=token,
             key=key,
