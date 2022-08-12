@@ -40,7 +40,7 @@ This component could auto-discover and list Midea M-Smart appliances in network,
 **Automatic configuration requires your appliances and your Home Assistant must be in the same sub-network. Otherwise, devices cannot be auto-discovered.  Check this by yourself.**
 
 ## Config by IP
-If auto-discover could not work, you could try to add the appliance manually with the specified IP Address.
+If auto-discover could not work, you could try to discover the appliance with the specified IP Address.
 
 ## Config manually
 If you already know following information, you could add the appliance manually.
