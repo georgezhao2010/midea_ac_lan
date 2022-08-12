@@ -131,8 +131,7 @@ class MessageCCResponse(MessageResponse):
         super().__init__(message)
         body = message[10: -2]
         if (self._message_type == MessageType.query and self._body_type == 0x01) or \
-                ((self._message_type == MessageType.notify1 or self._message_type == MessageType.notify2) and
-                 self._body_type == 0x01) or \
+                (self._message_type in [MessageType.notify1, MessageType.notify2] and self._body_type == 0x01) or \
                 (self._message_type == MessageType.set and self._body_type == 0xC3):
             self._body = CCGeneralMessageBody(body)
             self.power = self._body.power
@@ -142,7 +141,7 @@ class MessageCCResponse(MessageResponse):
             self.indoor_temperature = self._body.indoor_temperature
             self.eco_mode = self._body.eco_mode
             self.sleep_mode = self._body.sleep_mode
-            self. night_light = self._body.night_light
+            self.night_light = self._body.night_light
             self.ventilation = self._body.ventilation
             self.aux_heat_status = self._body.aux_heat_status
             self.auto_aux_heat_running = self._body.auto_aux_heat_running

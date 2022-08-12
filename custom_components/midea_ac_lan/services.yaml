@@ -1,4 +1,4 @@
-set_fan_speed:
+set_ac_fan_speed:
   description: Set the fan speed of climate.
   fields:
     entity_id:

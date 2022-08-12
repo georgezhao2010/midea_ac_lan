@@ -24,7 +24,7 @@
                 "description": "输入设备的IP地址",
                 "title": "指定IP",
                 "data": {
-                    "host": "地址"
+                    "ip_address": "IP地址"
                 }
             },
             "auto": {
@@ -36,9 +36,10 @@
             },
             "manual": {
                 "data": {
+                    "name": "名称(如客厅空调)",
                     "device_id": "设备编号",
                     "type": "设备类型",
-                    "host": "地址",
+                    "ip_address": "IP地址",
                     "port": "端口",
                     "model": "型号",
                     "protocol": "协议版本",

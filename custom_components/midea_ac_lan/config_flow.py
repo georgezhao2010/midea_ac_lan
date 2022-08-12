@@ -10,11 +10,12 @@ from .const import (
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.const import (
+    CONF_NAME,
     CONF_DEVICE,
     CONF_TOKEN,
     CONF_DEVICE_ID,
     CONF_TYPE,
-    CONF_HOST,
+    CONF_IP_ADDRESS,
     CONF_PROTOCOL,
     CONF_PORT,
     CONF_SWITCHES,
@@ -30,7 +31,7 @@ import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-ADD_WAY = {"auto": "Auto", "manual": "Manual", "by_ip": "By IP"}
+ADD_WAY = {"auto": "Auto", "by_ip": "By IP", "manual": "Manual"}
 PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
 
 
@@ -42,9 +43,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     for device_type, device_info in MIDEA_DEVICES.items():
         supports[device_type] = device_info["name"]
 
-    def _already_configured(self, device_id, host):
+    def _already_configured(self, device_id, ip_address):
         for entry in self._async_current_entries():
-            if device_id == entry.data.get(CONF_DEVICE_ID) or host == entry.data.get(CONF_HOST):
+            if device_id == entry.data.get(CONF_DEVICE_ID) or ip_address == entry.data.get(CONF_IP_ADDRESS):
                 return True
         return False
 
@@ -70,7 +71,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.devices = discover(self.supports.keys())
             self.available_device = {}
             for device_id, device in self.devices.items():
-                if not self._already_configured(device_id, device.get(CONF_HOST)):
+                if not self._already_configured(device_id, device.get(CONF_IP_ADDRESS)):
                     self.available_device[device_id] = \
                         f"{device_id} ({self.supports.get(device.get(CONF_TYPE))})"
             if len(self.available_device) > 0:
@@ -84,10 +85,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_byip(self, user_input=None, error=None):
         if user_input is not None:
-            self.devices = discover(self.supports.keys(), host=user_input[CONF_HOST])
+            self.devices = discover(self.supports.keys(), ip_address=user_input[CONF_IP_ADDRESS])
             self.available_device = {}
             for device_id, device in self.devices.items():
-                if not self._already_configured(device_id, device.get(CONF_HOST)):
+                if not self._already_configured(device_id, device.get(CONF_IP_ADDRESS)):
                     self.available_device[device_id] = \
                         f"{device_id} ({self.supports.get(device.get(CONF_TYPE))})"
             if len(self.available_device) > 0:
@@ -97,7 +98,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="byip",
             data_schema=vol.Schema({
-                vol.Required(CONF_HOST): str
+                vol.Required(CONF_IP_ADDRESS): str
             }),
             errors={"base": error} if error else None
         )
@@ -114,9 +115,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         token, key = await cloud.get_token(user_input[CONF_DEVICE], byte_order_big=byte_order_big)
                         if token and key:
                             dm = MiedaDevice(
+                                name="",
                                 device_id=device_id,
                                 device_type=device.get(CONF_TYPE),
-                                host=device.get(CONF_HOST),
+                                ip_address=device.get(CONF_IP_ADDRESS),
                                 port=device.get(CONF_PORT),
                                 token=token,
                                 key=key,
@@ -129,7 +131,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                     CONF_DEVICE_ID: device_id,
                                     CONF_TYPE: device.get(CONF_TYPE),
                                     CONF_PROTOCOL: 3,
-                                    CONF_HOST: device.get(CONF_HOST),
+                                    CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
                                     CONF_PORT: device.get(CONF_PORT),
                                     CONF_MODEL: device.get(CONF_MODEL),
                                     CONF_TOKEN: token,
@@ -144,7 +146,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_DEVICE_ID: device_id,
                     CONF_TYPE: device.get(CONF_TYPE),
                     CONF_PROTOCOL: 2,
-                    CONF_HOST: device.get(CONF_HOST),
+                    CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
                     CONF_PORT: device.get(CONF_PORT),
                     CONF_MODEL: device.get(CONF_MODEL),
                 }
@@ -164,7 +166,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_DEVICE_ID: user_input[CONF_DEVICE_ID],
                 CONF_TYPE: user_input[CONF_TYPE],
                 CONF_PROTOCOL: user_input[CONF_PROTOCOL],
-                CONF_HOST: user_input[CONF_HOST],
+                CONF_IP_ADDRESS: user_input[CONF_IP_ADDRESS],
                 CONF_PORT: user_input[CONF_PORT],
                 CONF_MODEL: user_input[CONF_MODEL],
                 CONF_TOKEN: user_input[CONF_TOKEN],
@@ -178,9 +180,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if user_input[CONF_PROTOCOL] == 3 and (len(user_input[CONF_TOKEN]) == 0 or len(user_input[CONF_KEY]) == 0):
                 return await self.async_step_manual(error="invalid_token")
             dm = MiedaDevice(
+                name="",
                 device_id=user_input[CONF_DEVICE_ID],
                 device_type=user_input[CONF_TYPE],
-                host=user_input[CONF_HOST],
+                ip_address=user_input[CONF_IP_ADDRESS],
                 port=user_input[CONF_PORT],
                 token=user_input[CONF_TOKEN],
                 key=user_input[CONF_KEY],
@@ -189,12 +192,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if dm.connect(refresh_status=False):
                 dm.close_socket()
                 return self.async_create_entry(
-                    title=f"{user_input[CONF_DEVICE_ID]}",
+                    title=f"{user_input[CONF_NAME]}",
                     data={
+                        CONF_NAME: user_input[CONF_NAME],
                         CONF_DEVICE_ID: user_input[CONF_DEVICE_ID],
                         CONF_TYPE: user_input[CONF_TYPE],
                         CONF_PROTOCOL: user_input[CONF_PROTOCOL],
-                        CONF_HOST: user_input[CONF_HOST],
+                        CONF_IP_ADDRESS: user_input[CONF_IP_ADDRESS],
                         CONF_PORT: user_input[CONF_PORT],
                         CONF_MODEL: user_input[CONF_MODEL],
                         CONF_TOKEN: user_input[CONF_TOKEN],
@@ -206,6 +210,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="manual",
             data_schema=vol.Schema({
                 vol.Required(
+                    CONF_NAME,
+                    default=self.supports.get(self.found_device.get(CONF_TYPE))
+                ): str,
+                vol.Required(
                     CONF_DEVICE_ID,
                     default=self.found_device.get(CONF_DEVICE_ID)
                 ): int,
@@ -214,8 +222,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     default=self.found_device.get(CONF_TYPE) if self.found_device.get(CONF_TYPE) else 0xac
                 ): vol.In(self.supports),
                 vol.Required(
-                    CONF_HOST,
-                    default=self.found_device.get(CONF_HOST)
+                    CONF_IP_ADDRESS,
+                    default=self.found_device.get(CONF_IP_ADDRESS)
                 ): str,
                 vol.Required(
                     CONF_PORT,
@@ -250,10 +258,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry):
         self.config_entry = config_entry
-        # remove this later version
+        # Compatibility with earlier versions
         if CONF_SWITCHES in self.config_entry.options and \
                 "turbo_mode" in self.config_entry.options[CONF_SWITCHES]:
             self.config_entry.options[CONF_SWITCHES].remove("turbo_mode")
+        # End of compatibility with earlier versions
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
@@ -264,10 +273,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         sensors = {}
         switches = {}
         for attribute, attribute_config in MIDEA_DEVICES.get(device_type).get("entities").items():
-            if attribute_config.get("type") == "sensor":
-                sensors[attribute] = attribute_config.get("name")
+            if attribute_config.get("type") in ["sensor", "binary_sensor"]:
+                sensors[attribute.value] = attribute_config.get("name")
             elif attribute_config.get("type") == "switch":
-                switches[attribute] = attribute_config.get("name")
+                switches[attribute.value] = attribute_config.get("name")
         extra_sensors = self.config_entry.options.get(
             CONF_SENSORS, []
         )

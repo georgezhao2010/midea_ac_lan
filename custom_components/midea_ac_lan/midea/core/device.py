@@ -1,5 +1,6 @@
 import threading
-from enum import Enum
+from ..backports.enum import StrEnum
+from enum import IntEnum
 from .security import Security, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
 import socket
@@ -21,28 +22,39 @@ class RefreshFailed(Exception):
     pass
 
 
-class DeviceProperties(Enum):
+class DeviceAttributes(StrEnum):
     pass
+
+
+class ParseMessageResult(IntEnum):
+    SUCCESS = 0
+    HEARTBEAT = 1
+    PADDING = 2
+    UNFINISHED = 3
+    ERROR = 99
 
 
 class MiedaDevice(threading.Thread):
     def __init__(self,
+                 name: str,
                  device_id: int,
                  device_type: int,
-                 host: str,
+                 ip_address: str,
                  port: int,
                  token: str,
                  key: str,
                  protocol: int,
                  model: str):
         threading.Thread.__init__(self)
+        self._attributes = {}
         self._socket = None
-        self._host = host
+        self._ip_address = ip_address
         self._port = port
         self._security = Security()
         self._token = bytearray.fromhex(token) if token else None
         self._key = bytearray.fromhex(key) if key else None
         self._buffer = b""
+        self._name = name
         self._device_id = device_id
         self._device_type = device_type
         self._protocol = protocol
@@ -52,6 +64,10 @@ class MiedaDevice(threading.Thread):
         self._available = True
         self._entity = None
         self._unsupported_protocol = []
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def available(self):
@@ -77,18 +93,39 @@ class MiedaDevice(threading.Thread):
     def entity(self, entity):
         self._entity = entity
 
+    @staticmethod
+    def fetch_v2_message(msg):
+        result = []
+        while len(msg) > 0:
+            factual_msg_len = len(msg)
+            if factual_msg_len < 6:
+                return result, msg
+            alleged_msg_len = msg[4] + (msg[5] << 8)
+            if factual_msg_len >= alleged_msg_len:
+                result.append(msg[:alleged_msg_len])
+                msg = msg[alleged_msg_len:]
+                continue
+            elif factual_msg_len == alleged_msg_len:
+                result.append(msg[:alleged_msg_len])
+                msg = msg[alleged_msg_len:]
+                break
+            else:
+                break
+        return result, msg
+
     def connect(self, refresh_status=True):
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.settimeout(10)
-            self._socket.connect((self._host, self._port))
+            self._socket.connect((self._ip_address, self._port))
             _LOGGER.debug(f"[{self._device_id}] Connected")
             if self._protocol == 3:
                 self.authenticate()
             _LOGGER.debug(f"[{self._device_id}] Authentication success")
-            self.enable_device(True)
+            self.get_device_info()
             if refresh_status:
                 self.refresh_status(wait_response=True)
+            self.enable_device(True)
             return True
         except socket.timeout:
             _LOGGER.debug(f"[{self._device_id}] Connection timed out")
@@ -96,8 +133,12 @@ class MiedaDevice(threading.Thread):
             _LOGGER.debug(f"[{self._device_id}] Connection error")
         except AuthException:
             _LOGGER.debug(f"[{self._device_id}] Authentication failed")
+        except ResponseException:
+            _LOGGER.debug(f"[{self._device_id}] Unexpected response received")
         except RefreshFailed:
-            _LOGGER.debug(f"[{self._device_id}] Refresh status is all timed out")
+            _LOGGER.debug(f"[{self._device_id}] Refresh status is timed out")
+        except Exception:
+            _LOGGER.debug(f"[{self._device_id}] Unknown error")
         return False
 
     def authenticate(self):
@@ -131,6 +172,22 @@ class MiedaDevice(threading.Thread):
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
+    def get_device_info(self):
+        cmd = self.build_query_device_info()
+        if cmd is not None:
+            self.build_send(cmd)
+            while True:
+                msg = self._socket.recv(512)
+                if len(msg) == 0:
+                    raise socket.error
+                result = self.parse_message(msg)
+                if result == ParseMessageResult.SUCCESS:
+                    break
+                elif result == ParseMessageResult.PADDING:
+                    continue
+                else:
+                    raise ResponseException
+
     def refresh_status(self, wait_response=False):
         cmds = self.build_query()
         error_count = 0
@@ -139,9 +196,16 @@ class MiedaDevice(threading.Thread):
                 self.build_send(cmd)
                 if wait_response:
                     try:
-                        msg = self._socket.recv(512)
-                        if len(msg) > 0:
-                            if not self.parse_message(msg):
+                        while True:
+                            msg = self._socket.recv(512)
+                            if len(msg) == 0:
+                                raise socket.error
+                            result = self.parse_message(msg)
+                            if result == ParseMessageResult.SUCCESS:
+                                break
+                            elif result == ParseMessageResult.PADDING:
+                                continue
+                            else:
                                 raise ResponseException
                     except socket.timeout:
                         error_count += 1
@@ -159,15 +223,41 @@ class MiedaDevice(threading.Thread):
         if self._protocol == 3:
             messages, self._buffer = self._security.decode_8370(self._buffer + msg)
         else:
-            messages = [msg]
+            messages, self._buffer = self.fetch_v2_message(self._buffer + msg)
+        if len(messages) == 0:
+            return ParseMessageResult.PADDING
         for message in messages:
-            if len(message) > 40 + 16 + 16 and message[3] != 0x10 and message[3] != 0x00:  # Heartbeat of V3 or V2
-                message = self._security.aes_decrypt(message[40:-16])
-                self.process_message(message)
+            if message == b"ERROR":
+                return ParseMessageResult.ERROR
+            payload_len = message[4] + (message[5] << 8) - 56
+            payload_type = message[2] + (message[3] << 8)
+            if payload_type in [0x1001, 0x0001]:  # Heartbeat
+                return ParseMessageResult.HEARTBEAT
+            if len(message) > 56:
+                cryptographic = message[40:-16]
+                if payload_len % 16 == 0:
+                    decrypted = self._security.aes_decrypt(cryptographic)
+                    self.process_message(decrypted)
+                else:
+                    _LOGGER.warning(
+                        f"[{self._device_id}] Illegal payload, "
+                        f"original message = {msg.hex()}, buffer = {self._buffer.hex()}, "
+                        f"8370 decoded = {message.hex()}, payload type = {payload_type}, "
+                        f"alleged payload length = {payload_len}, factual payload length = {len(cryptographic)}"
+                    )
+                    return ParseMessageResult.UNFINISHED
             else:
-                if message == b"ERROR":
-                    return False
-        return True
+                _LOGGER.warning(
+                    f"[{self._device_id}] Illegal message, "
+                    f"original message = {msg.hex()}, buffer = {self._buffer.hex()}, "
+                    f"8370 decoded = {message.hex()}, payload type = {payload_type}, "
+                    f"alleged payload length = {payload_len}, message length = {len(message)}, "
+                )
+                return ParseMessageResult.UNFINISHED
+        return ParseMessageResult.SUCCESS
+
+    def build_query_device_info(self):
+        return None
 
     def build_query(self):
         raise NotImplementedError
@@ -212,15 +302,16 @@ class MiedaDevice(threading.Thread):
     def run(self):
         while self._is_run:
             while self._socket is None:
-                if self.connect(True) is False:
+                if self.connect(refresh_status=True) is False:
                     if not self._is_run:
                         return
                     self.close_socket()
                     self.enable_device(False)
                     time.sleep(5)
             timeout_counter = 0
-            previous_refresh = time.time()
-            previous_heartbeat = 0
+            start = time.time()
+            previous_refresh = start
+            previous_heartbeat = start
             while True:
                 try:
                     now = time.time()
@@ -234,11 +325,13 @@ class MiedaDevice(threading.Thread):
                     msg_len = len(msg)
                     if msg_len == 0:
                         raise socket.error("Connection closed, reconnecting")
-                    timeout_counter = 0
-                    if not self.parse_message(msg):
-                        _LOGGER.debug(f"[{self._device_id}] Message b'ERROR' received, reconnecting")
+                    result = self.parse_message(msg)
+                    if result == ParseMessageResult.ERROR:
+                        _LOGGER.debug(f"[{self._device_id}] Message 'ERROR' received, reconnecting")
                         self.close_socket()
                         break
+                    elif result in [ParseMessageResult.SUCCESS, ParseMessageResult.HEARTBEAT]:
+                        timeout_counter = 0
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
                     if timeout_counter >= 12:
@@ -246,21 +339,24 @@ class MiedaDevice(threading.Thread):
                         self.close_socket()
                         break
                 except socket.error as e:
-                    _LOGGER.debug(f"[{self._device_id}] Socket error {e} raised")
+                    _LOGGER.debug(f"[{self._device_id}] Socket error {e}")
                     self.close_socket()
                     break
                 except Exception as e:
-                    _LOGGER.debug(f"[{self._device_id}] Error {e} raised")
+                    _LOGGER.debug(f"[{self._device_id}] Error {e}")
                     self.close_socket()
                     break
             self.enable_device(False)
 
+    def set_attribute(self, attr, value):
+        raise NotImplementedError
+
+    def get_attribute(self, attr):
+        return self._attributes.get(attr)
+
     @property
     def attributes(self):
         ret = {}
-        for status in DeviceProperties.__members__:
-            if hasattr(self, status):
-                ret[status] = getattr(self, status)
-
+        for status in self._attributes.keys():
+            ret[status.value] = self._attributes[status]
         return ret
-
