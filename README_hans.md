@@ -17,12 +17,15 @@
 
 # 已支持的设备
 
- 名称 | 类型 | 文档
+ 类型 | 名称 |文档
  --- | --- | ---
- 空调器 | AC | [AC_hans.md](doc/AC_hans.md)
- 中央空调86控制面板 | CC | [CC_hans.md](doc/CC_hans.md)
- 电热水器 | E2 | [E2_hans.md](doc/E2_hans.md)
- 燃气热水器 | E3 | [E3_hans.md](doc/E3_hans.md)
+ AC | 空调器 | [AC_hans.md](doc/AC_hans.md)
+ CC | 中央空调86控制面板 | [CC_hans.md](doc/CC_hans.md)
+ DA | 波轮洗衣机 | 即将支持
+ DB | 滚筒洗衣机 | 即将支持
+ DC | 干衣机 | 即将支持
+ E2 | 电热水器 | [E2_hans.md](doc/E2_hans.md)
+ E3 | 燃气热水器 | [E3_hans.md](doc/E3_hans.md)
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的HomeAssistant的`custom_components/midea_ac_lan`中。

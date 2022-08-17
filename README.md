@@ -17,12 +17,15 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported Appliances
 
- Name | Type | Documents
+  Type | Name | Documents
  --- | --- | ---
- Air Conditioners | AC | [AC.md](doc/AC.md)
- AC Control Panels | CC | [CC.md](doc/CC.md)
- Electric Water Heaters | E2 | [E2.md](doc/E2.md)
- Gas Water Heaters | E3 | [E3.md](doc/E3.md)
+ AC | Air Conditioners | [AC.md](doc/AC.md)
+ CC | AC Control Panels | [CC.md](doc/CC.md)
+ DA | Top Load Washer | Coming soon
+ DB | Front Load Washer | Coming soon
+ DC | Clothes Dryer | Coming soon
+ E2 |Electric Water Heaters | [E2.md](doc/E2.md)
+ E3 |Gas Water Heaters |  [E3.md](doc/E3.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 
@@ -67,6 +70,6 @@ logger:
     custom_components.midea_ac_lan: debug
 ```
 
-# May helpful things
+# Helpful things
 - [Lovelace simple thermostat card](https://github.com/nervetattoo/simple-thermostat)
 - [Water Heater Card for Lovelace](https://github.com/rsnodgrass/water-heater-card)
