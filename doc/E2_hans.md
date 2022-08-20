@@ -43,7 +43,7 @@ switch.{DEVICEID}_whole_tank_heating | switch | Whole Tank Heating | 全胆速�
 
 名称 | 描述
 --- | ---
-entity_id | water_heater实体的entity_id.
+device_id | 设备的编号(Device ID)
 attribute | "auto_cut_out"<br />"power"<br />"variable_heating"<br/>"whole_tank_heating"
 value | true 或 false
 
@@ -51,7 +51,7 @@ value | true 或 false
 ```
 service: midea_ac_lan.set_attribute
 data:
-  entity_id: water_heater.XXXXXXXXXXXX_water_heater
+  device_id: XXXXXXXXXXXX
   attribute: variable_heating
   value: true
 ```

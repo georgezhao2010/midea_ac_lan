@@ -39,7 +39,7 @@ switch.{DEVICEID}_swing | switch | Swing | 摆风
 
 名称 | 描述
 --- | ---
-entity_id | climate实体的entity_id.
+device_id | 设备的编号(Device ID)
 attribute | "aux_heat"<br/>"eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing"
 value | true 或 false
 
@@ -47,7 +47,7 @@ value | true 或 false
 ```
 service: midea_ac_lan.set_attribute
 data:
-  entity_id: climate.XXXXXXXXXXXX_climate
+  device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
 ```

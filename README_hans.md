@@ -21,9 +21,9 @@
  --- | --- | ---
  AC | 空调器 | [AC_hans.md](doc/AC_hans.md)
  CC | 中央空调86控制面板 | [CC_hans.md](doc/CC_hans.md)
- DA | 波轮洗衣机 | 即将支持
- DB | 滚筒洗衣机 | 即将支持
- DC | 干衣机 | 即将支持
+ DA | 波轮洗衣机 | [DA_hans.md](doc/DA_hans.md)
+ DB | 滚筒洗衣机 | [DB_hans.md](doc/DB_hans.md)
+ DC | 干衣机 | [DC_hans.md](doc/DC_hans.md)
  E2 | 电热水器 | [E2_hans.md](doc/E2_hans.md)
  E3 | 燃气热水器 | [E3_hans.md](doc/E3_hans.md)
 
