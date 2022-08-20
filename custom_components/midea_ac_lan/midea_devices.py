@@ -3,6 +3,7 @@ from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_ENERGY,
+    TIME_MINUTES,
     TEMP_CELSIUS,
     POWER_WATT,
     PERCENTAGE,
@@ -11,8 +12,12 @@ from homeassistant.const import (
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
+from .midea.devices.da.device import DeviceAttributes as DAAttributes
+from .midea.devices.db.device import DeviceAttributes as DBAttributes
+from .midea.devices.dc.device import DeviceAttributes as DCAttributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
+
 MIDEA_DEVICES = {
     0xAC: {
         "name": "Air Conditioner",
@@ -31,9 +36,9 @@ MIDEA_DEVICES = {
                 "name": "Boost Mode",
                 "icon": "mdi:alpha-b-circle"
             },
-            ACAttributes.breezyless: {
+            ACAttributes.breezeless: {
                 "type": "switch",
-                "name": "Breezyless",
+                "name": "Breezeless",
                 "icon": "mdi:tailwind"
             },
             ACAttributes.comfort_mode: {
@@ -182,6 +187,89 @@ MIDEA_DEVICES = {
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },
+        }
+    },
+    0xDA: {
+        "name": "Top Load Washer",
+        "entities": {
+            DAAttributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES
+            },
+            DAAttributes.progress: {
+                "type": "sensor",
+                "name": "Progress",
+                "icon": "mdi:rotate-360"
+            },
+            DAAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            DAAttributes.start: {
+                "type": "switch",
+                "name": "Start",
+                "icon": "mdi:motion-play-outline"
+            },
+        }
+    },
+    0xDB: {
+        "name": "Front Load Washer",
+        "entities": {
+            DBAttributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES
+            },
+            DBAttributes.progress: {
+                "type": "sensor",
+                "name": "Progress",
+                "icon": "mdi:rotate-360"
+            },
+            DBAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            DBAttributes.start: {
+                "type": "switch",
+                "name": "Start",
+                "icon": "mdi:motion-play-outline"
+            },
+        }
+    },
+    0xDC: {
+        "name": "Clothes Dryer",
+        "entities": {
+            DCAttributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES
+            },
+            DCAttributes.progress: {
+                "type": "sensor",
+                "name": "Progress",
+                "icon": "mdi:rotate-360"
+            },
+            DCAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            DCAttributes.start: {
+                "type": "switch",
+                "name": "Start",
+                "icon": "mdi:motion-play-outline"
+            },
+        }
+    },
+    0xE1: {
+        "name": "Dishwasher",
+        "entities": {
         }
     },
     0xE2: {

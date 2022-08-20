@@ -74,8 +74,6 @@ class MessageGeneralSet(MessageE2Base):
         target_temperature = self.target_temperature & 0xFF
         # Byte 9 variable_heating
         variable_heating = 0x10 if self.variable_heating else 0x00
-
-
         return bytearray([
             0x01,
             mode,
@@ -114,9 +112,6 @@ class E2GeneralMessageBody(MessageBody):
         elif (body[7] & 0x40) > 0:
             # Power saving
             self.mode = 5
-        elif (body[7] & 0x80) > 0:
-            # Night Mode
-            self.mode = 6
         self.whole_tank_heating = (body[7] & 0x08) > 0
         self.target_temperature = body[11]
         self.protection = (body[22] & 0x04) > 0 if len(body) > 22 else False

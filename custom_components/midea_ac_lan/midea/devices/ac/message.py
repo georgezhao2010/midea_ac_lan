@@ -12,19 +12,19 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class NewProtocolParams(IntEnum):
-    indoor_humidity = 0x15
-    breezyless = 0x18
-    prompt_tone = 0x1A
-    indirect_wind = 0x42
+    indoor_humidity = 0x1500
+    breezeless = 0x1800
+    prompt_tone = 0x1A00
+    indirect_wind = 0x4200
 
 
 class NewProtocolParamPack:
     @staticmethod
     def pack(param, value: bytearray, length=1, pack_len=4):
         if pack_len == 4:
-            stream = bytearray([param & 0xFF, param >> 8, length]) + value
+            stream = bytearray([param >> 8, param & 0xFF, length]) + value
         else:
-            stream = bytearray([param & 0xFF, param >> 8, 0x00, length]) + value
+            stream = bytearray([param >> 8, param & 0xFF, 0x00, length]) + value
         return stream
 
     @staticmethod
@@ -32,7 +32,7 @@ class NewProtocolParamPack:
         result = {}
         pos = 1
         for pack in range(0, stream[0]):
-            param = stream[pos] + (stream[pos + 1] << 8)
+            param = (stream[pos] << 8) + stream[pos + 1]
             if pack_len == 5:
                 pos += 1
             length = stream[pos + 2]
@@ -139,13 +139,13 @@ class MessageNewProtocolQuery(MessageACBase):
     def _body(self):
         query_params = [
             NewProtocolParams.indirect_wind,
-            NewProtocolParams.breezyless,
+            NewProtocolParams.breezeless,
             NewProtocolParams.indoor_humidity
         ]
 
         _body = bytearray([len(query_params)])
         for param in query_params:
-            _body.extend(bytearray([param & 0xFF, param >> 8]))
+            _body.extend([param & 0xFF, param >> 8])
         return _body
 
 
@@ -227,18 +227,18 @@ class MessageNewProtocolSet(MessageACBase):
             body_type=0xB0)
         self.indirect_wind = None
         self.prompt_tone = None
-        self.breezyless = None
+        self.breezeless = None
 
     @property
     def _body(self):
         pack_count = 0
         payload = bytearray([0x00])
-        if self.breezyless is not None:
+        if self.breezeless is not None:
             pack_count += 1
             payload.extend(
                 NewProtocolParamPack.pack(
-                    param=NewProtocolParams.breezyless,
-                    value=bytearray([0x01 if self.breezyless else 0x00])
+                    param=NewProtocolParams.breezeless,
+                    value=bytearray([0x01 if self.breezeless else 0x00])
                 ))
         if self.indirect_wind is not None:
             pack_count += 1
@@ -282,14 +282,15 @@ class XA0MessageBody(MessageBody):
 class XA1MessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        temperature_integer = int((body[13] - 50) / 2)
-        temperature_dot = (body[18] & 0xF) * 0.1 if len(body) > 18 else 0
-        if body[13] > 49:
-            self.indoor_temperature = temperature_integer + temperature_dot
-        else:
-            self.indoor_temperature = temperature_integer - temperature_dot
+        if body[13] != 0xFF:
+            temperature_integer = int((body[13] - 50) / 2)
+            temperature_dot = (body[18] & 0xF) * 0.1 if len(body) > 18 else 0
+            if body[13] > 49:
+                self.indoor_temperature = temperature_integer + temperature_dot
+            else:
+                self.indoor_temperature = temperature_integer - temperature_dot
         if body[14] == 0xFF:
-            self.outdoor_temperature = 0.0
+            self.outdoor_temperature = "N/A"
         else:
             temperature_integer = int((body[14] - 50) / 2)
             temperature_dot = ((body[18] & 0xF0) >> 4) * 0.1 if len(body) > 18 else 0
@@ -312,8 +313,8 @@ class XBXMessageBody(MessageBody):
             self.indirect_wind = (params[NewProtocolParams.indirect_wind][0] == 0x02)
         if NewProtocolParams.indoor_humidity in params:
             self.indoor_humidity = params[NewProtocolParams.indoor_humidity][0]
-        if NewProtocolParams.breezyless in params:
-            self.breezyless = params[NewProtocolParams.breezyless][0] / 1.0
+        if NewProtocolParams.breezeless in params:
+            self.breezeless = (params[NewProtocolParams.breezeless][0] == 1)
 
 
 class XC0MessageBody(MessageBody):
@@ -334,14 +335,15 @@ class XC0MessageBody(MessageBody):
         self.temp_fahrenheit = (body[10] & 0x04) > 0
         self.sleep_mode = (body[10] & 0x01) > 0
         self.night_light = (body[10] & 0x10) > 0
-        TempInteger = int((body[11] - 50) / 2)
-        TemperatureDot = (body[15] & 0xF) * 0.1
-        if body[11] > 49:
-            self.indoor_temperature = TempInteger + TemperatureDot
-        else:
-            self.indoor_temperature = TempInteger - TemperatureDot
+        if body[11] != 0xFF:
+            TempInteger = int((body[11] - 50) / 2)
+            TemperatureDot = (body[15] & 0xF) * 0.1
+            if body[11] > 49:
+                self.indoor_temperature = TempInteger + TemperatureDot
+            else:
+                self.indoor_temperature = TempInteger - TemperatureDot
         if body[12] == 0xFF:
-            self.outdoor_temperature = 0.0
+            self.outdoor_temperature = "N/A"
         else:
             TempInteger = int((body[12] - 50) / 2)
             TemperatureDot = ((body[15] & 0xF0) >> 4) * 0.1
@@ -384,7 +386,7 @@ class XC1MessageBody(MessageBody):
         return float(XC1MessageBody.parse_value(byte1) * 1000000 +
                      XC1MessageBody.parse_value(byte2) * 10000 +
                      XC1MessageBody.parse_value(byte3) * 100 +
-                     XC1MessageBody.parse_value(byte4)) / 10
+                     XC1MessageBody.parse_value(byte4)) / 100
 
 
 class MessageACResponse(MessageResponse):
@@ -411,7 +413,8 @@ class MessageACResponse(MessageResponse):
             self.comfort_mode = self._body.comfort_mode
         elif self._body_type == 0xA1:
             self._body = XA1MessageBody(body)
-            self.indoor_temperature = self._body.indoor_temperature
+            if hasattr(self._body, "indoor_temperature"):
+                self.indoor_temperature = self._body.indoor_temperature
             self.outdoor_temperature = self._body.outdoor_temperature
             self.indoor_humidity = self._body.indoor_humidity
         elif self._body_type in [0xB0, 0xB1, 0xB5]:
@@ -420,8 +423,8 @@ class MessageACResponse(MessageResponse):
                 self.indirect_wind = self._body.indirect_wind
             if hasattr(self._body, "indoor_humidity"):
                 self.indoor_humidity = self._body.indoor_humidity
-            if hasattr(self._body, "breezyless"):
-                self.breezyless = self._body.breezyless
+            if hasattr(self._body, "breezeless"):
+                self.breezeless = self._body.breezeless
         elif self._body_type == 0xC0:
             self._body = XC0MessageBody(body)
             self.power = self._body.power
@@ -439,7 +442,8 @@ class MessageACResponse(MessageResponse):
             self.temp_fahrenheit = self._body.temp_fahrenheit
             self.sleep_mode = self._body.sleep_mode
             self.night_light = self._body.night_light
-            self.indoor_temperature = self._body.indoor_temperature
+            if hasattr(self._body, "indoor_temperature"):
+                self.indoor_temperature = self._body.indoor_temperature
             self.outdoor_temperature = self._body.outdoor_temperature
             self.screen_display = self._body.screen_display
             self.comfort_mode = self._body.comfort_mode

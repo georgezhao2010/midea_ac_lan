@@ -47,38 +47,25 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
                 attributes.append(attribute_name.value)
 
     def service_set_ac_fan_speed(service):
-        entity_ids = service.data.get(ATTR_ENTITY_ID)
+        device_id = service.data.get("device_id")
         fan_speed = service.data.get("fan_speed")
         if fan_speed == "auto":
             fan_speed = 102
-        devices = []
-        if entity_ids:
-            devices = [
-                dev
-                for dev in hass.data[DOMAIN][DEVICES].values()
-                if dev.entity.entity_id in entity_ids and dev.device_type == 0xac
-            ]
-        for dev in devices:
+        dev = hass.data[DOMAIN][DEVICES].get(device_id)
+        if dev and dev.device_type == 0xac:
             dev.set_attribute(attr="fan_speed", value=fan_speed)
 
     def service_set_attribute(service):
-        entity_ids = service.data.get(ATTR_ENTITY_ID)
+        device_id = service.data.get("device_id")
         attr = service.data.get("attribute")
         value = service.data.get("value")
-        if attr in attributes:
-            devices = []
-            if entity_ids:
-                devices = [
-                    dev
-                    for dev in hass.data[DOMAIN][DEVICES].values()
-                    if dev.entity.entity_id in entity_ids
-                ]
-            for dev in devices:
-                item = MIDEA_DEVICES.get(dev.device_type).get("entities").get(attr)
-                if item and item.get("type") == "switch":
-                    dev.set_attribute(attr=attr, value=value)
-                else:
-                    _LOGGER.error(f"Appliance has not the attribute {attr}")
+        dev = hass.data[DOMAIN][DEVICES].get(device_id)
+        if dev:
+            item = MIDEA_DEVICES.get(dev.device_type).get("entities").get(attr)
+            if item and item.get("type") == "switch":
+                dev.set_attribute(attr=attr, value=value)
+            else:
+                _LOGGER.error(f"Appliance has not the attribute {attr}")
 
     hass.services.async_register(
         DOMAIN,
@@ -86,7 +73,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
         service_set_ac_fan_speed,
         schema=vol.Schema(
             {
-                vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+                vol.Required("device_id"): vol.Coerce(int),
                 vol.Required("fan_speed"): vol.Any(vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
                                                    vol.All(str, vol.In(["auto"])))
             }
@@ -99,7 +86,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
         service_set_attribute,
         schema=vol.Schema(
             {
-                vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+                vol.Required("device_id"): vol.Coerce(int),
                 vol.Required("attribute"): vol.In(attributes),
                 vol.Required("value"): cv.boolean
             }

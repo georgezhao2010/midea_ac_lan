@@ -42,7 +42,7 @@ class Security:
     def aes_decrypt(self, raw):
         cipher = AES.new(self.encKey, AES.MODE_ECB)
         try:
-            decrypted = cipher.decrypt(bytes(raw))
+            decrypted = cipher.decrypt(bytearray(raw))
             decrypted = unpad(decrypted, self.blockSize)
             return decrypted
         except ValueError as e:
@@ -53,7 +53,7 @@ class Security:
     def aes_encrypt(self, raw):
         raw = pad(raw, self.blockSize)
         cipher = AES.new(self.encKey, AES.MODE_ECB)
-        encrypted = cipher.encrypt(bytes(raw))
+        encrypted = cipher.encrypt(bytearray(raw))
         return encrypted
 
     def aes_cbc_decrypt(self, raw, key):
@@ -87,7 +87,7 @@ class Security:
         return self._tcp_key
 
     def encode_8370(self, data, msgtype):
-        header = bytes([0x83, 0x70])
+        header = bytearray([0x83, 0x70])
         size, padding = len(data), 0
         if msgtype in (MSGTYPE_ENCRYPTED_RESPONSE, MSGTYPE_ENCRYPTED_REQUEST):
             if (size + 2) % 16 != 0:
@@ -95,7 +95,7 @@ class Security:
                 size += padding + 32
                 data += get_random_bytes(padding)
         header += size.to_bytes(2, "big")
-        header += bytes([0x20, padding << 4 | msgtype])
+        header += bytearray([0x20, padding << 4 | msgtype])
         data = self._request_count.to_bytes(2, "big") + data
         self._request_count += 1
         if msgtype in (MSGTYPE_ENCRYPTED_RESPONSE, MSGTYPE_ENCRYPTED_REQUEST):

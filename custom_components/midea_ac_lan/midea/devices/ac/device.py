@@ -41,7 +41,7 @@ class DeviceAttributes(StrEnum):
 
     indirect_wind = "indirect_wind"
     indoor_humidity = "indoor_humidity"
-    breezyless = "breezyless"
+    breezeless = "breezeless"
 
     total_energy_consumption = "total_energy_consumption"
     current_energy_consumption = "current_energy_consumption"
@@ -90,11 +90,11 @@ class MideaACDevice(MiedaDevice):
             DeviceAttributes.temp_fahrenheit: False,
             DeviceAttributes.screen_display: False,
             DeviceAttributes.comfort_mode: False,
-            DeviceAttributes.indoor_temperature: 0.0,
-            DeviceAttributes.outdoor_temperature: 0.0,
+            DeviceAttributes.indoor_temperature: "N/A",
+            DeviceAttributes.outdoor_temperature: "N/A",
             DeviceAttributes.indirect_wind: False,
             DeviceAttributes.indoor_humidity: 0.0,
-            DeviceAttributes.breezyless: False,
+            DeviceAttributes.breezeless: False,
             DeviceAttributes.total_energy_consumption: 0.0,
             DeviceAttributes.current_energy_consumption: 0.0,
             DeviceAttributes.realtime_power: 0.0
@@ -119,6 +119,7 @@ class MideaACDevice(MiedaDevice):
         self._available = True
         new_status["available"] = True
         self.update_all(new_status)
+        return len(new_status) > 1
 
     def make_message_set(self):
         message = MessageGeneralSet()
@@ -148,11 +149,11 @@ class MideaACDevice(MiedaDevice):
                         DeviceAttributes.indoor_humidity]:
             if attr == DeviceAttributes.prompt_tone:
                 self._attributes[DeviceAttributes.prompt_tone] = value
-                self.update_all({DeviceAttributes.prompt_tone: value})
+                self.update_all({DeviceAttributes.prompt_tone.value: value})
             elif attr == DeviceAttributes.screen_display:
                 message = MessageSwitchDisplay()
                 self.build_send(message)
-            elif attr in [DeviceAttributes.indirect_wind, DeviceAttributes.breezyless]:
+            elif attr in [DeviceAttributes.indirect_wind, DeviceAttributes.breezeless]:
                 message = MessageNewProtocolSet()
                 setattr(message, str(attr), value)
                 message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]

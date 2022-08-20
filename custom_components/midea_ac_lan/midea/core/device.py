@@ -31,6 +31,7 @@ class ParseMessageResult(IntEnum):
     HEARTBEAT = 1
     PADDING = 2
     UNFINISHED = 3
+    USELESS = 4
     ERROR = 99
 
 
@@ -62,7 +63,6 @@ class MiedaDevice(threading.Thread):
         self._updates = []
         self._is_run = False
         self._available = True
-        self._entity = None
         self._unsupported_protocol = []
 
     @property
@@ -85,38 +85,23 @@ class MiedaDevice(threading.Thread):
     def model(self):
         return self._model
 
-    @property
-    def entity(self):
-        return self._entity
-
-    @entity.setter
-    def entity(self, entity):
-        self._entity = entity
-
     @staticmethod
     def fetch_v2_message(msg):
         result = []
         while len(msg) > 0:
             factual_msg_len = len(msg)
             if factual_msg_len < 6:
-                return result, msg
+                break
             alleged_msg_len = msg[4] + (msg[5] << 8)
             if factual_msg_len >= alleged_msg_len:
                 result.append(msg[:alleged_msg_len])
                 msg = msg[alleged_msg_len:]
-                continue
-            elif factual_msg_len == alleged_msg_len:
-                result.append(msg[:alleged_msg_len])
-                msg = msg[alleged_msg_len:]
-                break
-            else:
-                break
         return result, msg
 
     def connect(self, refresh_status=True):
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self._socket.settimeout(10)
+            self._socket.settimeout(5)
             self._socket.connect((self._ip_address, self._port))
             _LOGGER.debug(f"[{self._device_id}] Connected")
             if self._protocol == 3:
@@ -205,6 +190,11 @@ class MiedaDevice(threading.Thread):
                                 break
                             elif result == ParseMessageResult.PADDING:
                                 continue
+                            elif result == ParseMessageResult.USELESS:
+                                error_count += 1
+                                self._unsupported_protocol.append(cmd.__class__.__name__)
+                                _LOGGER.debug(f"[{self._device_id}] Useless "
+                                              f"protocol {cmd.__class__.__name__}, ignored")
                             else:
                                 raise ResponseException
                     except socket.timeout:
@@ -237,7 +227,8 @@ class MiedaDevice(threading.Thread):
                 cryptographic = message[40:-16]
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
-                    self.process_message(decrypted)
+                    if not self.process_message(decrypted):
+                        return ParseMessageResult.USELESS
                 else:
                     _LOGGER.warning(
                         f"[{self._device_id}] Illegal payload, "
@@ -346,7 +337,6 @@ class MiedaDevice(threading.Thread):
                     _LOGGER.debug(f"[{self._device_id}] Error {e}")
                     self.close_socket()
                     break
-            self.enable_device(False)
 
     def set_attribute(self, attr, value):
         raise NotImplementedError

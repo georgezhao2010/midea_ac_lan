@@ -92,6 +92,7 @@ class MideaCCDevice(MiedaDevice):
         self._available = True
         new_status["available"] = True
         self.update_all(new_status)
+        return len(new_status) > 1
 
     def make_message_set(self):
         message = MessageSetNormal()
