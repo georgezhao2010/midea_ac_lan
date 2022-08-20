@@ -40,7 +40,7 @@ switch.{DEVICEID}_night_light | switch | Night Light | 夜灯
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone | 提示音
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_screen_display | switch | Screen Display | 屏幕显示
-switch.{DEVICEID}_smart_eye | switch | Smart eye | 智慧眼
+switch.{DEVICEID}_smart_eye | switch | Smart Eye | 智慧眼
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal | 水平摆风
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical | 垂直摆风
 
