@@ -93,7 +93,7 @@ MIDEA_DEVICES = {
             # },
             ACAttributes.smart_eye: {
                 "type": "switch",
-                "name": "Smart eye",
+                "name": "Smart Eye",
                 "icon": "mdi:eye"
             },
             ACAttributes.swing_horizontal: {
