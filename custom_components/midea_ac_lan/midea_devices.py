@@ -267,11 +267,6 @@ MIDEA_DEVICES = {
             },
         }
     },
-    0xE1: {
-        "name": "Dishwasher",
-        "entities": {
-        }
-    },
     0xE2: {
         "name": "Electric Water Heater",
         "entities": {
