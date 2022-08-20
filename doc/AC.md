@@ -40,7 +40,7 @@ switch.{DEVICEID}_night_light | switch | Night Light
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone
 switch.{DEVICEID}_power | switch | Power
 switch.{DEVICEID}_screen_display | switch | Screen Display
-switch.{DEVICEID}_smart_eye | switch | Smart eye
+switch.{DEVICEID}_smart_eye | switch | Smart Eye
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
 
