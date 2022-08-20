@@ -3,7 +3,7 @@
 [![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
-[English](README.md) | 简体中文
+[English](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README.md) | 简体中文
 
 通过本地局域网控制你的美的M-Smart设备
 
@@ -19,13 +19,13 @@
 
  类型 | 名称 |文档
  --- | --- | ---
- AC | 空调器 | [AC_hans.md](doc/AC_hans.md)
- CC | 中央空调86控制面板 | [CC_hans.md](doc/CC_hans.md)
- DA | 波轮洗衣机 | [DA_hans.md](doc/DA_hans.md)
- DB | 滚筒洗衣机 | [DB_hans.md](doc/DB_hans.md)
- DC | 干衣机 | [DC_hans.md](doc/DC_hans.md)
- E2 | 电热水器 | [E2_hans.md](doc/E2_hans.md)
- E3 | 燃气热水器 | [E3_hans.md](doc/E3_hans.md)
+ AC | 空调器 | [AC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC_hans.md)
+ CC | 中央空调86控制面板 | [CC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC_hans.md)
+ DA | 波轮洗衣机 | [DA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA_hans.md)
+ DB | 滚筒洗衣机 | [DB_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB_hans.md)
+ DC | 干衣机 | [DC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC_hans.md)
+ E2 | 电热水器 | [E2_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2_hans.md)
+ E3 | 燃气热水器 | [E3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3_hans.md)
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的HomeAssistant的`custom_components/midea_ac_lan`中。
@@ -48,7 +48,7 @@
 ## 手动配置
 如果之前你已经通过其它集成手工配置过设备, 并知道以下信息, 也可以进行手动配置
 - 设备ID
-- 设备类型 ([已支持的设备](#%E5%B7%B2%E6%94%AF%E6%8C%81%E7%9A%84%E8%AE%BE%E5%A4%87)之一)
+- 设备类型 ([已支持的设备](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README_hans.md#%E5%B7%B2%E6%94%AF%E6%8C%81%E7%9A%84%E8%AE%BE%E5%A4%87)之一)
 - IP地址
 - 端口(默认为6444)
 - 协议版本

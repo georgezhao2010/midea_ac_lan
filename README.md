@@ -3,7 +3,7 @@
 [![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
-English | [简体中文](README_hans.md)
+English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README_hans.md)
 
 Control your Midea M-Smart appliances via local area network.
 
@@ -19,13 +19,13 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
   Type | Name | Documents
  --- | --- | ---
- AC | Air Conditioners | [AC.md](doc/AC.md)
- CC | AC Control Panels | [CC.md](doc/CC.md)
- DA | Top Load Washers | [DA.md](doc/DA.md)
- DB | Front Load Washers | [DB.md](doc/DB.md)
- DC | Clothes Dryers | [DC.md](doc/DC.md)
- E2 |Electric Water Heaters | [E2.md](doc/E2.md)
- E3 |Gas Water Heaters |  [E3.md](doc/E3.md)
+ AC | Air Conditioners | [AC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC.md)
+ CC | AC Control Panels | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
+ DA | Top Load Washers | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
+ DB | Front Load Washers | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
+ DC | Clothes Dryers | [DC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC.md)
+ E2 |Electric Water Heaters | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
+ E3 |Gas Water Heaters |  [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 
@@ -48,7 +48,7 @@ If auto-discover could not work, you could try to discover the appliance with th
 ## Config manually
 If you already know following information, you could add the appliance manually.
 - Appliance code
-- Appliance type (one of [Supported appliances](#supported-appliances))
+- Appliance type (one of [Supported appliances](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README.md#supported-appliances))
 - IP address
 - Port (default 6444)
 - Protocol version
