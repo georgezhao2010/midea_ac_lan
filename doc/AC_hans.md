@@ -30,7 +30,7 @@ sensor.{DEVICEID}_current_energy_consumption | sensor | Current Energy Consumpti
 sensor.{DEVICEID}_realtime_power | sensor | Realtime Power | 实时功率
 switch.{DEVICEID}_aux_heat | switch | Aux Heating | 电辅热
 switch.{DEVICEID}_boost_mode | switch | Boost Mode | 强劲模式
-switch.{DEVICEID}_breezyless | switch | Breezyless | 无风感
+switch.{DEVICEID}_breezeless | switch | Breezeless | 无风感
 switch.{DEVICEID}_comfort_mode | switch | Comfort Mode | 舒省模式
 switch.{DEVICEID}_dry | switch | Dry | 干燥
 switch.{DEVICEID}_eco_mode | switch | ECO Mode | ECO模式
@@ -55,14 +55,14 @@ switch.{DEVICEID}_swing_vertical | switch | Swing Vertical | 垂直摆风
 
 名称 | 描述
 --- | ---
-entity_id | Cliamte实体的entity_id.
+device_id | 设备的编号(Device ID)
 fan_speed | 范围为1-100, 或者auto
 
 示例
 ```
 service: midea_ac_lan.set_fan_speed
 data:
-  entity_id: climate.XXXXXXXXXXXX_climate
+  device_id: XXXXXXXXXXXX
   fan_speed: auto
 ```
 
@@ -74,15 +74,15 @@ data:
 
 名称 | 描述
 --- | ---
-entity_id | Climate实体的entity_id.
-attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"power"<br />"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+device_id | 设备的编号(Device ID)
+attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"power"<br />"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true 或 false
 
 示例
 ```
 service: midea_ac_lan.set_attribute
 data:
-  entity_id: climate.XXXXXXXXXXXX_climate
+  device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
 ```

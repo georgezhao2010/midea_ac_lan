@@ -21,9 +21,9 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
  --- | --- | ---
  AC | Air Conditioners | [AC.md](doc/AC.md)
  CC | AC Control Panels | [CC.md](doc/CC.md)
- DA | Top Load Washer | Coming soon
- DB | Front Load Washer | Coming soon
- DC | Clothes Dryer | Coming soon
+ DA | Top Load Washer | [DA.md](doc/DA.md)
+ DB | Front Load Washer | [DB.md](doc/DB.md)
+ DC | Clothes Dryer | [DC.md](doc/DC.md)
  E2 |Electric Water Heaters | [E2.md](doc/E2.md)
  E3 |Gas Water Heaters |  [E3.md](doc/E3.md)
 

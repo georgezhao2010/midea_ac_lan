@@ -40,7 +40,7 @@ switch.{DEVICEID}_zero_cold_pulse | switch | Zero Cold Water (Pulse) | 零冷水
 
 名称 | 描述
 --- | ---
-entity_id | water_heater实体的entity_id.
+device_id | 设备的编号(Device ID)
 attribute | "energy_saving"<br/>"power"<br />"smart_volume"<br/>"zero_cold_water"<br/>"zero_clod_pulse"
 value | true or false
 
@@ -48,7 +48,7 @@ value | true or false
 ```
 service: midea_ac_lan.set_attribute
 data:
-  entity_id: water_heater.XXXXXXXXXXXX_water_heater
+  device_id: XXXXXXXXXXXX
   attribute: smart_volume
   value: true
 ```

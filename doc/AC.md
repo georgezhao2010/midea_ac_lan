@@ -30,7 +30,7 @@ sensor.{DEVICEID}_current_energy_consumption | sensor | Current Energy Consumpti
 sensor.{DEVICEID}_realtime_power | sensor | Realtime Power
 switch.{DEVICEID}_aux_heat | switch | Aux Heating
 switch.{DEVICEID}_boost_mode | switch | Boost Mode
-switch.{DEVICEID}_breezyless | switch | Breezyless
+switch.{DEVICEID}_breezeless | switch | Breezeless
 switch.{DEVICEID}_comfort_mode | switch | Comfort Mode
 switch.{DEVICEID}_dry | switch | Dry
 switch.{DEVICEID}_eco_mode | switch | ECO Mode
@@ -56,14 +56,14 @@ Set fan speed of AC fan. Service data:
 
 Name | Description
 --- | ---
-entity_id | The entity_id of climate entity.
+device_id | The Appliance code (Device ID) of appliance
 fan_speed | Range 1 to 100 or auto
 
 Example
 ```
 service: midea_ac_lan.set_fan_speed
 data:
-  entity_id: climate.XXXXXXXXXXXX_climate
+  device_id: XXXXXXXXXXXX
   fan_speed: auto
 ```
 
@@ -75,15 +75,15 @@ Set the attribute of AC. Service data:
 
 Name | Description
 --- | ---
-entity_id | The entity_id of climate entity.
-attribute | "aux_heat"<br/>"breezyless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"power"<br />"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+device_id | The Appliance code (Device ID) of appliance
+attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"power"<br />"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true or false
 
 Example
 ```
 service: midea_ac_lan.set_attribute
 data:
-  entity_id: climate.XXXXXXXXXXXX_climate
+  device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
 ```

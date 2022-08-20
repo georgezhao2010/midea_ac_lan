@@ -39,7 +39,7 @@ Set the attribute of AC. Service data:
 
 Name | Description
 --- | ---
-entity_id | The entity_id of climate entity.
+device_id | The Appliance code (Device ID) of appliance
 attribute | "aux_heat"<br/>"eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing"
 value | true or false
 
@@ -47,7 +47,7 @@ Example
 ```
 service: midea_ac_lan.set_attribute
 data:
-  entity_id: climate.XXXXXXXXXXXX_climate
+  device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
 ```
