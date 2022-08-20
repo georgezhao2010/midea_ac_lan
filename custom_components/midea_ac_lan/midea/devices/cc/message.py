@@ -148,5 +148,3 @@ class MessageCCResponse(MessageResponse):
             self.fan_speed_level = self._body.fan_speed_level
             self.temperature_precision = self._body.temperature_precision
             self.swing = self._body.swing
-        elif self._message_type == MessageType.set and (self._body_type == 0xB0 or self._body_type == 0xD0):
-            self._body = MessageBody(body)

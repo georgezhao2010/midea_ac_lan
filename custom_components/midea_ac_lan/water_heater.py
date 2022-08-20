@@ -6,13 +6,13 @@ from homeassistant.const import (
     PRECISION_WHOLE,
     ATTR_TEMPERATURE,
     CONF_DEVICE_ID,
+    STATE_OFF,
 )
 from .const import (
     DOMAIN,
     DEVICES
 )
 from .midea_entity import MideaEntity
-
 
 E2_TEMPERATURE_MAX = 75
 E2_TEMPERATURE_MIN = 30
@@ -34,12 +34,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
     def __init__(self, device):
         super().__init__(device, "water_heater")
-        self._device.entity = self
         self._operations = []
 
     @property
     def state(self):
-        return self.current_operation
+        return self.current_operation if self._device.get_attribute("power") else STATE_OFF
 
     @property
     def supported_features(self):
@@ -70,14 +69,12 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
         return self._device.get_attribute("target_temperature")
 
     def set_temperature(self, **kwargs):
-        _LOGGER.debug(f"set_temperature = {kwargs}")
         if ATTR_TEMPERATURE not in kwargs:
             return
         temperature = int(kwargs.get(ATTR_TEMPERATURE))
         self._device.set_attribute("target_temperature", temperature)
 
     def set_operation_mode(self, operation_mode):
-        _LOGGER.debug(f"set_operation_mode = {operation_mode}")
         if operation_mode in self.operation_list:
             self._device.set_attribute(attr="mode", value=self._operations.index(operation_mode))
 
@@ -103,8 +100,8 @@ class MideaE2WaterHeater(MideaWaterHeater):
         super().__init__(device)
         self._device.entity = self
         self._operations = [
-            "None", "e-Plus Mode", "Rapid Mode", "Summer Mode",
-            "Winter Mode", "Energy Saving", "Night Mode"
+            "None", "e-Plus", "Rapid", "Summer",
+            "Winter", "Energy Saving"
         ]
 
     @property
@@ -121,8 +118,8 @@ class MideaE3WaterHeater(MideaWaterHeater):
         super().__init__(device)
         self._device.entity = self
         self._operations = [
-            "Shower Mode", "Kitchen Mode", "Bathtub Mode",
-            "Temperature Mode", "Cloud Mode", "Energy Saving"
+            "Shower", "Kitchen", "Bathtub",
+            "Temperature", "Cloud", "Energy Saving"
         ]
 
     @property

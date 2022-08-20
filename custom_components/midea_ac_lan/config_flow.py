@@ -33,7 +33,9 @@ _LOGGER = logging.getLogger(__name__)
 
 ADD_WAY = {"auto": "Auto", "by_ip": "By IP", "manual": "Manual"}
 PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
-
+DEFAULT_TOKEN = "EE755A84A115703768BCC7C6C13D3D629AA416F1E2FD798BEB9F78CBB1381D09" \
+                "1CC245D7B063AAD2A900E5B498FBD936C811F5D504B2E656D4F33B3BBC6D1DA3"
+DEFAULT_KEY = "ED37BD31558A4B039AAF4E7A7A59AA7A75FD9101682045F69BAF45D28380AE5C"
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     available_device = []
@@ -110,7 +112,31 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if device.get(CONF_PROTOCOL) == 3:
                 session = async_create_clientsession(self.hass)
                 cloud = MideaCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD, MIDEA_DEFAULT_SERVER)
-                if await cloud.login():
+                dm = MiedaDevice(
+                    name="",
+                    device_id=device_id,
+                    device_type=device.get(CONF_TYPE),
+                    ip_address=device.get(CONF_IP_ADDRESS),
+                    port=device.get(CONF_PORT),
+                    token=DEFAULT_TOKEN,
+                    key=DEFAULT_KEY,
+                    protocol=3,
+                    model=device.get(CONF_MODEL)
+                )
+                if dm.connect(refresh_status=False):
+                    self.found_device = {
+                        CONF_DEVICE_ID: device_id,
+                        CONF_TYPE: device.get(CONF_TYPE),
+                        CONF_PROTOCOL: 3,
+                        CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
+                        CONF_PORT: device.get(CONF_PORT),
+                        CONF_MODEL: device.get(CONF_MODEL),
+                        CONF_TOKEN: DEFAULT_TOKEN,
+                        CONF_KEY: DEFAULT_KEY,
+                    }
+                    dm.close_socket()
+                    return await self.async_step_manual()
+                elif await cloud.login():
                     for byte_order_big in [False, True]:
                         token, key = await cloud.get_token(user_input[CONF_DEVICE], byte_order_big=byte_order_big)
                         if token and key:
@@ -123,7 +149,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                 token=token,
                                 key=key,
                                 protocol=3,
-                                model=device.get(CONF_MODEL))
+                                model=device.get(CONF_MODEL)
+                            )
                             _LOGGER.debug(f"Successful to take token and key, token: {token}, key: {key}, "
                                           f"byte_order_big: {byte_order_big}")
                             if dm.connect(refresh_status=False):
@@ -262,6 +289,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         if CONF_SWITCHES in self.config_entry.options and \
                 "turbo_mode" in self.config_entry.options[CONF_SWITCHES]:
             self.config_entry.options[CONF_SWITCHES].remove("turbo_mode")
+        if CONF_SWITCHES in self.config_entry.options and \
+                "breezyless" in self.config_entry.options[CONF_SWITCHES]:
+            self.config_entry.options[CONF_SWITCHES].remove("breezyless")
         # End of compatibility with earlier versions
 
     async def async_step_init(self, user_input=None):

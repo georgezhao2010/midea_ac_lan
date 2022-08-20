@@ -125,5 +125,5 @@ class MideaCloud:
         if response and "tokenlist" in response:
             for token in response["tokenlist"]:
                 if token["udpId"] == udpid:
-                    return token["token"], token["key"]
+                    return token["token"].upper(), token["key"].upper()
         return None, None

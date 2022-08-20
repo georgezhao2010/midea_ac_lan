@@ -21,7 +21,6 @@ class DeviceAttributes(StrEnum):
     smart_volume = "smart_volume"
     temperature = "temperature"
     target_temperature = "target_temperature"
-    # energy_saving = "energy_saving"
 
 
 class MideaE3Device(MiedaDevice):
@@ -57,7 +56,6 @@ class MideaE3Device(MiedaDevice):
             DeviceAttributes.smart_volume: False,
             DeviceAttributes.temperature: 0,
             DeviceAttributes.target_temperature: 40,
-            # DeviceAttributes.energy_saving: False
         }
 
     def build_query(self):
@@ -70,10 +68,11 @@ class MideaE3Device(MiedaDevice):
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 self._attributes[status] = getattr(message, status.value)
-            new_status[status.value] = self._attributes[status]
+                new_status[status.value] = self._attributes[status]
         self._available = True
         new_status["available"] = True
         self.update_all(new_status)
+        return len(new_status) > 1
 
     def make_message_set(self):
         message = MessageGeneralSet()
@@ -83,7 +82,6 @@ class MideaE3Device(MiedaDevice):
         message.zero_clod_pulse = self._attributes[DeviceAttributes.zero_cold_pulse]
         message.smart_volume = self._attributes[DeviceAttributes.smart_volume]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
-        # message.energy_saving = self._attributes[DeviceAttributes.energy_saving]
         return message
 
     def set_attribute(self, attr, value):

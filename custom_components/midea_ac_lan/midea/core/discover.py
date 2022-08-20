@@ -63,7 +63,7 @@ def discover(discover_type=None, ip_address=None):
                         data = data[8:-16]
                 else:
                     continue
-                device_id = int.from_bytes(bytes.fromhex(data[20:26].hex()), "little")
+                device_id = int.from_bytes(bytearray.fromhex(data[20:26].hex()), "little")
                 if device_id in found_devices:
                     continue
                 encrypt_data = data[40:-16]

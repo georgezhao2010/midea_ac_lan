@@ -56,7 +56,6 @@ class MessageGeneralSet(MessageE3Base):
             body_type=0x04)
 
         self.target_temperature = 0
-        # self.energy_saving = False
         self.zero_cold_water = False
         self.mode = 0
         self.bathtub_volume = 0
@@ -75,11 +74,6 @@ class MessageGeneralSet(MessageE3Base):
         smart_volume = 0x20 if self.smart_volume else 0x00
         # Byte 5 target_temperature
         target_temperature = self.target_temperature & 0xFF
-        # Byte 6 bathtub_volume hi-byte
-        # bathtub_volume_hi = (self.bathtub_volume & 0xFF00) >> 8
-        # Byte 7 bathtub_volume low-byte
-        # bathtub_volume_low = self.bathtub_volume & 0xFF
-        # Byte 8, energy_saving
         energy_saving = 0x02 if self.mode == 5 else 0x00
 
         return bytearray([
@@ -121,11 +115,11 @@ class E3GeneralMessageBody(MessageBody):
             self.mode = 4
         if (body[16] & 0x01) > 0:
             self.mode = 5
+        elif(body[16] & 0x80) > 0:
+            self.mode = 6
         self.temperature = body[5]
         self.target_temperature = body[6]
         self.protection = (body[8] & 0x08) > 0
-        # self.bathtub_volume = (body[9] << 8) + body[10]
-        # self.energy_saving = (body[16] & 0x01) > 0
         self.zero_cold_pulse = (body[20] & 0x01) > 0 if len(body) > 20 else False
         self.smart_volume = (body[20] & 0x02) > 0 if len(body) > 20 else False
 
@@ -144,7 +138,6 @@ class MessageE3Response(MessageResponse):
             self.mode = self._body.mode
             self.temperature = self._body.temperature
             self.target_temperature = self._body.target_temperature
-            # self.energy_saving = self._body.energy_saving
             self.protection = self._body.protection
             self.zero_cold_pulse = self._body.zero_cold_pulse
             self.smart_volume = self._body.smart_volume
