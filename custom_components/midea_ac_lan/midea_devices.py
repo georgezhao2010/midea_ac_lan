@@ -127,12 +127,14 @@ MIDEA_DEVICES = {
             ACAttributes.total_energy_consumption: {
                 "type": "sensor",
                 "name": "Total Energy Consumption",
+                "state_class": "total_increasing",
                 "device_class": DEVICE_CLASS_ENERGY,
                 "unit": ENERGY_KILO_WATT_HOUR
             },
             ACAttributes.current_energy_consumption: {
                 "type": "sensor",
                 "name": "Current Energy Consumption",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_ENERGY,
                 "unit": ENERGY_KILO_WATT_HOUR
             },
