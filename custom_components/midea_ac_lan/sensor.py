@@ -28,5 +28,9 @@ class MideaSensor(MideaEntity, SensorEntity):
         return self._config.get("device_class")
 
     @property
+    def state_class(self):
+        return self._config.get("state_class")
+
+    @property
     def unit_of_measurement(self):
         return self._config.get("unit")
