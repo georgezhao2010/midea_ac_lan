@@ -95,7 +95,7 @@ class MideaACDevice(MiedaDevice):
             DeviceAttributes.indirect_wind: False,
             DeviceAttributes.indoor_humidity: 0.0,
             DeviceAttributes.breezeless: False,
-            DeviceAttributes.total_energy_consumption: 0.0,
+            DeviceAttributes.total_energy_consumption: None,
             DeviceAttributes.current_energy_consumption: 0.0,
             DeviceAttributes.realtime_power: 0.0
 
