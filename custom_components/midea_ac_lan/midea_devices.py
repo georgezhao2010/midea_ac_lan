@@ -109,18 +109,21 @@ MIDEA_DEVICES = {
             ACAttributes.indoor_humidity: {
                 "type": "sensor",
                 "name": "Indoor Humidity",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_HUMIDITY,
                 "unit": PERCENTAGE
             },
             ACAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },
             ACAttributes.outdoor_temperature: {
                 "type": "sensor",
                 "name": "Outdoor Temperature",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },
@@ -141,6 +144,7 @@ MIDEA_DEVICES = {
             ACAttributes.realtime_power: {
                 "type": "sensor",
                 "name": "Realtime Power",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_POWER,
                 "unit": POWER_WATT
             }
@@ -186,6 +190,7 @@ MIDEA_DEVICES = {
             CCAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },
@@ -297,12 +302,14 @@ MIDEA_DEVICES = {
             E2Attributes.heating_power: {
                 "type": "sensor",
                 "name": "Heating Power",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_POWER,
                 "unit": POWER_WATT
             },
             E2Attributes.temperature: {
                 "type": "sensor",
                 "name": "Temperature",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },
@@ -350,6 +357,7 @@ MIDEA_DEVICES = {
             E3Attributes.temperature: {
                 "type": "sensor",
                 "name": "Temperature",
+                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS
             },

@@ -52,7 +52,7 @@ class MideaE2Device(MiedaDevice):
             DeviceAttributes.power: False,
             DeviceAttributes.heating: False,
             DeviceAttributes.heat_insulating: False,
-            DeviceAttributes.temperature: 0,
+            DeviceAttributes.temperature: None,
             DeviceAttributes.target_temperature: 40,
             DeviceAttributes.mode: 0,
             DeviceAttributes.whole_tank_heating: False,
