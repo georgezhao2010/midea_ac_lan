@@ -68,7 +68,7 @@ class MideaCCDevice(MiedaDevice):
             DeviceAttributes.auto_aux_heat_running: False,
             DeviceAttributes.swing: False,
             DeviceAttributes.fan_speed_level: True,
-            DeviceAttributes.indoor_temperature: 20.0,
+            DeviceAttributes.indoor_temperature: None,
             DeviceAttributes.temperature_precision: 1
         }
 
