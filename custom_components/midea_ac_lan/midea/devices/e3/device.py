@@ -54,7 +54,7 @@ class MideaE3Device(MiedaDevice):
             DeviceAttributes.protection: False,
             DeviceAttributes.zero_cold_pulse: False,
             DeviceAttributes.smart_volume: False,
-            DeviceAttributes.temperature: 0,
+            DeviceAttributes.temperature: None,
             DeviceAttributes.target_temperature: 40,
         }
 
