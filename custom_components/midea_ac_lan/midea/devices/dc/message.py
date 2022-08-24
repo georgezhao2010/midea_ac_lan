@@ -83,7 +83,7 @@ class DCGeneralMessageBody(MessageBody):
         if self.power:
             self.time_remaining = body[17] + body[18] * 60
         else:
-            self.time_remaining = "N/A"
+            self.time_remaining = None
 
 
 class MessageDCResponse(MessageResponse):

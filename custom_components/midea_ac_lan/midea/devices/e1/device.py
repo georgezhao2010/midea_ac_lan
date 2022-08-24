@@ -2,8 +2,7 @@ import logging
 from .message import (
     MessageQuery,
     MessagePower,
-    MessageStart,
-    MessageDBResponse
+    MessageE1Response
 )
 from ...core.device import MiedaDevice
 from ...backports.enum import StrEnum
@@ -13,13 +12,15 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     power = "power"
-    start = "start"
-    washing_data = "washing_data"
-    progress = "progress"
+    status = "status"
+    door = "door"
+    rinse_aid = "rinse_aid"
+    salt = "salt"
     time_remaining = "time_remaining"
+    progress = "progress"
 
 
-class MideaDBDevice(MiedaDevice):
+class MideaE1Device(MiedaDevice):
     def __init__(
             self,
             name: str,
@@ -34,7 +35,7 @@ class MideaDBDevice(MiedaDevice):
         super().__init__(
             name=name,
             device_id=device_id,
-            device_type=0xDB,
+            device_type=0xE1,
             ip_address=ip_address,
             port=port,
             token=token,
@@ -44,25 +45,37 @@ class MideaDBDevice(MiedaDevice):
         )
         self._attributes = {
             DeviceAttributes.power: False,
-            DeviceAttributes.start: False,
-            DeviceAttributes.washing_data: bytearray([]),
-            DeviceAttributes.progress: "Unknown",
-            DeviceAttributes.time_remaining: None
+            DeviceAttributes.status: None,
+            DeviceAttributes.door: False,
+            DeviceAttributes.rinse_aid: False,
+            DeviceAttributes.salt: False,
+            DeviceAttributes.time_remaining: None,
+            DeviceAttributes.progress: None
         }
 
     def build_query(self):
         return [MessageQuery()]
 
     def process_message(self, msg):
-        message = MessageDBResponse(msg)
+        message = MessageE1Response(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
-        progress = ["Idle", "Spin", "Rinse", "Wash", "Pre-wash",
-                    "Dry", "Weight", "Hi-speed Spin", "Unknown"]
+        a_status = ["Off", "Idle", "Delay", "Running", "Error"]
+        progress = ["Idle", "Pre-wash", "Wash", "Rinse", "Dry", "Finished"]
         for status in self._attributes.keys():
             if hasattr(message, status.value):
-                if status == DeviceAttributes.progress:
-                    self._attributes[status] = progress[getattr(message, status.value)]
+                if status == DeviceAttributes.status:
+                    v = getattr(message, status.value)
+                    if 0 <= v <= 4:
+                        self._attributes[status] = a_status[v]
+                    else:
+                        self._attributes[status] = None
+                elif status == DeviceAttributes.progress:
+                    v = getattr(message, status.value)
+                    if 0 <= v <= 5:
+                        self._attributes[status] = progress[v]
+                    else:
+                        self._attributes[status] = None
                 else:
                     self._attributes[status] = getattr(message, status.value)
                 new_status[status.value] = self._attributes[status]
@@ -73,12 +86,7 @@ class MideaDBDevice(MiedaDevice):
             message = MessagePower()
             message.power = value
             self.build_send(message)
-        elif attr == DeviceAttributes.start:
-            message = MessageStart()
-            message.start = value
-            message.washing_data = self._attributes[DeviceAttributes.washing_data]
-            self.build_send(message)
 
 
-class MideaAppliance(MideaDBDevice):
+class MideaAppliance(MideaE1Device):
     pass

@@ -96,9 +96,8 @@ class MideaACDevice(MiedaDevice):
             DeviceAttributes.indoor_humidity: None,
             DeviceAttributes.breezeless: False,
             DeviceAttributes.total_energy_consumption: None,
-            DeviceAttributes.current_energy_consumption: 0.0,
-            DeviceAttributes.realtime_power: 0.0
-
+            DeviceAttributes.current_energy_consumption: None,
+            DeviceAttributes.realtime_power: None
         }
 
     def build_query(self):
@@ -116,10 +115,7 @@ class MideaACDevice(MiedaDevice):
                 (DeviceAttributes.swing_vertical in new_status and self._attributes[DeviceAttributes.swing_vertical]):
             self._attributes[DeviceAttributes.indirect_wind] = False
             new_status[DeviceAttributes.indirect_wind.value] = False
-        self._available = True
-        new_status["available"] = True
-        self.update_all(new_status)
-        return len(new_status) > 1
+        return new_status
 
     def make_message_set(self):
         message = MessageGeneralSet()

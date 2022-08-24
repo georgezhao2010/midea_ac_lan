@@ -34,3 +34,7 @@ class MideaSensor(MideaEntity, SensorEntity):
     @property
     def unit_of_measurement(self):
         return self._config.get("unit")
+
+    @property
+    def capability_attributes(self):
+        return {"state_class": self.state_class} if self.state_class else {}

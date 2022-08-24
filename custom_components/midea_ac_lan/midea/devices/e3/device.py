@@ -69,10 +69,7 @@ class MideaE3Device(MiedaDevice):
             if hasattr(message, status.value):
                 self._attributes[status] = getattr(message, status.value)
                 new_status[status.value] = self._attributes[status]
-        self._available = True
-        new_status["available"] = True
-        self.update_all(new_status)
-        return len(new_status) > 1
+        return new_status
 
     def make_message_set(self):
         message = MessageGeneralSet()

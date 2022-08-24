@@ -145,7 +145,7 @@ class MessageNewProtocolQuery(MessageACBase):
 
         _body = bytearray([len(query_params)])
         for param in query_params:
-            _body.extend([param & 0xFF, param >> 8])
+            _body.extend([param >> 8, param & 0xFF])
         return _body
 
 
@@ -290,7 +290,7 @@ class XA1MessageBody(MessageBody):
             else:
                 self.indoor_temperature = temperature_integer - temperature_dot
         if body[14] == 0xFF:
-            self.outdoor_temperature = "N/A"
+            self.outdoor_temperature = None
         else:
             temperature_integer = int((body[14] - 50) / 2)
             temperature_dot = ((body[18] & 0xF0) >> 4) * 0.1 if len(body) > 18 else 0
@@ -343,7 +343,7 @@ class XC0MessageBody(MessageBody):
             else:
                 self.indoor_temperature = TempInteger - TemperatureDot
         if body[12] == 0xFF:
-            self.outdoor_temperature = "N/A"
+            self.outdoor_temperature = None
         else:
             TempInteger = int((body[12] - 50) / 2)
             TemperatureDot = ((body[15] & 0xF0) >> 4) * 0.1
