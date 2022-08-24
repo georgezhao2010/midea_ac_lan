@@ -24,7 +24,7 @@
  DA | 波轮洗衣机 | [DA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA_hans.md)
  DB | 滚筒洗衣机 | [DB_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB_hans.md)
  DC | 干衣机 | [DC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC_hans.md)
- E1 | 洗碗机 | [E1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1_hans.md)
+ E1 | 洗碗机 | [E1_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1_hans.md)
  E2 | 电热水器 | [E2_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2_hans.md)
  E3 | 燃气热水器 | [E3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3_hans.md)
 
