@@ -279,7 +279,7 @@ MIDEA_DEVICES = {
         }
     },
     0xE1: {
-        "name": "Dishwashers",
+        "name": "Dishwasher",
         "entities": {
             E1Attributes.door: {
                 "type": "binary_sensor",
