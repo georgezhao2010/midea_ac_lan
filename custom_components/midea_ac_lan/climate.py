@@ -186,10 +186,10 @@ class MideaClimate(MideaEntity, ClimateEntity):
             pass
 
     def turn_aux_heat_on(self) -> None:
-        self._device.set_attribute(attr=ACAttributes.aux_heat, value=True)
+        self._device.set_attribute(attr="aux_heat", value=True)
 
     def turn_aux_heat_off(self) -> None:
-        self._device.set_attribute(attr=ACAttributes.aux_heat, value=False)
+        self._device.set_attribute(attr="aux_heat", value=False)
 
 
 class MideaACClimate(MideaClimate):

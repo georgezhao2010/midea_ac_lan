@@ -89,10 +89,7 @@ class MideaCCDevice(MiedaDevice):
         if self._attributes[DeviceAttributes.aux_heat] != aux_heat:
             self._attributes[DeviceAttributes.aux_heat] = aux_heat
             new_status[DeviceAttributes.aux_heat.value] = self._attributes[DeviceAttributes.aux_heat]
-        self._available = True
-        new_status["available"] = True
-        self.update_all(new_status)
-        return len(new_status) > 1
+        return new_status
 
     def make_message_set(self):
         message = MessageSetNormal()

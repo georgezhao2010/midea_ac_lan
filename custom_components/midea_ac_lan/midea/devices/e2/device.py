@@ -58,7 +58,7 @@ class MideaE2Device(MiedaDevice):
             DeviceAttributes.whole_tank_heating: False,
             DeviceAttributes.variable_heating: False,
             DeviceAttributes.protection: False,
-            DeviceAttributes.heating_power: 0,
+            DeviceAttributes.heating_power: None,
             DeviceAttributes.auto_cut_out: False
         }
 
@@ -73,10 +73,7 @@ class MideaE2Device(MiedaDevice):
             if hasattr(message, status.value):
                 self._attributes[status] = getattr(message, status.value)
                 new_status[status.value] = getattr(message, status.value)
-        self._available = True
-        new_status["available"] = True
-        self.update_all(new_status)
-        return len(new_status) > 1
+        return new_status
 
     def make_message_set(self):
         message = MessageGeneralSet()

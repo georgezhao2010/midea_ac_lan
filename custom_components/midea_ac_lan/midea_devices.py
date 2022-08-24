@@ -15,6 +15,7 @@ from .midea.devices.cc.device import DeviceAttributes as CCAttributes
 from .midea.devices.da.device import DeviceAttributes as DAAttributes
 from .midea.devices.db.device import DeviceAttributes as DBAttributes
 from .midea.devices.dc.device import DeviceAttributes as DCAttributes
+from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
 
@@ -109,44 +110,44 @@ MIDEA_DEVICES = {
             ACAttributes.indoor_humidity: {
                 "type": "sensor",
                 "name": "Indoor Humidity",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_HUMIDITY,
-                "unit": PERCENTAGE
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
             },
             ACAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
-                "unit": TEMP_CELSIUS
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
             },
             ACAttributes.outdoor_temperature: {
                 "type": "sensor",
                 "name": "Outdoor Temperature",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
-                "unit": TEMP_CELSIUS
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
             },
             ACAttributes.total_energy_consumption: {
                 "type": "sensor",
                 "name": "Total Energy Consumption",
-                "state_class": "total_increasing",
                 "device_class": DEVICE_CLASS_ENERGY,
-                "unit": ENERGY_KILO_WATT_HOUR
+                "unit": ENERGY_KILO_WATT_HOUR,
+                "state_class": "total_increasing"
             },
             ACAttributes.current_energy_consumption: {
                 "type": "sensor",
                 "name": "Current Energy Consumption",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_ENERGY,
-                "unit": ENERGY_KILO_WATT_HOUR
+                "unit": ENERGY_KILO_WATT_HOUR,
+                "state_class": "measurement"
             },
             ACAttributes.realtime_power: {
                 "type": "sensor",
                 "name": "Realtime Power",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_POWER,
-                "unit": POWER_WATT
+                "unit": POWER_WATT,
+                "state_class": "measurement"
             }
         }
     },
@@ -190,9 +191,9 @@ MIDEA_DEVICES = {
             CCAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
-                "unit": TEMP_CELSIUS
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
             },
         }
     },
@@ -203,7 +204,8 @@ MIDEA_DEVICES = {
                 "type": "sensor",
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
-                "unit": TIME_MINUTES
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
             },
             DAAttributes.progress: {
                 "type": "sensor",
@@ -229,7 +231,8 @@ MIDEA_DEVICES = {
                 "type": "sensor",
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
-                "unit": TIME_MINUTES
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
             },
             DBAttributes.progress: {
                 "type": "sensor",
@@ -255,7 +258,8 @@ MIDEA_DEVICES = {
                 "type": "sensor",
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
-                "unit": TIME_MINUTES
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
             },
             DCAttributes.progress: {
                 "type": "sensor",
@@ -271,6 +275,51 @@ MIDEA_DEVICES = {
                 "type": "switch",
                 "name": "Start",
                 "icon": "mdi:motion-play-outline"
+            },
+        }
+    },
+    0xE1: {
+        "name": "Dishwashers",
+        "entities": {
+            E1Attributes.door: {
+                "type": "binary_sensor",
+                "name": "Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
+            },
+            E1Attributes.rinse_aid: {
+                "type": "binary_sensor",
+                "name": "Rinse Aid Shortage",
+                "icon": "mdi:bottle-tonic",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            E1Attributes.salt: {
+                "type": "binary_sensor",
+                "name": "Salt Shortage",
+                "icon": "mdi:drag",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            E1Attributes.progress: {
+                "type": "sensor",
+                "name": "Progress",
+                "icon": "mdi:rotate-360"
+            },
+            E1Attributes.status: {
+                "type": "sensor",
+                "name": "Status",
+                "icon": "mdi:information"
+            },
+            E1Attributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
+            },
+            E1Attributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
             },
         }
     },
@@ -302,16 +351,16 @@ MIDEA_DEVICES = {
             E2Attributes.heating_power: {
                 "type": "sensor",
                 "name": "Heating Power",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_POWER,
-                "unit": POWER_WATT
+                "unit": POWER_WATT,
+                "state_class": "measurement"
             },
             E2Attributes.temperature: {
                 "type": "sensor",
                 "name": "Temperature",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
-                "unit": TEMP_CELSIUS
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
             },
             E2Attributes.auto_cut_out: {
                 "type": "switch",
@@ -357,9 +406,9 @@ MIDEA_DEVICES = {
             E3Attributes.temperature: {
                 "type": "sensor",
                 "name": "Temperature",
-                "state_class": "measurement",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
-                "unit": TEMP_CELSIUS
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
             },
             E3Attributes.power: {
                 "type": "switch",

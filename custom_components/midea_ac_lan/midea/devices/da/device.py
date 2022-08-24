@@ -47,7 +47,7 @@ class MideaDADevice(MiedaDevice):
             DeviceAttributes.start: False,
             DeviceAttributes.washing_data: bytearray([]),
             DeviceAttributes.progress: "Unknown",
-            DeviceAttributes.time_remaining: 0
+            DeviceAttributes.time_remaining: None
         }
 
     def build_query(self):
@@ -66,10 +66,7 @@ class MideaDADevice(MiedaDevice):
                 else:
                     self._attributes[status] = getattr(message, status.value)
                 new_status[status.value] = self._attributes[status]
-        self._available = True
-        new_status["available"] = True
-        self.update_all(new_status)
-        return len(new_status) > 1
+        return new_status
 
     def set_attribute(self, attr, value):
         if attr == DeviceAttributes.power:

@@ -28,10 +28,7 @@ class DeviceAttributes(StrEnum):
 
 class ParseMessageResult(IntEnum):
     SUCCESS = 0
-    HEARTBEAT = 1
-    PADDING = 2
-    UNFINISHED = 3
-    USELESS = 4
+    PADDING = 1
     ERROR = 99
 
 
@@ -124,6 +121,7 @@ class MiedaDevice(threading.Thread):
             _LOGGER.debug(f"[{self._device_id}] Refresh status is timed out")
         except Exception:
             _LOGGER.debug(f"[{self._device_id}] Unknown error")
+        self.enable_device(False)
         return False
 
     def authenticate(self):
@@ -190,11 +188,6 @@ class MiedaDevice(threading.Thread):
                                 break
                             elif result == ParseMessageResult.PADDING:
                                 continue
-                            elif result == ParseMessageResult.USELESS:
-                                error_count += 1
-                                self._unsupported_protocol.append(cmd.__class__.__name__)
-                                _LOGGER.debug(f"[{self._device_id}] Useless "
-                                              f"protocol {cmd.__class__.__name__}, ignored")
                             else:
                                 raise ResponseException
                     except socket.timeout:
@@ -221,14 +214,18 @@ class MiedaDevice(threading.Thread):
                 return ParseMessageResult.ERROR
             payload_len = message[4] + (message[5] << 8) - 56
             payload_type = message[2] + (message[3] << 8)
-            if payload_type in [0x1001, 0x0001]:  # Heartbeat
-                return ParseMessageResult.HEARTBEAT
-            if len(message) > 56:
+            if payload_type in [0x1001, 0x0001]:
+                # Heartbeat detected
+                pass
+            elif len(message) > 56:
                 cryptographic = message[40:-16]
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
-                    if not self.process_message(decrypted):
-                        return ParseMessageResult.USELESS
+                    status = self.process_message(decrypted)
+                    if len(status) > 0:
+                        self.update_all(status)
+                    else:
+                        _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
                 else:
                     _LOGGER.warning(
                         f"[{self._device_id}] Illegal payload, "
@@ -236,7 +233,6 @@ class MiedaDevice(threading.Thread):
                         f"8370 decoded = {message.hex()}, payload type = {payload_type}, "
                         f"alleged payload length = {payload_len}, factual payload length = {len(cryptographic)}"
                     )
-                    return ParseMessageResult.UNFINISHED
             else:
                 _LOGGER.warning(
                     f"[{self._device_id}] Illegal message, "
@@ -244,7 +240,6 @@ class MiedaDevice(threading.Thread):
                     f"8370 decoded = {message.hex()}, payload type = {payload_type}, "
                     f"alleged payload length = {payload_len}, message length = {len(message)}, "
                 )
-                return ParseMessageResult.UNFINISHED
         return ParseMessageResult.SUCCESS
 
     def build_query_device_info(self):
@@ -297,7 +292,6 @@ class MiedaDevice(threading.Thread):
                     if not self._is_run:
                         return
                     self.close_socket()
-                    self.enable_device(False)
                     time.sleep(5)
             timeout_counter = 0
             start = time.time()
@@ -321,7 +315,7 @@ class MiedaDevice(threading.Thread):
                         _LOGGER.debug(f"[{self._device_id}] Message 'ERROR' received, reconnecting")
                         self.close_socket()
                         break
-                    elif result in [ParseMessageResult.SUCCESS, ParseMessageResult.HEARTBEAT]:
+                    elif result == ParseMessageResult.SUCCESS:
                         timeout_counter = 0
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
