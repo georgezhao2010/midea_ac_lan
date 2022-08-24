@@ -8,7 +8,7 @@
 EntityID | 类型 | 名称 | 描述 
 --- | --- | --- | ---
 sensor.{DEVICEID}_progress | sensor | Progress | 当前程序
-switch.{DEVICEID}_time_remaining | sensor | Time Remaining | 剩余时间
+sensor.{DEVICEID}_time_remaining | sensor | Time Remaining | 剩余时间
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_start | switch | Start | 启动暂停
 

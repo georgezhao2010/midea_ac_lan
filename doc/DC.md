@@ -8,7 +8,7 @@
 EntityID | Class | Description
 --- | --- | ---
 sensor.{DEVICEID}_progress | sensor | Progress
-switch.{DEVICEID}_time_remaining | sensor | Time Remaining
+sensor.{DEVICEID}_time_remaining | sensor | Time Remaining
 switch.{DEVICEID}_power | switch | Power
 switch.{DEVICEID}_start | switch | Start
 

@@ -1,6 +1,6 @@
 # Midea AC LAN
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
-[![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/integration)
+[![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-blue.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
 English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README_hans.md)
@@ -24,8 +24,9 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
  DA | Top Load Washers | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
  DB | Front Load Washers | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
  DC | Clothes Dryers | [DC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC.md)
- E2 |Electric Water Heaters | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
- E3 |Gas Water Heaters |  [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
+ E1 | Dishwashers | [E1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1.md)
+ E2 | Electric Water Heaters | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
+ E3 | Gas Water Heaters |  [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 
