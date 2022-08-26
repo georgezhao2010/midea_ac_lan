@@ -132,12 +132,4 @@ class MessageE3Response(MessageResponse):
                 (self._message_type == MessageType.set and self._body_type in [0x01, 0x02, 0x04, 0x14]) or \
                 (self._message_type == MessageType.notify1 and self._body_type in [0x00, 0x01]):
             self._body = E3GeneralMessageBody(body)
-            self.power = self._body.power
-            self.burning_state = self._body.burning_state
-            self.zero_cold_water = self._body.zero_cold_water
-            self.mode = self._body.mode
-            self.temperature = self._body.temperature
-            self.target_temperature = self._body.target_temperature
-            self.protection = self._body.protection
-            self.zero_cold_pulse = self._body.zero_cold_pulse
-            self.smart_volume = self._body.smart_volume
+        self.set_attr()

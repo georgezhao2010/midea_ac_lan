@@ -93,8 +93,4 @@ class MessageDAResponse(MessageResponse):
         if self._message_type in [MessageType.query, MessageType.set] or \
                 (self._message_type == MessageType.notify1 and self._body_type == 0x04):
             self._body = DAGeneralMessageBody(body)
-            self.power = self._body.power
-            self.start = self._body.start
-            self.washing_data = self._body.washing_data
-            self.progress = self._body.progress
-            self.time_remaining = self._body.time_remaining
+        self.set_attr()

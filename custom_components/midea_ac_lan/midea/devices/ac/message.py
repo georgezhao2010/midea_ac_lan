@@ -104,14 +104,6 @@ class MessagePowerQuery(MessageACBase):
         return body
 
 
-class MessageRunTimeQuery(MessagePowerQuery):
-    @property
-    def _body(self):
-        return bytearray([
-            0x21, 0x01, 0x40, 0x00, 0x01
-        ])
-
-
 class MessageSwitchDisplay(MessageACBase):
     def __init__(self):
         super().__init__(
@@ -395,63 +387,12 @@ class MessageACResponse(MessageResponse):
         body = message[self.HEADER_LENGTH: -1]
         if self._body_type == 0xA0:
             self._body = XA0MessageBody(body)
-            self.power = self._body.power
-            self.target_temperature = self._body.target_temperature
-            self.mode = self._body.mode
-            self.fan_speed = self._body.fan_speed
-            self.swing_vertical = self._body.swing_vertical
-            self.swing_horizontal = self._body.swing_horizontal
-            self.boost_mode = self._body.boost_mode
-            self.smart_eye = self._body.smart_eye
-            self.dry = self._body.dry
-            self.aux_heat = self._body.aux_heat
-            self.eco_mode = self._body.eco_mode
-            self.sleep_mode = self._body.sleep_mode
-            self.night_light = self._body.night_light
-            self.natural_wind = self._body.natural_wind
-            self.screen_display = self._body.screen_display
-            self.comfort_mode = self._body.comfort_mode
         elif self._body_type == 0xA1:
             self._body = XA1MessageBody(body)
-            if hasattr(self._body, "indoor_temperature"):
-                self.indoor_temperature = self._body.indoor_temperature
-            self.outdoor_temperature = self._body.outdoor_temperature
-            self.indoor_humidity = self._body.indoor_humidity
         elif self._body_type in [0xB0, 0xB1, 0xB5]:
             self._body = XBXMessageBody(body, self._body_type)
-            if hasattr(self._body, "indirect_wind"):
-                self.indirect_wind = self._body.indirect_wind
-            if hasattr(self._body, "indoor_humidity"):
-                self.indoor_humidity = self._body.indoor_humidity
-            if hasattr(self._body, "breezeless"):
-                self.breezeless = self._body.breezeless
         elif self._body_type == 0xC0:
             self._body = XC0MessageBody(body)
-            self.power = self._body.power
-            self.mode = self._body.mode
-            self.target_temperature = self._body.target_temperature
-            self.fan_speed = self._body.fan_speed
-            self.swing_vertical = self._body.swing_vertical
-            self.swing_horizontal = self._body.swing_horizontal
-            self.boost_mode = self._body.boost_mode
-            self.smart_eye = self._body.smart_eye
-            self.natural_wind = self._body.natural_wind
-            self.dry = self._body.dry
-            self.aux_heat = self._body.aux_heat
-            self.eco_mode = self._body.eco_mode
-            self.temp_fahrenheit = self._body.temp_fahrenheit
-            self.sleep_mode = self._body.sleep_mode
-            self.night_light = self._body.night_light
-            if hasattr(self._body, "indoor_temperature"):
-                self.indoor_temperature = self._body.indoor_temperature
-            self.outdoor_temperature = self._body.outdoor_temperature
-            self.screen_display = self._body.screen_display
-            self.comfort_mode = self._body.comfort_mode
         elif self._body_type == 0xC1:
             self._body = XC1MessageBody(body)
-            if hasattr(self._body, "total_energy_consumption"):
-                self.total_energy_consumption = self._body.total_energy_consumption
-            if hasattr(self._body, "current_energy_consumption"):
-                self.current_energy_consumption = self._body.current_energy_consumption
-            if hasattr(self._body, "realtime_power"):
-                self.realtime_power = self._body.realtime_power
+        self.set_attr()

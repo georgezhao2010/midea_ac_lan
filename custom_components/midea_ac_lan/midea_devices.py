@@ -3,6 +3,7 @@ from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_ENERGY,
+    TIME_HOURS,
     TIME_MINUTES,
     TEMP_CELSIUS,
     POWER_WATT,
@@ -309,6 +310,13 @@ MIDEA_DEVICES = {
                 "name": "Status",
                 "icon": "mdi:information"
             },
+            E1Attributes.storage_remaining: {
+                "type": "sensor",
+                "name": "Storage Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_HOURS,
+                "state_class": "measurement"
+            },
             E1Attributes.time_remaining: {
                 "type": "sensor",
                 "name": "Time Remaining",
@@ -316,10 +324,19 @@ MIDEA_DEVICES = {
                 "unit": TIME_MINUTES,
                 "state_class": "measurement"
             },
+            E1Attributes.child_lock: {
+                "type": "lock",
+                "name": "Child Lock"
+            },
             E1Attributes.power: {
                 "type": "switch",
                 "name": "Power",
                 "icon": "mdi:power"
+            },
+            E1Attributes.storage: {
+                "type": "switch",
+                "name": "Storage",
+                "icon": "mdi:repeat-variant"
             },
         }
     },

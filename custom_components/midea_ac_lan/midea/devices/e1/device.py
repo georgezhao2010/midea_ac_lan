@@ -2,6 +2,8 @@ import logging
 from .message import (
     MessageQuery,
     MessagePower,
+    MessageStorage,
+    MessageLock,
     MessageE1Response
 )
 from ...core.device import MiedaDevice
@@ -16,8 +18,11 @@ class DeviceAttributes(StrEnum):
     door = "door"
     rinse_aid = "rinse_aid"
     salt = "salt"
+    child_lock = "child_lock"
+    storage = "storage"
     time_remaining = "time_remaining"
     progress = "progress"
+    storage_remaining = "storage_remaining"
 
 
 class MideaE1Device(MiedaDevice):
@@ -49,8 +54,11 @@ class MideaE1Device(MiedaDevice):
             DeviceAttributes.door: False,
             DeviceAttributes.rinse_aid: False,
             DeviceAttributes.salt: False,
+            DeviceAttributes.child_lock: False,
+            DeviceAttributes.storage: False,
             DeviceAttributes.time_remaining: None,
-            DeviceAttributes.progress: None
+            DeviceAttributes.progress: None,
+            DeviceAttributes.storage_remaining: None
         }
 
     def build_query(self):
@@ -61,7 +69,7 @@ class MideaE1Device(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         a_status = ["Off", "Idle", "Delay", "Running", "Error"]
-        progress = ["Idle", "Pre-wash", "Wash", "Rinse", "Dry", "Finished"]
+        progress = ["Idle", "Pre-wash", "Wash", "Rinse", "Dry", "Finished", "Storage"]
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 if status == DeviceAttributes.status:
@@ -85,6 +93,14 @@ class MideaE1Device(MiedaDevice):
         if attr == DeviceAttributes.power:
             message = MessagePower()
             message.power = value
+            self.build_send(message)
+        elif attr == DeviceAttributes.child_lock:
+            message = MessageLock()
+            message.lock = value
+            self.build_send(message)
+        elif attr == DeviceAttributes.storage:
+            message = MessageStorage()
+            message.storage = value
             self.build_send(message)
 
 

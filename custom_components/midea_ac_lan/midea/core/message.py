@@ -164,6 +164,12 @@ class MessageResponse(MessageBase):
     def body(self):
         return self._body.data
 
+    def set_attr(self):
+        for key in vars(self._body).keys():
+            if key != "data":
+                value = getattr(self._body, key, None)
+                setattr(self, key, value)
+
 
 class MessageDeviceInfoResponse(MessageResponse):
     def __init__(self, message):
