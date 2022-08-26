@@ -26,7 +26,7 @@ class MessagePower(MessageE1Base):
     def __init__(self):
         super().__init__(
             message_type=MessageType.set,
-            body_type=0x00)
+            body_type=0x08)
         self.power = False
 
     @property
@@ -35,6 +35,43 @@ class MessagePower(MessageE1Base):
         return bytearray([
             power,
             0x00, 0x00, 0x00
+        ])
+
+
+class MessageLock(MessageE1Base):
+    def __init__(self):
+        super().__init__(
+            message_type=MessageType.set,
+            body_type=0x83)
+        self.lock = False
+
+    @property
+    def _body(self):
+        lock = 0x03 if self.lock else 0x04
+        return bytearray([
+            lock,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00
+        ])
+
+
+class MessageStorage(MessageE1Base):
+    def __init__(self):
+        super().__init__(
+            message_type=MessageType.set,
+            body_type=0x081)
+        self.storage = False
+
+    @property
+    def _body(self):
+        storage = 0x01 if self.storage else 0x00
+        return bytearray([
+            0x00, 0x00, 0x00,
+            storage,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00
         ])
 
 
@@ -57,8 +94,13 @@ class E1GeneralMessageBody(MessageBody):
         self.door = (body[5] & 0x01) == 0       # 0 - open, 1 - close
         self.rinse_aid = (body[5] & 0x02) > 0   # 0 - enough, 1 - shortage
         self.salt = (body[5] & 0x04) > 0        # 0 - enough, 1 - shortage
+        self.lock = (body[5] & 0x10) > 0
+        self.storage = (body[5] & 0x20) > 0
         self.time_remaining = body[6]
         self.progress = body[9]
+        self.storage_remaining = body[18]
+        if self.storage:
+            self.progress = 6
 
 
 class MessageE1Response(MessageResponse):
@@ -68,10 +110,4 @@ class MessageE1Response(MessageResponse):
         if (self._message_type == MessageType.set and 0 <= self._body_type <= 7) or \
                 (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0):
             self._body = E1GeneralMessageBody(body)
-            self.power = self._body.power
-            self.status = self._body.status
-            self.door = self._body.door
-            self.rinse_aid = self._body.rinse_aid
-            self.salt = self._body.salt
-            self.time_remaining = self._body.time_remaining
-            self.progress = self._body.progress
+        self.set_attr()

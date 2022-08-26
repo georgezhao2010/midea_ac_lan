@@ -26,8 +26,8 @@ from .midea.devices import device_selector
 
 _LOGGER = logging.getLogger(__name__)
 
-ALL_PLATFORM = ["sensor", "switch", "binary_sensor", "climate", "water_heater"]
-EXTRA_PLATFORM = ["sensor", "switch", "binary_sensor"]
+ALL_PLATFORM = ["sensor", "switch", "binary_sensor", "climate", "water_heater", "lock"]
+EXTRA_PLATFORM = ["sensor", "switch", "binary_sensor", "lock"]
 
 
 async def update_listener(hass, config_entry):
@@ -62,10 +62,10 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
         dev = hass.data[DOMAIN][DEVICES].get(device_id)
         if dev:
             item = MIDEA_DEVICES.get(dev.device_type).get("entities").get(attr)
-            if item and item.get("type") == "switch":
+            if item and item.get("type") in ["switch", "lock"]:
                 dev.set_attribute(attr=attr, value=value)
             else:
-                _LOGGER.error(f"Appliance has not the attribute {attr}")
+                _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} can be set ")
 
     hass.services.async_register(
         DOMAIN,

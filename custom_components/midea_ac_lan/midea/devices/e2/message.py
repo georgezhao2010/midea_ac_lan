@@ -126,14 +126,4 @@ class MessageE2Response(MessageResponse):
         if (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0x01) or \
                 (self._message_type == MessageType.set and self._body_type in [0x01, 0x02, 0x04]):
             self._body = E2GeneralMessageBody(body)
-            self.power = self._body.power
-            self.heating = self._body.heating
-            self.heat_insulating = self._body.heat_insulating
-            self.variable_heating = self._body.variable_heating
-            self.temperature = self._body.temperature
-            self.mode = self._body.mode
-            self.whole_tank_heating = self._body.whole_tank_heating
-            self.target_temperature = self._body.target_temperature
-            self.protection = self._body.protection
-            self.heating_power = self._body.heating_power
-            self.auto_cut_out = self._body.auto_cut_out
+        self.set_attr()
