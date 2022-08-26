@@ -12,8 +12,11 @@ binary_sensor.{DEVICEID}_rinse_aid | binary_sensor | Rinse Aid Shortage | 漂洗
 binary_sensor.{DEVICEID}_salt | binary_sensor | Salt Shortage | 软水盐不足
 sensor.{DEVICEID}_progress | sensor | Progress | 当前程序
 sensor.{DEVICEID}_status | sensor | Status | 状态
+sensor.{DEVICEID}_storage_remaining | sensor | Storage Time Remaining | 保管剩余时间
 sensor.{DEVICEID}_time_remaining | sensor | Time Remaining | 剩余时间
+lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
 switch.{DEVICEID}_power | switch | Power | 电源开关
+switch.{DEVICEID}_storage | switch | Storage | 保管开关
 
 ## 服务
 生成以下扩展服务
@@ -27,7 +30,7 @@ switch.{DEVICEID}_power | switch | Power | 电源开关
 名称 | 描述
 --- | ---
 device_id | 设备的编号(Device ID)
-attribute | "power"
+attribute | "child_lock"<br />"power"<br /> "storage"
 value | true 或 false
 
 示例
