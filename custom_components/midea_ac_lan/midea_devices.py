@@ -13,6 +13,7 @@ from homeassistant.const import (
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
+from .midea.devices.cf.device import DeviceAttributes as CFAttributes
 from .midea.devices.da.device import DeviceAttributes as DAAttributes
 from .midea.devices.db.device import DeviceAttributes as DBAttributes
 from .midea.devices.dc.device import DeviceAttributes as DCAttributes
@@ -192,6 +193,32 @@ MIDEA_DEVICES = {
             CCAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+        }
+    },
+    0xCF: {
+        "name": "Heat Bumps",
+        "entities": {
+            "climate": {
+                "type": "climate",
+                "icon": "hass:air-conditioner"
+            },
+            CFAttributes.aux_heat: {
+                "type": "switch",
+                "name": "Aux Heating",
+                "icon": "mdi:heat-wave"
+            },
+            CFAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            CFAttributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS,
                 "state_class": "measurement"

@@ -3,6 +3,7 @@ from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
 from homeassistant.const import (
     TEMP_CELSIUS,
+    PRECISION_WHOLE,
     PRECISION_HALVES,
     ATTR_TEMPERATURE,
     CONF_DEVICE_ID,
@@ -14,6 +15,7 @@ from .const import (
 )
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
+from .midea.devices.cf.device import DeviceAttributes as CFAttributes
 from .midea_entity import MideaEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -32,6 +34,8 @@ TEMPERATURE_MIN = 17
 FAN_SILENT = "Silent"
 FAN_FULL_SPEED = "Super high"
 
+PRESET_SILENT = "Silent"
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
@@ -40,6 +44,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities([MideaACClimate(device)])
     elif device.device_type == 0xcc:
         async_add_entities([MideaCCClimate(device)])
+    elif device.device_type == 0xcf:
+        async_add_entities([MideaCFClimate(device)])
 
 
 class MideaClimate(MideaEntity, ClimateEntity):
@@ -319,3 +325,37 @@ class MideaCCClimate(MideaClimate):
             attr=CCAttributes.swing,
             value=swing_mode.capitalize() == SWING_ON.capitalize()
         )
+
+
+class MideaCFClimate(MideaClimate):
+    def __init__(self, device):
+        super().__init__(device)
+        self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_HEAT]
+
+    @property
+    def supported_features(self):
+        return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.AUX_HEAT
+
+    @property
+    def min_temp(self):
+        return self._device.get_attribute(CFAttributes.min_temperature)
+
+    @property
+    def max_temp(self):
+        return self._device.get_attribute(CFAttributes.max_temperature)
+
+    @property
+    def target_temperature_low(self):
+        return self._device.get_attribute(CFAttributes.min_temperature)
+
+    @property
+    def target_temperature_high(self):
+        return self._device.get_attribute(CFAttributes.max_temperature)
+
+    @property
+    def current_temperature(self):
+        return self._device.get_attribute("current_temperature")
+
+    @property
+    def target_temperature_step(self):
+        return PRECISION_WHOLE
