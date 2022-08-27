@@ -20,7 +20,8 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
   Type | Name | Documents
  --- | --- | ---
  AC | Air Conditioners | [AC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC.md)
- CC | AC Control Panels | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
+ CC | MDV Wi-Fi Control Panels | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
+ CF | Variable Water Volume System (VWV) | [CF.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF.md)
  DA | Top Load Washers | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
  DB | Front Load Washers | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
  DC | Clothes Dryers | [DC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC.md)
@@ -41,7 +42,7 @@ Or click [![Configuration](https://my.home-assistant.io/badges/config_flow_start
 ## Config automatically
 This component could auto-discover and list Midea M-Smart appliances in network, select one and add it in. You could repeat the above action to add multiple devices.
 
-**Automatic configuration requires your appliances and your Home Assistant must be in the same sub-network. Otherwise, devices cannot be auto-discovered.  Check this by yourself.**
+**Automatic configuration requires your appliances and your Home Assistant must be in the same sub-network. Otherwise, devices may not be auto-discovered.  Check this by yourself.**
 
 ## Config by IP
 If auto-discover could not work, you could try to discover the appliance with the specified IP Address.

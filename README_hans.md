@@ -20,7 +20,8 @@
  类型 | 名称 |文档
  --- | --- | ---
  AC | 空调器 | [AC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC_hans.md)
- CC | 中央空调86控制面板 | [CC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC_hans.md)
+ CC | 中央空调(风管机)Wi-Fi线控器 | [CC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC_hans.md)
+ CF | 中央空调暖家(水机) | [CF_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF_hans.md)
  DA | 波轮洗衣机 | [DA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA_hans.md)
  DB | 滚筒洗衣机 | [DB_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB_hans.md)
  DC | 干衣机 | [DC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC_hans.md)
@@ -39,9 +40,9 @@
 或者直接点击 [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)
 
 ## 自动配置
-自动配置会自动搜索网络上的美的M-Smart设备，并将搜索到的空调列出，选择一台空调执行添加即可。
+自动配置会自动搜索网络上的美的M-Smart设备，并将搜索到的设备列出，选择一个设备执行添加。多台设备执行多次添加即可。
 
-**自动配置要求设备必须与HA在同一网段，否则搜索不到设备的，请自行确认这点**
+**自动配置要求设备必须与HA在同一网段，否则可能搜索不到设备，请自行确认这点**
 
 ## 指定IP地址配置
 如果自动配置无法完成，可以尝试通过指定IP地址的方式搜索设备并进行配置。
