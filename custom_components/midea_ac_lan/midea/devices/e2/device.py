@@ -1,7 +1,7 @@
 import logging
 from .message import (
     MessageQuery,
-    MessageGeneralSet,
+    MessageSet,
     MessageE2Response,
     MessagePower
 )
@@ -15,7 +15,7 @@ class DeviceAttributes(StrEnum):
     power = "power"
     heating = "heating"
     heat_insulating = "heat_insulating"
-    temperature = "temperature"
+    current_temperature = "current_temperature"
     target_temperature = "target_temperature"
     mode = "mode"
     whole_tank_heating = "whole_tank_heating"
@@ -52,7 +52,7 @@ class MideaE2Device(MiedaDevice):
             DeviceAttributes.power: False,
             DeviceAttributes.heating: False,
             DeviceAttributes.heat_insulating: False,
-            DeviceAttributes.temperature: None,
+            DeviceAttributes.current_temperature: None,
             DeviceAttributes.target_temperature: 40,
             DeviceAttributes.mode: 0,
             DeviceAttributes.whole_tank_heating: False,
@@ -63,7 +63,7 @@ class MideaE2Device(MiedaDevice):
         }
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
         message = MessageE2Response(msg)
@@ -76,7 +76,7 @@ class MideaE2Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageGeneralSet()
+        message = MessageSet(self._device_protocol_version)
         message.mode = self._attributes[DeviceAttributes.mode]
         message.whole_tank_heating = self._attributes[DeviceAttributes.whole_tank_heating]
         message.protection = self._attributes[DeviceAttributes.protection]
@@ -88,11 +88,11 @@ class MideaE2Device(MiedaDevice):
     def set_attribute(self, attr, value):
         if attr not in [DeviceAttributes.heating,
                         DeviceAttributes.heat_insulating,
-                        DeviceAttributes.temperature,
+                        DeviceAttributes.current_temperature,
                         DeviceAttributes.protection,
                         DeviceAttributes.heating_power]:
             if attr == DeviceAttributes.power:
-                message = MessagePower()
+                message = MessagePower(self._device_protocol_version)
                 message.power = value
             else:
                 message = self.make_message_set()

@@ -2,7 +2,7 @@ import logging
 from ...core.device import MiedaDevice
 from .message import (
     MessageQuery,
-    MessageSetNormal,
+    MessageSet,
     MessageCCResponse
 )
 from ...backports.enum import StrEnum
@@ -73,7 +73,7 @@ class MideaCCDevice(MiedaDevice):
         }
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
         message = MessageCCResponse(msg)
@@ -92,7 +92,7 @@ class MideaCCDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSetNormal()
+        message = MessageSet(self._device_protocol_version)
         message.power = self._attributes[DeviceAttributes.power]
         message.mode = self._attributes[DeviceAttributes.mode]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]

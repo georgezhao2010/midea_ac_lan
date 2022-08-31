@@ -12,6 +12,7 @@ from homeassistant.const import (
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
+from .midea.devices.ca.device import DeviceAttributes as CAAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
 from .midea.devices.cf.device import DeviceAttributes as CFAttributes
 from .midea.devices.da.device import DeviceAttributes as DAAttributes
@@ -109,6 +110,12 @@ MIDEA_DEVICES = {
                 "name": "Swing Vertical",
                 "icon": "mdi:arrow-split-horizontal"
             },
+            ACAttributes.full_dust: {
+                "type": "binary_sensor",
+                "name": "Full of Dust",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
             ACAttributes.indoor_humidity: {
                 "type": "sensor",
                 "name": "Indoor Humidity",
@@ -153,8 +160,100 @@ MIDEA_DEVICES = {
             }
         }
     },
+    0xCA: {
+        "name": "Refrigerator",
+        "entities": {
+            CAAttributes.bar_door_overtime: {
+                "type": "binary_sensor",
+                "name": "Bar Door Overtime",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CAAttributes.flex_zone_door_overtime: {
+                "type": "binary_sensor",
+                "name": "Flex Zone Door Overtime",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CAAttributes.freezer_door_overtime: {
+                "type": "binary_sensor",
+                "name": "Freezer Door Overtime",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CAAttributes.refrigerator_door_overtime: {
+                "type": "binary_sensor",
+                "name": "Refrigerator Door Overtime",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CAAttributes.flex_zone_actual_temp: {
+                "type": "sensor",
+                "name": "Flex Zone Actual Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            CAAttributes.flex_zone_setting_temp: {
+                "type": "sensor",
+                "name": "Flex Zone Setting Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            CAAttributes.freezer_actual_temp: {
+                "type": "sensor",
+                "name": "Freezer Actual temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            CAAttributes.freezer_setting_temp: {
+                "type": "sensor",
+                "name": "Freezer Setting temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            CAAttributes.power_consumption: {
+                "type": "sensor",
+                "name": "Power Consumption",
+                "device_class": DEVICE_CLASS_ENERGY,
+                "unit": ENERGY_KILO_WATT_HOUR,
+                "state_class": "total_increasing"
+            },
+            CAAttributes.refrigerator_actual_temp: {
+                "type": "sensor",
+                "name": "Refrigerator Actual Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            CAAttributes.refrigerator_setting_temp: {
+                "type": "sensor",
+                "name": "Refrigerator Setting Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            CAAttributes.right_flex_zone_actual_temp: {
+                "type": "sensor",
+                "name": "Right Flex Zone Actual Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            CAAttributes.right_flex_zone_setting_temp: {
+                "type": "sensor",
+                "name": "Right Flex Zone Setting Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+        },
+    },
     0xCC: {
-        "name": "AC Control Panel",
+        "name": "MDV Control Panel",
         "entities": {
             "climate": {
                 "type": "climate",
@@ -200,7 +299,7 @@ MIDEA_DEVICES = {
         }
     },
     0xCF: {
-        "name": "Heat Bumps",
+        "name": "VWV System",
         "entities": {
             "climate": {
                 "type": "climate",
@@ -399,9 +498,9 @@ MIDEA_DEVICES = {
                 "unit": POWER_WATT,
                 "state_class": "measurement"
             },
-            E2Attributes.temperature: {
+            E2Attributes.current_temperature: {
                 "type": "sensor",
-                "name": "Temperature",
+                "name": "Current Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS,
                 "state_class": "measurement"
@@ -447,9 +546,9 @@ MIDEA_DEVICES = {
                 "icon": "mdi:shield-check",
                 "device_class": BinarySensorDeviceClass.RUNNING
             },
-            E3Attributes.temperature: {
+            E3Attributes.current_temperature: {
                 "type": "sensor",
-                "name": "Temperature",
+                "name": "Current Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS,
                 "state_class": "measurement"

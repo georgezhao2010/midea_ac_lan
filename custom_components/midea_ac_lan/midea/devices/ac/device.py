@@ -30,10 +30,10 @@ class DeviceAttributes(StrEnum):
     eco_mode = "eco_mode"
     aux_heat = "aux_heat"
     sleep_mode = "sleep_mode"
-    night_light = "night_light"
     natural_wind = "natural_wind"
     temp_fahrenheit = "temp_fahrenheit"
     screen_display = "screen_display"
+    full_dust = "full_dust"
     comfort_mode = "comfort_mode"
 
     indoor_temperature = "indoor_temperature"
@@ -42,6 +42,7 @@ class DeviceAttributes(StrEnum):
     indirect_wind = "indirect_wind"
     indoor_humidity = "indoor_humidity"
     breezeless = "breezeless"
+    night_light = "night_light"
 
     total_energy_consumption = "total_energy_consumption"
     current_energy_consumption = "current_energy_consumption"
@@ -89,6 +90,7 @@ class MideaACDevice(MiedaDevice):
             DeviceAttributes.natural_wind: False,
             DeviceAttributes.temp_fahrenheit: False,
             DeviceAttributes.screen_display: False,
+            DeviceAttributes.full_dust: False,
             DeviceAttributes.comfort_mode: False,
             DeviceAttributes.indoor_temperature: None,
             DeviceAttributes.outdoor_temperature: None,
@@ -101,7 +103,11 @@ class MideaACDevice(MiedaDevice):
         }
 
     def build_query(self):
-        return [MessageQuery(), MessageNewProtocolQuery(), MessagePowerQuery()]
+        return [
+            MessageQuery(self._device_protocol_version),
+            MessageNewProtocolQuery(self._device_protocol_version),
+            MessagePowerQuery(self._device_protocol_version)
+        ]
 
     def process_message(self, msg):
         message = MessageACResponse(msg)
@@ -118,7 +124,7 @@ class MideaACDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageGeneralSet()
+        message = MessageGeneralSet(self._device_protocol_version)
         message.power = self._attributes[DeviceAttributes.power]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
         message.mode = self._attributes[DeviceAttributes.mode]
@@ -132,7 +138,6 @@ class MideaACDevice(MiedaDevice):
         message.eco_mode = self._attributes[DeviceAttributes.eco_mode]
         message.aux_heat = self._attributes[DeviceAttributes.aux_heat]
         message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
-        message.night_light = self._attributes[DeviceAttributes.night_light]
         message.natural_wind = self._attributes[DeviceAttributes.natural_wind]
         message.temp_fahrenheit = self._attributes[DeviceAttributes.temp_fahrenheit]
         message.comfort_mode = self._attributes[DeviceAttributes.comfort_mode]
@@ -147,10 +152,10 @@ class MideaACDevice(MiedaDevice):
                 self._attributes[DeviceAttributes.prompt_tone] = value
                 self.update_all({DeviceAttributes.prompt_tone.value: value})
             elif attr == DeviceAttributes.screen_display:
-                message = MessageSwitchDisplay()
+                message = MessageSwitchDisplay(self._device_protocol_version)
                 self.build_send(message)
-            elif attr in [DeviceAttributes.indirect_wind, DeviceAttributes.breezeless]:
-                message = MessageNewProtocolSet()
+            elif attr in [DeviceAttributes.indirect_wind, DeviceAttributes.breezeless, DeviceAttributes.night_light]:
+                message = MessageNewProtocolSet(self._device_protocol_version)
                 setattr(message, str(attr), value)
                 message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
                 self.build_send(message)

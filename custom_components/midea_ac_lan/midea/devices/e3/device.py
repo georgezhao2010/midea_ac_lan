@@ -1,7 +1,8 @@
 import logging
 from .message import (
     MessageQuery,
-    MessageGeneralSet,
+    MessageSet,
+    MessageNewProtocolSet,
     MessagePower,
     MessageE3Response
 )
@@ -13,13 +14,13 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     power = "power"
+    mode = "mode"
     burning_state = "burning_state"
     zero_cold_water = "zero_cold_water"
-    mode = "mode"
     protection = "protection"
     zero_cold_pulse = "zero_cold_pulse"
     smart_volume = "smart_volume"
-    temperature = "temperature"
+    current_temperature = "current_temperature"
     target_temperature = "target_temperature"
 
 
@@ -54,12 +55,15 @@ class MideaE3Device(MiedaDevice):
             DeviceAttributes.protection: False,
             DeviceAttributes.zero_cold_pulse: False,
             DeviceAttributes.smart_volume: False,
-            DeviceAttributes.temperature: None,
+            DeviceAttributes.current_temperature: None,
             DeviceAttributes.target_temperature: 40,
         }
+        self._old_sub_types = [
+            32, 33, 34, 35, 36, 37, 40, 43, 48, 49, 80
+        ]
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
         message = MessageE3Response(msg)
@@ -72,7 +76,7 @@ class MideaE3Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageGeneralSet()
+        message = MessageSet(self._device_protocol_version)
         message.mode = self._attributes[DeviceAttributes.mode]
         message.zero_cold_water = self._attributes[DeviceAttributes.zero_cold_water]
         message.protection = self._attributes[DeviceAttributes.protection]
@@ -83,16 +87,21 @@ class MideaE3Device(MiedaDevice):
 
     def set_attribute(self, attr, value):
         if attr not in [DeviceAttributes.burning_state,
-                        DeviceAttributes.temperature,
-                        DeviceAttributes.protection]:
+                        DeviceAttributes.current_temperature,
+                        DeviceAttributes.protection,
+                        DeviceAttributes.mode]:
             if attr == DeviceAttributes.power:
-                message = MessagePower()
+                message = MessagePower(self._device_protocol_version)
                 message.power = value
-            else:
+            elif self._sub_type in self._old_sub_types:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
                 if attr == DeviceAttributes.target_temperature:
                     setattr(message, DeviceAttributes.mode.value, 0)
+            else:
+                message = MessageNewProtocolSet(self._device_protocol_version)
+                setattr(message, "key", str(attr))
+                setattr(message, "value", value)
             self.build_send(message)
 
     @property

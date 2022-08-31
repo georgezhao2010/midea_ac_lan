@@ -10,8 +10,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class MessageDCBase(MessageRequest):
-    def __init__(self, message_type, body_type):
+    def __init__(self, device_protocol_version, message_type, body_type):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             device_type=0xDC,
             message_type=message_type,
             body_type=body_type
@@ -23,8 +24,9 @@ class MessageDCBase(MessageRequest):
 
 
 class MessageQuery(MessageDCBase):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x03)
 
@@ -34,8 +36,9 @@ class MessageQuery(MessageDCBase):
 
 
 class MessagePower(MessageDCBase):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x02)
         self.power = False
@@ -49,8 +52,9 @@ class MessagePower(MessageDCBase):
 
 
 class MessageStart(MessageDCBase):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x02)
         self.start = False
@@ -89,7 +93,7 @@ class DCGeneralMessageBody(MessageBody):
 class MessageDCResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[10: -2]
+        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set] or \
                 (self._message_type == MessageType.notify1 and self._body_type == 0x04):
             self._body = DCGeneralMessageBody(body)

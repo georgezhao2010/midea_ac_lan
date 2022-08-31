@@ -286,23 +286,28 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry):
         self.config_entry = config_entry
         # Compatibility with earlier versions
-        if CONF_SWITCHES in self.config_entry.options and \
-                "turbo_mode" in self.config_entry.options[CONF_SWITCHES]:
-            self.config_entry.options[CONF_SWITCHES].remove("turbo_mode")
-        if CONF_SWITCHES in self.config_entry.options and \
-                "breezyless" in self.config_entry.options[CONF_SWITCHES]:
-            self.config_entry.options[CONF_SWITCHES].remove("breezyless")
+        self._device_type = config_entry.data.get(CONF_TYPE)
+        if self._device_type is None:
+            self._device_type = 0xac
+        if self._device_type == 0xac:
+            if CONF_SWITCHES in self.config_entry.options and \
+                    "turbo_mode" in self.config_entry.options[CONF_SWITCHES]:
+                self.config_entry.options[CONF_SWITCHES].remove("turbo_mode")
+            if CONF_SWITCHES in self.config_entry.options and \
+                    "breezyless" in self.config_entry.options[CONF_SWITCHES]:
+                self.config_entry.options[CONF_SWITCHES].remove("breezyless")
+        if self._device_type in [0xe2, 0xe3]:
+            if CONF_SENSORS in self.config_entry.options and \
+                    "temperature" in self.config_entry.options[CONF_SENSORS]:
+                self.config_entry.options[CONF_SENSORS].remove("temperature")
         # End of compatibility with earlier versions
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
-        device_type = self.config_entry.data.get(CONF_TYPE)
-        if device_type is None:
-            device_type = 0xac
         sensors = {}
         switches = {}
-        for attribute, attribute_config in MIDEA_DEVICES.get(device_type).get("entities").items():
+        for attribute, attribute_config in MIDEA_DEVICES.get(self._device_type).get("entities").items():
             if attribute_config.get("type") in ["sensor", "binary_sensor"]:
                 sensors[attribute.value] = attribute_config.get("name")
             elif attribute_config.get("type") in ["switch", "lock"]:

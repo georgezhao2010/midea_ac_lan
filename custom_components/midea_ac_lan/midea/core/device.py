@@ -3,6 +3,7 @@ from ..backports.enum import StrEnum
 from enum import IntEnum
 from .security import Security, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
+from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse
 import socket
 import logging
 import time
@@ -60,7 +61,9 @@ class MiedaDevice(threading.Thread):
         self._updates = []
         self._is_run = False
         self._available = True
-        self._unsupported_protocol = []
+        self._device_protocol_version = 0
+        self._sub_type = None
+        self._sn = None
 
     @property
     def name(self):
@@ -82,6 +85,10 @@ class MiedaDevice(threading.Thread):
     def model(self):
         return self._model
 
+    @property
+    def sub_type(self):
+        return self._sub_type
+
     @staticmethod
     def fetch_v2_message(msg):
         result = []
@@ -98,14 +105,15 @@ class MiedaDevice(threading.Thread):
     def connect(self, refresh_status=True):
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self._socket.settimeout(5)
+            self._socket.settimeout(10)
             self._socket.connect((self._ip_address, self._port))
             _LOGGER.debug(f"[{self._device_id}] Connected")
             if self._protocol == 3:
                 self.authenticate()
             _LOGGER.debug(f"[{self._device_id}] Authentication success")
-            self.get_device_info()
             if refresh_status:
+                if self._sub_type is None:
+                    self.get_sub_type()
                 self.refresh_status(wait_response=True)
             self.enable_device(True)
             return True
@@ -155,52 +163,62 @@ class MiedaDevice(threading.Thread):
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
-    def get_device_info(self):
-        cmd = self.build_query_device_info()
+    def get_sub_type(self):
+        cmd = MessageQuerySubtype(self.device_type)
         if cmd is not None:
             self.build_send(cmd)
-            while True:
-                msg = self._socket.recv(512)
-                if len(msg) == 0:
-                    raise socket.error
-                result = self.parse_message(msg)
-                if result == ParseMessageResult.SUCCESS:
-                    break
-                elif result == ParseMessageResult.PADDING:
-                    continue
-                else:
-                    raise ResponseException
+            try:
+                while True:
+                    msg = self._socket.recv(512)
+                    if len(msg) == 0:
+                        raise socket.error
+                    result = self.parse_message(msg)
+                    if result == ParseMessageResult.SUCCESS:
+                        break
+                    elif result == ParseMessageResult.PADDING:
+                        continue
+                    else:
+                        raise ResponseException
+            except socket.timeout:
+                pass
 
     def refresh_status(self, wait_response=False):
         cmds = self.build_query()
         error_count = 0
         for cmd in cmds:
-            if cmd.__class__.__name__ not in self._unsupported_protocol:
-                self.build_send(cmd)
-                if wait_response:
-                    try:
-                        while True:
-                            msg = self._socket.recv(512)
-                            if len(msg) == 0:
-                                raise socket.error
-                            result = self.parse_message(msg)
-                            if result == ParseMessageResult.SUCCESS:
-                                break
-                            elif result == ParseMessageResult.PADDING:
-                                continue
-                            else:
-                                raise ResponseException
-                    except socket.timeout:
-                        error_count += 1
-                        self._unsupported_protocol.append(cmd.__class__.__name__)
-                        _LOGGER.debug(f"[{self._device_id}] Does not supports "
-                                      f"the protocol {cmd.__class__.__name__}, ignored")
-                    except ResponseException:
-                        error_count += 1
-            else:
-                error_count += 1
+            self.build_send(cmd)
+            if wait_response:
+                try:
+                    while True:
+                        msg = self._socket.recv(512)
+                        if len(msg) == 0:
+                            raise socket.error
+                        result = self.parse_message(msg)
+                        if result == ParseMessageResult.SUCCESS:
+                            break
+                        elif result == ParseMessageResult.PADDING:
+                            continue
+                        else:
+                            raise ResponseException
+                except socket.timeout:
+                    error_count += 1
+                    _LOGGER.debug(f"[{self._device_id}] Does not supports "
+                                  f"the protocol {cmd.__class__.__name__}, ignored")
+                except ResponseException:
+                    error_count += 1
         if error_count == len(cmds):
             raise RefreshFailed
+
+    def pre_process_message(self, msg):
+        if msg[9] == MessageType.querySubtype:
+            message = MessageSubtypeResponse(msg)
+            _LOGGER.debug(f"[{self.device_id}] Received: {message}")
+            self._sub_type = message.sub_type
+            self._device_protocol_version = message.device_protocol_version
+            _LOGGER.debug(f"[{self._device_id}] Subtype: {self._sub_type}. "
+                          f"Device protocol version: {self._device_protocol_version}")
+            return False
+        return True
 
     def parse_message(self, msg):
         if self._protocol == 3:
@@ -221,11 +239,12 @@ class MiedaDevice(threading.Thread):
                 cryptographic = message[40:-16]
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
-                    status = self.process_message(decrypted)
-                    if len(status) > 0:
-                        self.update_all(status)
-                    else:
-                        _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
+                    if self.pre_process_message(decrypted):
+                        status = self.process_message(decrypted)
+                        if len(status) > 0:
+                            self.update_all(status)
+                        else:
+                            _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
                 else:
                     _LOGGER.warning(
                         f"[{self._device_id}] Illegal payload, "
@@ -241,9 +260,6 @@ class MiedaDevice(threading.Thread):
                     f"alleged payload length = {payload_len}, message length = {len(message)}, "
                 )
         return ParseMessageResult.SUCCESS
-
-    def build_query_device_info(self):
-        return None
 
     def build_query(self):
         raise NotImplementedError
