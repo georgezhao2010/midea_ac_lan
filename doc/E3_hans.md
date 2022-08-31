@@ -1,15 +1,6 @@
 # 燃气热水器
 ## 特性
 - 支持温度设定
-- 支持操作模式设定
-
-### 支持的操作模式
-- 淋浴模式
-- 厨房模式
-- 浴缸模式 
-- 随温感模式
-- 云模式
-- 节能模式
 
 ## 生成实体
 ### 默认生成实体
@@ -23,7 +14,7 @@ EntityID | Class | Description | 描述
 --- | --- | --- | --- 
 binary_sensor.{DEVICEID}_burning_state | binary_sensor | Burning State | 燃烧状态
 binary_sensor.{DEVICEID}_protection | binary_sensor | Protection | 安全防护
-sensor.{DEVICEID}_temperature | sensor | Temperature | 温度
+sensor.{DEVICEID}_current_temperature | sensor | Current Temperature | 温度
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_smart_volume | switch | Smart Volume | 智能变容
 switch.{DEVICEID}_zero_cold_water | switch | Zero Cold Water | 零冷水

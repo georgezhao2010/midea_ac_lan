@@ -1,7 +1,8 @@
 # Clothes Dryer
 
 ## Entities
-### No default entity
+### Default entity
+No default entity
 
 ### Extra entities
 

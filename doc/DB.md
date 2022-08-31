@@ -1,7 +1,8 @@
 # Front Load Washer
 
 ## Entities
-### No default entity
+### Default entity
+No default entity
 
 ### Extra entities
 
