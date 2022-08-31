@@ -1,15 +1,6 @@
 # 电热水器
 ## 特性
 - 支持温度设定
-- 支持操作模式设定
-
-### 支持的操作模式
-- E+增容模式
-- 速热模式 
-- 夏季模式 
-- 冬季模式
-- 节能模式
-- 峰谷夜电
 
 ## 生成实体
 ### 默认生成实体
@@ -25,7 +16,7 @@ binary_sensor.{DEVICEID}_heating | binary_sensor | Heating | 加热
 binary_sensor.{DEVICEID}_heat_insulating | binary_sensor | Heat Insulating | 保温
 binary_sensor.{DEVICEID}_protection | binary_sensor | Protection | 安全防护
 sensor.{DEVICEID}_heating_power | sensor | Heating Power | 加热功率
-sensor.{DEVICEID}_temperature | sensor | Temperature | 当前温度
+sensor.{DEVICEID}_current_temperature | sensor | Current Temperature | 当前温度
 switch.{DEVICEID}_auto_cut_out | switch | Auto Cut-out | 出水断电
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_variable_heating | switch | Variable Heating | 变频加热
