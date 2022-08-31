@@ -57,7 +57,7 @@ class MideaCADevice(MiedaDevice):
             DeviceAttributes.right_flex_zone_actual_temp: None,
             DeviceAttributes.refrigerator_setting_temp: None,
             DeviceAttributes.freezer_setting_temp: None,
-            DeviceAttributes.left_flex_zone_setting_temp: None,
+            DeviceAttributes.flex_zone_setting_temp: None,
             DeviceAttributes.right_flex_zone_setting_temp: None,
             DeviceAttributes.refrigerator_door_overtime: False,
             DeviceAttributes.freezer_door_overtime: False,
