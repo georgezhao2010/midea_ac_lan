@@ -102,7 +102,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         name = f"{device_id}"
     device_type = config_entry.data.get(CONF_TYPE)
     if device_type is None:
-        device_type = 0xAC
+        device_type = 0xac
     token = config_entry.data.get(CONF_TOKEN)
     key = config_entry.data.get(CONF_KEY)
     ip_address = config_entry.data.get(CONF_IP_ADDRESS)

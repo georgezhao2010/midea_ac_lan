@@ -24,7 +24,7 @@ class MessageType(IntEnum):
     notify1 = 0x04,
     notify2 = 0x05,
     querySN = 0x07,
-    queryDeviceInfo = 0xA0
+    querySubtype = 0xA0
 
 
 class MessageBase(ABC):
@@ -34,6 +34,7 @@ class MessageBase(ABC):
         self._device_type = 0x00
         self._message_type = 0x00
         self._body_type = 0x00
+        self._device_protocol_version = 0
 
     @staticmethod
     def checksum(data):
@@ -55,6 +56,10 @@ class MessageBase(ABC):
     def body_type(self):
         return self._body_type
 
+    @property
+    def device_protocol_version(self):
+        return self._device_protocol_version
+
     def __str__(self) -> str:
         output = {
             "header": self.header.hex(),
@@ -66,8 +71,9 @@ class MessageBase(ABC):
 
 
 class MessageRequest(MessageBase):
-    def __init__(self, device_type, message_type, body_type):
+    def __init__(self, device_protocol_version, device_type, message_type, body_type):
         super().__init__()
+        self._device_protocol_version = device_protocol_version
         self._device_type = device_type
         self._message_type = message_type
         self._body_type = body_type
@@ -83,7 +89,7 @@ class MessageRequest(MessageBase):
             # device type
             self._device_type,
             # frame checksum
-            self._device_type ^ length,
+            0x00,  # self._device_type ^ length,
             # unused
             0x00, 0x00,
             # frame ID
@@ -91,7 +97,7 @@ class MessageRequest(MessageBase):
             # frame protocol version
             0x00,
             # device protocol version
-            0x00,
+            self._device_protocol_version,
             # frame type
             self._message_type
         ])
@@ -110,11 +116,12 @@ class MessageRequest(MessageBase):
         return stream
 
 
-class MessageQueryDeviceInfo(MessageRequest):
+class MessageQuerySubtype(MessageRequest):
     def __init__(self, device_type):
         super().__init__(
+            device_protocol_version=0,
             device_type=device_type,
-            message_type=MessageType.queryDeviceInfo,
+            message_type=MessageType.querySubtype,
             body_type=None)
 
     @property
@@ -135,13 +142,10 @@ class MessageBody:
         return self.data[0]
 
 
-class DeviceInfoMessageBody(MessageBody):
+class SubtypeMessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        self.device_type = body[1]
-        self.sub_type = body[3] << 8 + body[2]
-        sn_len = body[4]
-        self.sn = str(body[5: 5 + sn_len], encoding="utf-8")
+        self.sub_type = (body[3] << 8) + body[2]
 
 
 class MessageResponse(MessageBase):
@@ -150,6 +154,7 @@ class MessageResponse(MessageBase):
         if message is None or len(message) < self.HEADER_LENGTH + 1:
             raise MessageLenError
         self._header = message[:self.HEADER_LENGTH]
+        self._device_protocol_version = self._header[8]
         self._message_type = self._header[-1]
         self._device_type = self._header[2]
         body = message[self.HEADER_LENGTH: -1]
@@ -171,12 +176,10 @@ class MessageResponse(MessageBase):
                 setattr(self, key, value)
 
 
-class MessageDeviceInfoResponse(MessageResponse):
+class MessageSubtypeResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._message_type == MessageType.queryDeviceInfo:
+        if self._message_type == MessageType.querySubtype:
             body = message[self.HEADER_LENGTH: -1]
-            self._body = DeviceInfoMessageBody(body)
-            self.device_type = self._body.device_type
+            self._body = SubtypeMessageBody(body)
             self.sub_type = self._body.sub_type
-            self.sn = self._body.sn

@@ -10,8 +10,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class MessageE1Base(MessageRequest):
-    def __init__(self, message_type, body_type):
+    def __init__(self, device_protocol_version, message_type, body_type):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             device_type=0xE1,
             message_type=message_type,
             body_type=body_type
@@ -23,8 +24,9 @@ class MessageE1Base(MessageRequest):
 
 
 class MessagePower(MessageE1Base):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x08)
         self.power = False
@@ -39,8 +41,9 @@ class MessagePower(MessageE1Base):
 
 
 class MessageLock(MessageE1Base):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x83)
         self.lock = False
@@ -57,8 +60,9 @@ class MessageLock(MessageE1Base):
 
 
 class MessageStorage(MessageE1Base):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x081)
         self.storage = False
@@ -69,15 +73,16 @@ class MessageStorage(MessageE1Base):
         return bytearray([
             0x00, 0x00, 0x00,
             storage,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
+            0xff, 0xff, 0xff, 0xff,
+            0xff, 0xff, 0x00, 0x00,
             0x00, 0x00
         ])
 
 
 class MessageQuery(MessageE1Base):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x00)
 
@@ -91,22 +96,33 @@ class E1GeneralMessageBody(MessageBody):
         super().__init__(body)
         self.power = body[1] > 0
         self.status = body[1]
+        self.mode = body[2]
+        self.additional = body[3]
         self.door = (body[5] & 0x01) == 0       # 0 - open, 1 - close
         self.rinse_aid = (body[5] & 0x02) > 0   # 0 - enough, 1 - shortage
         self.salt = (body[5] & 0x04) > 0        # 0 - enough, 1 - shortage
+        start_pause = (body[5] & 0x08) > 0
+        if start_pause:
+            self.start = True
+        elif self.status in [2, 3]:
+            self.start = False
         self.lock = (body[5] & 0x10) > 0
+        self.uv = (body[4] & 0x2) > 0
+        self.dry = (body[4] & 0x10) > 0
+        self.dry_status = (body[4] & 0x20) > 0
         self.storage = (body[5] & 0x20) > 0
+        self.storage_status = (body[5] & 0x40) > 0
         self.time_remaining = body[6]
         self.progress = body[9]
-        self.storage_remaining = body[18]
-        if self.storage:
-            self.progress = 6
+        self.storage_remaining = body[18] if len(body) > 18 else False
+        self.temperature = body[11]
+        self.humidity = body[33] if len(body) > 34 else None
 
 
 class MessageE1Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[10: -2]
+        body = message[10: -1]
         if (self._message_type == MessageType.set and 0 <= self._body_type <= 7) or \
                 (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0):
             self._body = E1GeneralMessageBody(body)

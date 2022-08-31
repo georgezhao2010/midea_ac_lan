@@ -6,6 +6,7 @@ from homeassistant.const import (
     PRECISION_WHOLE,
     ATTR_TEMPERATURE,
     CONF_DEVICE_ID,
+    STATE_ON,
     STATE_OFF,
 )
 from .const import (
@@ -38,12 +39,15 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def state(self):
-        return self.current_operation if self._device.get_attribute("power") else STATE_OFF
+        return STATE_ON if self._device.get_attribute("power") else STATE_OFF
 
     @property
     def supported_features(self):
-        return WaterHeaterEntityFeature.TARGET_TEMPERATURE | \
-               WaterHeaterEntityFeature.OPERATION_MODE
+        return WaterHeaterEntityFeature.TARGET_TEMPERATURE
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        return self._device.attributes
 
     @property
     def precision(self):
@@ -55,14 +59,11 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def current_operation(self):
-        mode_num = self._device.get_attribute("mode")
-        if 0 <= mode_num < len(self._operations):
-            return self._operations[mode_num]
         return None
 
     @property
     def current_temperature(self):
-        return self._device.get_attribute("temperature")
+        return self._device.get_attribute("current_temperature")
 
     @property
     def target_temperature(self):
@@ -75,12 +76,11 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
         self._device.set_attribute("target_temperature", temperature)
 
     def set_operation_mode(self, operation_mode):
-        if operation_mode in self.operation_list:
-            self._device.set_attribute(attr="mode", value=self._operations.index(operation_mode))
+        pass
 
     @property
     def operation_list(self):
-        return self._operations
+        return []
 
     def turn_on(self):
         self._device.set_attribute(attr="power", value=True)
@@ -104,11 +104,6 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 class MideaE2WaterHeater(MideaWaterHeater):
     def __init__(self, device):
         super().__init__(device)
-        self._device.entity = self
-        self._operations = [
-            "None", "e-Plus", "Rapid", "Summer",
-            "Winter", "Energy Saving"
-        ]
 
     @property
     def min_temp(self):
@@ -122,11 +117,6 @@ class MideaE2WaterHeater(MideaWaterHeater):
 class MideaE3WaterHeater(MideaWaterHeater):
     def __init__(self, device):
         super().__init__(device)
-        self._device.entity = self
-        self._operations = [
-            "Shower", "Kitchen", "Bathtub",
-            "Temperature", "Cloud", "Energy Saving"
-        ]
 
     @property
     def min_temp(self):

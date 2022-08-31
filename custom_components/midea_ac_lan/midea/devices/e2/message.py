@@ -10,8 +10,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class MessageE2Base(MessageRequest):
-    def __init__(self, message_type, body_type):
+    def __init__(self, device_protocol_version, message_type, body_type):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             device_type=0xE2,
             message_type=message_type,
             body_type=body_type
@@ -23,8 +24,9 @@ class MessageE2Base(MessageRequest):
 
 
 class MessageQuery(MessageE2Base):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x01)
 
@@ -34,8 +36,9 @@ class MessageQuery(MessageE2Base):
 
 
 class MessagePower(MessageE2Base):
-    def __init__(self):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x02)
         self.power = False
@@ -49,9 +52,10 @@ class MessagePower(MessageE2Base):
         return bytearray([0x01])
 
 
-class MessageGeneralSet(MessageE2Base):
-    def __init__(self):
+class MessageSet(MessageE2Base):
+    def __init__(self, device_protocol_version):
         super().__init__(
+            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x04)
 
@@ -95,7 +99,7 @@ class E2GeneralMessageBody(MessageBody):
         self.heating = (body[2] & 0x04) > 0
         self.heat_insulating = (body[2] & 0x08) > 0
         self.variable_heating = (body[2] & 0x80) > 0
-        self.temperature = body[4]
+        self.current_temperature = body[4]
         self.mode = 0
         if (body[7] & 0x01) > 0:
             # e-Plus mode
@@ -122,7 +126,7 @@ class E2GeneralMessageBody(MessageBody):
 class MessageE2Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[10: -2]
+        body = message[self.HEADER_LENGTH: -1]
         if (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0x01) or \
                 (self._message_type == MessageType.set and self._body_type in [0x01, 0x02, 0x04]):
             self._body = E2GeneralMessageBody(body)
