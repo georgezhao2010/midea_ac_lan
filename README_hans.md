@@ -21,6 +21,7 @@
  --- | --- | ---
  AC | 空调器 | [AC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC_hans.md)
  CC | 中央空调(风管机)Wi-Fi线控器 | [CC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC_hans.md)
+ CA | 冰箱 | [CA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA_hans.md)
  CF | 中央空调暖家(水机) | [CF_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF_hans.md)
  DA | 波轮洗衣机 | [DA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA_hans.md)
  DB | 滚筒洗衣机 | [DB_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB_hans.md)
