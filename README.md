@@ -20,8 +20,8 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
   Type | Name | Documents
  --- | --- | ---
  AC | Air Conditioners | [AC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC.md)
- CC | MDV Wi-Fi Controllers | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
  CA | Refrigerators | [CA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA.md)
+ CC | MDV Wi-Fi Controllers | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
  CF | Heat Pumps | [CF.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF.md)
  DA | Top Load Washers | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
  DB | Front Load Washers | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
