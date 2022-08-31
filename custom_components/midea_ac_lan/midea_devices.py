@@ -253,7 +253,7 @@ MIDEA_DEVICES = {
         },
     },
     0xCC: {
-        "name": "MDV Control Panel",
+        "name": "MDV Wi-Fi Controller",
         "entities": {
             "climate": {
                 "type": "climate",
@@ -299,7 +299,7 @@ MIDEA_DEVICES = {
         }
     },
     0xCF: {
-        "name": "VWV System",
+        "name": "Heat Pump",
         "entities": {
             "climate": {
                 "type": "climate",
