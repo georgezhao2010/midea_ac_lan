@@ -9,8 +9,6 @@ import hmac
 import urllib
 
 _LOGGER = logging.getLogger(__name__)
-appKey = "***REMOVED***"
-signKey = "***REMOVED***"
 
 MSGTYPE_HANDSHAKE_REQUEST = 0x0
 MSGTYPE_HANDSHAKE_RESPONSE = 0x1
@@ -20,12 +18,10 @@ MSGTYPE_ENCRYPTED_REQUEST = 0x6
 
 class Security:
     def __init__(self, use_china_server=True):
-        self.appKey = appKey.encode()
-        self.signKey = signKey.encode()
         self.blockSize = 16
         self.iv = b"\0" * 16
-        self.encKey = self.enc_key()
-        self.dynamicKey = self.dynamic_key()
+        self.aes_key = bytes.fromhex("6a92ef406bad2f0359baad994171ea6d")
+        self.salt = bytes.fromhex("78686469776a6e6368656b6434643531326368646a783564386534633339344432443753")
         self._tcp_key = None
         self._request_count = 0
         self._response_count = 0
@@ -40,7 +36,7 @@ class Security:
             self._loginKey = "ac21b9f9cbfe4ca5a88562ef25e2b768"
 
     def aes_decrypt(self, raw):
-        cipher = AES.new(self.encKey, AES.MODE_ECB)
+        cipher = AES.new(self.aes_key, AES.MODE_ECB)
         try:
             decrypted = cipher.decrypt(bytearray(raw))
             decrypted = unpad(decrypted, self.blockSize)
@@ -52,7 +48,7 @@ class Security:
 
     def aes_encrypt(self, raw):
         raw = pad(raw, self.blockSize)
-        cipher = AES.new(self.encKey, AES.MODE_ECB)
+        cipher = AES.new(self.aes_key, AES.MODE_ECB)
         encrypted = cipher.encrypt(bytearray(raw))
         return encrypted
 
@@ -62,14 +58,8 @@ class Security:
     def aes_cbc_encrypt(self, raw, key):
         return AES.new(key=key, mode=AES.MODE_CBC, iv=self.iv).encrypt(raw)
 
-    def enc_key(self):
-        return md5(self.signKey).digest()
-
-    def dynamic_key(self):
-        return md5(self.appKey).digest()[:8]
-
     def encode32_data(self, raw):
-        return md5(raw + self.signKey).digest()
+        return md5(raw + self.salt).digest()
 
     def tcp_key(self, response, key):
         if response == b"ERROR":
