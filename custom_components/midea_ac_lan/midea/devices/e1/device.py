@@ -15,14 +15,22 @@ _LOGGER = logging.getLogger(__name__)
 class DeviceAttributes(StrEnum):
     power = "power"
     status = "status"
+    mode = "mode"
+    additional = "additional"
     door = "door"
     rinse_aid = "rinse_aid"
     salt = "salt"
     child_lock = "child_lock"
+    uv = "uv"
+    dry = "dry"
+    dry_status = "dry_status"
     storage = "storage"
+    storage_status = "storage_status"
     time_remaining = "time_remaining"
     progress = "progress"
     storage_remaining = "storage_remaining"
+    temperature = "temperature"
+    humidity = "humidity"
 
 
 class MideaE1Device(MiedaDevice):
@@ -51,14 +59,22 @@ class MideaE1Device(MiedaDevice):
         self._attributes = {
             DeviceAttributes.power: False,
             DeviceAttributes.status: None,
+            DeviceAttributes.mode: 0,
+            DeviceAttributes.additional: 0,
+            DeviceAttributes.uv: False,
+            DeviceAttributes.dry: False,
+            DeviceAttributes.dry_status: False,
             DeviceAttributes.door: False,
             DeviceAttributes.rinse_aid: False,
             DeviceAttributes.salt: False,
             DeviceAttributes.child_lock: False,
             DeviceAttributes.storage: False,
+            DeviceAttributes.storage_status: False,
             DeviceAttributes.time_remaining: None,
             DeviceAttributes.progress: None,
-            DeviceAttributes.storage_remaining: None
+            DeviceAttributes.storage_remaining: None,
+            DeviceAttributes.temperature: None,
+            DeviceAttributes.humidity: None
         }
         self.modes = {
             1: "Auto",

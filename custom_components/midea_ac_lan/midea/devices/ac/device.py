@@ -33,6 +33,7 @@ class DeviceAttributes(StrEnum):
     natural_wind = "natural_wind"
     temp_fahrenheit = "temp_fahrenheit"
     screen_display = "screen_display"
+
     full_dust = "full_dust"
     comfort_mode = "comfort_mode"
 
@@ -42,7 +43,7 @@ class DeviceAttributes(StrEnum):
     indirect_wind = "indirect_wind"
     indoor_humidity = "indoor_humidity"
     breezeless = "breezeless"
-    night_light = "night_light"
+    screen_display_2 = "screen_display_2"
 
     total_energy_consumption = "total_energy_consumption"
     current_energy_consumption = "current_energy_consumption"
@@ -86,7 +87,6 @@ class MideaACDevice(MiedaDevice):
             DeviceAttributes.eco_mode: False,
             DeviceAttributes.aux_heat: False,
             DeviceAttributes.sleep_mode: False,
-            DeviceAttributes.night_light: False,
             DeviceAttributes.natural_wind: False,
             DeviceAttributes.temp_fahrenheit: False,
             DeviceAttributes.screen_display: False,
@@ -97,6 +97,7 @@ class MideaACDevice(MiedaDevice):
             DeviceAttributes.indirect_wind: False,
             DeviceAttributes.indoor_humidity: None,
             DeviceAttributes.breezeless: False,
+            DeviceAttributes.screen_display_2: False,
             DeviceAttributes.total_energy_consumption: None,
             DeviceAttributes.current_energy_consumption: None,
             DeviceAttributes.realtime_power: None
@@ -154,7 +155,11 @@ class MideaACDevice(MiedaDevice):
             elif attr == DeviceAttributes.screen_display:
                 message = MessageSwitchDisplay(self._device_protocol_version)
                 self.build_send(message)
-            elif attr in [DeviceAttributes.indirect_wind, DeviceAttributes.breezeless, DeviceAttributes.night_light]:
+            elif attr in [
+                    DeviceAttributes.indirect_wind,
+                    DeviceAttributes.breezeless,
+                    DeviceAttributes.screen_display_2
+            ]:
                 message = MessageNewProtocolSet(self._device_protocol_version)
                 setattr(message, str(attr), value)
                 message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]

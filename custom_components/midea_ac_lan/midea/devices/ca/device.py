@@ -24,6 +24,10 @@ class DeviceAttributes(StrEnum):
     freezer_door_overtime = "freezer_door_overtime"
     bar_door_overtime = "bar_door_overtime"
     flex_zone_door_overtime = "flex_zone_door_overtime"
+    refrigerator_door = "refrigerator_door"
+    freezer_door = "freezer_door"
+    bar_door = "bar_door"
+    flex_zone_door = "flex_zone_door"
 
 
 class MideaCADevice(MiedaDevice):
@@ -62,7 +66,11 @@ class MideaCADevice(MiedaDevice):
             DeviceAttributes.refrigerator_door_overtime: False,
             DeviceAttributes.freezer_door_overtime: False,
             DeviceAttributes.bar_door_overtime: False,
-            DeviceAttributes.flex_zone_door_overtime: False
+            DeviceAttributes.flex_zone_door_overtime: False,
+            DeviceAttributes.refrigerator_door: False,
+            DeviceAttributes.freezer_door: False,
+            DeviceAttributes.bar_door: False,
+            DeviceAttributes.flex_zone_door: False
         }
         self._modes = [""]
 

@@ -51,12 +51,7 @@ class MessageLock(MessageE1Base):
     @property
     def _body(self):
         lock = 0x03 if self.lock else 0x04
-        return bytearray([
-            lock,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00
-        ])
+        return bytearray([lock]) + bytearray([0x00] * 36)
 
 
 class MessageStorage(MessageE1Base):
@@ -70,13 +65,8 @@ class MessageStorage(MessageE1Base):
     @property
     def _body(self):
         storage = 0x01 if self.storage else 0x00
-        return bytearray([
-            0x00, 0x00, 0x00,
-            storage,
-            0xff, 0xff, 0xff, 0xff,
-            0xff, 0xff, 0x00, 0x00,
-            0x00, 0x00
-        ])
+        return bytearray([0x00, 0x00, 0x00, storage]) + \
+            bytearray([0xff] * 6) + bytearray([0x00] * 27)
 
 
 class MessageQuery(MessageE1Base):
@@ -106,7 +96,7 @@ class E1GeneralMessageBody(MessageBody):
             self.start = True
         elif self.status in [2, 3]:
             self.start = False
-        self.lock = (body[5] & 0x10) > 0
+        self.child_lock = (body[5] & 0x10) > 0
         self.uv = (body[4] & 0x2) > 0
         self.dry = (body[4] & 0x10) > 0
         self.dry_status = (body[4] & 0x20) > 0

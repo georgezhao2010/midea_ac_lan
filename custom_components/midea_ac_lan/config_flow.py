@@ -37,6 +37,7 @@ DEFAULT_TOKEN = "EE755A84A115703768BCC7C6C13D3D629AA416F1E2FD798BEB9F78CBB1381D0
                 "1CC245D7B063AAD2A900E5B498FBD936C811F5D504B2E656D4F33B3BBC6D1DA3"
 DEFAULT_KEY = "ED37BD31558A4B039AAF4E7A7A59AA7A75FD9101682045F69BAF45D28380AE5C"
 
+
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     available_device = []
     devices = {}
@@ -296,7 +297,23 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             if CONF_SWITCHES in self.config_entry.options and \
                     "breezyless" in self.config_entry.options[CONF_SWITCHES]:
                 self.config_entry.options[CONF_SWITCHES].remove("breezyless")
-        if self._device_type in [0xe2, 0xe3]:
+            if CONF_SWITCHES in self.config_entry.options and \
+                    "night_light" in self.config_entry.options[CONF_SWITCHES]:
+                self.config_entry.options[CONF_SWITCHES].remove("night_light")
+        elif self._device_type == 0xe2:
+            if CONF_SWITCHES in self.config_entry.options and \
+                    "auto_cut_out" in self.config_entry.options[CONF_SWITCHES]:
+                self.config_entry.options[CONF_SWITCHES].remove("auto_cut_out")
+            if CONF_SENSORS in self.config_entry.options and \
+                    "temperature" in self.config_entry.options[CONF_SENSORS]:
+                self.config_entry.options[CONF_SENSORS].remove("temperature")
+            if CONF_SENSORS in self.config_entry.options and \
+                    "heating_power" in self.config_entry.options[CONF_SENSORS]:
+                self.config_entry.options[CONF_SENSORS].remove("heating_power")
+            if CONF_SENSORS in self.config_entry.options and \
+                    "heat_insulating" in self.config_entry.options[CONF_SENSORS]:
+                self.config_entry.options[CONF_SENSORS].remove("heat_insulating")
+        elif self._device_type == 0xe3:
             if CONF_SENSORS in self.config_entry.options and \
                     "temperature" in self.config_entry.options[CONF_SENSORS]:
                 self.config_entry.options[CONF_SENSORS].remove("temperature")

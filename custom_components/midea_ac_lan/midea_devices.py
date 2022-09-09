@@ -18,6 +18,7 @@ from .midea.devices.cf.device import DeviceAttributes as CFAttributes
 from .midea.devices.da.device import DeviceAttributes as DAAttributes
 from .midea.devices.db.device import DeviceAttributes as DBAttributes
 from .midea.devices.dc.device import DeviceAttributes as DCAttributes
+from .midea.devices.ea.device import DeviceAttributes as EAAttributes
 from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
@@ -70,11 +71,6 @@ MIDEA_DEVICES = {
                 "name": "Natural Wind",
                 "icon": "mdi:tailwind"
             },
-            ACAttributes.night_light: {
-                "type": "switch",
-                "name": "Night Light",
-                "icon": "mdi:lightbulb"
-            },
             ACAttributes.prompt_tone: {
                 "type": "switch",
                 "name": "Prompt Tone",
@@ -86,6 +82,11 @@ MIDEA_DEVICES = {
                 "icon": "mdi:power"
             },
             ACAttributes.screen_display: {
+                "type": "switch",
+                "name": "Screen Display",
+                "icon": "mdi:television-ambient-light"
+            },
+            ACAttributes.screen_display_2: {
                 "type": "switch",
                 "name": "Screen Display",
                 "icon": "mdi:television-ambient-light"
@@ -163,21 +164,45 @@ MIDEA_DEVICES = {
     0xCA: {
         "name": "Refrigerator",
         "entities": {
+            CAAttributes.bar_door: {
+                "type": "binary_sensor",
+                "name": "Bar Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
+            },
             CAAttributes.bar_door_overtime: {
                 "type": "binary_sensor",
                 "name": "Bar Door Overtime",
                 "icon": "mdi:alert-circle",
                 "device_class": BinarySensorDeviceClass.PROBLEM
             },
+            CAAttributes.flex_zone_door: {
+                "type": "binary_sensor",
+                "name": "Flex Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
+            },
             CAAttributes.flex_zone_door_overtime: {
                 "type": "binary_sensor",
-                "name": "Flex Zone Door Overtime",
+                "name": "Flex Zone Door",
                 "icon": "mdi:alert-circle",
                 "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CAAttributes.freezer_door: {
+                "type": "binary_sensor",
+                "name": "Freezer Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
             },
             CAAttributes.freezer_door_overtime: {
                 "type": "binary_sensor",
                 "name": "Freezer Door Overtime",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CAAttributes.refrigerator_door: {
+                "type": "binary_sensor",
+                "name": "Refrigerator Door",
                 "icon": "mdi:alert-circle",
                 "device_class": BinarySensorDeviceClass.PROBLEM
             },
@@ -479,9 +504,9 @@ MIDEA_DEVICES = {
                 "icon": "mdi:heat-wave",
                 "device_class": BinarySensorDeviceClass.RUNNING
             },
-            E2Attributes.heat_insulating: {
+            E2Attributes.keep_warm: {
                 "type": "binary_sensor",
-                "name": "Heat Insulating",
+                "name": "Keep Warm",
                 "icon": "mdi:menu",
                 "device_class": BinarySensorDeviceClass.RUNNING
             },
@@ -491,24 +516,12 @@ MIDEA_DEVICES = {
                 "icon": "mdi:shield-check",
                 "device_class": BinarySensorDeviceClass.RUNNING
             },
-            E2Attributes.heating_power: {
-                "type": "sensor",
-                "name": "Heating Power",
-                "device_class": DEVICE_CLASS_POWER,
-                "unit": POWER_WATT,
-                "state_class": "measurement"
-            },
             E2Attributes.current_temperature: {
                 "type": "sensor",
                 "name": "Current Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,
                 "unit": TEMP_CELSIUS,
                 "state_class": "measurement"
-            },
-            E2Attributes.auto_cut_out: {
-                "type": "switch",
-                "name": "Auto cut out",
-                "icon": "mdi:power-plug-off"
             },
             E2Attributes.power: {
                 "type": "switch",
@@ -572,6 +585,61 @@ MIDEA_DEVICES = {
                 "type": "switch",
                 "name": "Zero Cold Water (Pulse)",
                 "icon": "mdi:restore-alert"
+            },
+        }
+    },
+    0xEA: {
+        "name": "Electric Rice Cooker",
+        "entities": {
+            EAAttributes.cooking: {
+                "type": "binary_sensor",
+                "name": "Cooking",
+                "icon": "mdi:fire",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            EAAttributes.keep_warm: {
+                "type": "binary_sensor",
+                "name": "Keep Warm",
+                "icon": "mdi:menu",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            EAAttributes.bottom_temperature: {
+                "type": "sensor",
+                "name": "Bottom Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            EAAttributes.keep_warm_time: {
+                "type": "sensor",
+                "name": "Keep Warm Time",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
+            },
+            EAAttributes.mode: {
+                "type": "sensor",
+                "name": "Mode",
+                "icon": "mdi:orbit"
+            },
+            EAAttributes.progress: {
+                "type": "sensor",
+                "name": "Progress",
+                "icon": "mdi:rotate-360"
+            },
+            EAAttributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
+            },
+            EAAttributes.top_temperature: {
+                "type": "sensor",
+                "name": "Top Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
             },
         }
     }

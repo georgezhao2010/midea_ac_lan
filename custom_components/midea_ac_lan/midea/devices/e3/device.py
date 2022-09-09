@@ -14,7 +14,6 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     power = "power"
-    mode = "mode"
     burning_state = "burning_state"
     zero_cold_water = "zero_cold_water"
     protection = "protection"
@@ -51,7 +50,6 @@ class MideaE3Device(MiedaDevice):
             DeviceAttributes.power: False,
             DeviceAttributes.burning_state: False,
             DeviceAttributes.zero_cold_water: False,
-            DeviceAttributes.mode: 0,
             DeviceAttributes.protection: False,
             DeviceAttributes.zero_cold_pulse: False,
             DeviceAttributes.smart_volume: False,
@@ -77,7 +75,6 @@ class MideaE3Device(MiedaDevice):
 
     def make_message_set(self):
         message = MessageSet(self._device_protocol_version)
-        message.mode = self._attributes[DeviceAttributes.mode]
         message.zero_cold_water = self._attributes[DeviceAttributes.zero_cold_water]
         message.protection = self._attributes[DeviceAttributes.protection]
         message.zero_clod_pulse = self._attributes[DeviceAttributes.zero_cold_pulse]

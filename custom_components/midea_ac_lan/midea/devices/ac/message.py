@@ -16,7 +16,7 @@ class NewProtocolParams(IntEnum):
     breezeless = 0x1800
     prompt_tone = 0x1A00
     indirect_wind = 0x4200
-    night_light = 0x5b00
+    screen_display_2 = 0x1700
 
 
 class NewProtocolParamPack:
@@ -139,7 +139,7 @@ class MessageNewProtocolQuery(MessageACBase):
             NewProtocolParams.indirect_wind,
             NewProtocolParams.breezeless,
             NewProtocolParams.indoor_humidity,
-            NewProtocolParams.night_light
+            NewProtocolParams.screen_display_2
         ]
 
         _body = bytearray([len(query_params)])
@@ -227,7 +227,7 @@ class MessageNewProtocolSet(MessageACBase):
         self.indirect_wind = None
         self.prompt_tone = None
         self.breezeless = None
-        self.night_light = None
+        self.screen_display_2 = None
 
     @property
     def _body(self):
@@ -254,12 +254,12 @@ class MessageNewProtocolSet(MessageACBase):
                     param=NewProtocolParams.prompt_tone,
                     value=bytearray([0x01 if self.prompt_tone else 0x00])
                 ))
-        if self.night_light is not None:
+        if self.screen_display_2 is not None:
             pack_count += 1
             payload.extend(
                 NewProtocolParamPack.pack(
-                    param=NewProtocolParams.night_light,
-                    value=bytearray([0x01 if self.night_light else 0x00])
+                    param=NewProtocolParams.screen_display_2,
+                    value=bytearray([0x64 if self.screen_display_2 else 0x00])
                 ))
         payload[0] = pack_count
         return payload
@@ -282,6 +282,7 @@ class XA0MessageBody(MessageBody):
         self.sleep_mode = (body[10] & 0x01) > 0
         self.natural_wind = (body[10] & 0x40) > 0
         self.screen_display = ((body[11] & 0x7) != 0x7) and self.power
+        self.screen_display_2 = self.screen_display
         self.full_dust = (body[13] & 0x20) > 0
         self.comfort_mode = (body[14] & 0x1) > 0 if len(body) > 16 else False
 
@@ -322,8 +323,9 @@ class XBXMessageBody(MessageBody):
             self.indoor_humidity = params[NewProtocolParams.indoor_humidity][0]
         if NewProtocolParams.breezeless in params:
             self.breezeless = (params[NewProtocolParams.breezeless][0] == 1)
-        if NewProtocolParams.night_light in params:
-            self.night_light = (params[NewProtocolParams.light][0] == 1)
+        if NewProtocolParams.screen_display_2 in params:
+            self.screen_display_2 = (params[NewProtocolParams.screen_display_2][0] > 0)
+            self.screen_display = self.screen_display_2
 
 
 class XC0MessageBody(MessageBody):
@@ -361,6 +363,7 @@ class XC0MessageBody(MessageBody):
                 self.outdoor_temperature = temp_integer - temp_decimal
         self.full_dust = (body[13] & 0x20) > 0
         self.screen_display = ((body[14] >> 4 & 0x7) != 0x07) and self.power
+        self.screen_display_2 = self.screen_display
         self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 24 else False
 
 

@@ -127,8 +127,8 @@ class MiedaDevice(threading.Thread):
             _LOGGER.debug(f"[{self._device_id}] Unexpected response received")
         except RefreshFailed:
             _LOGGER.debug(f"[{self._device_id}] Refresh status is timed out")
-        except Exception:
-            _LOGGER.debug(f"[{self._device_id}] Unknown error")
+        except Exception as e:
+            _LOGGER.error(f"[{self._device_id}] Unknown error {repr(e)}")
         self.enable_device(False)
         return False
 
@@ -325,10 +325,10 @@ class MiedaDevice(threading.Thread):
                     msg = self._socket.recv(512)
                     msg_len = len(msg)
                     if msg_len == 0:
-                        raise socket.error("Connection closed, reconnecting")
+                        raise socket.error("Connection closed by peer")
                     result = self.parse_message(msg)
                     if result == ParseMessageResult.ERROR:
-                        _LOGGER.debug(f"[{self._device_id}] Message 'ERROR' received, reconnecting")
+                        _LOGGER.debug(f"[{self._device_id}] Message 'ERROR' received")
                         self.close_socket()
                         break
                     elif result == ParseMessageResult.SUCCESS:
@@ -336,15 +336,15 @@ class MiedaDevice(threading.Thread):
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
                     if timeout_counter >= 12:
-                        _LOGGER.debug(f"[{self._device_id}] Heartbeat timed out, reconnecting")
+                        _LOGGER.debug(f"[{self._device_id}] Heartbeat timed out")
                         self.close_socket()
                         break
                 except socket.error as e:
-                    _LOGGER.debug(f"[{self._device_id}] Socket error {e}")
+                    _LOGGER.debug(f"[{self._device_id}] Socket error {repr(e)}")
                     self.close_socket()
                     break
                 except Exception as e:
-                    _LOGGER.debug(f"[{self._device_id}] Error {e}")
+                    _LOGGER.debug(f"[{self._device_id}] Unknown error {repr(e)}")
                     self.close_socket()
                     break
 

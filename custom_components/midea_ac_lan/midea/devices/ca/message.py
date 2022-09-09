@@ -63,6 +63,7 @@ class CAGeneralMessageBody(MessageBody):
         self.right_flex_zone_actual_temp = (body[20] - 100) / 2
 
 
+
 class CAExceptionMessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
@@ -72,6 +73,37 @@ class CAExceptionMessageBody(MessageBody):
         self.flex_zone_door_overtime = (body[1] & 0x08) > 0
 
 
+class CANotify00MessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        self.refrigerator_door = (body[1] & 0x01) > 0
+        self.freezer_door = (body[1] & 0x02) > 0
+        self.bar_door = (body[1] & 0x04) > 0
+        self.flex_zone_door = (body[1] & 0x010) > 0
+
+
+class CANotify01MessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        self.refrigerator_setting_temp = body[37]
+        self.freezer_setting_temp = -12 - body[38]
+        flex_zone_setting_temp = body[39]
+        right_flex_zone_setting_temp = body[40]
+
+        if 1 <= flex_zone_setting_temp <= 29:
+            self.flex_zone_setting_temp = flex_zone_setting_temp - 19
+        elif 49 <= flex_zone_setting_temp <= 54:
+            self.flex_zone_setting_temp = 30 - flex_zone_setting_temp
+        else:
+            self.flex_zone_setting_temp = 0
+        if 1 <= right_flex_zone_setting_temp <= 29:
+            self.right_flex_zone_setting_temp = right_flex_zone_setting_temp - 19
+        elif 49 <= right_flex_zone_setting_temp <= 54:
+            self.right_flex_zone_setting_temp = 30 - right_flex_zone_setting_temp
+        else:
+            self.right_flex_zone_setting_temp = 0
+
+
 class MessageCAResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
@@ -79,7 +111,11 @@ class MessageCAResponse(MessageResponse):
         if (self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0x00) or \
                 (self._message_type == MessageType.notify1 and self._body_type == 0x02):
             self._body = CAGeneralMessageBody(body)
-        elif (self._message_type == 0x06 and self._body_type == 0x01) or \
+        elif (self._message_type == MessageType.exception and self._body_type == 0x01) or \
                 (self._message_type == 0x03 and self._body_type == 0x02):
             self._body = CAExceptionMessageBody(body)
+        elif self._message_type == MessageType.notify1 and self._body_type == 0x00:
+            self._body = CANotify00MessageBody(body)
+        elif self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0x01:
+            self._body = CANotify01MessageBody(body)
         self.set_attr()

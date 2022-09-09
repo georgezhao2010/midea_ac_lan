@@ -14,15 +14,12 @@ _LOGGER = logging.getLogger(__name__)
 class DeviceAttributes(StrEnum):
     power = "power"
     heating = "heating"
-    heat_insulating = "heat_insulating"
+    keep_warm = "keep_warm"
+    protection = "protection"
     current_temperature = "current_temperature"
     target_temperature = "target_temperature"
-    mode = "mode"
     whole_tank_heating = "whole_tank_heating"
     variable_heating = "variable_heating"
-    protection = "protection"
-    heating_power = "heating_power"
-    auto_cut_out = "auto_cut_out"
 
 
 class MideaE2Device(MiedaDevice):
@@ -51,15 +48,12 @@ class MideaE2Device(MiedaDevice):
         self._attributes = {
             DeviceAttributes.power: False,
             DeviceAttributes.heating: False,
-            DeviceAttributes.heat_insulating: False,
+            DeviceAttributes.keep_warm: False,
+            DeviceAttributes.protection: False,
             DeviceAttributes.current_temperature: None,
             DeviceAttributes.target_temperature: 40,
-            DeviceAttributes.mode: 0,
             DeviceAttributes.whole_tank_heating: False,
             DeviceAttributes.variable_heating: False,
-            DeviceAttributes.protection: False,
-            DeviceAttributes.heating_power: None,
-            DeviceAttributes.auto_cut_out: False
         }
 
     def build_query(self):
@@ -77,20 +71,16 @@ class MideaE2Device(MiedaDevice):
 
     def make_message_set(self):
         message = MessageSet(self._device_protocol_version)
-        message.mode = self._attributes[DeviceAttributes.mode]
-        message.whole_tank_heating = self._attributes[DeviceAttributes.whole_tank_heating]
         message.protection = self._attributes[DeviceAttributes.protection]
+        message.whole_tank_heating = self._attributes[DeviceAttributes.whole_tank_heating]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
         message.variable_heating = self._attributes[DeviceAttributes.variable_heating]
-        message.auto_cut_out = self._attributes[DeviceAttributes.auto_cut_out]
         return message
 
     def set_attribute(self, attr, value):
         if attr not in [DeviceAttributes.heating,
-                        DeviceAttributes.heat_insulating,
-                        DeviceAttributes.current_temperature,
-                        DeviceAttributes.protection,
-                        DeviceAttributes.heating_power]:
+                        DeviceAttributes.keep_warm,
+                        DeviceAttributes.current_temperature]:
             if attr == DeviceAttributes.power:
                 message = MessagePower(self._device_protocol_version)
                 message.power = value
