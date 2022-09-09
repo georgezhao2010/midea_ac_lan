@@ -37,10 +37,10 @@ switch.{DEVICEID}_dry | switch | Dry
 switch.{DEVICEID}_eco_mode | switch | ECO Mode
 switch.{DEVICEID}_indirect_wind | switch | Indirect Wind
 switch.{DEVICEID}_natural_wind | switch | Natural Wind
-switch.{DEVICEID}_night_light | switch | Night Light
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone
 switch.{DEVICEID}_power | switch | Power
 switch.{DEVICEID}_screen_display | switch | Screen Display
+switch.{DEVICEID}_screen_display_2 | switch | Screen Display (in new-protocol)
 switch.{DEVICEID}_smart_eye | switch | Smart Eye
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
@@ -77,7 +77,7 @@ Set the attribute of AC. Service data:
 Name | Description
 --- | ---
 device_id | The Appliance code (Device ID) of appliance
-attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"power"<br />"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true or false
 
 Example

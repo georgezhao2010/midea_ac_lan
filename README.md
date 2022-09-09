@@ -15,7 +15,25 @@ This component inspired from the repository at [@mac-zhou](https://github.com/ma
 
 Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
-# Supported Appliances
+***Note: HomeAssistant 2022.5 or higher requied for this integration***
+
+# Supported brands
+
+![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png) 
+![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png)
+![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png)
+![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png)
+![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png)
+![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png)
+![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png)
+![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png)
+![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png)
+![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+
+And more.
+
+
+# Supported appliances
 
   Type | Name | Documents
  --- | --- | ---
@@ -29,6 +47,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
  E1 | Dishwashers | [E1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1.md)
  E2 | Electric Water Heaters | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
  E3 | Gas Water Heaters |  [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
+ EA | Electric Rice Cookers |  [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 

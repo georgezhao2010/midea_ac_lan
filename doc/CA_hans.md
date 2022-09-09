@@ -8,9 +8,13 @@
 
 EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
+binary_sensor.{DEVICEID}_bar_door | binary_sensor | Bar Door | 吧台门状态
 binary_sensor.{DEVICEID}_bar_door_overtime | binary_sensor | Bar Door Overtime | 吧台门超时
+binary_sensor.{DEVICEID}_flex_zone_door | binary_sensor | Flex-zone Door | 变温区门状态
 binary_sensor.{DEVICEID}_flex_zone_door_overtime | binary_sensor | Flex-zone Door Overtime | 变温区门超时
+binary_sensor.{DEVICEID}_freezer_door | binary_sensor | Freezer Door | 冷冻室门状态
 binary_sensor.{DEVICEID}_freezer_door_overtime | binary_sensor | Freezer Door Overtime | 冷冻室门超时
+binary_sensor.{DEVICEID}_refrigerator_door | binary_sensor | Refrigerator Door | 冷藏室门状态
 binary_sensor.{DEVICEID}_refrigerator_door_overtime | binary_sensor | Refrigerator Door Overtime | 冷藏室门超时
 sensor.{DEVICEID}_flex_zone_actual_temp | sensor | Flex-zone Actual Temperature | 变温区实际温度
 sensor.{DEVICEID}_flex_zone_setting_temp | sensor | Flex-zone Setting Temperature | 变温区设置温度

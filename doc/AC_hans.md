@@ -37,10 +37,10 @@ switch.{DEVICEID}_dry | switch | Dry | 干燥
 switch.{DEVICEID}_eco_mode | switch | ECO Mode | ECO模式
 switch.{DEVICEID}_indirect_wind | switch | Indirect Wind | 防直吹
 switch.{DEVICEID}_natural_wind | switch | Natural Wind | 自然风
-switch.{DEVICEID}_night_light | switch | Night Light | 夜灯
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone | 提示音
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_screen_display | switch | Screen Display | 屏幕显示
+switch.{DEVICEID}_screen_display_2 | switch | Screen Display | 屏幕显示(新协议)
 switch.{DEVICEID}_smart_eye | switch | Smart Eye | 智慧眼
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal | 水平摆风
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical | 垂直摆风
@@ -76,7 +76,7 @@ data:
 名称 | 描述
 --- | ---
 device_id | 设备的编号(Device ID)
-attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"night_light"<br/>"prompt_tone"<br/>"power"<br />"screen_display"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true 或 false
 
 示例

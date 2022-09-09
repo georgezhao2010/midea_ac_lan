@@ -15,6 +15,23 @@
 
 同时感谢[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 
+***注意: 本集成需要HomeAssistant 2022.5或更高版本***
+
+# 已支持的品牌
+
+![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png) 
+![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png)
+![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png)
+![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png)
+![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png)
+![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png)
+![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png)
+![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png)
+![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png)
+![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+
+以及更多.
+
 # 已支持的设备
 
  类型 | 名称 |文档
@@ -29,6 +46,7 @@
  E1 | 洗碗机 | [E1_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1_hans.md)
  E2 | 电热水器 | [E2_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2_hans.md)
  E3 | 燃气热水器 | [E3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3_hans.md)
+ EA | 电饭煲 |  [EA——hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA_hans.md)
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的HomeAssistant的`custom_components/midea_ac_lan`中。

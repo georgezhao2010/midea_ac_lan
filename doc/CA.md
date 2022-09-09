@@ -8,9 +8,13 @@ No default entity.
 
 EntityID | Class | Description
 --- | --- | ---
+binary_sensor.{DEVICEID}_bar_door | binary_sensor | Bar Door
 binary_sensor.{DEVICEID}_bar_door_overtime | binary_sensor | Bar Door Overtime 
+binary_sensor.{DEVICEID}_flex_zone_door | binary_sensor | Flex-zone Door
 binary_sensor.{DEVICEID}_flex_zone_door_overtime | binary_sensor | Flex-zone Door Overtime
+binary_sensor.{DEVICEID}_freezer_door | binary_sensor | Freezer Door
 binary_sensor.{DEVICEID}_freezer_door_overtime | binary_sensor | Freezer Door Overtime
+binary_sensor.{DEVICEID}_refrigerator_door | binary_sensor | Refrigerator Door
 binary_sensor.{DEVICEID}_refrigerator_door_overtime | binary_sensor | Refrigerator Door Overtime
 sensor.{DEVICEID}_flex_zone_actual_temp | sensor | Flex-zone Actual Temperature
 sensor.{DEVICEID}_flex_zone_setting_temp | sensor | Flex-zone Setting Temperature
