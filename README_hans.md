@@ -46,7 +46,7 @@
  E1 | 洗碗机 | [E1_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1_hans.md)
  E2 | 电热水器 | [E2_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2_hans.md)
  E3 | 燃气热水器 | [E3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3_hans.md)
- EA | 电饭煲 |  [EA——hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA_hans.md)
+ EA | 电饭煲 |  [EA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA_hans.md)
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的HomeAssistant的`custom_components/midea_ac_lan`中。
