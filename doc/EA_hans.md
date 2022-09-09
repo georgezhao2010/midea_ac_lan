@@ -8,7 +8,6 @@
 
 EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
-
 binary_sensor.{DEVICEID}_cooking | binary_sensor | Cooking | 烹饪中
 binary_sensor.{DEVICEID}_keep_warm | binary_sensor | Keep Warm | 保温中
 sensor.{DEVICEID}_bottom_temperature | sensor | Bottom Temperature | 底部温度
