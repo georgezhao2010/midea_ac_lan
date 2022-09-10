@@ -85,16 +85,13 @@ class MideaE3Device(MiedaDevice):
     def set_attribute(self, attr, value):
         if attr not in [DeviceAttributes.burning_state,
                         DeviceAttributes.current_temperature,
-                        DeviceAttributes.protection,
-                        DeviceAttributes.mode]:
+                        DeviceAttributes.protection]:
             if attr == DeviceAttributes.power:
                 message = MessagePower(self._device_protocol_version)
                 message.power = value
             elif self._sub_type in self._old_sub_types:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
-                if attr == DeviceAttributes.target_temperature:
-                    setattr(message, DeviceAttributes.mode.value, 0)
             else:
                 message = MessageNewProtocolSet(self._device_protocol_version)
                 setattr(message, "key", str(attr))
