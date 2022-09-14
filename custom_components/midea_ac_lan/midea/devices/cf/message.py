@@ -57,44 +57,24 @@ class MessageSet(MessageCFBase):
         ])
 
 
-class CFMessageNotifyBody(MessageBody):
-    def __init__(self, body):
+class CFMessageBody(MessageBody):
+    def __init__(self, body, data_offset=0):
         super().__init__(body)
-        self.power = (body[0] & 0x01) > 0
-        self.aux_heat = (body[0] & 0x02) > 0
-        self.silent = (body[0] & 0x04) > 0
-        self.mode = body[3]
-        self.target_temperature = body[4]
-        self.current_temperature = body[5]
+        self.power = (body[data_offset + 0] & 0x01) > 0
+        self.aux_heat = (body[data_offset + 0] & 0x02) > 0
+        self.silent = (body[data_offset + 0] & 0x04) > 0
+        self.mode = body[data_offset + 3]
+        self.target_temperature = body[data_offset + 4]
+        self.current_temperature = body[data_offset + 5]
         if self.mode == 2:
-            self.max_temperature = body[8]
-            self.min_temperature = body[9]
+            self.max_temperature = body[data_offset + 8]
+            self.min_temperature = body[data_offset + 9]
         elif self.mode == 3:
-            self.max_temperature = body[6]
-            self.min_temperature = body[7]
+            self.max_temperature = body[data_offset + 6]
+            self.min_temperature = body[data_offset + 7]
         else:
-            self.max_temperature = body[6]
-            self.min_temperature = body[9]
-
-
-class CFMessageReplyBody(MessageBody):
-    def __init__(self, body):
-        super().__init__(body)
-        self.power = (body[1] & 0x01) > 0
-        self.aux_heat = (body[1] & 0x02) > 0
-        self.silent = (body[1] & 0x04) > 0
-        self.mode = body[4]
-        self.target_temperature = body[5]
-        self.current_temperature = body[6]
-        if self.mode == 2:
-            self.max_temperature = body[9]
-            self.min_temperature = body[10]
-        elif self.mode == 3:
-            self.max_temperature = body[7]
-            self.min_temperature = body[8]
-        else:
-            self.max_temperature = body[7]
-            self.min_temperature = body[10]
+            self.max_temperature = body[data_offset + 6]
+            self.min_temperature = body[data_offset + 9]
 
 
 class MessageCFResponse(MessageResponse):
@@ -102,8 +82,8 @@ class MessageCFResponse(MessageResponse):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0x01:
-            self._body = CFMessageReplyBody(body)
+            self._body = CFMessageBody(body, data_offset=1)
         elif self._message_type in [MessageType.notify1, MessageType.notify2]:
-            self._body = CFMessageNotifyBody(body)
+            self._body = CFMessageBody(body, data_offset=0)
         self.set_attr()
 

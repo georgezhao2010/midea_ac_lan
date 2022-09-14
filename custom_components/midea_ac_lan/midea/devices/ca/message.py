@@ -63,7 +63,6 @@ class CAGeneralMessageBody(MessageBody):
         self.right_flex_zone_actual_temp = (body[20] - 100) / 2
 
 
-
 class CAExceptionMessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)

@@ -8,6 +8,7 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     POWER_WATT,
     PERCENTAGE,
+    DEGREE,
     ENERGY_KILO_WATT_HOUR
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
@@ -19,9 +20,11 @@ from .midea.devices.da.device import DeviceAttributes as DAAttributes
 from .midea.devices.db.device import DeviceAttributes as DBAttributes
 from .midea.devices.dc.device import DeviceAttributes as DCAttributes
 from .midea.devices.ea.device import DeviceAttributes as EAAttributes
+from .midea.devices.ec.device import DeviceAttributes as ECAttributes
 from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
+
 
 MIDEA_DEVICES = {
     0xAC: {
@@ -635,6 +638,61 @@ MIDEA_DEVICES = {
                 "state_class": "measurement"
             },
             EAAttributes.top_temperature: {
+                "type": "sensor",
+                "name": "Top Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+        }
+    },
+    0xEC: {
+        "name": "Electric Pressure Cooker",
+        "entities": {
+            ECAttributes.cooking: {
+                "type": "binary_sensor",
+                "name": "Cooking",
+                "icon": "mdi:fire",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            ECAttributes.with_pressure: {
+                "type": "binary_sensor",
+                "name": "With Pressure",
+                "icon": "mdi:information",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            ECAttributes.bottom_temperature: {
+                "type": "sensor",
+                "name": "Bottom Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+            ECAttributes.keep_warm_time: {
+                "type": "sensor",
+                "name": "Keep Warm Time",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
+            },
+            ECAttributes.mode: {
+                "type": "sensor",
+                "name": "Mode",
+                "icon": "mdi:orbit"
+            },
+            ECAttributes.progress: {
+                "type": "sensor",
+                "name": "Progress",
+                "icon": "mdi:rotate-360"
+            },
+            ECAttributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": "measurement"
+            },
+            ECAttributes.top_temperature: {
                 "type": "sensor",
                 "name": "Top Temperature",
                 "device_class": DEVICE_CLASS_TEMPERATURE,

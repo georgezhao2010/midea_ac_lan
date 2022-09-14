@@ -24,36 +24,21 @@ class MessageECBase(MessageRequest):
 
 
 class MessageQuery(MessageECBase):
-    def __init__(self, device_protocol_version, sub_type):
+    def __init__(self, device_protocol_version):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
-            body_type=0xAA)
-        self.sub_type = sub_type
+            body_type=None)
+
+    @property
+    def body(self):
+        return bytearray([
+            0xAA, 0x55, self._device_protocol_version, 0x03, 0x00
+        ])
 
     @property
     def _body(self):
-        if self._device_protocol_version == 0:
-            if self.sub_type == 1:
-                byte6 = 0x52
-                byte_last = 0xd2
-            else:
-                byte6 = 0x55
-                byte_last = 0xcf
-            return bytearray([
-                0x55, 0x01, 0x00, 0x17,
-                0x02,
-                byte6,
-                0xc3, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00,
-                byte_last
-            ])
-        else:
-            return bytearray([
-                0x55, 0x00, 0x03, 0x00
-            ])
+        return bytearray([])
 
 
 class EABody1(MessageBody):

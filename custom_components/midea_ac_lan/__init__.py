@@ -26,8 +26,8 @@ from .midea.devices import device_selector
 
 _LOGGER = logging.getLogger(__name__)
 
-ALL_PLATFORM = ["sensor", "switch", "binary_sensor", "climate", "water_heater", "lock"]
-EXTRA_PLATFORM = ["sensor", "switch", "binary_sensor", "lock"]
+ALL_PLATFORM = ["sensor", "switch", "binary_sensor", "climate", "water_heater", "fan", "lock", "select"]
+EXTRA_PLATFORM = ["sensor", "switch", "binary_sensor", "lock", "select"]
 
 
 async def update_listener(hass, config_entry):

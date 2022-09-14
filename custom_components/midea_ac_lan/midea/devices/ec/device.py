@@ -1,7 +1,7 @@
 import logging
 from .message import (
     MessageQuery,
-    MessageEAResponse
+    MessageECResponse
 )
 from ...core.device import MiedaDevice
 from ...backports.enum import StrEnum
@@ -11,16 +11,16 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     cooking = "cooking"
-    keep_warm = "keep_warm"
     mode = "mode"
     time_remaining = "time_remaining"
     keep_warm_time = "keep_warm_time"
     top_temperature = "top_temperature"
     bottom_temperature = "bottom_temperature"
     progress = "progress"
+    with_pressure = "with_pressure"
 
 
-class MideaEADevice(MiedaDevice):
+class MideaECDevice(MiedaDevice):
     _mode_list = [
         "smart", "reserve", "cook_rice", "fast_cook_rice", "standard_cook_rice",
         "gruel", "cook_congee", "stew_soup", "stewing", "heat_rice", "make_cake",
@@ -43,8 +43,10 @@ class MideaEADevice(MiedaDevice):
         "earthen_pot_congee", "regimen_soup", "pottery_jar_soup", "canton_soup",
         "nutrition_stew", "northeast_stew", "uncap_boil", "trichromatic_coarse_grain",
         "four_color_vegetables", "egg", "chop",
-    ] + ["unknown"] * 98 + ["clean"] + ["unknown"] * 5 + ["keep_warm"]
-    _progress = ["Idle", "Delay", "Cooking", "Keep-warm"]
+    ] + ["unknown"] * 98 + ["clean"] + ["unknown"] * 5 + ["keep_warm", "diy"]
+    _progress = ["Idle", "Cooking", "Delay", "Keep-warm",
+                 "Lid-open", "Relieving", "Keep-pressure",
+                 "Relieving", "Cooking", "Relieving", "Lid-open"]
 
     def __init__(
             self,
@@ -60,7 +62,7 @@ class MideaEADevice(MiedaDevice):
         super().__init__(
             name=name,
             device_id=device_id,
-            device_type=0xEA,
+            device_type=0xEC,
             ip_address=ip_address,
             port=port,
             token=token,
@@ -70,33 +72,33 @@ class MideaEADevice(MiedaDevice):
         )
         self._attributes = {
             DeviceAttributes.cooking: False,
-            DeviceAttributes.keep_warm: False,
             DeviceAttributes.mode: 0,
             DeviceAttributes.time_remaining: None,
             DeviceAttributes.top_temperature: None,
             DeviceAttributes.bottom_temperature: None,
             DeviceAttributes.keep_warm_time: None,
-            DeviceAttributes.progress: "Unknown"
+            DeviceAttributes.progress: "Unknown",
+            DeviceAttributes.with_pressure: None
         }
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
-        message = MessageEAResponse(msg)
+        message = MessageECResponse(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 value = getattr(message, status.value)
                 if status == DeviceAttributes.progress:
-                    if value < len(MideaEADevice._progress):
-                        self._attributes[status] = MideaEADevice._progress[value]
+                    if value < len(MideaECDevice._progress):
+                        self._attributes[status] = MideaECDevice._progress[getattr(message, status.value)]
                     else:
                         self._attributes[status] = "Unknown"
                 elif status == DeviceAttributes.mode:
-                    if value < len(MideaEADevice._mode_list):
-                        self._attributes[status] = MideaEADevice._mode_list[value]
+                    if value < len(MideaECDevice._mode_list):
+                        self._attributes[status] = MideaECDevice._mode_list[value]
                     else:
                         self._attributes[status] = "Cloud"
                 else:
@@ -112,5 +114,5 @@ class MideaEADevice(MiedaDevice):
         return super().attributes
 
 
-class MideaAppliance(MideaEADevice):
+class MideaAppliance(MideaECDevice):
     pass

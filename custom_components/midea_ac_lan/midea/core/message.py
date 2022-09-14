@@ -123,15 +123,11 @@ class MessageQuerySubtype(MessageRequest):
             device_protocol_version=0,
             device_type=device_type,
             message_type=MessageType.querySubtype,
-            body_type=None)
+            body_type=0x00)
 
     @property
     def _body(self):
-        return bytearray([0x00] * 19)
-
-    @property
-    def body(self):
-        return self._body
+        return bytearray([0x00] * 18)
 
 
 class MessageBody:

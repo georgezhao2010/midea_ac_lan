@@ -46,9 +46,10 @@ def discover(discover_type=None, ip_address=None):
     else:
         addrs = [ip_address]
 
-    for addr in addrs:
-        sock.sendto(BROADCAST_MSG, (addr, 6445))
-        sock.sendto(BROADCAST_MSG, (addr, 20086))
+    for v in range(0, 3):
+        for addr in addrs:
+            sock.sendto(BROADCAST_MSG, (addr, 6445))
+            sock.sendto(BROADCAST_MSG, (addr, 20086))
     while True:
         try:
             data, addr = sock.recvfrom(512)

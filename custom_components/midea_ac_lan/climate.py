@@ -146,7 +146,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
     def set_temperature(self, **kwargs) -> None:
         if ATTR_TEMPERATURE not in kwargs:
             return
-        temperature = float(kwargs.get(ATTR_TEMPERATURE))
+        temperature = float(int((float(kwargs.get(ATTR_TEMPERATURE)) * 2) + 0.5)) / 2
         hvac_mode = kwargs.get(ATTR_HVAC_MODE)
         if hvac_mode == HVAC_MODE_OFF:
             self.turn_off()
