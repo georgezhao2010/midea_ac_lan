@@ -32,7 +32,7 @@ switch.{DEVICEID}_zero_cold_pulse | switch | Zero Cold Water (Pulse) | 零冷水
 名称 | 描述
 --- | ---
 device_id | 设备的编号(Device ID)
-attribute | "energy_saving"<br/>"power"<br />"smart_volume"<br/>"zero_cold_water"<br/>"zero_clod_pulse"
+attribute | "energy_saving"<br/>"power"<br />"smart_volume"<br/>"zero_cold_water"<br/>"zero_cold_pulse"
 value | true or false
 
 示例

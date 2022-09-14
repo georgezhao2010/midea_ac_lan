@@ -1,4 +1,4 @@
-# 电饭煲
+# 电压力锅
 
 ## 生成实体
 ### 默认实体
@@ -9,7 +9,7 @@
 EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
 binary_sensor.{DEVICEID}_cooking | binary_sensor | Cooking | 烹饪中
-binary_sensor.{DEVICEID}_keep_warm | binary_sensor | Keep Warm | 保温中
+binary_sensor.{DEVICEID}_with_pressure | binary_sensor | With Pressure | 带压中
 sensor.{DEVICEID}_bottom_temperature | sensor | Bottom Temperature | 底部温度
 sensor.{DEVICEID}_keep_warm_time | sensor | Keep Warm Time | 保温时间
 sensor.{DEVICEID}_mode | sensor | Mode | 模式

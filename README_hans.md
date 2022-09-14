@@ -1,6 +1,6 @@
 # Midea AC LAN
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/integration)
-[![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-blue.svg)](https://www.buymeacoffee.com/georgezhao2010)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
 [English](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README.md) | 简体中文
@@ -19,18 +19,9 @@
 
 # 已支持的品牌
 
-![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png) 
-![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png)
-![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png)
-![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png)
-![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png)
-![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png)
-![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png)
-![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png)
-![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png)
-![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
 
-以及更多.
+以及更多。
 
 # 已支持的设备
 
@@ -47,6 +38,7 @@
  E2 | 电热水器 | [E2_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2_hans.md)
  E3 | 燃气热水器 | [E3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3_hans.md)
  EA | 电饭煲 |  [EA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA_hans.md)
+ EC | 电压力锅 |  [EC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC_hans.md)
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的HomeAssistant的`custom_components/midea_ac_lan`中。
@@ -61,7 +53,7 @@
 ## 自动配置
 自动配置会自动搜索网络上的美的M-Smart设备，并将搜索到的设备列出，选择一个设备执行添加。多台设备执行多次添加即可。
 
-**自动配置要求设备必须与HA在同一网段，否则可能搜索不到设备，请自行确认这点**
+***注意: 自动配置要求设备必须与HA在同一网段，否则可能搜索不到设备，请自行确认这点***
 
 ## 指定IP地址配置
 如果自动配置无法完成，可以尝试通过指定IP地址的方式搜索设备并进行配置。
@@ -78,7 +70,6 @@
 
 
 ## 额外的传感器及开关实体
-
 配置完成后, 默认将只生成一个主要实体(比如climate实体)。如果需要其它属性生成为扩展的传感器及开关实体，在Midea AC LAN集成卡片上点击'选项'，并选择要生成的传感器及开关(如果你的空调支持该属性)。
 
 
@@ -90,7 +81,3 @@ logger:
   logs:
     custom_components.midea_ac_lan: debug
 ```
-
-# 可能有用的东西
-- [Lovelace simple thermostat card](https://github.com/nervetattoo/simple-thermostat)
-- [Water Heater Card for Lovelace](https://github.com/rsnodgrass/water-heater-card)

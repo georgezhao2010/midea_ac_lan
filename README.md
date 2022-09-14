@@ -1,6 +1,6 @@
 # Midea AC LAN
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/integration)
-[![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-blue.svg)](https://www.buymeacoffee.com/georgezhao2010)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
 English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README_hans.md)
@@ -19,16 +19,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported brands
 
-![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png) 
-![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png)
-![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png)
-![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png)
-![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png)
-![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png)
-![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png)
-![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png)
-![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png)
-![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
 
 And more.
 
@@ -46,8 +37,9 @@ And more.
  DC | Clothes Dryers | [DC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC.md)
  E1 | Dishwashers | [E1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1.md)
  E2 | Electric Water Heaters | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
- E3 | Gas Water Heaters |  [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
- EA | Electric Rice Cookers |  [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
+ E3 | Gas Water Heaters | [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
+ EA | Electric Rice Cookers | [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
+ EC | Electric Pressure Cookers | [EC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 
@@ -62,7 +54,7 @@ Or click [![Configuration](https://my.home-assistant.io/badges/config_flow_start
 ## Config automatically
 This component could auto-discover and list Midea M-Smart appliances in network, select one and add it in. You could repeat the above action to add multiple devices.
 
-**Automatic configuration requires your appliances and your Home Assistant must be in the same sub-network. Otherwise, devices may not be auto-discovered.  Check this by yourself.**
+***Note: Automatic configuration requires your appliances and your Home Assistant must be in the same sub-network. Otherwise, devices may not be auto-discovered.  Check this by yourself.***
 
 ## Config by IP
 If auto-discover could not work, you could try to discover the appliance with the specified IP Address.
@@ -91,7 +83,3 @@ logger:
   logs:
     custom_components.midea_ac_lan: debug
 ```
-
-# Helpful things
-- [Lovelace simple thermostat card](https://github.com/nervetattoo/simple-thermostat)
-- [Water Heater Card for Lovelace](https://github.com/rsnodgrass/water-heater-card)
