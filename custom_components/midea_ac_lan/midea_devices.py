@@ -3,11 +3,13 @@ from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_ENERGY,
+    TIME_DAYS,
     TIME_HOURS,
     TIME_MINUTES,
     TEMP_CELSIUS,
     POWER_WATT,
     PERCENTAGE,
+    VOLUME_LITERS,
     DEGREE,
     ENERGY_KILO_WATT_HOUR
 )
@@ -24,6 +26,7 @@ from .midea.devices.ec.device import DeviceAttributes as ECAttributes
 from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
+from .midea.devices.ed.device import DeviceAttributes as EDAttributes
 
 
 MIDEA_DEVICES = {
@@ -699,6 +702,77 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": "measurement"
             },
+        }
+    },
+    0xED: {
+        "name": "Water Purifier",
+        "entities": {
+            EDAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            EDAttributes.water_litre: {
+                "type": "sensor",
+                "name": "Water Litre",
+                "icon": "mdi:water-pump",
+                "state_class": "measurement",
+                "unit": VOLUME_LITERS
+            },
+            EDAttributes.in_tds: {
+                "type": "sensor",
+                "name": "In TDS",
+                "icon": "mdi:water",
+                "state_class": "measurement"
+            },
+            EDAttributes.out_tds: {
+                "type": "sensor",
+                "name": "Out TDS",
+                "icon": "mdi:water-plus",
+                "state_class": "measurement"
+            },
+            EDAttributes.filter1: {
+                "type": "sensor",
+                "name": "Filter1 Available Days",
+                "icon": "mdi:filter-outline",
+                "unit": TIME_DAYS,
+                "state_class": "measurement"
+            },
+            EDAttributes.filter2: {
+                "type": "sensor",
+                "name": "Filter2 Available Days",
+                "icon": "mdi:filter-outline",
+                "unit": TIME_DAYS,
+                "state_class": "measurement"
+            },
+            EDAttributes.filter3: {
+                "type": "sensor",
+                "name": "Filter3 Available Days",
+                "icon": "mdi:filter-outline",
+                "unit": TIME_DAYS,
+                "state_class": "measurement"
+            },
+            EDAttributes.life1: {
+                "type": "sensor",
+                "name": "Filter1 Life Level",
+                "icon": "mdi:percent",
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
+            },
+            EDAttributes.life2: {
+                "type": "sensor",
+                "name": "Filter2 Life Level",
+                "icon": "mdi:percent",
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
+            },
+            EDAttributes.life3: {
+                "type": "sensor",
+                "name": "Filter3 Life Level",
+                "icon": "mdi:percent",
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
+            }
         }
     }
 }
