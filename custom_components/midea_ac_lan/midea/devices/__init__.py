@@ -10,7 +10,8 @@ def device_selector(
     token: str,
     key: str,
     protocol: int,
-    model: str
+    model: str,
+    customize: str
 ):
     try:
         module = import_module(f".{'%02x' % device_type}.device", __package__)
@@ -22,7 +23,8 @@ def device_selector(
             token=token,
             key=key,
             protocol=protocol,
-            model=model
+            model=model,
+            customize=customize
         )
     except ModuleNotFoundError:
         device = None

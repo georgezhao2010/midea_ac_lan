@@ -15,6 +15,7 @@ from homeassistant.const import (
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
+from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.ca.device import DeviceAttributes as CAAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
 from .midea.devices.cf.device import DeviceAttributes as CFAttributes
@@ -23,10 +24,11 @@ from .midea.devices.db.device import DeviceAttributes as DBAttributes
 from .midea.devices.dc.device import DeviceAttributes as DCAttributes
 from .midea.devices.ea.device import DeviceAttributes as EAAttributes
 from .midea.devices.ec.device import DeviceAttributes as ECAttributes
+from .midea.devices.ed.device import DeviceAttributes as EDAttributes
 from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
-from .midea.devices.ed.device import DeviceAttributes as EDAttributes
+from .midea.devices.fa.device import DeviceAttributes as FAAttributes
 
 
 MIDEA_DEVICES = {
@@ -167,6 +169,70 @@ MIDEA_DEVICES = {
             }
         }
     },
+    # 0xC3: {
+    #     "name": "Heat Pump Wi-Fi Controller",
+    #     "entities": {
+    #         "climate_zone1": {
+    #             "type": "climate",
+    #             "icon": "mdi:air-conditioner",
+    #             "name": "Zone1 Thermostat",
+    #             "zone": 0
+    #         },
+    #         "climate_zone2": {
+    #             "type": "climate",
+    #             "icon": "mdi:air-conditioner",
+    #             "name": "Zone2 Thermostat",
+    #             "zone": 1
+    #         },
+    #         "water-heater": {
+    #             "type": "water_heater",
+    #             "icon": "mdi:heat-pump",
+    #             "name": "Domestic hot water"
+    #         },
+    #         C3Attributes.disinfect: {
+    #             "type": "switch",
+    #             "name": "Disinfect",
+    #             "icon": "mdi:water-plus-outline"
+    #         },
+    #         C3Attributes.dhw_power: {
+    #             "type": "switch",
+    #             "name": "DHW Power",
+    #             "icon": "mdi:power"
+    #         },
+    #         C3Attributes.fast_dhw: {
+    #             "type": "switch",
+    #             "name": "Fast DHW",
+    #             "icon": "mdi:rotate-orbit"
+    #         },
+    #         C3Attributes.zone1_curve: {
+    #             "type": "switch",
+    #             "name": "Zone1 Curve",
+    #             "icon": "mdi:chart-bell-curve-cumulative"
+    #         },
+    #         C3Attributes.zone2_curve: {
+    #             "type": "switch",
+    #             "name": "Zone2 Curve",
+    #             "icon": "mdi:chart-bell-curve-cumulative"
+    #         },
+    #         C3Attributes.zone1_power: {
+    #             "type": "switch",
+    #             "name": "Zone1 Power",
+    #             "icon": "mdi:power"
+    #         },
+    #         C3Attributes.zone2_power: {
+    #             "type": "switch",
+    #             "name": "Zone2 Power",
+    #             "icon": "mdi:power"
+    #         },
+    #         C3Attributes.tank_actual_temperature: {
+    #             "type": "sensor",
+    #             "name": "Tank Actual Temperature",
+    #             "device_class": DEVICE_CLASS_TEMPERATURE,
+    #             "unit": TEMP_CELSIUS,
+    #             "state_class": "measurement"
+    #         }
+    #     }
+    # },
     0xCA: {
         "name": "Refrigerator",
         "entities": {
@@ -712,25 +778,6 @@ MIDEA_DEVICES = {
                 "name": "Power",
                 "icon": "mdi:power"
             },
-            EDAttributes.water_litre: {
-                "type": "sensor",
-                "name": "Water Litre",
-                "icon": "mdi:water-pump",
-                "state_class": "measurement",
-                "unit": VOLUME_LITERS
-            },
-            EDAttributes.in_tds: {
-                "type": "sensor",
-                "name": "In TDS",
-                "icon": "mdi:water",
-                "state_class": "measurement"
-            },
-            EDAttributes.out_tds: {
-                "type": "sensor",
-                "name": "Out TDS",
-                "icon": "mdi:water-plus",
-                "state_class": "measurement"
-            },
             EDAttributes.filter1: {
                 "type": "sensor",
                 "name": "Filter1 Available Days",
@@ -772,7 +819,67 @@ MIDEA_DEVICES = {
                 "icon": "mdi:percent",
                 "unit": PERCENTAGE,
                 "state_class": "measurement"
+            },
+            EDAttributes.in_tds: {
+                "type": "sensor",
+                "name": "In TDS",
+                "icon": "mdi:water",
+                "state_class": "measurement"
+            },
+            EDAttributes.out_tds: {
+                "type": "sensor",
+                "name": "Out TDS",
+                "icon": "mdi:water-plus",
+                "state_class": "measurement"
+            },
+            EDAttributes.water_yield: {
+                "type": "sensor",
+                "name": "Water Litre",
+                "icon": "mdi:water-pump",
+                "state_class": "total_increasing",
+                "unit": VOLUME_LITERS
             }
+        }
+    },
+    0xFA: {
+        "name": "Fan",
+        "entities": {
+            "fan": {
+                "type": "fan",
+                "icon": "mdi:fan"
+            },
+            FAAttributes.oscillation_mode: {
+                "type": "select",
+                "name": "Oscillation Mode",
+                "options": "oscillation_modes",
+                "icon": "mdi:swap-horizontal-variant"
+            },
+            FAAttributes.oscillation_angle: {
+                "type": "select",
+                "name": "Oscillation Angle",
+                "options": "oscillation_angles",
+                "icon": "mdi:pan-horizontal"
+            },
+            FAAttributes.tilting_angle: {
+                "type": "select",
+                "name": "Tilting Angle",
+                "options": "tilting_angles",
+                "icon": "mdi:pan-vertical"
+            },
+            FAAttributes.child_lock: {
+                "type": "lock",
+                "name": "Child Lock"
+            },
+            FAAttributes.oscillate: {
+                "type": "switch",
+                "name": "Oscillate",
+                "icon": "mdi:swap-horizontal-bold"
+            },
+            FAAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
         }
     }
 }

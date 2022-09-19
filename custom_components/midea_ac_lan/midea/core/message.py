@@ -25,6 +25,7 @@ class MessageType(IntEnum):
     notify2 = 0x05,
     exception = 0x06,
     querySN = 0x07,
+    exception2 = 0x0A,
     querySubtype = 0xA0
 
 
@@ -142,7 +143,7 @@ class MessageBody:
 class SubtypeMessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        self.sub_type = body[2] if len(body) > 2 else 0 + (body[3] << 8) if len(body) > 3 else 0
+        self.sub_type = (body[2] if len(body) > 2 else 0) + ((body[3] << 8) if len(body) > 3 else 0)
 
 
 class MessageResponse(MessageBase):

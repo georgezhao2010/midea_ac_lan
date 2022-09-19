@@ -40,7 +40,8 @@ class MideaCADevice(MiedaDevice):
             token: str,
             key: str,
             protocol: int,
-            model: str
+            model: str,
+            customize: str
     ):
         super().__init__(
             name=name,

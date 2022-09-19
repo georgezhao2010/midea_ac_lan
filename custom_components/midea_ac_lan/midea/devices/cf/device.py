@@ -30,7 +30,8 @@ class MideaCFDevice(MiedaDevice):
             token: str,
             key: str,
             protocol: int,
-            model: str
+            model: str,
+            customize: str
     ):
         super().__init__(
             name=name,
@@ -82,6 +83,7 @@ class MideaCFDevice(MiedaDevice):
         if attr == DeviceAttributes.power:
             message.power = value
         elif attr == DeviceAttributes.mode:
+            message.power = True
             message.mode = value
         elif attr == DeviceAttributes.target_temperature:
             message.target_temperature = value

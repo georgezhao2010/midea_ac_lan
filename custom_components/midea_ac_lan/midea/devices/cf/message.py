@@ -1,12 +1,9 @@
-import logging
 from ...core.message import (
     MessageType,
     MessageRequest,
     MessageResponse,
     MessageBody,
 )
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class MessageCFBase(MessageRequest):

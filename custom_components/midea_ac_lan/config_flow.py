@@ -20,6 +20,7 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SWITCHES,
     CONF_SENSORS,
+    CONF_CUSTOMIZE
 )
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .midea.core.discover import discover
@@ -335,6 +336,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         extra_switches = self.config_entry.options.get(
             CONF_SWITCHES, []
         )
+        customize = self.config_entry.options.get(
+            CONF_CUSTOMIZE, ""
+        )
 
         return self.async_show_form(
             step_id="init",
@@ -347,5 +351,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_SWITCHES,
                     default=extra_switches,
                 ): cv.multi_select(switches),
+                vol.Optional(
+                    CONF_CUSTOMIZE,
+                    default=customize,
+                ): str
             })
         )

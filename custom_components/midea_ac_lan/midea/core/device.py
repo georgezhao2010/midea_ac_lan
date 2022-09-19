@@ -354,6 +354,9 @@ class MiedaDevice(threading.Thread):
     def get_attribute(self, attr):
         return self._attributes.get(attr)
 
+    def set_customize(self, customize):
+        pass
+
     @property
     def attributes(self):
         ret = {}

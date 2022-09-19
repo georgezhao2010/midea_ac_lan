@@ -8,8 +8,6 @@ from ...core.message import (
 )
 from ...core.crc8 import calculate
 
-_LOGGER = logging.getLogger(__name__)
-
 
 class NewProtocolParams(IntEnum):
     indoor_humidity = 0x1500

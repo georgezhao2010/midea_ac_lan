@@ -56,7 +56,8 @@
             "init": {
                 "data": {
                     "sensors": "Sensors",
-                    "switches": "Controls"
+                    "switches": "Controls",
+                    "customize": "Customize"
                 },
                 "description": "Make attributes as extra sensors and controls",
                 "title": "Extra entities"

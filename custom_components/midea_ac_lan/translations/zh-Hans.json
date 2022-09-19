@@ -56,7 +56,8 @@
             "init": {
                 "data": {
                     "sensors": "传感器",
-                    "switches": "开关"
+                    "switches": "控制",
+                    "customize": "自定义"
                 },
                 "description": "将属性实体化为扩展的传感器及控制",
                 "title": "扩展实体"

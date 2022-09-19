@@ -73,7 +73,8 @@ def discover(discover_type=None, ip_address=None):
                 ssid = reply[41:41 + reply[40]].decode("utf-8")
                 device_type = ssid.split("_")[1]
                 port = bytes2port(reply[4:8])
-                model = reply[20:25].decode("utf-8")
+                model = reply[17:25].decode("utf-8")
+                sn = reply[8:40].decode("utf-8")
             elif data[:6].hex() == "3c3f786d6c20":
                 protocol = 1
                 root = ET.fromstring(data.decode(
@@ -85,9 +86,9 @@ def discover(discover_type=None, ip_address=None):
                 response = get_device_info(ip, int(port))
                 device_id = get_id_from_response(response)
                 if len(sn) == 32:
-                    model = sn[12:17]
+                    model = sn[9:17]
                 elif len(sn) == 22:
-                    model = sn[6:11]
+                    model = sn[3:11]
                 else:
                     model = ""
             else:
@@ -98,6 +99,7 @@ def discover(discover_type=None, ip_address=None):
                 "ip_address": ip,
                 "port": port,
                 "model": model,
+                "sn": sn,
                 "protocol": protocol
             }
             if len(discover_type) == 0 or device.get("type") in discover_type:

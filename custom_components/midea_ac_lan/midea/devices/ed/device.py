@@ -2,7 +2,8 @@ import logging
 from .message import (
     MessageQuery,
     MessageEDResponse,
-    MessageSet
+    MessageNewSet,
+    MessageOldSet
 )
 from ...core.device import MiedaDevice
 from ...backports.enum import StrEnum
@@ -12,7 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     power = "power"
-    water_litre = "water_litre"
+    water_yield = "water_yield"
     in_tds = "in_tds"
     out_tds = "out_tds"
     filter1 = "filter1"
@@ -21,8 +22,6 @@ class DeviceAttributes(StrEnum):
     life1 = "life1"
     life2 = "life2"
     life3 = "life3"
-
-
 
 
 class MideaEDDevice(MiedaDevice):
@@ -36,7 +35,8 @@ class MideaEDDevice(MiedaDevice):
             token: str,
             key: str,
             protocol: int,
-            model: str
+            model: str,
+            customize: str
     ):
         super().__init__(
             name=name,
@@ -51,33 +51,44 @@ class MideaEDDevice(MiedaDevice):
         )
         self._attributes = {
             DeviceAttributes.power: False,
-            DeviceAttributes.water_litre: 0,
-            DeviceAttributes.in_tds: 0,
-            DeviceAttributes.out_tds: 0,
-            DeviceAttributes.filter1: 0,
-            DeviceAttributes.filter2: 0,
-            DeviceAttributes.filter3: 0,
-            DeviceAttributes.life1: 0,
-            DeviceAttributes.life2: 0,
-            DeviceAttributes.life3: 0
+            DeviceAttributes.water_yield: None,
+            DeviceAttributes.in_tds: None,
+            DeviceAttributes.out_tds: None,
+            DeviceAttributes.filter1: None,
+            DeviceAttributes.filter2: None,
+            DeviceAttributes.filter3: None,
+            DeviceAttributes.life1: None,
+            DeviceAttributes.life2: None,
+            DeviceAttributes.life3: None
         }
 
+    def _use_new_set(self):
+        return True if (self._sub_type > 342 or self._sub_type == 340) else False
+
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery(self._device_protocol_version, 0x01)]
 
     def process_message(self, msg):
         message = MessageEDResponse(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
-            new_status[status.value] = getattr(message, status.value)
-            self._attributes[status] = getattr(message, status.value)
+            if hasattr(message, status.value):
+                new_status[status.value] = getattr(message, status.value)
+                self._attributes[status] = getattr(message, status.value)
         return new_status
 
     def set_attribute(self, attr, value):
         message = None
-
+        if attr in [DeviceAttributes.power]:
+            if self._use_new_set():
+                if attr in [DeviceAttributes.power]:
+                    message = MessageNewSet(self._device_protocol_version)
+            else:
+                if attr in []:
+                    message = MessageOldSet(self._device_protocol_version)
         if message is not None:
+            setattr(message, str(attr), value)
             self.build_send(message)
 
     @property

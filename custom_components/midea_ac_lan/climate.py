@@ -1,4 +1,3 @@
-import logging
 from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
 from homeassistant.const import (
@@ -14,11 +13,12 @@ from .const import (
     DEVICES,
 )
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
+from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
 from .midea.devices.cf.device import DeviceAttributes as CFAttributes
+from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
-_LOGGER = logging.getLogger(__name__)
 
 FAN_SPEED_1 = "Level 1"
 FAN_SPEED_2 = "Level 2"
@@ -40,17 +40,23 @@ PRESET_SILENT = "Silent"
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
-    if device.device_type == 0xac:
-        async_add_entities([MideaACClimate(device)])
-    elif device.device_type == 0xcc:
-        async_add_entities([MideaCCClimate(device)])
-    elif device.device_type == 0xcf:
-        async_add_entities([MideaCFClimate(device)])
+    climates = []
+    for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
+        if config["type"] == "climate":
+            if device.device_type == 0xac:
+                climates.append(MideaACClimate(device, entity_key))
+            elif device.device_type == 0xcc:
+                climates.append(MideaCCClimate(device, entity_key))
+            elif device.device_type == 0xcf:
+                climates.append(MideaCFClimate(device, entity_key))
+            elif device.device_type == 0xc3:
+                climates.append(MideaC3Climate(device, entity_key, config["zone"]))
+    async_add_entities(climates)
 
 
 class MideaClimate(MideaEntity, ClimateEntity):
-    def __init__(self, device):
-        super().__init__(device, "climate")
+    def __init__(self, device, entity_key):
+        super().__init__(device, entity_key)
 
     @property
     def state(self):
@@ -156,7 +162,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
                 self._device.set_target_temperature(
                     target_temperature=temperature, mode=mode)
             except ValueError as e:
-                _LOGGER.error(f"Unknown hvac_mode {hvac_mode}")
+                pass
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         hvac_mode = hvac_mode.lower()
@@ -199,8 +205,8 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
 
 class MideaACClimate(MideaClimate):
-    def __init__(self, device):
-        super().__init__(device)
+    def __init__(self, device, entity_key):
+        super().__init__(device, entity_key)
         self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_FAN_ONLY]
         self._fan_speeds = {
             FAN_SILENT.capitalize(): 20,
@@ -265,8 +271,8 @@ class MideaACClimate(MideaClimate):
 
 
 class MideaCCClimate(MideaClimate):
-    def __init__(self, device):
-        super().__init__(device)
+    def __init__(self, device, entity_key):
+        super().__init__(device, entity_key)
         self._modes = [HVAC_MODE_OFF, HVAC_MODE_FAN_ONLY, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_AUTO]
         self._fan_speeds_7level = {
             FAN_SPEED_1: 0x01,
@@ -328,13 +334,17 @@ class MideaCCClimate(MideaClimate):
 
 
 class MideaCFClimate(MideaClimate):
-    def __init__(self, device):
-        super().__init__(device)
+    def __init__(self, device, entity_key):
+        super().__init__(device, entity_key)
         self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_HEAT]
 
     @property
     def supported_features(self):
         return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.AUX_HEAT
+
+    @property
+    def target_temperature_step(self):
+        return PRECISION_WHOLE
 
     @property
     def min_temp(self):
@@ -356,6 +366,83 @@ class MideaCFClimate(MideaClimate):
     def current_temperature(self):
         return self._device.get_attribute("current_temperature")
 
+
+class MideaC3Climate(MideaClimate):
+    _powers = [
+        C3Attributes.zone1_power,
+        C3Attributes.zone2_power,
+    ]
+
+    def __init__(self, device, entity_key, zone):
+        super().__init__(device, entity_key)
+        self._zone = zone
+        self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_HEAT]
+        self._power_attr = MideaC3Climate._powers[self._zone]
+
+    @property
+    def supported_features(self):
+        return ClimateEntityFeature.TARGET_TEMPERATURE
+
     @property
     def target_temperature_step(self):
         return PRECISION_WHOLE
+
+    @property
+    def min_temp(self):
+        return 0
+        # raise NotImplementedError()
+
+    @property
+    def max_temp(self):
+        return 100
+        # raise NotImplementedError()
+
+    @property
+    def target_temperature_low(self):
+        return 0
+        # raise NotImplementedError()
+
+    @property
+    def target_temperature_high(self):
+        return 100
+        #raise NotImplementedError()
+
+    def turn_on(self):
+        self._device.set_attribute(attr=self._power_attr, value=True)
+
+    def turn_off(self):
+        self._device.set_attribute(attr=self._power_attr, value=False)
+
+    @property
+    def hvac_mode(self) -> str:
+        if self._device.get_attribute(self._power_attr):
+            return self._modes[self._device.get_attribute(C3Attributes.mode)]
+        else:
+            return HVAC_MODE_OFF
+
+    @property
+    def target_temperature(self):
+        return 35
+        # raise NotImplementedError()
+
+    @property
+    def current_temperature(self):
+        return 52
+        # raise NotImplementedError()
+
+    def set_temperature(self, **kwargs) -> None:
+        if ATTR_TEMPERATURE not in kwargs:
+            return
+        temperature = float(int((float(kwargs.get(ATTR_TEMPERATURE)) * 2) + 0.5)) / 2
+        hvac_mode = kwargs.get(ATTR_HVAC_MODE)
+        if hvac_mode == HVAC_MODE_OFF:
+            self.turn_off()
+        else:
+            try:
+                mode = self._modes.index(hvac_mode.lower()) if hvac_mode else None
+                self._device.set_target_temperature(
+                    zone=self._zone, target_temperature=temperature, mode=mode)
+            except ValueError as e:
+                pass
+
+

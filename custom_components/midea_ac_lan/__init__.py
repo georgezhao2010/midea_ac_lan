@@ -18,6 +18,7 @@ from homeassistant.const import (
     CONF_PROTOCOL,
     CONF_DEVICE_ID,
     CONF_TYPE,
+    CONF_CUSTOMIZE,
     TEMP_FAHRENHEIT,
     ATTR_DEVICE_ID,
     ATTR_ENTITY_ID
@@ -26,8 +27,10 @@ from .midea.devices import device_selector
 
 _LOGGER = logging.getLogger(__name__)
 
-ALL_PLATFORM = ["sensor", "switch", "binary_sensor", "climate", "water_heater", "lock"]
-EXTRA_PLATFORM = ["sensor", "switch", "binary_sensor", "lock"]
+EXTRA_SENSOR = ["sensor", "binary_sensor"]
+EXTRA_CONTROL = ["switch", "lock", "select"]
+EXTRA_PLATFORM = EXTRA_SENSOR + ["switch", "lock", "select"]
+ALL_PLATFORM = ["climate", "water_heater", "fan"] + EXTRA_PLATFORM
 
 
 async def update_listener(hass, config_entry):
@@ -36,6 +39,13 @@ async def update_listener(hass, config_entry):
     for platform in EXTRA_PLATFORM:
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(
             config_entry, platform))
+    device_id = config_entry.data.get(CONF_DEVICE_ID)
+    customize = config_entry.options.get(
+        CONF_CUSTOMIZE, ""
+    )
+    dev = hass.data[DOMAIN][DEVICES].get(device_id)
+    if dev:
+        dev.set_customize(customize)
 
 
 async def async_setup(hass: HomeAssistant, hass_config: dict):
@@ -43,7 +53,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
     attributes = []
     for device_entities in MIDEA_DEVICES.values():
         for attribute_name, attribute in device_entities.get("entities").items():
-            if attribute.get("type") == "switch" and attribute_name.value not in attributes:
+            if attribute.get("type") in EXTRA_CONTROL and attribute_name.value not in attributes:
                 attributes.append(attribute_name.value)
 
     def service_set_ac_fan_speed(service):
@@ -62,10 +72,10 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
         dev = hass.data[DOMAIN][DEVICES].get(device_id)
         if dev:
             item = MIDEA_DEVICES.get(dev.device_type).get("entities").get(attr)
-            if item and item.get("type") in ["switch", "lock"]:
+            if item and item.get("type") in EXTRA_CONTROL:
                 dev.set_attribute(attr=attr, value=value)
             else:
-                _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} can be set ")
+                _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} can be set")
 
     hass.services.async_register(
         DOMAIN,
@@ -88,7 +98,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
             {
                 vol.Required("device_id"): vol.Coerce(int),
                 vol.Required("attribute"): vol.In(attributes),
-                vol.Required("value"): cv.boolean
+                vol.Required("value"): vol.Any(cv.boolean, str)
             }
         )
     )
@@ -113,6 +123,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
     port = config_entry.data.get(CONF_PORT)
     model = config_entry.data.get(CONF_MODEL)
     protocol = config_entry.data.get(CONF_PROTOCOL)
+    customize = config_entry.options.get(CONF_CUSTOMIZE)
     if protocol == 3 and (key is None or key is None):
         _LOGGER.error("For V3 devices, the key and the token is required.")
         return False
@@ -125,7 +136,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         token=token,
         key=key,
         protocol=protocol,
-        model=model
+        model=model,
+        customize=customize,
     )
     if device:
         device.open()
