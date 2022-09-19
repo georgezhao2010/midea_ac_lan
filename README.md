@@ -19,10 +19,9 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported brands
 
-![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+![beverly](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/beverly.png) ![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
 
 And more.
-
 
 # Supported appliances
 
@@ -40,6 +39,8 @@ And more.
  E3 | Gas Water Heaters | [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
  EA | Electric Rice Cookers | [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
  EC | Electric Pressure Cookers | [EC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC.md)
+ ED | Water Purifiers | [ED.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED.md)
+ FA | Fans | [FA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 
@@ -71,8 +72,10 @@ If you already know following information, you could add the appliance manually.
 
 
 ## Extra sensor and switch entities
-
 Only one main entity (e.g. climate entity) will be generated after configuration. If you want to make the attributes to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported).
+
+## Customize
+Some appliance need more settings (like fan), your can set the customize parameters in JSON format, see the documentation of appliance get more information.
 
 # Debug
 
