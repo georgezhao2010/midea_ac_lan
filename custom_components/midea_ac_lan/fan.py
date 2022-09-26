@@ -23,6 +23,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if config["type"] == "fan":
             if device.device_type == 0xfa:
                 climates.append(MideaFAFan(device, entity_key))
+            elif device.device_type == 0xb6:
+                climates.append(MideaB6Fan(device, entity_key))
     async_add_entities(climates)
 
 
@@ -88,6 +90,12 @@ class MideaFan(MideaEntity, FanEntity):
         fan_speed = int(percentage / self.percentage_step + 0.5)
         self._device.set_attribute(attr="fan_speed", value=fan_speed)
 
+    async def async_set_percentage(self, percentage: int):
+        if percentage == 0:
+            await self.async_turn_off()
+        else:
+            await self.hass.async_add_executor_job(self.set_percentage, percentage)
+
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()
@@ -105,7 +113,4 @@ class MideaB6Fan(MideaFan):
     def __init__(self, device, entity_key):
         super().__init__(device, entity_key)
         self._attr_supported_features = SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE
-
-    async def async_set_percentage(self, percentage: int) -> None:
-        await self.hass.async_add_executor_job(self.set_percentage, percentage)
 

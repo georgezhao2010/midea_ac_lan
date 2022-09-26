@@ -266,10 +266,13 @@ class MideaFADevice(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
         self._speed_count = self._default_speed_count
         if customize:
-            params = json.loads(customize)
-            if params and "speed_count" in params:
-                self._speed_count = params.get("speed_count")
-        self.update_all({"speed_count": self._speed_count})
+            try:
+                params = json.loads(customize)
+                if params and "speed_count" in params:
+                    self._speed_count = params.get("speed_count")
+            except Exception as e:
+                _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
+            self.update_all({"speed_count": self._speed_count})
 
 
 class MideaAppliance(MideaFADevice):

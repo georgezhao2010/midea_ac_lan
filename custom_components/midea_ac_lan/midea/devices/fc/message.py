@@ -1,0 +1,140 @@
+from ...core.crc8 import calculate
+from ...core.message import (
+    MessageType,
+    MessageRequest,
+    MessageResponse,
+    MessageBody,
+)
+
+
+class MessageFCBase(MessageRequest):
+    _message_serial = 0
+
+    def __init__(self, device_protocol_version, message_type, body_type):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            device_type=0xFC,
+            message_type=message_type,
+            body_type=body_type
+        )
+        MessageFCBase._message_serial += 1
+        if MessageFCBase._message_serial >= 254:
+            MessageFCBase._message_serial = 1
+        self._message_id = MessageFCBase._message_serial
+
+    @property
+    def _body(self):
+        raise NotImplementedError
+
+    @property
+    def body(self):
+        body = bytearray([self._body_type]) + self._body + bytearray([self._message_id])
+        body.append(calculate(body))
+        return body
+
+
+class MessageQuery(MessageFCBase):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.query,
+            body_type=0x41)
+
+    @property
+    def _body(self):
+        return bytearray([
+            0x00, 0x00, 0xFF, 0x03,
+            0x00, 0x00, 0x02, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00
+        ])
+
+
+class MessageSet(MessageFCBase):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.set,
+            body_type=0x48)
+        self.power = False
+        self.mode = 0
+        self.fan_speed = 0
+        self.child_lock = False
+        self.prompt_tone = False
+        self.anion = False
+        self.screen_display = 0
+        self.detect_mode = 0
+
+    @property
+    def _body(self):
+        # byte1 power
+        power = 0x01 if self.power else 0x00
+        detect = 0x08 if self.detect_mode > 0 else 0x00
+        detect_mode = self.detect_mode - 1
+        # byte2 mode
+        # byte3 fan_speed
+        # byte 8 child_lock
+        child_lock = 0x80 if self.child_lock else 0x00
+        # byte 9 anion
+        anion = 0x20 if self.anion else 0x00
+        # byte 10 prompt_tone
+        prompt_tone = 0x40 if self.prompt_tone else 0x00
+        return bytearray([
+            power | prompt_tone | detect | 0x02,
+            self.mode,
+            self.fan_speed,
+            0x00, 0x00, 0x00, 0x00,
+            child_lock, self.screen_display, anion,
+            0x00, 0x00, 0x00, detect_mode,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00,
+        ])
+
+
+class FCGeneralMessageBody(MessageBody):
+    def __init__(self, body, message_type):
+        super().__init__(body)
+        self.power = (body[1] & 0x01) > 0
+        self.mode = body[2] & 0xF0
+        self.fan_speed = body[3] & 0x7F
+        self.screen_display = body[9] & 0x07
+        self.anion = (body[10] & 0x20 > 0) if len(body) > 10 else False
+        if len(body) > 14:
+            self.pm25 = body[13] + (body[14] << 8)
+        if len(body) > 15:
+            self.tvoc = body[15]
+        if message_type in [MessageType.query, MessageType.set]:
+            self.child_lock = (body[8] & 0x80 > 0) if len(body) > 8 else False
+            if len(body) > 23:
+                self.filter1_life = body[23]
+            if len(body) > 24:
+                self.filter2_life = body[24]
+            if len(body) > 29:
+                if (body[1] & 0x08) > 0:
+                    self.detect_mode = body[29] + 1
+                else:
+                    self.detect_mode = 0
+            if len(body) > 38:
+                self.hcho = body[37] + (body[38] << 8)
+        else:
+            self.child_lock = (body[10] & 0x10 > 0) if len(body) > 10 else False
+            if len(body) > 22:
+                if (body[1] & 0x08) > 0:
+                    self.detect_mode = body[22] + 1
+                else:
+                    self.detect_mode = 0
+            if len(body) > 31:
+                self.hcho = body[30] + (body[31] << 8)
+
+
+class MessageFCResponse(MessageResponse):
+    def __init__(self, message):
+        super().__init__(message)
+        body = message[self.HEADER_LENGTH: -1]
+        if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1]:
+            if self._body_type in [0xB0, 0xB1]:
+                pass
+            else:
+                self._body = FCGeneralMessageBody(body, self._message_type)
+        self.set_attr()

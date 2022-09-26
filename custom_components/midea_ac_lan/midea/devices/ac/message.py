@@ -1,45 +1,20 @@
-import logging
 from enum import IntEnum
 from ...core.message import (
     MessageType,
     MessageRequest,
     MessageResponse,
     MessageBody,
+    NewProtocolMessageBody
 )
 from ...core.crc8 import calculate
 
 
-class NewProtocolParams(IntEnum):
-    indoor_humidity = 0x1500
-    breezeless = 0x1800
-    prompt_tone = 0x1A00
-    indirect_wind = 0x4200
-    screen_display_2 = 0x1700
-
-
-class NewProtocolParamPack:
-    @staticmethod
-    def pack(param, value: bytearray, length=1, pack_len=4):
-        if pack_len == 4:
-            stream = bytearray([param >> 8, param & 0xFF, length]) + value
-        else:
-            stream = bytearray([param >> 8, param & 0xFF, 0x00, length]) + value
-        return stream
-
-    @staticmethod
-    def parse(stream, pack_len=5):
-        result = {}
-        pos = 1
-        for pack in range(0, stream[0]):
-            param = (stream[pos] << 8) + stream[pos + 1]
-            if pack_len == 5:
-                pos += 1
-            length = stream[pos + 2]
-            if length > 0:
-                value = stream[pos + 3: pos + 3 + length]
-                result[param] = value
-            pos += (3 + length)
-        return result
+class NewProtocolTags(IntEnum):
+    indoor_humidity = 0x0015
+    breezeless = 0x0018
+    prompt_tone = 0x001A
+    indirect_wind = 0x0042
+    screen_display_2 = 0x0017
 
 
 class MessageACBase(MessageRequest):
@@ -134,15 +109,15 @@ class MessageNewProtocolQuery(MessageACBase):
     @property
     def _body(self):
         query_params = [
-            NewProtocolParams.indirect_wind,
-            NewProtocolParams.breezeless,
-            NewProtocolParams.indoor_humidity,
-            NewProtocolParams.screen_display_2
+            NewProtocolTags.indirect_wind,
+            NewProtocolTags.breezeless,
+            NewProtocolTags.indoor_humidity,
+            NewProtocolTags.screen_display_2
         ]
 
         _body = bytearray([len(query_params)])
         for param in query_params:
-            _body.extend([param >> 8, param & 0xFF])
+            _body.extend([param & 0xFF, param >> 8])
         return _body
 
 
@@ -234,29 +209,29 @@ class MessageNewProtocolSet(MessageACBase):
         if self.breezeless is not None:
             pack_count += 1
             payload.extend(
-                NewProtocolParamPack.pack(
-                    param=NewProtocolParams.breezeless,
+                NewProtocolMessageBody.pack(
+                    param=NewProtocolTags.breezeless,
                     value=bytearray([0x01 if self.breezeless else 0x00])
                 ))
         if self.indirect_wind is not None:
             pack_count += 1
             payload.extend(
-                NewProtocolParamPack.pack(
-                    param=NewProtocolParams.indirect_wind,
+                NewProtocolMessageBody.pack(
+                    param=NewProtocolTags.indirect_wind,
                     value=bytearray([0x02 if self.indirect_wind else 0x01])
                 ))
         if self.prompt_tone is not None:
             pack_count += 1
             payload.extend(
-                NewProtocolParamPack.pack(
-                    param=NewProtocolParams.prompt_tone,
+                NewProtocolMessageBody.pack(
+                    param=NewProtocolTags.prompt_tone,
                     value=bytearray([0x01 if self.prompt_tone else 0x00])
                 ))
         if self.screen_display_2 is not None:
             pack_count += 1
             payload.extend(
-                NewProtocolParamPack.pack(
-                    param=NewProtocolParams.screen_display_2,
+                NewProtocolMessageBody.pack(
+                    param=NewProtocolTags.screen_display_2,
                     value=bytearray([0x64 if self.screen_display_2 else 0x00])
                 ))
         payload[0] = pack_count
@@ -307,22 +282,18 @@ class XA1MessageBody(MessageBody):
         self.indoor_humidity = body[17]
 
 
-class XBXMessageBody(MessageBody):
+class XBXMessageBody(NewProtocolMessageBody):
     def __init__(self, body, bt):
-        super().__init__(body)
-        if bt == 0xb5:
-            pack_len = 4
-        else:
-            pack_len = 5
-        params = NewProtocolParamPack.parse(body[1:-1], pack_len=pack_len)
-        if NewProtocolParams.indirect_wind in params:
-            self.indirect_wind = (params[NewProtocolParams.indirect_wind][0] == 0x02)
-        if NewProtocolParams.indoor_humidity in params:
-            self.indoor_humidity = params[NewProtocolParams.indoor_humidity][0]
-        if NewProtocolParams.breezeless in params:
-            self.breezeless = (params[NewProtocolParams.breezeless][0] == 1)
-        if NewProtocolParams.screen_display_2 in params:
-            self.screen_display_2 = (params[NewProtocolParams.screen_display_2][0] > 0)
+        super().__init__(body, bt)
+        params = self.parse()
+        if NewProtocolTags.indirect_wind in params:
+            self.indirect_wind = (params[NewProtocolTags.indirect_wind][0] == 0x02)
+        if NewProtocolTags.indoor_humidity in params:
+            self.indoor_humidity = params[NewProtocolTags.indoor_humidity][0]
+        if NewProtocolTags.breezeless in params:
+            self.breezeless = (params[NewProtocolTags.breezeless][0] == 1)
+        if NewProtocolTags.screen_display_2 in params:
+            self.screen_display_2 = (params[NewProtocolTags.screen_display_2][0] > 0)
             self.screen_display = self.screen_display_2
 
 

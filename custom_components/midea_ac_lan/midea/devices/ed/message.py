@@ -83,12 +83,12 @@ class EDMessageBody01(MessageBody):
         super().__init__(body)
         self.device_class = 0x01
         self.power = (body[2] & 0x01) > 0
-        self.water_yield = body[8] * 256 + body[7]
-        self.in_tds = body[37] * 256 + body[36]
-        self.out_tds = body[39] * 256 + body[38]
-        self.filter1 = round((body[26] * 256 + body[25]) / 24)
-        self.filter2 = round((body[28] * 256 + body[27]) / 24)
-        self.filter3 = round((body[30] * 256 + body[29]) / 24)
+        self.water_yield = body[7] + (body[8] << 8)
+        self.in_tds = body[36] + (body[37] << 8)
+        self.out_tds = body[38] + (body[39] << 8)
+        self.filter1 = round((body[25] + (body[26] << 8)) / 24)
+        self.filter2 = round((body[27] + (body[28] << 8)) / 24)
+        self.filter3 = round((body[29] + (body[30] << 8)) / 24)
         self.life1 = body[16]
         self.life2 = body[17]
         self.life3 = body[18]

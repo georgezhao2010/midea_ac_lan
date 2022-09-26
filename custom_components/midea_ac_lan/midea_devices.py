@@ -10,11 +10,15 @@ from homeassistant.const import (
     POWER_WATT,
     PERCENTAGE,
     VOLUME_LITERS,
-    DEGREE,
-    ENERGY_KILO_WATT_HOUR
+    ENERGY_KILO_WATT_HOUR,
+    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    CONCENTRATION_PARTS_PER_MILLION,
+    CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from .midea.devices.a1.device import DeviceAttributes as A1Attributes
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
+from .midea.devices.b6.device import DeviceAttributes as B6Attributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.ca.device import DeviceAttributes as CAAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
@@ -29,9 +33,63 @@ from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
 from .midea.devices.fa.device import DeviceAttributes as FAAttributes
+from .midea.devices.fc.device import DeviceAttributes as FCAttributes
+from .midea.devices.fd.device import DeviceAttributes as FDAttributes
 
 
 MIDEA_DEVICES = {
+    0xA1: {
+        "name": "Dehumidifier",
+        "entities": {
+            "humidifier": {
+                "type": "humidifier",
+                "icon": "mdi:air-humidifier"
+            },
+            A1Attributes.child_lock: {
+                "type": "lock",
+                "name": "Child Lock",
+            },
+            A1Attributes.anion: {
+                "type": "switch",
+                "name": "Anion",
+                "icon": "mdi:vanish"
+            },
+            A1Attributes.prompt_tone: {
+                "type": "switch",
+                "name": "Prompt Tone",
+                "icon": "mdi:bell"
+            },
+            A1Attributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            A1Attributes.swing: {
+                "type": "switch",
+                "name": "swing",
+                "icon": "mdi:pan-horizontal"
+            },
+            A1Attributes.fan_speed: {
+                "type": "select",
+                "name": "Fan Speed",
+                "options": "fan_speeds",
+                "icon": "mdi:fan"
+            },
+            A1Attributes.water_level_set: {
+                "type": "select",
+                "name": "Water Level Setting",
+                "options": "water_level_sets",
+                "icon": "mdi:cup-water"
+            },
+            A1Attributes.current_humidity: {
+                "type": "sensor",
+                "name": "Current Humidity",
+                "device_class": DEVICE_CLASS_HUMIDITY,
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
+            }
+        }
+    },
     0xAC: {
         "name": "Air Conditioner",
         "entities": {
@@ -169,70 +227,131 @@ MIDEA_DEVICES = {
             }
         }
     },
-    # 0xC3: {
-    #     "name": "Heat Pump Wi-Fi Controller",
-    #     "entities": {
-    #         "climate_zone1": {
-    #             "type": "climate",
-    #             "icon": "mdi:air-conditioner",
-    #             "name": "Zone1 Thermostat",
-    #             "zone": 0
-    #         },
-    #         "climate_zone2": {
-    #             "type": "climate",
-    #             "icon": "mdi:air-conditioner",
-    #             "name": "Zone2 Thermostat",
-    #             "zone": 1
-    #         },
-    #         "water-heater": {
-    #             "type": "water_heater",
-    #             "icon": "mdi:heat-pump",
-    #             "name": "Domestic hot water"
-    #         },
-    #         C3Attributes.disinfect: {
-    #             "type": "switch",
-    #             "name": "Disinfect",
-    #             "icon": "mdi:water-plus-outline"
-    #         },
-    #         C3Attributes.dhw_power: {
-    #             "type": "switch",
-    #             "name": "DHW Power",
-    #             "icon": "mdi:power"
-    #         },
-    #         C3Attributes.fast_dhw: {
-    #             "type": "switch",
-    #             "name": "Fast DHW",
-    #             "icon": "mdi:rotate-orbit"
-    #         },
-    #         C3Attributes.zone1_curve: {
-    #             "type": "switch",
-    #             "name": "Zone1 Curve",
-    #             "icon": "mdi:chart-bell-curve-cumulative"
-    #         },
-    #         C3Attributes.zone2_curve: {
-    #             "type": "switch",
-    #             "name": "Zone2 Curve",
-    #             "icon": "mdi:chart-bell-curve-cumulative"
-    #         },
-    #         C3Attributes.zone1_power: {
-    #             "type": "switch",
-    #             "name": "Zone1 Power",
-    #             "icon": "mdi:power"
-    #         },
-    #         C3Attributes.zone2_power: {
-    #             "type": "switch",
-    #             "name": "Zone2 Power",
-    #             "icon": "mdi:power"
-    #         },
-    #         C3Attributes.tank_actual_temperature: {
-    #             "type": "sensor",
-    #             "name": "Tank Actual Temperature",
-    #             "device_class": DEVICE_CLASS_TEMPERATURE,
-    #             "unit": TEMP_CELSIUS,
-    #             "state_class": "measurement"
-    #         }
-    #     }
-    # },
+    0xB6: {
+        "name": "Range Hood",
+        "entities": {
+            "fan": {
+                "type": "fan",
+                "icon": "mdi:fan"
+            },
+            B6Attributes.light: {
+                "type": "switch",
+                "name": "Light",
+                "icon": "mdi:lightbulb"
+            },
+            B6Attributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            B6Attributes.cleaning_reminder: {
+                "type": "binary_sensor",
+                "name": "Clean alert",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B6Attributes.oilcup_full: {
+                "type": "binary_sensor",
+                "name": "Oil-cup Full",
+                "icon": "mdi:cup",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B6Attributes.fan_level: {
+                "type": "sensor",
+                "name": "Fan level",
+                "icon": "mdi:fan",
+                "state_class": "measurement"
+            },
+        }
+    },
+    0xC3: {
+        "name": "Heat Pump Wi-Fi Controller",
+        "entities": {
+            "climate_zone1": {
+                "type": "climate",
+                "icon": "mdi:air-conditioner",
+                "name": "Zone1 Thermostat",
+                "zone": 0
+            },
+            "climate_zone2": {
+                "type": "climate",
+                "icon": "mdi:air-conditioner",
+                "name": "Zone2 Thermostat",
+                "zone": 1
+            },
+            "water-heater": {
+                "type": "water_heater",
+                "icon": "mdi:heat-pump",
+                "name": "Domestic hot water"
+            },
+            C3Attributes.disinfect: {
+                "type": "switch",
+                "name": "Disinfect",
+                "icon": "mdi:water-plus-outline"
+            },
+            C3Attributes.dhw_power: {
+                "type": "switch",
+                "name": "DHW Power",
+                "icon": "mdi:power"
+            },
+            C3Attributes.fast_dhw: {
+                "type": "switch",
+                "name": "Fast DHW",
+                "icon": "mdi:rotate-orbit"
+            },
+            C3Attributes.zone1_curve: {
+                "type": "switch",
+                "name": "Zone1 Curve",
+                "icon": "mdi:chart-bell-curve-cumulative"
+            },
+            C3Attributes.zone2_curve: {
+                "type": "switch",
+                "name": "Zone2 Curve",
+                "icon": "mdi:chart-bell-curve-cumulative"
+            },
+            C3Attributes.zone1_power: {
+                "type": "switch",
+                "name": "Zone1 Power",
+                "icon": "mdi:power"
+            },
+            C3Attributes.zone2_power: {
+                "type": "switch",
+                "name": "Zone2 Power",
+                "icon": "mdi:power"
+            },
+            C3Attributes.zone1_water_temp_mode: {
+                "type": "binary_sensor",
+                "name": "Zone1 Water-temperature Mode",
+                "icon": "mdi:coolant-temperature",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.zone2_water_temp_mode: {
+                "type": "binary_sensor",
+                "name": "Zone2 Water-temperature Mode",
+                "icon": "mdi:coolant-temperature",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.zone1_room_temp_mode: {
+                "type": "binary_sensor",
+                "name": "Zone1 Room-temperature Mode",
+                "icon": "mdi:home-thermometer-outline",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.zone2_room_temp_mode: {
+                "type": "binary_sensor",
+                "name": "Zone2 Room-temperature Mode",
+                "icon": "mdi:home-thermometer-outline",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.tank_actual_temperature: {
+                "type": "sensor",
+                "name": "Tank Actual Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            },
+        }
+    },
     0xCA: {
         "name": "Refrigerator",
         "entities": {
@@ -781,21 +900,21 @@ MIDEA_DEVICES = {
             EDAttributes.filter1: {
                 "type": "sensor",
                 "name": "Filter1 Available Days",
-                "icon": "mdi:filter-outline",
+                "icon": "mdi:air-filter",
                 "unit": TIME_DAYS,
                 "state_class": "measurement"
             },
             EDAttributes.filter2: {
                 "type": "sensor",
                 "name": "Filter2 Available Days",
-                "icon": "mdi:filter-outline",
+                "icon": "mdi:air-filter",
                 "unit": TIME_DAYS,
                 "state_class": "measurement"
             },
             EDAttributes.filter3: {
                 "type": "sensor",
                 "name": "Filter3 Available Days",
-                "icon": "mdi:filter-outline",
+                "icon": "mdi:air-filter",
                 "unit": TIME_DAYS,
                 "state_class": "measurement"
             },
@@ -881,5 +1000,138 @@ MIDEA_DEVICES = {
                 "icon": "mdi:power"
             },
         }
-    }
+    },
+    0xFC: {
+        "name": "Air Purifier",
+        "entities": {
+            FCAttributes.child_lock: {
+                "type": "lock",
+                "name": "Child Lock",
+            },
+            FCAttributes.anion: {
+                "type": "switch",
+                "name": "Anion",
+                "icon": "mdi:vanish"
+            },
+            FCAttributes.prompt_tone: {
+                "type": "switch",
+                "name": "Prompt Tone",
+                "icon": "mdi:bell"
+            },
+            FCAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            FCAttributes.detect_mode: {
+                "type": "select",
+                "name": "Detect Mode",
+                "options": "detect_modes",
+                "icon": "mdi:smoke-detector-variant"
+            },
+            FCAttributes.mode: {
+                "type": "select",
+                "name": "Mode",
+                "options": "modes",
+                "icon": "mdi:rotate-360"
+            },
+            FCAttributes.fan_speed: {
+                "type": "select",
+                "name": "Fan Speed",
+                "options": "fan_speeds",
+                "icon": "mdi:fan"
+            },
+            FCAttributes.screen_display: {
+                "type": "select",
+                "name": "Screen Display",
+                "options": "screen_displays",
+                "icon": "mdi:television-ambient-light"
+            },
+            FCAttributes.pm25: {
+                "type": "sensor",
+                "name": "PM 2.5",
+                "icon": "mdi:google-circles-communities",
+                "unit": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                "state_class": "measurement"
+            },
+            FCAttributes.tvoc: {
+                "type": "sensor",
+                "name": "TVOC",
+                "icon": "mdi:heat-wave",
+                "unit": CONCENTRATION_PARTS_PER_MILLION,
+                "state_class": "measurement"
+            },
+            FCAttributes.hcho: {
+                "type": "sensor",
+                "name": "Methanal",
+                "icon": "mdi:merge",
+                "unit": CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER,
+                "state_class": "measurement"
+            },
+            FCAttributes.filter1_life: {
+                "type": "sensor",
+                "name": "Filter1 Life Level",
+                "icon": "mdi:air-filter",
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
+            },
+            FCAttributes.filter2_life: {
+                "type": "sensor",
+                "name": "Filter2 Life Level",
+                "icon": "mdi:air-filter",
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
+            }
+        }
+    },
+    0xFD: {
+        "name": "Humidifier",
+        "entities": {
+            "humidifier": {
+                "type": "humidifier",
+                "icon": "mdi:air-humidifier"
+            },
+            FDAttributes.disinfect: {
+                "type": "switch",
+                "name": "Disinfect",
+                "icon": "mdi:water-plus-outline"
+            },
+            FDAttributes.prompt_tone: {
+                "type": "switch",
+                "name": "Prompt Tone",
+                "icon": "mdi:bell"
+            },
+            FDAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            FDAttributes.fan_speed: {
+                "type": "select",
+                "name": "Fan Speed",
+                "options": "fan_speeds",
+                "icon": "mdi:fan"
+            },
+            FDAttributes.screen_display: {
+                "type": "select",
+                "name": "Screen Display",
+                "options": "screen_displays",
+                "icon": "mdi:television-ambient-light"
+            },
+            FDAttributes.current_humidity: {
+                "type": "sensor",
+                "name": "Current Humidity",
+                "device_class": DEVICE_CLASS_HUMIDITY,
+                "unit": PERCENTAGE,
+                "state_class": "measurement"
+            },
+            FDAttributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
+                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": "measurement"
+            }
+        }
+    },
 }

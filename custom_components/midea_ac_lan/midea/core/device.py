@@ -209,11 +209,15 @@ class MiedaDevice(threading.Thread):
         if error_count == len(cmds):
             raise RefreshFailed
 
+    def set_subtype(self):
+        pass
+
     def pre_process_message(self, msg):
         if msg[9] == MessageType.querySubtype:
             message = MessageSubtypeResponse(msg)
             _LOGGER.debug(f"[{self.device_id}] Received: {message}")
             self._sub_type = message.sub_type
+            self.set_subtype()
             self._device_protocol_version = message.device_protocol_version
             _LOGGER.debug(f"[{self._device_id}] Subtype: {self._sub_type}. "
                           f"Device protocol version: {self._device_protocol_version}")

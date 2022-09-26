@@ -14,7 +14,12 @@ def device_selector(
     customize: str
 ):
     try:
-        module = import_module(f".{'%02x' % device_type}.device", __package__)
+
+        if device_type < 0xA0:
+            device_path = f".{'x%02x' % device_type}.device"
+        else:
+            device_path = f".{'%02x' % device_type}.device"
+        module = import_module(device_path, __package__)
         device = module.MideaAppliance(
             name=name,
             device_id=device_id,

@@ -146,6 +146,37 @@ class SubtypeMessageBody(MessageBody):
         self.sub_type = (body[2] if len(body) > 2 else 0) + ((body[3] << 8) if len(body) > 3 else 0)
 
 
+class NewProtocolMessageBody(MessageBody):
+    def __init__(self, body, bt):
+        super().__init__(body)
+        if bt == 0xb5:
+            self._pack_len = 4
+        else:
+            self._pack_len = 5
+
+    @staticmethod
+    def pack(param, value: bytearray, length=1, pack_len=4):
+        if pack_len == 4:
+            stream = bytearray([param & 0xFF, param >> 8, length]) + value
+        else:
+            stream = bytearray([param & 0xFF, param >> 8, 0x00, length]) + value
+        return stream
+
+    def parse(self):
+        result = {}
+        pos = 2
+        for pack in range(0, self.data[1]):
+            param = self.data[pos] + (self.data[pos + 1] << 8)
+            if self._pack_len == 5:
+                pos += 1
+            length = self.data[pos + 2]
+            if length > 0:
+                value = self.data[pos + 3: pos + 3 + length]
+                result[param] = value
+            pos += (3 + length)
+        return result
+
+
 class MessageResponse(MessageBase):
     def __init__(self, message):
         super().__init__()

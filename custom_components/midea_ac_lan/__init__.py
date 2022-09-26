@@ -29,8 +29,8 @@ _LOGGER = logging.getLogger(__name__)
 
 EXTRA_SENSOR = ["sensor", "binary_sensor"]
 EXTRA_CONTROL = ["switch", "lock", "select"]
-EXTRA_PLATFORM = EXTRA_SENSOR + ["switch", "lock", "select"]
-ALL_PLATFORM = ["climate", "water_heater", "fan"] + EXTRA_PLATFORM
+EXTRA_PLATFORM = EXTRA_SENSOR + EXTRA_CONTROL
+ALL_PLATFORM = ["climate", "water_heater", "fan", "humidifier"] + EXTRA_PLATFORM
 
 
 async def update_listener(hass, config_entry):

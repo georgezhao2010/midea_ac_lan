@@ -43,8 +43,8 @@ class MessageSet(MessageC3Base):
         self.dhw_power = False
         self.mode = 0
         self.zone_target_temp = [25, 25]
-        self.dhw_target_temp = 25
-        self.room_target_temp = 30
+        self.dhw_target_temp = 40
+        self.room_target_temp = 25
         self.zone1_curve = False
         self.zone2_curve = False
         self.disinfect = False
@@ -57,55 +57,44 @@ class MessageSet(MessageC3Base):
         zone2_power = 0x02 if self.zone2_power else 0x00
         dhw_power = 0x04 if self.dhw_power else 0x00
         # Byte 7
-        zone1_curve_state = 0x01 if self.zone1_curve else 0x00
-        zone2_curve_state = 0x02 if self.zone2_curve else 0x00
+        zone1_curve = 0x01 if self.zone1_curve else 0x00
+        zone2_curve = 0x02 if self.zone2_curve else 0x00
         disinfect = 0x04 if self.disinfect else 0x00
         fast_dhw = 0x08 if self.fast_dhw else 0x00
+        room_target_temp = int(self.room_target_temp * 2)
+        zone1_target_temp = int(self.zone_target_temp[0])
+        zone2_target_temp = int(self.zone_target_temp[1])
+        dhw_target_temp = int(self.dhw_target_temp)
         return bytearray([
             zone1_power | zone2_power | dhw_power,
-            self.mode, self.zone_target_temp[0], self.zone_target_temp[0],
-            self.dhw_target_temp, self.room_target_temp,
-            zone1_curve_state | zone2_curve_state | disinfect | fast_dhw
+            self.mode, zone1_target_temp, zone2_target_temp,
+            dhw_target_temp, room_target_temp,
+            zone1_curve | zone2_curve | disinfect | fast_dhw
         ])
 
 
 class C3MessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
-        self.zone_power = [
-            body[data_offset + 0] & 0x01 > 0,
-            body[data_offset + 0] & 0x02 > 0
-        ]
+        self.zone1_power = body[data_offset + 0] & 0x01 > 0
+        self.zone2_power = body[data_offset + 0] & 0x02 > 0
         self.dhw_power = body[data_offset + 0] & 0x04 > 0
         self.zone1_curve_state = body[data_offset + 0] & 0x08 > 0
         self.zone2_curve_state = body[data_offset + 0] & 0x10 > 0
         self.disinfect = body[data_offset + 0] & 0x20 > 0
         self.fast_dhw = body[data_offset + 0] & 0x40 > 0
-        self.masterCtrlOn = body[data_offset + 0] & 0x80 > 0
-        self.heating_mode = body[data_offset + 1] & 0x01 > 0
-        self.cooling_mode = body[data_offset + 1] & 0x02 > 0
-        self.DHWModeOn = body[data_offset + 1] & 0x04 > 0
-        self.doubleZoneOn = body[data_offset + 1] & 0x08 > 0
         self.zone_temp_type = [
             body[data_offset + 1] & 0x10 > 0,
             body[data_offset + 1] & 0x20 > 0
         ]
-        self.roomTempCtrlOn = body[data_offset + 1] & 0x40 > 0
-        self.roomTempModeOn = body[data_offset + 1] & 0x80 > 0
-        self.scheduleIcon = body[data_offset + 2] & 0x01 > 0
-        self.silenceIcon = body[data_offset + 2] & 0x02 > 0
-        self.holidayIcon = body[data_offset + 2] & 0x04 > 0
-        self.ecoIcon = body[data_offset + 2] & 0x08 > 0
-        self.zone1EmissionType = (body[data_offset + 2] >> 4) & 0x3
-        self.zone2EmissionType = (body[data_offset + 2] >> 6) & 0x3
-        self.mode = body[data_offset + 3] # 1 auto 2 cooling 3 heating
+        self.mode = body[data_offset + 3]
         self.mode_auto = body[data_offset + 4]
         self.zone_target_temp = [
             body[data_offset + 5],
             body[data_offset + 6]
         ]
         self.dhw_target_temp = body[data_offset + 7]
-        self.room_target_temp = body[data_offset + 8]
+        self.room_target_temp = body[data_offset + 8] / 2
         self.zone_heating_temp_max = [
             body[data_offset + 9],
             body[data_offset + 13]
@@ -122,17 +111,18 @@ class C3MessageBody(MessageBody):
             body[data_offset + 12],
             body[data_offset + 16]
         ]
-        self.room_temp_max = body[data_offset + 17]
-        self.room_temp_min = body[data_offset + 18]
+        self.room_temp_max = body[data_offset + 17] / 2
+        self.room_temp_min = body[data_offset + 18] / 2
         self.dhw_temp_max = body[data_offset + 19]
         self.dhw_temp_min = body[data_offset + 20]
         self.tank_actual_temperature = body[data_offset + 21]
-        # self.curErrorCode = body[data_offset + 22]
 
 
 class MessageC3Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
-        self._body = C3MessageBody(body, data_offset=1)
+        if (self._message_type in [MessageType.notify1, MessageType.query] and self._body_type == 0x01) or \
+                self._message_type == MessageType.notify2:
+            self._body = C3MessageBody(body, data_offset=1)
         self.set_attr()

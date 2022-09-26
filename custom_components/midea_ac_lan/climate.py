@@ -385,27 +385,24 @@ class MideaC3Climate(MideaClimate):
 
     @property
     def target_temperature_step(self):
-        return PRECISION_WHOLE
+        return PRECISION_WHOLE if \
+            self._device.get_attribute(C3Attributes.zone_temp_type)[self._zone] else PRECISION_HALVES
 
     @property
     def min_temp(self):
-        return 0
-        # raise NotImplementedError()
+        return self._device.get_attribute(C3Attributes.temperature_min)[self._zone]
 
     @property
     def max_temp(self):
-        return 100
-        # raise NotImplementedError()
+        return self._device.get_attribute(C3Attributes.temperature_max)[self._zone]
 
     @property
     def target_temperature_low(self):
-        return 0
-        # raise NotImplementedError()
+        return self._device.get_attribute(C3Attributes.temperature_min)[self._zone]
 
     @property
     def target_temperature_high(self):
-        return 100
-        #raise NotImplementedError()
+        return self._device.get_attribute(C3Attributes.temperature_max)[self._zone]
 
     def turn_on(self):
         self._device.set_attribute(attr=self._power_attr, value=True)
@@ -422,13 +419,11 @@ class MideaC3Climate(MideaClimate):
 
     @property
     def target_temperature(self):
-        return 35
-        # raise NotImplementedError()
+        return self._device.get_attribute(C3Attributes.target_temperature)[self._zone]
 
     @property
     def current_temperature(self):
-        return 52
-        # raise NotImplementedError()
+        return None
 
     def set_temperature(self, **kwargs) -> None:
         if ATTR_TEMPERATURE not in kwargs:
@@ -444,5 +439,12 @@ class MideaC3Climate(MideaClimate):
                     zone=self._zone, target_temperature=temperature, mode=mode)
             except ValueError as e:
                 pass
+
+    def set_hvac_mode(self, hvac_mode: str) -> None:
+        hvac_mode = hvac_mode.lower()
+        if hvac_mode == HVAC_MODE_OFF:
+            self.turn_off()
+        else:
+            self._device.set_mode(self._zone, self._modes.index(hvac_mode))
 
 
