@@ -1,4 +1,4 @@
-# Electric Pressure Cookers
+# Electric Pressure Cooker
 
 ## Entities
 ### Default entity

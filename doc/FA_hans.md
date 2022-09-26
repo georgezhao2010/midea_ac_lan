@@ -23,12 +23,12 @@ fan.{DEVICEID}_fan | fan | 风扇实体
 
 EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
-sensor.{DEVICEID}_oscillation_mode | select | Oscillation Mode | 摆头模式
-sensor.{DEVICEID}_oscillation_angle | select | Oscillation Angle | 水平摆头角度
-sensor.{DEVICEID}_tilting_angle | select | Tilting Angle | 垂直摆头角度
-sensor.{DEVICEID}_child_lock | lock | Child Lock | 童锁
-sensor.{DEVICEID}_oscillate | switch | Oscillate | 摆头开关
-sensor.{DEVICEID}_power | switch | Power | 电源开关
+select.{DEVICEID}_oscillation_mode | select | Oscillation Mode | 摆头模式
+select.{DEVICEID}_oscillation_angle | select | Oscillation Angle | 水平摆头角度
+select.{DEVICEID}_tilting_angle | select | Tilting Angle | 垂直摆头角度
+lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
+switch.{DEVICEID}_oscillate | switch | Oscillate | 摆头开关
+switch.{DEVICEID}_power | switch | Power | 电源开关
 
 
 ## 服务
@@ -38,7 +38,7 @@ sensor.{DEVICEID}_power | switch | Power | 电源开关
 
 [![Service](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=midea_ac_lan.set_attribute)
 
-设置风扇属性, 服务数据:
+设置设备属性, 服务数据:
 
 名称 | 描述
 --- | ---

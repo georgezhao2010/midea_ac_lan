@@ -19,7 +19,7 @@
 
 # 已支持的品牌
 
-![beverly](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/beverly.png) ![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+![beverly](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/beverly.png) ![bugu](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/bugu.png) ![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![netsu](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/netsu.png) ![rotenso](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/rotenso.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
 
 以及更多。
 
@@ -27,7 +27,10 @@
 
  类型 | 名称 |文档
  --- | --- | ---
+ A1 | 除湿器 | [A1_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/A1_hans.md)
  AC | 空调器 | [AC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC_hans.md)
+ B6 | 油烟机 | [B6_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/B6_hans.md)
+ C3 | 热泵空调Wi-Fi线控器 | [C3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/C3_hans.md)
  CA | 冰箱 | [CA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA_hans.md)
  CC | 中央空调(风管机)Wi-Fi线控器 | [CC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC_hans.md)
  CF | 中央空调暖家(水机) | [CF_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF_hans.md)
@@ -41,6 +44,8 @@
  EC | 电压力锅 | [EC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC_hans.md)
  ED | 净水器 | [ED_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED_hans.md)
  FA | 电风扇 | [FA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA_hans.md)
+ FC | 空气净化器 | [FC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FC_hans.md)
+ FD | 加湿器 | [FD_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FD_hans.md)
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的HomeAssistant的`custom_components/midea_ac_lan`中。

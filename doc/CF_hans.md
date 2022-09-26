@@ -25,7 +25,7 @@ switch.{DEVICEID}_power | switch | Power | 电源开关
 
 [![Service](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=midea_ac_lan.set_attribute)
 
-设置暖家属性, 服务数据:
+设置设备属性, 服务数据:
 
 名称 | 描述
 --- | ---

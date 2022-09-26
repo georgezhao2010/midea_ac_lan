@@ -19,7 +19,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported brands
 
-![beverly](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/beverly.png) ![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+![beverly](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/beverly.png) ![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![netsu](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/netsu.png) ![rotenso](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/rotenso.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
 
 And more.
 
@@ -27,20 +27,25 @@ And more.
 
   Type | Name | Documents
  --- | --- | ---
- AC | Air Conditioners | [AC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC.md)
- CA | Refrigerators | [CA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA.md)
- CC | MDV Wi-Fi Controllers | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
- CF | Heat Pumps | [CF.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF.md)
- DA | Top Load Washers | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
- DB | Front Load Washers | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
- DC | Clothes Dryers | [DC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC.md)
- E1 | Dishwashers | [E1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1.md)
- E2 | Electric Water Heaters | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
- E3 | Gas Water Heaters | [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
- EA | Electric Rice Cookers | [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
- EC | Electric Pressure Cookers | [EC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC.md)
- ED | Water Purifiers | [ED.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED.md)
- FA | Fans | [FA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA.md)
+ A1 | Dehumidifier | [A1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/A1.md)
+ AC | Air Conditioner | [AC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC.md)
+ B6 | Range Hood | [B6.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/B6.md)
+ C3 | Heat Pump Wi-Fi Controller | [C3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/C3.md)
+ CA | Refrigerator | [CA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA.md)
+ CC | MDV Wi-Fi Controller | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
+ CF | Heat Pump | [CF.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF.md)
+ DA | Top Load Washer | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
+ DB | Front Load Washer | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
+ DC | Clothes Dryer | [DC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC.md)
+ E1 | Dishwasher | [E1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1.md)
+ E2 | Electric Water Heater | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
+ E3 | Gas Water Heater | [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
+ EA | Electric Rice Cooker | [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
+ EC | Electric Pressure Cooker | [EC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC.md)
+ ED | Water Purifier | [ED.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED.md)
+ FA | Fan | [FA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA.md)
+ FC | Air Purifier | [FC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FC.md)
+ FD | Humidifier | [FD.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FD.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 

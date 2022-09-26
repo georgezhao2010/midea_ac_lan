@@ -1,4 +1,4 @@
-# "Water Purifier
+# Water Purifier
 
 ## Entities
 ### Default entity

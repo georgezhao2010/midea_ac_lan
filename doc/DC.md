@@ -20,7 +20,7 @@ following extra service will be made
 
 [![Service](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=midea_ac_lan.set_attribute)
 
-Set the attribute of dryer. Service data:
+Set the attribute of appliance. Service data:
 
 Name | Description
 --- | ---

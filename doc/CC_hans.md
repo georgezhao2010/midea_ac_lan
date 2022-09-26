@@ -1,4 +1,4 @@
-# 中央空调线控器
+# 中央空调Wi-Fi线控器
 ## 特性
 - 支持目标温度设定
 - 支持运行模式设定
@@ -35,7 +35,7 @@ switch.{DEVICEID}_swing | switch | Swing | 摆风
 
 [![Service](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=midea_ac_lan.set_attribute)
 
-设置空调属性, 服务数据:
+设置设备属性, 服务数据:
 
 名称 | 描述
 --- | ---

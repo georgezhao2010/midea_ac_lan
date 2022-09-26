@@ -1,4 +1,4 @@
-# Refrigerators
+# Refrigerator
 
 ## Entities
 ### Default entity

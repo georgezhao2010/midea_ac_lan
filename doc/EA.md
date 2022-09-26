@@ -1,4 +1,4 @@
-# Electric Rice Cookers
+# Electric Rice Cooker
 
 ## Entities
 ### Default entity

@@ -7,7 +7,7 @@
 
 ## Customize
 
-Set the shifts of the fan device except "Off".
+Set the levels of the fan device except "Off".
 
 ```
 {"speed_count": 3}
@@ -23,12 +23,12 @@ fan.{DEVICEID}_fan | fan | Fan entity
 
 EntityID | Class | Description
 --- | --- | ---
-sensor.{DEVICEID}_oscillation_mode | select | Oscillation Mode
-sensor.{DEVICEID}_oscillation_angle | select | Oscillation Angle
-sensor.{DEVICEID}_tilting_angle | select | Tilting Angle
-sensor.{DEVICEID}_child_lock | lock | Child Lock
-sensor.{DEVICEID}_oscillate | switch | Oscillate
-sensor.{DEVICEID}_power | switch | Power
+select.{DEVICEID}_oscillation_mode | select | Oscillation Mode
+select.{DEVICEID}_oscillation_angle | select | Oscillation Angle
+select.{DEVICEID}_tilting_angle | select | Tilting Angle
+lock.{DEVICEID}_child_lock | lock | Child Lock
+switch.{DEVICEID}_oscillate | switch | Oscillate
+switch.{DEVICEID}_power | switch | Power
 
 
 ## Services
@@ -38,7 +38,7 @@ following extra services will be made
 
 [![Service](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=midea_ac_lan.set_attribute)
 
-Set the attribute of fan. Service data:
+Set the attribute of appliance. Service data:
 
 Name | Description
 --- | ---
