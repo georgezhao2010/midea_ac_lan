@@ -7,10 +7,10 @@
 
 ## Customize
 
-Set the levels of the fan device except "Off".
+Set the levels of the fan device except "Off" (3 by default).
 
 ```
-{"speed_count": 3}
+{"speed_count": 5}
 ```
 
 ## Entities

@@ -33,6 +33,7 @@ And more.
  C3 | Heat Pump Wi-Fi Controller | [C3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/C3.md)
  CA | Refrigerator | [CA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA.md)
  CC | MDV Wi-Fi Controller | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
+ CE | Fresh Air Appliance | [CE.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CE.md)
  CF | Heat Pump | [CF.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF.md)
  DA | Top Load Washer | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
  DB | Front Load Washer | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
@@ -44,6 +45,7 @@ And more.
  EC | Electric Pressure Cooker | [EC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC.md)
  ED | Water Purifier | [ED.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED.md)
  FA | Fan | [FA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA.md)
+ FB | Electric Heater | [FB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FB.md)
  FC | Air Purifier | [FC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FC.md)
  FD | Humidifier | [FD.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FD.md)
 

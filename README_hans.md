@@ -33,6 +33,7 @@
  C3 | 热泵空调Wi-Fi线控器 | [C3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/C3_hans.md)
  CA | 冰箱 | [CA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA_hans.md)
  CC | 中央空调(风管机)Wi-Fi线控器 | [CC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC_hans.md)
+ CE | 新风设备 | [CE_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CE_hans.md)
  CF | 中央空调暖家(水机) | [CF_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF_hans.md)
  DA | 波轮洗衣机 | [DA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA_hans.md)
  DB | 滚筒洗衣机 | [DB_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB_hans.md)
@@ -44,6 +45,7 @@
  EC | 电压力锅 | [EC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC_hans.md)
  ED | 净水器 | [ED_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED_hans.md)
  FA | 电风扇 | [FA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA_hans.md)
+ FB | 电取暖器 | [FB_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FB_hans.md)
  FC | 空气净化器 | [FC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FC_hans.md)
  FD | 加湿器 | [FD_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FD_hans.md)
 

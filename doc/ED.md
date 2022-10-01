@@ -1,4 +1,4 @@
-# Water Purifier
+# Water Drinking Appliance
 
 ## Entities
 ### Default entity
@@ -17,6 +17,7 @@ sensor.{DEVICEID}_life3 | sensor | Filter3 Life Level
 sensor.{DEVICEID}_in_tds | sensor | In TDS
 sensor.{DEVICEID}_out_tds | sensor | Out TDS
 sensor.{DEVICEID}_water_yield | sensor | Water Yield
+lock.{DEVICEID}_child_lock | switch | Child Lock
 switch.{DEVICEID}_power | switch | Power
 
 ## Service

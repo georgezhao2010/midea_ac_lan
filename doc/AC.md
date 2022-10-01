@@ -12,6 +12,14 @@
 - ECO Mode
 - Boost Mode
 
+## Customize
+
+Set the temperature step of AC (0.5 by default).
+
+```
+{"temperature_step": 1}
+```
+
 ## Entities
 ### Default entity
 EntityID | Class | Description
@@ -29,6 +37,7 @@ sensor.{DEVICEID}_outdoor_temperature | sensor | Outdoor Temperature
 sensor.{DEVICEID}_total_energy_consumption | sensor | Total Energy Consumption
 sensor.{DEVICEID}_current_energy_consumption | sensor | Current Energy Consumption
 sensor.{DEVICEID}_realtime_power | sensor | Realtime Power
+fan.{DEVICEID}_fresh_air | fan | Fresh Air
 switch.{DEVICEID}_aux_heat | switch | Aux Heating
 switch.{DEVICEID}_boost_mode | switch | Boost Mode
 switch.{DEVICEID}_breezeless | switch | Breezeless
@@ -40,7 +49,6 @@ switch.{DEVICEID}_natural_wind | switch | Natural Wind
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone
 switch.{DEVICEID}_power | switch | Power
 switch.{DEVICEID}_screen_display | switch | Screen Display
-switch.{DEVICEID}_screen_display_2 | switch | Screen Display (in new-protocol)
 switch.{DEVICEID}_smart_eye | switch | Smart Eye
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
@@ -80,6 +88,12 @@ device_id | The Appliance code (Device ID) of appliance
 attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true or false
 
+Name | Description
+--- | ---
+device_id | The Appliance code (Device ID) of appliance
+attribute | "fresh_air"
+value | "Off"<br/>"Low"<br/>"Medium"<br/>"High"<br>"Boost"
+
 Example
 ```
 service: midea_ac_lan.set_attribute
@@ -87,4 +101,12 @@ data:
   device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
+```
+
+```
+service: midea_ac_lan.set_attribute
+data:
+  device_id: XXXXXXXXXXXX
+  attribute: fresh_air
+  value: "Medium"
 ```

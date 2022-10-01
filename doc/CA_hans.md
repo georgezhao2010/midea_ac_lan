@@ -20,7 +20,7 @@ sensor.{DEVICEID}_flex_zone_actual_temp | sensor | Flex-zone Actual Temperature 
 sensor.{DEVICEID}_flex_zone_setting_temp | sensor | Flex-zone Setting Temperature | 变温区设置温度
 sensor.{DEVICEID}_freezer_actual_temp | sensor | Freezer Actual Temperature | 冷冻室实际温度
 sensor.{DEVICEID}_freezer_setting_temp | sensor | Freezer Setting Temperature | 冷冻室设置温度
-sensor.{DEVICEID}_power_consumption | sensor | Power Consumption | 能耗
+sensor.{DEVICEID}_energy_consumption | sensor | Energy Consumption | 能耗
 sensor.{DEVICEID}_refrigerator_actual_temp | sensor | Refrigerator Actual Temperature | 冷藏室实际温度
 sensor.{DEVICEID}_refrigerator_setting_temp | sensor | Refrigerator setting Temperature | 冷藏室设置温度
 sensor.{DEVICEID}_right_flex_zone_actual_temp | sensor | Right Flex-zone Actual Temperature | 右变温区实际温度

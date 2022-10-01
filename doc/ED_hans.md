@@ -1,4 +1,4 @@
-# 净水器
+# 饮用水设备
 
 ## 生成实体
 ### 默认实体
@@ -17,6 +17,7 @@ sensor.{DEVICEID}_life3 | sensor | Filter3 Life Level | 滤芯3剩余寿命
 sensor.{DEVICEID}_in_tds | sensor | In TDS | 进水TDS
 sensor.{DEVICEID}_out_tds | sensor | Out TDS | 出水TDS
 sensor.{DEVICEID}_water_yield | sensor | Water Yield | 总出水量
+lock.{DEVICEID}_child_lock | switch | 童锁
 switch.{DEVICEID}_power | switch | Power | 电源开关
 
 ## 服务

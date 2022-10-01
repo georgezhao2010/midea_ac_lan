@@ -12,6 +12,15 @@
 - 节能模式
 - 强力模式
 
+## 自定义
+
+设置温度调整步长(默认为0.5).
+
+```
+{"temperature_step": 1}
+```
+
+
 ## 生成实体
 ### 默认生成实体
 实体ID | 类型 | 描述
@@ -29,6 +38,7 @@ sensor.{DEVICEID}_outdoor_temperature | sensor | Outdoor Temperature | 室外机
 sensor.{DEVICEID}_total_energy_consumption | sensor | Total Energy Consumption | 总能耗
 sensor.{DEVICEID}_current_energy_consumption | sensor | Current Energy Consumption | 当前能耗
 sensor.{DEVICEID}_realtime_power | sensor | Realtime Power | 实时功率
+fan.{DEVICEID}_fresh_air | fan | Fresh Air | 新风
 switch.{DEVICEID}_aux_heat | switch | Aux Heating | 电辅热
 switch.{DEVICEID}_boost_mode | switch | Boost Mode | 强劲模式
 switch.{DEVICEID}_breezeless | switch | Breezeless | 无风感
@@ -40,10 +50,10 @@ switch.{DEVICEID}_natural_wind | switch | Natural Wind | 自然风
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone | 提示音
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_screen_display | switch | Screen Display | 屏幕显示
-switch.{DEVICEID}_screen_display_2 | switch | Screen Display | 屏幕显示(新协议)
 switch.{DEVICEID}_smart_eye | switch | Smart Eye | 智慧眼
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal | 水平摆风
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical | 垂直摆风
+select.{DEVICEID}_fresh_air | select | Fresh Air | 新风
 
 ## 服务
 生成以下扩展服务
@@ -79,11 +89,26 @@ device_id | 设备的编号(Device ID)
 attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true 或 false
 
+Name | Description
+--- | ---
+device_id | 设备的编号(Device ID)
+attribute | "fresh_air"
+value | "Off"<br/>"Low"<br/>"Medium"<br/>"High"<br>"Boost"
+
 示例
+
 ```
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
+```
+
+```
+service: midea_ac_lan.set_attribute
+data:
+  device_id: XXXXXXXXXXXX
+  attribute: fresh_air
+  value: "Medium"
 ```

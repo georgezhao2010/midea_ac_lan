@@ -8,7 +8,7 @@
 
 EntityID | 类型 | 名称 | 描述 
 --- | --- | --- | ---
-binary_sensor.{DEVICEID}_door | Door | binary_sensor | 门状态 
+binary_sensor.{DEVICEID}_door | binary_sensor | Door | 门状态 
 binary_sensor.{DEVICEID}_rinse_aid | binary_sensor | Rinse Aid Shortage | 漂洗剂不足 
 binary_sensor.{DEVICEID}_salt | binary_sensor | Salt Shortage | 软水盐不足
 sensor.{DEVICEID}_progress | sensor | Progress | 当前程序
