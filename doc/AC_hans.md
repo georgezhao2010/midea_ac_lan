@@ -89,12 +89,6 @@ device_id | 设备的编号(Device ID)
 attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true 或 false
 
-Name | Description
---- | ---
-device_id | 设备的编号(Device ID)
-attribute | "fresh_air"
-value | "Off"<br/>"Low"<br/>"Medium"<br/>"High"<br>"Boost"
-
 示例
 
 ```
@@ -103,12 +97,4 @@ data:
   device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
-```
-
-```
-service: midea_ac_lan.set_attribute
-data:
-  device_id: XXXXXXXXXXXX
-  attribute: fresh_air
-  value: "Medium"
 ```
