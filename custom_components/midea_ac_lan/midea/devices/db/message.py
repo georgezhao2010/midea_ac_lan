@@ -44,7 +44,12 @@ class MessagePower(MessageDBBase):
     def _body(self):
         power = 0x01 if self.power else 0x00
         return bytearray([
-            power, 0xFF
+            power,
+            0xFF, 0xFF, 0xFF, 0xFF,
+            0xFF, 0xFF, 0xFF, 0xFF,
+            0xFF, 0xFF, 0xFF, 0xFF,
+            0xFF, 0xFF, 0xFF, 0xFF,
+            0xFF, 0xFF, 0xFF, 0xFF
         ])
 
 
@@ -59,12 +64,12 @@ class MessageStart(MessageDBBase):
 
     @property
     def _body(self):
-        if self.start:
+        if self.start: # Pause
             return bytearray([
                 0xFF, 0x01
             ]) + self.washing_data
         else:
-            # Stop
+            # Pause
             return bytearray([
                 0xFF, 0x00
             ])

@@ -1,24 +1,24 @@
 {
     "config": {
         "error": {
-            "no_devices": "No new available devices found on the network",
-            "device_exist": "Device is already configured",
-            "cant_get_token": "Can't connect to Midea cloud to take device‘s key-info(Token and Key)",
-            "config_incorrect": "The configuration is incorrect, please check",
-            "connect_error": "Can't connect to AC device",
+            "no_devices": "No new available appliances found on the network",
+            "device_exist": "Appliance is already configured",
+            "cant_get_token": "Can't connect to Midea cloud to take appliance‘s key-info(Token and Key)",
+            "config_incorrect": "The configuration is incorrect",
+            "connect_error": "Can't connect to appliance",
             "invalid_token": "Token or Key in an incorrect format"
         },
         "step": {
             "user": {
                 "data": {
-                    "way": "Adding devices"
+                    "way": "Adding appliances"
                 },
-                "description": "Choose 'Auto' or 'Manual' to add a new device",
-                "title": "Add new device"
+                "description": "Choose 'Auto' or 'Manual' to add a new appliance",
+                "title": "Add new appliance"
             },
             "discover": {
                 "description": "Discover new Midea devices?",
-                "title": "New device discover"
+                "title": "New appliance discover"
             },
             "byip": {
                 "description": "Input IP address for device",
@@ -27,16 +27,20 @@
                     "ip_address": "AP address"
                 }
             },
+            "list":{
+                "description": "{table}",
+                "title": "Appliances"
+            },
             "auto": {
                 "data": {
-                    "device": "Devices"
+                    "device": "Appliances"
                 },
-                "description": "Choose a device to add",
-                "title": "New device found"
+                "description": "Choose a appliance to add",
+                "title": "New appliance found"
             },
             "manual": {
                 "data": {
-                    "name": "name (e.g. Living room AC)",
+                    "name": "Name (e.g. Living room AC)",
                     "device_id": "Appliance code",
                     "type": "Type",
                     "ip_address": "IP address",
@@ -46,8 +50,8 @@
                     "token": "Token",
                     "key": "Key"
                 },
-                "description": "Configuration of AC device",
-                "title": "New device"
+                "description": "Configuration of appliance",
+                "title": "New appliance"
             }
         }
     },

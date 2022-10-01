@@ -1,11 +1,8 @@
 from homeassistant.components.humidifier import *
 from homeassistant.components.humidifier.const import *
 from homeassistant.const import (
-    TEMP_CELSIUS,
-    PRECISION_WHOLE,
-    PRECISION_HALVES,
-    ATTR_TEMPERATURE,
     CONF_DEVICE_ID,
+    CONF_SWITCHES,
     STATE_ON,
     STATE_OFF
 )
@@ -20,14 +17,17 @@ from .midea_entity import MideaEntity
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
-    humidifiers = []
+    extra_switches = config_entry.options.get(
+        CONF_SWITCHES, []
+    )
+    devs = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "humidifier":
-            if device.device_type == 0xa1:
-                humidifiers.append(MideaA1Humidifier(device, entity_key))
-            if device.device_type == 0xfd:
-                humidifiers.append(MideaFDHumidifier(device, entity_key))
-    async_add_entities(humidifiers)
+        if config["type"] == "humidifier" and (config.get("default") or entity_key in extra_switches):
+            if device.device_type == 0xA1:
+                devs.append(MideaA1Humidifier(device, entity_key))
+            if device.device_type == 0xFD:
+                devs.append(MideaFDHumidifier(device, entity_key))
+    async_add_entities(devs)
 
 
 class MideaHumidifier(MideaEntity, HumidifierEntity):

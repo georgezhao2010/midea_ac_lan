@@ -1,8 +1,4 @@
 from homeassistant.const import (
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_ENERGY,
     TIME_DAYS,
     TIME_HOURS,
     TIME_MINUTES,
@@ -16,12 +12,14 @@ from homeassistant.const import (
     CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from .midea.devices.a1.device import DeviceAttributes as A1Attributes
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
 from .midea.devices.b6.device import DeviceAttributes as B6Attributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.ca.device import DeviceAttributes as CAAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
+from .midea.devices.ce.device import DeviceAttributes as CEAttributes
 from .midea.devices.cf.device import DeviceAttributes as CFAttributes
 from .midea.devices.da.device import DeviceAttributes as DAAttributes
 from .midea.devices.db.device import DeviceAttributes as DBAttributes
@@ -33,6 +31,7 @@ from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
 from .midea.devices.fa.device import DeviceAttributes as FAAttributes
+from .midea.devices.fb.device import DeviceAttributes as FBAttributes
 from .midea.devices.fc.device import DeviceAttributes as FCAttributes
 from .midea.devices.fd.device import DeviceAttributes as FDAttributes
 
@@ -43,7 +42,8 @@ MIDEA_DEVICES = {
         "entities": {
             "humidifier": {
                 "type": "humidifier",
-                "icon": "mdi:air-humidifier"
+                "icon": "mdi:air-humidifier",
+                "default": True
             },
             A1Attributes.child_lock: {
                 "type": "lock",
@@ -84,9 +84,9 @@ MIDEA_DEVICES = {
             A1Attributes.current_humidity: {
                 "type": "sensor",
                 "name": "Current Humidity",
-                "device_class": DEVICE_CLASS_HUMIDITY,
+                "device_class": SensorDeviceClass.HUMIDITY,
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             }
         }
     },
@@ -95,7 +95,13 @@ MIDEA_DEVICES = {
         "entities": {
             "climate": {
                 "type": "climate",
-                "icon": "mdi:air-conditioner"
+                "icon": "mdi:air-conditioner",
+                "default": True
+            },
+            "fresh_air": {
+                "type": "fan",
+                "icon": "mdi:fan",
+                "name": "Fresh Air"
             },
             ACAttributes.aux_heat: {
                 "type": "switch",
@@ -105,7 +111,7 @@ MIDEA_DEVICES = {
             ACAttributes.boost_mode: {
                 "type": "switch",
                 "name": "Boost Mode",
-                "icon": "mdi:alpha-b-circle"
+                "icon": "mdi:turbine"
             },
             ACAttributes.breezeless: {
                 "type": "switch",
@@ -125,7 +131,7 @@ MIDEA_DEVICES = {
             ACAttributes.eco_mode: {
                 "type": "switch",
                 "name": "ECO Mode",
-                "icon": "mdi:alpha-e-circle"
+                "icon": "mdi:leaf-circle"
             },
             ACAttributes.indirect_wind: {
                 "type": "switch",
@@ -148,11 +154,6 @@ MIDEA_DEVICES = {
                 "icon": "mdi:power"
             },
             ACAttributes.screen_display: {
-                "type": "switch",
-                "name": "Screen Display",
-                "icon": "mdi:television-ambient-light"
-            },
-            ACAttributes.screen_display_2: {
                 "type": "switch",
                 "name": "Screen Display",
                 "icon": "mdi:television-ambient-light"
@@ -186,44 +187,44 @@ MIDEA_DEVICES = {
             ACAttributes.indoor_humidity: {
                 "type": "sensor",
                 "name": "Indoor Humidity",
-                "device_class": DEVICE_CLASS_HUMIDITY,
+                "device_class": SensorDeviceClass.HUMIDITY,
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             ACAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             ACAttributes.outdoor_temperature: {
                 "type": "sensor",
                 "name": "Outdoor Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             ACAttributes.total_energy_consumption: {
                 "type": "sensor",
                 "name": "Total Energy Consumption",
-                "device_class": DEVICE_CLASS_ENERGY,
+                "device_class": SensorDeviceClass.ENERGY,
                 "unit": ENERGY_KILO_WATT_HOUR,
-                "state_class": "total_increasing"
+                "state_class": SensorStateClass.TOTAL_INCREASING
             },
             ACAttributes.current_energy_consumption: {
                 "type": "sensor",
                 "name": "Current Energy Consumption",
-                "device_class": DEVICE_CLASS_ENERGY,
+                "device_class": SensorDeviceClass.ENERGY,
                 "unit": ENERGY_KILO_WATT_HOUR,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             ACAttributes.realtime_power: {
                 "type": "sensor",
                 "name": "Realtime Power",
-                "device_class": DEVICE_CLASS_POWER,
+                "device_class": SensorDeviceClass.POWER,
                 "unit": POWER_WATT,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             }
         }
     },
@@ -232,7 +233,8 @@ MIDEA_DEVICES = {
         "entities": {
             "fan": {
                 "type": "fan",
-                "icon": "mdi:fan"
+                "icon": "mdi:fan",
+                "default": True
             },
             B6Attributes.light: {
                 "type": "switch",
@@ -246,7 +248,7 @@ MIDEA_DEVICES = {
             },
             B6Attributes.cleaning_reminder: {
                 "type": "binary_sensor",
-                "name": "Clean alert",
+                "name": "Cleaning Reminder",
                 "icon": "mdi:alert-circle",
                 "device_class": BinarySensorDeviceClass.PROBLEM
             },
@@ -260,7 +262,7 @@ MIDEA_DEVICES = {
                 "type": "sensor",
                 "name": "Fan level",
                 "icon": "mdi:fan",
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
         }
     },
@@ -271,18 +273,21 @@ MIDEA_DEVICES = {
                 "type": "climate",
                 "icon": "mdi:air-conditioner",
                 "name": "Zone1 Thermostat",
-                "zone": 0
+                "zone": 0,
+                "default": True
             },
             "climate_zone2": {
                 "type": "climate",
                 "icon": "mdi:air-conditioner",
                 "name": "Zone2 Thermostat",
-                "zone": 1
+                "zone": 1,
+                "default": True
             },
             "water-heater": {
                 "type": "water_heater",
                 "icon": "mdi:heat-pump",
-                "name": "Domestic hot water"
+                "name": "Domestic hot water",
+                "default": True
             },
             C3Attributes.disinfect: {
                 "type": "switch",
@@ -346,9 +351,9 @@ MIDEA_DEVICES = {
             C3Attributes.tank_actual_temperature: {
                 "type": "sensor",
                 "name": "Tank Actual Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
         }
     },
@@ -406,65 +411,65 @@ MIDEA_DEVICES = {
             CAAttributes.flex_zone_actual_temp: {
                 "type": "sensor",
                 "name": "Flex Zone Actual Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             CAAttributes.flex_zone_setting_temp: {
                 "type": "sensor",
                 "name": "Flex Zone Setting Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             CAAttributes.freezer_actual_temp: {
                 "type": "sensor",
-                "name": "Freezer Actual temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "name": "Freezer Actual Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             CAAttributes.freezer_setting_temp: {
                 "type": "sensor",
-                "name": "Freezer Setting temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "name": "Freezer Setting Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
-            CAAttributes.power_consumption: {
+            CAAttributes.energy_consumption: {
                 "type": "sensor",
-                "name": "Power Consumption",
-                "device_class": DEVICE_CLASS_ENERGY,
+                "name": "Energy Consumption",
+                "device_class": SensorDeviceClass.ENERGY,
                 "unit": ENERGY_KILO_WATT_HOUR,
-                "state_class": "total_increasing"
+                "state_class": SensorStateClass.TOTAL_INCREASING
             },
             CAAttributes.refrigerator_actual_temp: {
                 "type": "sensor",
                 "name": "Refrigerator Actual Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             CAAttributes.refrigerator_setting_temp: {
                 "type": "sensor",
                 "name": "Refrigerator Setting Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             CAAttributes.right_flex_zone_actual_temp: {
                 "type": "sensor",
                 "name": "Right Flex Zone Actual Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             CAAttributes.right_flex_zone_setting_temp: {
                 "type": "sensor",
                 "name": "Right Flex Zone Setting Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
         },
     },
@@ -473,7 +478,8 @@ MIDEA_DEVICES = {
         "entities": {
             "climate": {
                 "type": "climate",
-                "icon": "hass:air-conditioner"
+                "icon": "hass:air-conditioner",
+                "default": True
             },
             CCAttributes.aux_heat: {
                 "type": "switch",
@@ -483,7 +489,7 @@ MIDEA_DEVICES = {
             CCAttributes.eco_mode: {
                 "type": "switch",
                 "name": "ECO Mode",
-                "icon": "mdi:alpha-e-circle"
+                "icon": "mdi:leaf-circle"
             },
             CCAttributes.night_light: {
                 "type": "switch",
@@ -508,9 +514,100 @@ MIDEA_DEVICES = {
             CCAttributes.indoor_temperature: {
                 "type": "sensor",
                 "name": "Indoor Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+        }
+    },
+    0xCE: {
+        "name": "Fresh Air Appliance",
+        "entities": {
+            "fan": {
+                "type": "fan",
+                "icon": "mdi:fan",
+                "default": True
+            },
+            CEAttributes.filter_cleaning_reminder: {
+                "type": "binary_sensor",
+                "name": "Filter Cleaning Reminder",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CEAttributes.filter_change_reminder: {
+                "type": "binary_sensor",
+                "name": "Filter Change Reminder",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            CEAttributes.current_humidity: {
+                "type": "sensor",
+                "name": "Current Humidity",
+                "device_class": SensorDeviceClass.HUMIDITY,
+                "unit": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            CEAttributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            CEAttributes.co2: {
+                "type": "sensor",
+                "name": "Carbon Dioxide",
+                "device_class": SensorDeviceClass.CO2,
+                "unit": CONCENTRATION_PARTS_PER_MILLION,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            CEAttributes.hcho: {
+                "type": "sensor",
+                "name": "Methanal",
+                "icon": "mdi:molecule",
+                "unit": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            CEAttributes.pm25: {
+                "type": "sensor",
+                "name": "PM 2.5",
+                "device_class": SensorDeviceClass.PM25,
+                "unit": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            CEAttributes.child_lock: {
+                "type": "lock",
+                "name": "Child Lock"
+            },
+            CEAttributes.aux_heat: {
+                "type": "switch",
+                "name": "Aux Heating",
+                "icon": "mdi:heat-wave"
+            },
+            CEAttributes.eco_mode: {
+                "type": "switch",
+                "name": "ECO Mode",
+                "icon": "mdi:leaf-circle"
+            },
+            CEAttributes.link_to_ac: {
+                "type": "switch",
+                "name": "Link to AC",
+                "icon": "mdi:link"
+            },
+            CEAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            CEAttributes.powerful_purify: {
+                "type": "switch",
+                "name": "Powerful Purification",
+                "icon": "mdi:turbine"
+            },
+            CEAttributes.sleep_mode: {
+                "type": "switch",
+                "name": "Sleep Mode",
+                "icon": "mdi:power-sleep"
             },
         }
     },
@@ -519,7 +616,8 @@ MIDEA_DEVICES = {
         "entities": {
             "climate": {
                 "type": "climate",
-                "icon": "hass:air-conditioner"
+                "icon": "hass:air-conditioner",
+                "default": True
             },
             CFAttributes.aux_heat: {
                 "type": "switch",
@@ -534,9 +632,9 @@ MIDEA_DEVICES = {
             CFAttributes.current_temperature: {
                 "type": "sensor",
                 "name": "Current Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
         }
     },
@@ -548,7 +646,7 @@ MIDEA_DEVICES = {
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             DAAttributes.progress: {
                 "type": "sensor",
@@ -575,7 +673,7 @@ MIDEA_DEVICES = {
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             DBAttributes.progress: {
                 "type": "sensor",
@@ -602,7 +700,7 @@ MIDEA_DEVICES = {
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             DCAttributes.progress: {
                 "type": "sensor",
@@ -657,14 +755,14 @@ MIDEA_DEVICES = {
                 "name": "Storage Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_HOURS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             E1Attributes.time_remaining: {
                 "type": "sensor",
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             E1Attributes.child_lock: {
                 "type": "lock",
@@ -687,7 +785,8 @@ MIDEA_DEVICES = {
         "entities": {
             "water_heater": {
                 "type": "water_heater",
-                "icon": "mdi:meter-electric-outline"
+                "icon": "mdi:meter-electric-outline",
+                "default": True
             },
             E2Attributes.heating: {
                 "type": "binary_sensor",
@@ -710,9 +809,9 @@ MIDEA_DEVICES = {
             E2Attributes.current_temperature: {
                 "type": "sensor",
                 "name": "Current Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             E2Attributes.power: {
                 "type": "switch",
@@ -736,7 +835,8 @@ MIDEA_DEVICES = {
         "entities": {
             "water_heater": {
                 "type": "water_heater",
-                "icon": "mdi:meter-gas"
+                "icon": "mdi:meter-gas",
+                "default": True
             },
             E3Attributes.burning_state: {
                 "type": "binary_sensor",
@@ -753,9 +853,9 @@ MIDEA_DEVICES = {
             E3Attributes.current_temperature: {
                 "type": "sensor",
                 "name": "Current Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             E3Attributes.power: {
                 "type": "switch",
@@ -797,16 +897,16 @@ MIDEA_DEVICES = {
             EAAttributes.bottom_temperature: {
                 "type": "sensor",
                 "name": "Bottom Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EAAttributes.keep_warm_time: {
                 "type": "sensor",
                 "name": "Keep Warm Time",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EAAttributes.mode: {
                 "type": "sensor",
@@ -823,14 +923,14 @@ MIDEA_DEVICES = {
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EAAttributes.top_temperature: {
                 "type": "sensor",
                 "name": "Top Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
         }
     },
@@ -852,16 +952,16 @@ MIDEA_DEVICES = {
             ECAttributes.bottom_temperature: {
                 "type": "sensor",
                 "name": "Bottom Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             ECAttributes.keep_warm_time: {
                 "type": "sensor",
                 "name": "Keep Warm Time",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             ECAttributes.mode: {
                 "type": "sensor",
@@ -878,20 +978,24 @@ MIDEA_DEVICES = {
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_MINUTES,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             ECAttributes.top_temperature: {
                 "type": "sensor",
                 "name": "Top Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
         }
     },
     0xED: {
-        "name": "Water Purifier",
+        "name": "Water Drinking Appliance",
         "entities": {
+            EDAttributes.child_lock: {
+                "type": "lock",
+                "name": "Child Lock"
+            },
             EDAttributes.power: {
                 "type": "switch",
                 "name": "Power",
@@ -902,61 +1006,63 @@ MIDEA_DEVICES = {
                 "name": "Filter1 Available Days",
                 "icon": "mdi:air-filter",
                 "unit": TIME_DAYS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.filter2: {
                 "type": "sensor",
                 "name": "Filter2 Available Days",
                 "icon": "mdi:air-filter",
                 "unit": TIME_DAYS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.filter3: {
                 "type": "sensor",
                 "name": "Filter3 Available Days",
                 "icon": "mdi:air-filter",
                 "unit": TIME_DAYS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.life1: {
                 "type": "sensor",
                 "name": "Filter1 Life Level",
                 "icon": "mdi:percent",
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.life2: {
                 "type": "sensor",
                 "name": "Filter2 Life Level",
                 "icon": "mdi:percent",
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.life3: {
                 "type": "sensor",
                 "name": "Filter3 Life Level",
                 "icon": "mdi:percent",
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.in_tds: {
                 "type": "sensor",
                 "name": "In TDS",
                 "icon": "mdi:water",
-                "state_class": "measurement"
+                "unit": CONCENTRATION_PARTS_PER_MILLION,
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.out_tds: {
                 "type": "sensor",
                 "name": "Out TDS",
                 "icon": "mdi:water-plus",
-                "state_class": "measurement"
+                "unit": CONCENTRATION_PARTS_PER_MILLION,
+                "state_class": SensorStateClass.MEASUREMENT
             },
             EDAttributes.water_yield: {
                 "type": "sensor",
-                "name": "Water Litre",
+                "name": "Water Yield",
                 "icon": "mdi:water-pump",
-                "state_class": "total_increasing",
-                "unit": VOLUME_LITERS
+                "unit": VOLUME_LITERS,
+                "state_class": SensorStateClass.TOTAL_INCREASING
             }
         }
     },
@@ -965,7 +1071,8 @@ MIDEA_DEVICES = {
         "entities": {
             "fan": {
                 "type": "fan",
-                "icon": "mdi:fan"
+                "icon": "mdi:fan",
+                "default": True
             },
             FAAttributes.oscillation_mode: {
                 "type": "select",
@@ -998,6 +1105,40 @@ MIDEA_DEVICES = {
                 "type": "switch",
                 "name": "Power",
                 "icon": "mdi:power"
+            },
+        }
+    },
+    0xFB: {
+        "name": "Electric Heater",
+        "entities": {
+            "climate": {
+                "type": "climate",
+                "icon": "mdi:air-conditioner",
+                "default": True
+            },
+            FBAttributes.child_lock: {
+                "type": "lock",
+                "name": "Child Lock",
+            },
+            FBAttributes.heating_level: {
+                "type": "number",
+                "name": "Heating Level",
+                "icon": "mdi:fire",
+                "max": 10,
+                "min": 1,
+                "step": 1
+            },
+            FBAttributes.power: {
+                "type": "switch",
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            FBAttributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
             },
         }
     },
@@ -1050,37 +1191,37 @@ MIDEA_DEVICES = {
             FCAttributes.pm25: {
                 "type": "sensor",
                 "name": "PM 2.5",
-                "icon": "mdi:google-circles-communities",
+                "device_class": SensorDeviceClass.PM25,
                 "unit": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             FCAttributes.tvoc: {
                 "type": "sensor",
                 "name": "TVOC",
                 "icon": "mdi:heat-wave",
                 "unit": CONCENTRATION_PARTS_PER_MILLION,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             FCAttributes.hcho: {
                 "type": "sensor",
                 "name": "Methanal",
-                "icon": "mdi:merge",
-                "unit": CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER,
-                "state_class": "measurement"
+                "icon": "mdi:molecule",
+                "unit": CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+                "state_class": SensorStateClass.MEASUREMENT
             },
             FCAttributes.filter1_life: {
                 "type": "sensor",
                 "name": "Filter1 Life Level",
                 "icon": "mdi:air-filter",
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             FCAttributes.filter2_life: {
                 "type": "sensor",
                 "name": "Filter2 Life Level",
                 "icon": "mdi:air-filter",
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             }
         }
     },
@@ -1089,7 +1230,8 @@ MIDEA_DEVICES = {
         "entities": {
             "humidifier": {
                 "type": "humidifier",
-                "icon": "mdi:air-humidifier"
+                "icon": "mdi:air-humidifier",
+                "default": True
             },
             FDAttributes.disinfect: {
                 "type": "switch",
@@ -1121,16 +1263,16 @@ MIDEA_DEVICES = {
             FDAttributes.current_humidity: {
                 "type": "sensor",
                 "name": "Current Humidity",
-                "device_class": DEVICE_CLASS_HUMIDITY,
+                "device_class": SensorDeviceClass.HUMIDITY,
                 "unit": PERCENTAGE,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             },
             FDAttributes.current_temperature: {
                 "type": "sensor",
                 "name": "Current Temperature",
-                "device_class": DEVICE_CLASS_TEMPERATURE,
+                "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
-                "state_class": "measurement"
+                "state_class": SensorStateClass.MEASUREMENT
             }
         }
     },

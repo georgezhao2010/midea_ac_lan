@@ -59,6 +59,7 @@ class MiedaDevice(threading.Thread):
         self._protocol = protocol
         self._model = model
         self._updates = []
+        self._unsupported_protocol = []
         self._is_run = False
         self._available = True
         self._device_protocol_version = 0
@@ -186,26 +187,30 @@ class MiedaDevice(threading.Thread):
         cmds = self.build_query()
         error_count = 0
         for cmd in cmds:
-            self.build_send(cmd)
-            if wait_response:
-                try:
-                    while True:
-                        msg = self._socket.recv(512)
-                        if len(msg) == 0:
-                            raise socket.error
-                        result = self.parse_message(msg)
-                        if result == ParseMessageResult.SUCCESS:
-                            break
-                        elif result == ParseMessageResult.PADDING:
-                            continue
-                        else:
-                            raise ResponseException
-                except socket.timeout:
-                    error_count += 1
-                    _LOGGER.debug(f"[{self._device_id}] Does not supports "
-                                  f"the protocol {cmd.__class__.__name__}, ignored")
-                except ResponseException:
-                    error_count += 1
+            if cmd.__class__.__name__ not in self._unsupported_protocol:
+                self.build_send(cmd)
+                if wait_response:
+                    try:
+                        while True:
+                            msg = self._socket.recv(512)
+                            if len(msg) == 0:
+                                raise socket.error
+                            result = self.parse_message(msg)
+                            if result == ParseMessageResult.SUCCESS:
+                                break
+                            elif result == ParseMessageResult.PADDING:
+                                continue
+                            else:
+                                raise ResponseException
+                    except socket.timeout:
+                        error_count += 1
+                        self._unsupported_protocol.append(cmd.__class__.__name__)
+                        _LOGGER.debug(f"[{self._device_id}] Does not supports "
+                                      f"the protocol {cmd.__class__.__name__}, ignored")
+                    except ResponseException:
+                        error_count += 1
+            else:
+                error_count += 1
         if error_count == len(cmds):
             raise RefreshFailed
 

@@ -53,7 +53,7 @@ class CAGeneralMessageBody(MessageBody):
         else:
             self.right_flex_zone_setting_temp = 0
 
-        self.power_consumption = (body[13] << 8) + body[12]
+        self.energy_consumption = (body[13] << 8) + body[12]
         self.refrigerator_actual_temp = (body[17] - 100) / 2
         self.freezer_actual_temp = (body[18] - 100) / 2
         self.flex_zone_actual_temp = (body[19] - 100) / 2

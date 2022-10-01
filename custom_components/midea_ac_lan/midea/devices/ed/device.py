@@ -1,6 +1,7 @@
 import logging
 from .message import (
-    MessageQuery,
+    MessageQuery01,
+    MessageQuery07,
     MessageEDResponse,
     MessageNewSet,
     MessageOldSet
@@ -22,6 +23,7 @@ class DeviceAttributes(StrEnum):
     life1 = "life1"
     life2 = "life2"
     life3 = "life3"
+    child_lock = "child_lock"
 
 
 class MideaEDDevice(MiedaDevice):
@@ -59,14 +61,18 @@ class MideaEDDevice(MiedaDevice):
             DeviceAttributes.filter3: None,
             DeviceAttributes.life1: None,
             DeviceAttributes.life2: None,
-            DeviceAttributes.life3: None
+            DeviceAttributes.life3: None,
+            DeviceAttributes.child_lock: False
         }
 
     def _use_new_set(self):
         return True if (self._sub_type > 342 or self._sub_type == 340) else False
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version, 0x01)]
+        return [
+            MessageQuery01(self._device_protocol_version),
+            MessageQuery07(self._device_protocol_version),
+        ]
 
     def process_message(self, msg):
         message = MessageEDResponse(msg)
@@ -82,7 +88,10 @@ class MideaEDDevice(MiedaDevice):
         message = None
         if attr in [DeviceAttributes.power]:
             if self._use_new_set():
-                if attr in [DeviceAttributes.power]:
+                if attr in [
+                    DeviceAttributes.power,
+                    DeviceAttributes.child_lock
+                ]:
                     message = MessageNewSet(self._device_protocol_version)
             else:
                 if attr in []:

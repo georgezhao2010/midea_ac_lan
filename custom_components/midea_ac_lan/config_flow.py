@@ -1,6 +1,8 @@
 import logging
 from .const import (
     DOMAIN,
+    EXTRA_SENSOR,
+    EXTRA_CONTROL,
     CONF_KEY,
     CONF_MODEL,
     MIDEA_DEFAULT_ACCOUNT,
@@ -32,7 +34,7 @@ import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-ADD_WAY = {"auto": "Auto", "by_ip": "By IP", "manual": "Manual"}
+ADD_WAY = {"auto": "Auto", "by_ip": "By IP", "manual": "Manual", "list": "Just list appliances"}
 PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
 DEFAULT_TOKEN = "EE755A84A115703768BCC7C6C13D3D629AA416F1E2FD798BEB9F78CBB1381D09" \
                 "1CC245D7B063AAD2A900E5B498FBD936C811F5D504B2E656D4F33B3BBC6D1DA3"
@@ -60,8 +62,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             elif user_input["action"] == "manual":
                 self.found_device = {}
                 return await self.async_step_manual()
-            else:
+            elif user_input["action"] == "by_ip":
                 return await self.async_step_byip()
+            else:
+                return await self.async_step_list()
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
@@ -84,6 +88,22 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_user(error="no_devices")
         return self.async_show_form(
             step_id="discover",
+            errors={"base": error} if error else None
+        )
+
+    async def async_step_list(self, user_input=None, error=None):
+        all_devices = discover()
+
+        if len(all_devices) > 0:
+            table = "Appliance code|Type|IP address|SN|Supported\n:--:|:--:|:--:|:--:|:--:"
+            for device_id, device in all_devices.items():
+                table += f"\n{device_id}|{'%02X' % device.get(CONF_TYPE)}|{device.get(CONF_IP_ADDRESS)}|" + \
+                         f"{device.get('sn')}|{device.get(CONF_TYPE) in self.supports.keys()}"
+        else:
+            table = "Not found"
+        return self.async_show_form(
+            step_id="list",
+            description_placeholders={"table": table},
             errors={"base": error} if error else None
         )
 
@@ -287,38 +307,17 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry):
         self.config_entry = config_entry
-        # Compatibility with earlier versions
         self._device_type = config_entry.data.get(CONF_TYPE)
         if self._device_type is None:
             self._device_type = 0xac
-        if self._device_type == 0xac:
-            if CONF_SWITCHES in self.config_entry.options and \
-                    "turbo_mode" in self.config_entry.options[CONF_SWITCHES]:
-                self.config_entry.options[CONF_SWITCHES].remove("turbo_mode")
-            if CONF_SWITCHES in self.config_entry.options and \
-                    "breezyless" in self.config_entry.options[CONF_SWITCHES]:
-                self.config_entry.options[CONF_SWITCHES].remove("breezyless")
-            if CONF_SWITCHES in self.config_entry.options and \
-                    "night_light" in self.config_entry.options[CONF_SWITCHES]:
-                self.config_entry.options[CONF_SWITCHES].remove("night_light")
-        elif self._device_type == 0xe2:
-            if CONF_SWITCHES in self.config_entry.options and \
-                    "auto_cut_out" in self.config_entry.options[CONF_SWITCHES]:
-                self.config_entry.options[CONF_SWITCHES].remove("auto_cut_out")
-            if CONF_SENSORS in self.config_entry.options and \
-                    "temperature" in self.config_entry.options[CONF_SENSORS]:
-                self.config_entry.options[CONF_SENSORS].remove("temperature")
-            if CONF_SENSORS in self.config_entry.options and \
-                    "heating_power" in self.config_entry.options[CONF_SENSORS]:
-                self.config_entry.options[CONF_SENSORS].remove("heating_power")
-            if CONF_SENSORS in self.config_entry.options and \
-                    "heat_insulating" in self.config_entry.options[CONF_SENSORS]:
-                self.config_entry.options[CONF_SENSORS].remove("heat_insulating")
-        elif self._device_type == 0xe3:
-            if CONF_SENSORS in self.config_entry.options and \
-                    "temperature" in self.config_entry.options[CONF_SENSORS]:
-                self.config_entry.options[CONF_SENSORS].remove("temperature")
-        # End of compatibility with earlier versions
+        if CONF_SENSORS in self.config_entry.options:
+            for key in self.config_entry.options[CONF_SENSORS]:
+                if key not in MIDEA_DEVICES[self._device_type]["entities"]:
+                    self.config_entry.options[CONF_SENSORS].remove(key)
+        if CONF_SWITCHES in self.config_entry.options:
+            for key in self.config_entry.options[CONF_SWITCHES]:
+                if key not in MIDEA_DEVICES[self._device_type]["entities"]:
+                    self.config_entry.options[CONF_SWITCHES].remove(key)
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
@@ -326,10 +325,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         sensors = {}
         switches = {}
         for attribute, attribute_config in MIDEA_DEVICES.get(self._device_type).get("entities").items():
-            if attribute_config.get("type") in ["sensor", "binary_sensor"]:
-                sensors[attribute.value] = attribute_config.get("name")
-            elif attribute_config.get("type") in ["switch", "lock", "select"]:
-                switches[attribute.value] = attribute_config.get("name")
+            attribute_name = attribute if type(attribute) is str else attribute.value
+            if attribute_config.get("type") in EXTRA_SENSOR:
+                sensors[attribute_name] = attribute_config.get("name")
+            elif attribute_config.get("type") in EXTRA_CONTROL and not attribute_config.get("default"):
+                switches[attribute_name] = attribute_config.get("name")
         extra_sensors = self.config_entry.options.get(
             CONF_SENSORS, []
         )

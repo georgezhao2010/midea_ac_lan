@@ -27,6 +27,10 @@
                     "ip_address": "IP地址"
                 }
             },
+            "list":{
+                "description": "{table}",
+                "title": "设备"
+            },
             "auto": {
                 "data": {
                     "device": "设备"
@@ -46,7 +50,7 @@
                     "token": "Token",
                     "key": "Key"
                 },
-                "description": "配置空调的参数设置",
+                "description": "配置设备参数",
                 "title": "新设备"
             }
         }

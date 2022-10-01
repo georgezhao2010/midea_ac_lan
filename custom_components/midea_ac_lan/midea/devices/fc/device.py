@@ -159,7 +159,7 @@ class MideaFCDevice(MiedaDevice):
         else:
             message = self.make_message_set()
             if attr == DeviceAttributes.mode:
-                if value in MideaFCDevice._speeds.values():
+                if value in MideaFCDevice._modes.values():
                     message.mode = list(MideaFCDevice._modes.keys())[
                         list(MideaFCDevice._modes.values()).index(value)
                     ]

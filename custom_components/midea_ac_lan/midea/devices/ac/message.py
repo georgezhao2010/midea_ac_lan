@@ -11,10 +11,12 @@ from ...core.crc8 import calculate
 
 class NewProtocolTags(IntEnum):
     indoor_humidity = 0x0015
+    screen_display = 0x0017
     breezeless = 0x0018
     prompt_tone = 0x001A
     indirect_wind = 0x0042
-    screen_display_2 = 0x0017
+    fresh_air_1 = 0x0233
+    fresh_air_2 = 0x004b
 
 
 class MessageACBase(MessageRequest):
@@ -112,7 +114,9 @@ class MessageNewProtocolQuery(MessageACBase):
             NewProtocolTags.indirect_wind,
             NewProtocolTags.breezeless,
             NewProtocolTags.indoor_humidity,
-            NewProtocolTags.screen_display_2
+            NewProtocolTags.screen_display,
+            NewProtocolTags.fresh_air_1,
+            NewProtocolTags.fresh_air_2
         ]
 
         _body = bytearray([len(query_params)])
@@ -200,7 +204,9 @@ class MessageNewProtocolSet(MessageACBase):
         self.indirect_wind = None
         self.prompt_tone = None
         self.breezeless = None
-        self.screen_display_2 = None
+        self.screen_display = None
+        self.fresh_air_1 = None
+        self.fresh_air_2 = None
 
     @property
     def _body(self):
@@ -227,12 +233,39 @@ class MessageNewProtocolSet(MessageACBase):
                     param=NewProtocolTags.prompt_tone,
                     value=bytearray([0x01 if self.prompt_tone else 0x00])
                 ))
-        if self.screen_display_2 is not None:
+        if self.screen_display is not None:
             pack_count += 1
             payload.extend(
                 NewProtocolMessageBody.pack(
-                    param=NewProtocolTags.screen_display_2,
-                    value=bytearray([0x64 if self.screen_display_2 else 0x00])
+                    param=NewProtocolTags.screen_display,
+                    value=bytearray([0x64 if self.screen_display else 0x00])
+                ))
+        if self.fresh_air_1 is not None and len(self.fresh_air_1) == 2:
+            pack_count += 1
+            fresh_air_power = 2 if self.fresh_air_1[0] > 0 else 1
+            fresh_air_fan_speed = self.fresh_air_1[1]
+            payload.extend(
+                NewProtocolMessageBody.pack(
+                    param=NewProtocolTags.fresh_air_1,
+                    value=bytearray([
+                        fresh_air_power,
+                        fresh_air_fan_speed,
+                        0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00
+                    ])
+                ))
+        if self.fresh_air_2 is not None and len(self.fresh_air_2) == 2:
+            pack_count += 1
+            fresh_air_power = 1 if self.fresh_air_2[0] > 0 else 0
+            fresh_air_fan_speed = self.fresh_air_2[1]
+            payload.extend(
+                NewProtocolMessageBody.pack(
+                    param=NewProtocolTags.fresh_air_2,
+                    value=bytearray([
+                        fresh_air_power,
+                        fresh_air_fan_speed,
+                        0xFF
+                    ])
                 ))
         payload[0] = pack_count
         return payload
@@ -254,8 +287,6 @@ class XA0MessageBody(MessageBody):
         self.eco_mode = (body[9] & 0x10) > 0
         self.sleep_mode = (body[10] & 0x01) > 0
         self.natural_wind = (body[10] & 0x40) > 0
-        self.screen_display = ((body[11] & 0x7) != 0x7) and self.power
-        self.screen_display_2 = self.screen_display
         self.full_dust = (body[13] & 0x20) > 0
         self.comfort_mode = (body[14] & 0x1) > 0 if len(body) > 16 else False
 
@@ -292,9 +323,19 @@ class XBXMessageBody(NewProtocolMessageBody):
             self.indoor_humidity = params[NewProtocolTags.indoor_humidity][0]
         if NewProtocolTags.breezeless in params:
             self.breezeless = (params[NewProtocolTags.breezeless][0] == 1)
-        if NewProtocolTags.screen_display_2 in params:
-            self.screen_display_2 = (params[NewProtocolTags.screen_display_2][0] > 0)
-            self.screen_display = self.screen_display_2
+        if NewProtocolTags.screen_display in params:
+            self.screen_display = (params[NewProtocolTags.screen_display][0] > 0)
+            self.screen_display_new = True
+        if NewProtocolTags.fresh_air_1 in params:
+            self.fresh_air_1 = True
+            data = params[NewProtocolTags.fresh_air_1]
+            self.fresh_air_power = data[0] == 0x02
+            self.fresh_air_fan_speed = data[1]
+        if NewProtocolTags.fresh_air_2 in params:
+            self.fresh_air_2 = True
+            data = params[NewProtocolTags.fresh_air_2]
+            self.fresh_air_power = data[0] > 0
+            self.fresh_air_fan_speed = data[1]
 
 
 class XC0MessageBody(MessageBody):
@@ -332,7 +373,6 @@ class XC0MessageBody(MessageBody):
                 self.outdoor_temperature = temp_integer - temp_decimal
         self.full_dust = (body[13] & 0x20) > 0
         self.screen_display = ((body[14] >> 4 & 0x7) != 0x07) and self.power
-        self.screen_display_2 = self.screen_display
         self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 24 else False
 
 

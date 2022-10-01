@@ -1,9 +1,21 @@
+from enum import IntEnum
 from ...core.message import (
     MessageType,
     MessageRequest,
     MessageResponse,
     MessageBody,
 )
+
+
+class NewSetTags(IntEnum):
+    power = 0x0100
+    lock = 0x0201
+
+
+class EDNewSetParamPack:
+    @staticmethod
+    def pack(param, value, addition=0):
+        return bytearray([param & 0xFF, param >> 8, value, addition & 0xFF, addition >> 8])
 
 
 class MessageEDBase(MessageRequest):
@@ -21,21 +33,27 @@ class MessageEDBase(MessageRequest):
 
 
 class MessageQuery(MessageEDBase):
-    def __init__(self, device_protocol_version, body_type):
+    def __init__(self, device_protocol_version, device_class):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
-            body_type=body_type)
+            body_type=device_class)
 
     @property
     def _body(self):
         return bytearray([0x01])
 
 
-class EDNewSetParamPack:
-    @staticmethod
-    def pack(param, value, addition=0):
-        return bytearray([param, 0x01, value, addition & 0xFF, addition >> 8])
+class MessageQuery01(MessageQuery):  # 净水器
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version, device_class=0x01)
+
+
+class MessageQuery07(MessageQuery):  # 管线机
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version, device_class=0x07)
 
 
 class MessageNewSet(MessageEDBase):
@@ -45,6 +63,7 @@ class MessageNewSet(MessageEDBase):
             message_type=MessageType.set,
             body_type=0x15)
         self.power = None
+        self.lock = None
 
     @property
     def _body(self):
@@ -54,8 +73,16 @@ class MessageNewSet(MessageEDBase):
             pack_count += 1
             payload.extend(
                 EDNewSetParamPack.pack(
-                    param=0x00,  # power
+                    param=NewSetTags.power,  # power
                     value=0x01 if self.power else 0x00
+                )
+            )
+        if self.lock is not None:
+            pack_count += 1
+            payload.extend(
+                EDNewSetParamPack.pack(
+                    param=NewSetTags.lock,  # lock
+                    value=0x01 if self.lock else 0x00
                 )
             )
         payload[1] = pack_count
@@ -86,6 +113,7 @@ class EDMessageBody01(MessageBody):
         self.water_yield = body[7] + (body[8] << 8)
         self.in_tds = body[36] + (body[37] << 8)
         self.out_tds = body[38] + (body[39] << 8)
+        self.child_lock = body[15]
         self.filter1 = round((body[25] + (body[26] << 8)) / 24)
         self.filter2 = round((body[27] + (body[28] << 8)) / 24)
         self.filter3 = round((body[29] + (body[30] << 8)) / 24)
@@ -112,6 +140,9 @@ class EDMessageBody06(MessageBody):
 class EDMessageBody07(MessageBody):
     def __init__(self, body):
         super().__init__(body)
+        self.water_yield = (body[21] << 8) + body[20]
+        self.power = (body[51] & 0x01) > 0
+        self.child_lock = (body[51] & 0x08) > 0
 
 
 class MessageEDResponse(MessageResponse):

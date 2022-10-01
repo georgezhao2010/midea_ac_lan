@@ -71,7 +71,7 @@ class MessageSet(MessageFCBase):
         # byte1 power
         power = 0x01 if self.power else 0x00
         detect = 0x08 if self.detect_mode > 0 else 0x00
-        detect_mode = self.detect_mode - 1
+        detect_mode = (self.detect_mode - 1) if self.detect_mode > 0 else 0
         # byte2 mode
         # byte3 fan_speed
         # byte 8 child_lock
@@ -93,48 +93,75 @@ class MessageSet(MessageFCBase):
 
 
 class FCGeneralMessageBody(MessageBody):
-    def __init__(self, body, message_type):
+    def __init__(self, body):
         super().__init__(body)
         self.power = (body[1] & 0x01) > 0
         self.mode = body[2] & 0xF0
         self.fan_speed = body[3] & 0x7F
         self.screen_display = body[9] & 0x07
-        self.anion = (body[10] & 0x20 > 0) if len(body) > 10 else False
-        if len(body) > 14:
+        if len(body) > 14 & body[14] != 0xFF:
             self.pm25 = body[13] + (body[14] << 8)
-        if len(body) > 15:
-            self.tvoc = body[15]
-        if message_type in [MessageType.query, MessageType.set]:
-            self.child_lock = (body[8] & 0x80 > 0) if len(body) > 8 else False
-            if len(body) > 23:
-                self.filter1_life = body[23]
-            if len(body) > 24:
-                self.filter2_life = body[24]
-            if len(body) > 29:
-                if (body[1] & 0x08) > 0:
-                    self.detect_mode = body[29] + 1
-                else:
-                    self.detect_mode = 0
-            if len(body) > 38:
-                self.hcho = body[37] + (body[38] << 8)
         else:
-            self.child_lock = (body[10] & 0x10 > 0) if len(body) > 10 else False
-            if len(body) > 22:
-                if (body[1] & 0x08) > 0:
-                    self.detect_mode = body[22] + 1
-                else:
-                    self.detect_mode = 0
-            if len(body) > 31:
-                self.hcho = body[30] + (body[31] << 8)
+            self.pm25 = None
+        if len(body) > 15 & body[15] != 0xFF:
+            self.tvoc = body[15]
+        else:
+            self.tvoc = None
+        self.anion = (body[19] & 0x40 > 0) if len(body) > 19 else False
+        self.child_lock = (body[8] & 0x80 > 0) if len(body) > 8 else False
+        if len(body) > 23:
+            self.filter1_life = body[23]
+        if len(body) > 24:
+            self.filter2_life = body[24]
+        if len(body) > 29:
+            if (body[1] & 0x08) > 0:
+                self.detect_mode = body[29] + 1
+            else:
+                self.detect_mode = 0
+        if len(body) > 38 & body[38] != 0xFF:
+            self.hcho = body[37] + (body[38] << 8)
+        else:
+            self.hcho = None
+
+
+class FCNotifyMessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        self.power = (body[1] & 0x01) > 0
+        self.mode = body[2] & 0xF0
+        self.fan_speed = body[3] & 0x7F
+        self.screen_display = body[9] & 0x07
+        if len(body) > 14 & body[14] != 0xFF:
+            self.pm25 = body[13] + (body[14] << 8)
+        else:
+            self.pm25 = None
+        if len(body) > 15 & body[15] != 0xFF:
+            self.tvoc = body[15]
+        else:
+            self.tvoc = None
+        self.anion = (body[10] & 0x20 > 0) if len(body) > 10 else False
+        self.child_lock = (body[10] & 0x10 > 0) if len(body) > 10 else False
+        if len(body) > 22:
+            if (body[1] & 0x08) > 0:
+                self.detect_mode = body[22] + 1
+            else:
+                self.detect_mode = 0
+        if len(body) > 31 & body[31] != 0xFF:
+            self.hcho = body[30] + (body[31] << 8)
+        else:
+            self.hcho = None
 
 
 class MessageFCResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
-        if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1]:
-            if self._body_type in [0xB0, 0xB1]:
-                pass
-            else:
-                self._body = FCGeneralMessageBody(body, self._message_type)
+        if self._body_type in [0xB0, 0xB1]:
+            pass
+        else:
+            if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1] and \
+                    self._body_type == 0xC8:
+                self._body = FCGeneralMessageBody(body)
+            elif self._message_type == MessageType.notify1 and self._body_type == 0xA0:
+                self._body = FCNotifyMessageBody(body)
         self.set_attr()

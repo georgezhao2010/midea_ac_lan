@@ -5,6 +5,7 @@ from homeassistant.const import (
     PRECISION_WHOLE,
     ATTR_TEMPERATURE,
     CONF_DEVICE_ID,
+    CONF_SWITCHES,
     STATE_ON,
     STATE_OFF,
 )
@@ -25,16 +26,19 @@ E3_TEMPERATURE_MIN = 35
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
-    heaters = []
+    extra_switches = config_entry.options.get(
+        CONF_SWITCHES, []
+    )
+    devs = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "water_heater":
-            if device.device_type == 0xe2:
-                heaters.append(MideaE2WaterHeater(device, entity_key))
-            elif device.device_type == 0xe3:
-                heaters.append(MideaE3WaterHeater(device, entity_key))
-            elif device.device_type == 0xc3:
-                heaters.append(MideaC3WaterHeater(device, entity_key))
-    async_add_entities(heaters)
+        if config["type"] == "water_heater" and (config.get("default") or entity_key in extra_switches):
+            if device.device_type == 0xE2:
+                devs.append(MideaE2WaterHeater(device, entity_key))
+            elif device.device_type == 0xE3:
+                devs.append(MideaE3WaterHeater(device, entity_key))
+            elif device.device_type == 0xC3:
+                devs.append(MideaC3WaterHeater(device, entity_key))
+    async_add_entities(devs)
 
 
 class MideaWaterHeater(MideaEntity, WaterHeaterEntity):

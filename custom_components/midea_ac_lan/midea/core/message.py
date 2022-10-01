@@ -155,7 +155,8 @@ class NewProtocolMessageBody(MessageBody):
             self._pack_len = 5
 
     @staticmethod
-    def pack(param, value: bytearray, length=1, pack_len=4):
+    def pack(param, value: bytearray, pack_len=4):
+        length = len(value)
         if pack_len == 4:
             stream = bytearray([param & 0xFF, param >> 8, length]) + value
         else:

@@ -6,6 +6,10 @@ from .const import (
     CONF_KEY,
     CONF_MODEL,
     DEVICES,
+    EXTRA_SENSOR,
+    EXTRA_SWITCH,
+    EXTRA_CONTROL,
+    ALL_PLATFORM,
 )
 from .midea_devices import MIDEA_DEVICES
 from homeassistant.core import HomeAssistant
@@ -27,16 +31,11 @@ from .midea.devices import device_selector
 
 _LOGGER = logging.getLogger(__name__)
 
-EXTRA_SENSOR = ["sensor", "binary_sensor"]
-EXTRA_CONTROL = ["switch", "lock", "select"]
-EXTRA_PLATFORM = EXTRA_SENSOR + EXTRA_CONTROL
-ALL_PLATFORM = ["climate", "water_heater", "fan", "humidifier"] + EXTRA_PLATFORM
-
 
 async def update_listener(hass, config_entry):
-    for platform in EXTRA_PLATFORM:
+    for platform in ALL_PLATFORM:
         await hass.config_entries.async_forward_entry_unload(config_entry, platform)
-    for platform in EXTRA_PLATFORM:
+    for platform in ALL_PLATFORM:
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(
             config_entry, platform))
     device_id = config_entry.data.get(CONF_DEVICE_ID)
@@ -53,7 +52,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
     attributes = []
     for device_entities in MIDEA_DEVICES.values():
         for attribute_name, attribute in device_entities.get("entities").items():
-            if attribute.get("type") in EXTRA_CONTROL and attribute_name.value not in attributes:
+            if attribute.get("type") in EXTRA_SWITCH and attribute_name.value not in attributes:
                 attributes.append(attribute_name.value)
 
     def service_set_ac_fan_speed(service):
@@ -72,7 +71,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
         dev = hass.data[DOMAIN][DEVICES].get(device_id)
         if dev:
             item = MIDEA_DEVICES.get(dev.device_type).get("entities").get(attr)
-            if item and item.get("type") in EXTRA_CONTROL:
+            if item and item.get("type") in EXTRA_SWITCH:
                 dev.set_attribute(attr=attr, value=value)
             else:
                 _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} can be set")

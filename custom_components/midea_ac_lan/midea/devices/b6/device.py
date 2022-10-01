@@ -75,6 +75,7 @@ class MideaB6Device(MiedaDevice):
 
     def process_message(self, msg):
         message = MessageB6Response(msg)
+        self._device_protocol_version = message.device_protocol_version
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():

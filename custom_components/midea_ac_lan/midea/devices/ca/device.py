@@ -11,7 +11,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     mode = "mode"
-    power_consumption = "power_consumption"
+    energy_consumption = "energy_consumption"
     refrigerator_actual_temp = "refrigerator_actual_temp"
     freezer_actual_temp = "freezer_actual_temp"
     flex_zone_actual_temp = "flex_zone_actual_temp"
@@ -55,7 +55,7 @@ class MideaCADevice(MiedaDevice):
             model=model
         )
         self._attributes = {
-            DeviceAttributes.power_consumption: None,
+            DeviceAttributes.energy_consumption: None,
             DeviceAttributes.refrigerator_actual_temp: None,
             DeviceAttributes.freezer_actual_temp: None,
             DeviceAttributes.flex_zone_actual_temp: None,
