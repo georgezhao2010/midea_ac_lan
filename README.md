@@ -43,7 +43,7 @@ And more.
  E3 | Gas Water Heater | [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
  EA | Electric Rice Cooker | [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
  EC | Electric Pressure Cooker | [EC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC.md)
- ED | Water Purifier | [ED.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED.md)
+ ED | Water Drinking Appliance | [ED.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED.md)
  FA | Fan | [FA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA.md)
  FB | Electric Heater | [FB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FB.md)
  FC | Air Purifier | [FC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FC.md)

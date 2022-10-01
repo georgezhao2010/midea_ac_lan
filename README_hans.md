@@ -43,7 +43,7 @@
  E3 | 燃气热水器 | [E3_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3_hans.md)
  EA | 电饭煲 | [EA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA_hans.md)
  EC | 电压力锅 | [EC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC_hans.md)
- ED | 净水器 | [ED_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED_hans.md)
+ ED | 饮用水设备 | [ED_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED_hans.md)
  FA | 电风扇 | [FA_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA_hans.md)
  FB | 电取暖器 | [FB_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FB_hans.md)
  FC | 空气净化器 | [FC_hans.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FC_hans.md)
