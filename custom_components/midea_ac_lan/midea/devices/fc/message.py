@@ -99,11 +99,11 @@ class FCGeneralMessageBody(MessageBody):
         self.mode = body[2] & 0xF0
         self.fan_speed = body[3] & 0x7F
         self.screen_display = body[9] & 0x07
-        if len(body) > 14 & body[14] != 0xFF:
+        if len(body) > 14 and body[14] != 0xFF:
             self.pm25 = body[13] + (body[14] << 8)
         else:
             self.pm25 = None
-        if len(body) > 15 & body[15] != 0xFF:
+        if len(body) > 15 and body[15] != 0xFF:
             self.tvoc = body[15]
         else:
             self.tvoc = None
@@ -131,11 +131,11 @@ class FCNotifyMessageBody(MessageBody):
         self.mode = body[2] & 0xF0
         self.fan_speed = body[3] & 0x7F
         self.screen_display = body[9] & 0x07
-        if len(body) > 14 & body[14] != 0xFF:
+        if len(body) > 14 and body[14] != 0xFF:
             self.pm25 = body[13] + (body[14] << 8)
         else:
             self.pm25 = None
-        if len(body) > 15 & body[15] != 0xFF:
+        if len(body) > 15 and body[15] != 0xFF:
             self.tvoc = body[15]
         else:
             self.tvoc = None
