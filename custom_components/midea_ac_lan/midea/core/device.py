@@ -325,7 +325,7 @@ class MiedaDevice(threading.Thread):
             while True:
                 try:
                     now = time.time()
-                    if now - previous_refresh >= 60:
+                    if now - previous_refresh >= 30:
                         self.refresh_status()
                         previous_refresh = now
                     if now - previous_heartbeat >= 10:

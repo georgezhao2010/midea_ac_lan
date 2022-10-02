@@ -3,7 +3,7 @@
 [![Donate](https://img.shields.io/badge/donate-BuyMeCoffee-yellow.svg)](https://www.buymeacoffee.com/georgezhao2010)
 [![Stable](https://img.shields.io/github/v/release/georgezhao2010/midea_ac_lan)](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)
 
-English | [简体中文](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README_hans.md)
+English | [简体中文](README_hans.md)
 
 Control your Midea M-Smart appliances via local area network.
 
@@ -19,7 +19,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 # Supported brands
 
-![beverly](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/beverly.png) ![bugu](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/bugu.png) ![carrier](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/carrier.png)  ![colmo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/colmo.png) ![comfee](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/comfee.png) ![electrolux](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/electrolux.png) ![invertor](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/invertor.png) ![littleswan](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/littleswan.png) ![midea](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/midea.png) ![netsu](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/netsu.png) ![rotenso](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/rotenso.png) ![toshiba](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/toshiba.png) ![vandelo](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/vandelo.png) ![wahin](https://github.com/georgezhao2010/midea_ac_lan/blob/master/brands/wahin.png)
+![beverly](brands/beverly.png) ![bugu](brands/bugu.png) ![carrier](brands/carrier.png)  ![colmo](brands/colmo.png) ![comfee](brands/comfee.png) ![electrolux](brands/electrolux.png) ![invertor](brands/invertor.png) ![littleswan](brands/littleswan.png) ![midea](brands/midea.png) ![netsu](brands/netsu.png) ![rotenso](brands/rotenso.png) ![toshiba](brands/toshiba.png) ![vandelo](brands/vandelo.png) ![wahin](brands/wahin.png)
 
 And more.
 
@@ -27,27 +27,27 @@ And more.
 
   Type | Name | Documents
  --- | --- | ---
- A1 | Dehumidifier | [A1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/A1.md)
- AC | Air Conditioner | [AC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/AC.md)
- B6 | Range Hood | [B6.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/B6.md)
- C3 | Heat Pump Wi-Fi Controller | [C3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/C3.md)
- CA | Refrigerator | [CA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CA.md)
- CC | MDV Wi-Fi Controller | [CC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CC.md)
- CE | Fresh Air Appliance | [CE.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CE.md)
- CF | Heat Pump | [CF.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/CF.md)
- DA | Top Load Washer | [DA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DA.md)
- DB | Front Load Washer | [DB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DB.md)
- DC | Clothes Dryer | [DC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/DC.md)
- E1 | Dishwasher | [E1.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E1.md)
- E2 | Electric Water Heater | [E2.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E2.md)
- E3 | Gas Water Heater | [E3.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/E3.md)
- EA | Electric Rice Cooker | [EA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EA.md)
- EC | Electric Pressure Cooker | [EC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/EC.md)
- ED | Water Drinking Appliance | [ED.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/ED.md)
- FA | Fan | [FA.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FA.md)
- FB | Electric Heater | [FB.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FB.md)
- FC | Air Purifier | [FC.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FC.md)
- FD | Humidifier | [FD.md](https://github.com/georgezhao2010/midea_ac_lan/blob/master/doc/FD.md)
+ A1 | Dehumidifier | [A1.md](doc/A1.md)
+ AC | Air Conditioner | [AC.md](doc/AC.md)
+ B6 | Range Hood | [B6.md](doc/B6.md)
+ C3 | Heat Pump Wi-Fi Controller | [C3.md](doc/C3.md)
+ CA | Refrigerator | [CA.md](doc/CA.md)
+ CC | MDV Wi-Fi Controller | [CC.md](doc/CC.md)
+ CE | Fresh Air Appliance | [CE.md](doc/CE.md)
+ CF | Heat Pump | [CF.md](doc/CF.md)
+ DA | Top Load Washer | [DA.md](doc/DA.md)
+ DB | Front Load Washer | [DB.md](doc/DB.md)
+ DC | Clothes Dryer | [DC.md](doc/DC.md)
+ E1 | Dishwasher | [E1.md](doc/E1.md)
+ E2 | Electric Water Heater | [E2.md](doc/E2.md)
+ E3 | Gas Water Heater | [E3.md](doc/E3.md)
+ EA | Electric Rice Cooker | [EA.md](doc/EA.md)
+ EC | Electric Pressure Cooker | [EC.md](doc/EC.md)
+ ED | Water Drinking Appliance | [ED.md](doc/ED.md)
+ FA | Fan | [FA.md](doc/FA.md)
+ FB | Electric Heater | [FB.md](doc/FB.md)
+ FC | Air Purifier | [FC.md](doc/FC.md)
+ FD | Humidifier | [FD.md](doc/FD.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 
@@ -70,7 +70,7 @@ If auto-discover could not work, you could try to discover the appliance with th
 ## Config manually
 If you already know following information, you could add the appliance manually.
 - Appliance code
-- Appliance type (one of [Supported appliances](https://github.com/georgezhao2010/midea_ac_lan/blob/master/README.md#supported-appliances))
+- Appliance type (one of [Supported appliances](README.md#supported-appliances))
 - IP address
 - Port (default 6444)
 - Protocol version

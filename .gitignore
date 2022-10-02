@@ -1,3 +1,9 @@
+#Sensitive files
+sensitive/
+
+#exclude
+custom_components/midea_ac_lan/midea/devices/bc/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
