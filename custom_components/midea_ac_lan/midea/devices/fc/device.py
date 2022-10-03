@@ -24,6 +24,7 @@ class DeviceAttributes(StrEnum):
     prompt_tone = "prompt_tone"
     filter1_life = "filter1_life"
     filter2_life = "filter2_life"
+    standby = "standby"
 
 
 class MideaFCDevice(MiedaDevice):
@@ -66,6 +67,7 @@ class MideaFCDevice(MiedaDevice):
             DeviceAttributes.mode: None,
             DeviceAttributes.fan_speed: None,
             DeviceAttributes.anion: False,
+            DeviceAttributes.standby: False,
             DeviceAttributes.screen_display: None,
             DeviceAttributes.detect_mode: None,
             DeviceAttributes.pm25: None,
@@ -135,6 +137,7 @@ class MideaFCDevice(MiedaDevice):
         message.child_lock = self._attributes[DeviceAttributes.child_lock]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
         message.anion = self._attributes[DeviceAttributes.anion]
+        message.standby = self._attributes[DeviceAttributes.standby]
         message.screen_display = self._attributes[DeviceAttributes.screen_display]
         message.detect_mode = 0 if self._attributes[DeviceAttributes.detect_mode] is None else \
             MideaFCDevice._detect_modes.index(self._attributes[DeviceAttributes.detect_mode])

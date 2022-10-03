@@ -1154,6 +1154,11 @@ MIDEA_DEVICES = {
                 "name": "Anion",
                 "icon": "mdi:vanish"
             },
+            FCAttributes.standby: {
+                "type": "switch",
+                "name": "Standby",
+                "icon": "mdi:smoke-detector-variant"
+            },
             FCAttributes.prompt_tone: {
                 "type": "switch",
                 "name": "Prompt Tone",

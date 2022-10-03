@@ -63,6 +63,7 @@ class MessageSet(MessageFCBase):
         self.child_lock = False
         self.prompt_tone = False
         self.anion = False
+        self.standby = False
         self.screen_display = 0
         self.detect_mode = 0
 
@@ -80,6 +81,8 @@ class MessageSet(MessageFCBase):
         anion = 0x20 if self.anion else 0x00
         # byte 10 prompt_tone
         prompt_tone = 0x40 if self.prompt_tone else 0x00
+        # byte 15 standby
+        standby = 0x04 if self.standby else 0x08
         return bytearray([
             power | prompt_tone | detect | 0x02,
             self.mode,
@@ -87,7 +90,7 @@ class MessageSet(MessageFCBase):
             0x00, 0x00, 0x00, 0x00,
             child_lock, self.screen_display, anion,
             0x00, 0x00, 0x00, detect_mode,
-            0x00, 0x00, 0x00, 0x00,
+            standby, 0x14, 0x0c, 0x00,
             0x00, 0x00,
         ])
 
@@ -99,15 +102,16 @@ class FCGeneralMessageBody(MessageBody):
         self.mode = body[2] & 0xF0
         self.fan_speed = body[3] & 0x7F
         self.screen_display = body[9] & 0x07
-        if len(body) > 14 & body[14] != 0xFF:
+        if len(body) > 14 and body[14] != 0xFF:
             self.pm25 = body[13] + (body[14] << 8)
         else:
             self.pm25 = None
-        if len(body) > 15 & body[15] != 0xFF:
+        if len(body) > 15 and body[15] != 0xFF:
             self.tvoc = body[15]
         else:
             self.tvoc = None
         self.anion = (body[19] & 0x40 > 0) if len(body) > 19 else False
+        self.standby = ((body[34] & 0xFF) ==0x14) if len(body) > 34 else False
         self.child_lock = (body[8] & 0x80 > 0) if len(body) > 8 else False
         if len(body) > 23:
             self.filter1_life = body[23]
@@ -118,7 +122,7 @@ class FCGeneralMessageBody(MessageBody):
                 self.detect_mode = body[29] + 1
             else:
                 self.detect_mode = 0
-        if len(body) > 38 & body[38] != 0xFF:
+        if len(body) > 38 and body[38] != 0xFF:
             self.hcho = body[37] + (body[38] << 8)
         else:
             self.hcho = None
@@ -131,22 +135,23 @@ class FCNotifyMessageBody(MessageBody):
         self.mode = body[2] & 0xF0
         self.fan_speed = body[3] & 0x7F
         self.screen_display = body[9] & 0x07
-        if len(body) > 14 & body[14] != 0xFF:
+        if len(body) > 14 and body[14] != 0xFF:
             self.pm25 = body[13] + (body[14] << 8)
         else:
             self.pm25 = None
-        if len(body) > 15 & body[15] != 0xFF:
+        if len(body) > 15 and body[15] != 0xFF:
             self.tvoc = body[15]
         else:
             self.tvoc = None
         self.anion = (body[10] & 0x20 > 0) if len(body) > 10 else False
+        self.standby = (body[27] & 0x14 == 0xFF) if len(body) > 27 else False
         self.child_lock = (body[10] & 0x10 > 0) if len(body) > 10 else False
         if len(body) > 22:
             if (body[1] & 0x08) > 0:
                 self.detect_mode = body[22] + 1
             else:
                 self.detect_mode = 0
-        if len(body) > 31 & body[31] != 0xFF:
+        if len(body) > 31 and body[31] != 0xFF:
             self.hcho = body[30] + (body[31] << 8)
         else:
             self.hcho = None
