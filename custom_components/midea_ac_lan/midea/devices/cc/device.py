@@ -35,7 +35,7 @@ class MideaCCDevice(MiedaDevice):
         0x40: "Level 7", 0x80: "Auto",
     }
     _fan_speeds_3level = {
-        0x01 : "Low", 0x08: "Medium", 0x40: "High", 0x80: "Auto"
+        0x01: "Low", 0x08: "Medium", 0x40: "High", 0x80: "Auto"
     }
 
     def __init__(

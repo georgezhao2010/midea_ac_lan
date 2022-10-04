@@ -2,6 +2,7 @@ from homeassistant.const import (
     TIME_DAYS,
     TIME_HOURS,
     TIME_MINUTES,
+    TIME_SECONDS,
     TEMP_CELSIUS,
     POWER_WATT,
     PERCENTAGE,
@@ -15,6 +16,8 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
 from .midea.devices.a1.device import DeviceAttributes as A1Attributes
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
+from .midea.devices.b0.device import DeviceAttributes as B0Attributes
+from .midea.devices.b1.device import DeviceAttributes as B1Attributes
 from .midea.devices.b6.device import DeviceAttributes as B6Attributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.ca.device import DeviceAttributes as CAAttributes
@@ -224,6 +227,102 @@ MIDEA_DEVICES = {
                 "name": "Realtime Power",
                 "device_class": SensorDeviceClass.POWER,
                 "unit": POWER_WATT,
+                "state_class": SensorStateClass.MEASUREMENT
+            }
+        }
+    },
+    0xB0: {
+        "name": "Microwave Oven",
+        "entities": {
+            B0Attributes.door: {
+                "type": "binary_sensor",
+                "name": "Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
+            },
+            B0Attributes.tank_ejected: {
+                "type": "binary_sensor",
+                "name": "Tank ejected",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B0Attributes.water_change_reminder: {
+                "type": "binary_sensor",
+                "name": "Water Change Reminder",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B0Attributes.water_shortage: {
+                "type": "binary_sensor",
+                "name": "Water Shortage",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B0Attributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B0Attributes.status: {
+                "type": "sensor",
+                "name": "Status",
+                "icon": "mdi:information",
+            },
+            B0Attributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            }
+        }
+    },
+    0xB1: {
+        "name": "Oven",
+        "entities": {
+            B1Attributes.door: {
+                "type": "binary_sensor",
+                "name": "Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
+            },
+            B1Attributes.tank_ejected: {
+                "type": "binary_sensor",
+                "name": "Tank ejected",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B1Attributes.water_change_reminder: {
+                "type": "binary_sensor",
+                "name": "Water Change Reminder",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B1Attributes.water_shortage: {
+                "type": "binary_sensor",
+                "name": "Water Shortage",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B1Attributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B1Attributes.status: {
+                "type": "sensor",
+                "name": "Status",
+                "icon": "mdi:information",
+            },
+            B1Attributes.time_remaining: {
+                "type": "sensor",
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_SECONDS,
                 "state_class": SensorStateClass.MEASUREMENT
             }
         }

@@ -146,6 +146,7 @@ class MessageGeneralSet(MessageACBase):
         self.temp_fahrenheit = False
         self.sleep_mode = False
         self.natural_wind = False
+        self.frost_protect = False
         self.comfort_mode = False
 
     @property
@@ -175,6 +176,8 @@ class MessageGeneralSet(MessageACBase):
         sleep_mode = 0x01 if self.sleep_mode else 0
         # Byte 17 natural_wind
         natural_wind = 0x40 if self.natural_wind else 0
+        # Byte 21 frost_protect
+        frost_protect = 0x80 if self.frost_protect else 0
         # Byte 22 comfort_mode
         comfort_mode = 0x01 if self.comfort_mode else 0
 
@@ -190,7 +193,8 @@ class MessageGeneralSet(MessageACBase):
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00,
             natural_wind,
-            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00,
+            frost_protect,
             comfort_mode
         ])
 
@@ -373,6 +377,7 @@ class XC0MessageBody(MessageBody):
                 self.outdoor_temperature = temp_integer - temp_decimal
         self.full_dust = (body[13] & 0x20) > 0
         self.screen_display = ((body[14] >> 4 & 0x7) != 0x07) and self.power
+        self.frost_protect = (body[21] & 0x80) > 0 if len(body) > 23 else False
         self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 24 else False
 
 

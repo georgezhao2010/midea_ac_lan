@@ -1,4 +1,5 @@
 import logging
+import json
 from .message import (
     MessageQuery,
     MessageFCResponse,
@@ -29,10 +30,10 @@ class DeviceAttributes(StrEnum):
 
 class MideaFCDevice(MiedaDevice):
     _modes = {
-        0x10: "Auto", 0x20: "Manual", 0x30: "Sleep", 0x40: "Fast", 0x50: "Smoke"
+        0x00: "Standby", 0x10: "Auto", 0x20: "Manual", 0x30: "Sleep", 0x40: "Fast", 0x50: "Smoke"
     }
     _speeds = {
-        1: "Auto", 39: "Low", 59: "Medium", 80: "High"
+        1: "Auto", 4: "Standby", 39: "Low", 59: "Medium", 80: "High"
     }
     _screen_displays = {
         0: "Bright", 6: "Dim", 7: "Off"
@@ -78,6 +79,10 @@ class MideaFCDevice(MiedaDevice):
             DeviceAttributes.filter1_life: None,
             DeviceAttributes.filter2_life: None,
         }
+
+        self._standby_detect_default = [40, 20]
+        self._standby_detect = self._standby_detect_default
+        self.set_customize(customize)
 
     @property
     def modes(self):
@@ -153,6 +158,7 @@ class MideaFCDevice(MiedaDevice):
             list(MideaFCDevice._screen_displays.keys())[list(MideaFCDevice._screen_displays.values()).index(
                 self._attributes[DeviceAttributes.screen_display]
             )]
+        message.standby_detect = self._standby_detect
         return message
 
     def set_attribute(self, attr, value):
@@ -186,6 +192,18 @@ class MideaFCDevice(MiedaDevice):
             else:
                 setattr(message, str(attr), value)
             self.build_send(message)
+
+    def set_customize(self, customize):
+        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        self._standby_detect = self._standby_detect_default
+        if customize:
+            try:
+                params = json.loads(customize)
+                if params and "standby_detect" in params:
+                    self._standby_detect = params.get("standby_detect")
+            except Exception as e:
+                _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
+            self.update_all({"standby_detect": self._standby_detect})
 
     @property
     def attributes(self):

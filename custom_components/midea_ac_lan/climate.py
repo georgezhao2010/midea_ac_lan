@@ -22,14 +22,6 @@ from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
 
-FAN_SPEED_1 = "Level 1"
-FAN_SPEED_2 = "Level 2"
-FAN_SPEED_3 = "Level 3"
-FAN_SPEED_4 = "Level 4"
-FAN_SPEED_5 = "Level 5"
-FAN_SPEED_6 = "Level 6"
-FAN_SPEED_7 = "Level 7"
-
 TEMPERATURE_MAX = 30
 TEMPERATURE_MIN = 17
 
@@ -107,14 +99,14 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     @property
     def is_on(self) -> bool:
-        return self.hvac_mode != HVAC_MODE_OFF
+        return self.hvac_mode != HVACMode.OFF
 
     @property
     def hvac_mode(self) -> str:
         if self._device.get_attribute("power"):
             return self._modes[self._device.get_attribute("mode")]
         else:
-            return HVAC_MODE_OFF
+            return HVACMode.OFF
 
     @property
     def target_temperature(self):
@@ -142,6 +134,8 @@ class MideaClimate(MideaEntity, ClimateEntity):
             mode = PRESET_BOOST
         elif self._device.get_attribute("sleep_mode"):
             mode = PRESET_SLEEP
+        elif self._device.get_attribute("frost_protect"):
+            mode = PRESET_AWAY
         else:
             mode = PRESET_NONE
         return mode
@@ -161,7 +155,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
             return
         temperature = float(int((float(kwargs.get(ATTR_TEMPERATURE)) * 2) + 0.5)) / 2
         hvac_mode = kwargs.get(ATTR_HVAC_MODE)
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             self.turn_off()
         else:
             try:
@@ -173,7 +167,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         hvac_mode = hvac_mode.lower()
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             self.turn_off()
         else:
             self._device.set_attribute(attr="mode", value=self._modes.index(hvac_mode))
@@ -181,7 +175,9 @@ class MideaClimate(MideaEntity, ClimateEntity):
     def set_preset_mode(self, preset_mode: str) -> None:
         old_mode = self.preset_mode
         preset_mode = preset_mode.lower()
-        if preset_mode == PRESET_COMFORT:
+        if preset_mode == PRESET_AWAY:
+            self._device.set_attribute(attr="frost_protect", value=True)
+        elif preset_mode == PRESET_COMFORT:
             self._device.set_attribute(attr="comfort_mode", value=True)
         elif preset_mode == PRESET_SLEEP:
             self._device.set_attribute(attr="sleep_mode", value=True)
@@ -189,6 +185,8 @@ class MideaClimate(MideaEntity, ClimateEntity):
             self._device.set_attribute(attr="eco_mode", value=True)
         elif preset_mode == PRESET_BOOST:
             self._device.set_attribute(attr="boost_mode", value=True)
+        elif old_mode == PRESET_AWAY:
+            self._device.set_attribute(attr="frost_protect", value=False)
         elif old_mode == PRESET_COMFORT:
             self._device.set_attribute(attr="comfort_mode", value=False)
         elif old_mode == PRESET_SLEEP:
@@ -197,6 +195,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
             self._device.set_attribute(attr="eco_mode", value=False)
         elif old_mode == PRESET_BOOST:
             self._device.set_attribute(attr="boost_mode", value=False)
+
 
     def update_state(self, status):
         try:
@@ -214,7 +213,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 class MideaACClimate(MideaClimate):
     def __init__(self, device, entity_key):
         super().__init__(device, entity_key)
-        self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_FAN_ONLY]
+        self._modes = [HVACMode.OFF, HVACMode.AUTO, HVACMode.COOL, HVACMode.DRY, HVACMode.HEAT, HVACMode.FAN_ONLY]
         self._fan_speeds = {
             FAN_SILENT.capitalize(): 20,
             FAN_LOW.capitalize(): 40,
@@ -229,7 +228,7 @@ class MideaACClimate(MideaClimate):
             SWING_HORIZONTAL.capitalize(),
             SWING_BOTH.capitalize()
         ]
-        self._preset_modes = [PRESET_NONE, PRESET_COMFORT, PRESET_ECO, PRESET_BOOST]
+        self._preset_modes = [PRESET_NONE, PRESET_COMFORT, PRESET_ECO, PRESET_BOOST, PRESET_AWAY]
 
     @property
     def fan_modes(self):
@@ -280,7 +279,7 @@ class MideaACClimate(MideaClimate):
 class MideaCCClimate(MideaClimate):
     def __init__(self, device, entity_key):
         super().__init__(device, entity_key)
-        self._modes = [HVAC_MODE_OFF, HVAC_MODE_FAN_ONLY, HVAC_MODE_DRY, HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_AUTO]
+        self._modes = [HVACMode.OFF, HVACMode.FAN_ONLY, HVACMode.DRY, HHVACMode.HEAT, HVACMode.COOL, HVACMode.AUTO]
         self._swing_modes = [
             SWING_OFF.capitalize(),
             SWING_ON.capitalize()
@@ -316,7 +315,7 @@ class MideaCCClimate(MideaClimate):
 class MideaCFClimate(MideaClimate):
     def __init__(self, device, entity_key):
         super().__init__(device, entity_key)
-        self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_HEAT]
+        self._modes = [HVACMode.OFF, HVACMode.AUTO, HVACMode.COOL, HVACMode.HEAT]
 
     @property
     def supported_features(self):
@@ -356,7 +355,7 @@ class MideaC3Climate(MideaClimate):
     def __init__(self, device, entity_key, zone):
         super().__init__(device, entity_key)
         self._zone = zone
-        self._modes = [HVAC_MODE_OFF, HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_HEAT]
+        self._modes = [HVACMode.OFF, HVACMode.AUTO, HVACMode.COOL, HVACMode.HEAT]
         self._power_attr = MideaC3Climate._powers[self._zone]
 
     @property
@@ -395,7 +394,7 @@ class MideaC3Climate(MideaClimate):
         if self._device.get_attribute(self._power_attr):
             return self._modes[self._device.get_attribute(C3Attributes.mode)]
         else:
-            return HVAC_MODE_OFF
+            return HVACMode.OFF
 
     @property
     def target_temperature(self):
@@ -410,7 +409,7 @@ class MideaC3Climate(MideaClimate):
             return
         temperature = float(int((float(kwargs.get(ATTR_TEMPERATURE)) * 2) + 0.5)) / 2
         hvac_mode = kwargs.get(ATTR_HVAC_MODE)
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             self.turn_off()
         else:
             try:
@@ -422,7 +421,7 @@ class MideaC3Climate(MideaClimate):
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         hvac_mode = hvac_mode.lower()
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             self.turn_off()
         else:
             self._device.set_mode(self._zone, self._modes.index(hvac_mode))
@@ -431,7 +430,7 @@ class MideaC3Climate(MideaClimate):
 class MideaFBClimate(MideaClimate):
     def __init__(self, device, entity_key):
         super().__init__(device, entity_key)
-        self._modes = [HVAC_MODE_OFF, HVAC_MODE_HEAT]
+        self._modes = [HVACMode.OFF, HVACMode.HEAT]
         self._preset_modes = self._device.modes
 
     @property
@@ -468,7 +467,7 @@ class MideaFBClimate(MideaClimate):
 
     @property
     def hvac_mode(self) -> str:
-        return HVAC_MODE_HEAT if self._device.get_attribute(attr=FBAttributes.power) else HVAC_MODE_OFF
+        return HVACMode.HEAT if self._device.get_attribute(attr=FBAttributes.power) else HVACMode.OFF
 
     @property
     def current_temperature(self):
@@ -479,14 +478,14 @@ class MideaFBClimate(MideaClimate):
             return
         temperature = float(int((float(kwargs.get(ATTR_TEMPERATURE)) * 2) + 0.5)) / 2
         hvac_mode = kwargs.get(ATTR_HVAC_MODE)
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             self.turn_off()
         else:
             self._device.set_attribute(attr=FBAttributes.target_temperature, value=temperature)
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         hvac_mode = hvac_mode.lower()
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             self.turn_off()
         else:
             self.turn_on()

@@ -35,6 +35,7 @@ class DeviceAttributes(StrEnum):
     screen_display = "screen_display"
     screen_display_new = "screen_display_new"
     full_dust = "full_dust"
+    frost_protect = "frost_protect"
     comfort_mode = "comfort_mode"
     indoor_temperature = "indoor_temperature"
     outdoor_temperature = "outdoor_temperature"
@@ -93,6 +94,7 @@ class MideaACDevice(MiedaDevice):
             DeviceAttributes.aux_heat: False,
             DeviceAttributes.boost_mode: False,
             DeviceAttributes.sleep_mode: False,
+            DeviceAttributes.frost_protect: False,
             DeviceAttributes.comfort_mode: False,
             DeviceAttributes.eco_mode: False,
             DeviceAttributes.natural_wind: False,
@@ -186,6 +188,7 @@ class MideaACDevice(MiedaDevice):
         message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
         message.natural_wind = self._attributes[DeviceAttributes.natural_wind]
         message.temp_fahrenheit = self._attributes[DeviceAttributes.temp_fahrenheit]
+        message.frost_protect = self._attributes[DeviceAttributes.frost_protect]
         message.comfort_mode = self._attributes[DeviceAttributes.comfort_mode]
         return message
 
@@ -255,6 +258,7 @@ class MideaACDevice(MiedaDevice):
                 if attr in [
                     DeviceAttributes.boost_mode,
                     DeviceAttributes.sleep_mode,
+                    DeviceAttributes.frost_protect,
                     DeviceAttributes.comfort_mode,
                     DeviceAttributes.eco_mode
                 ]:
@@ -262,6 +266,7 @@ class MideaACDevice(MiedaDevice):
                     message.sleep_mode = False
                     message.comfort_mode = False
                     message.eco_mode = False
+                    message.frost_protect = False
                 setattr(message, str(attr), value)
                 if attr == DeviceAttributes.mode:
                     setattr(message, DeviceAttributes.power.value, True)

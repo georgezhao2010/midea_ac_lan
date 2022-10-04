@@ -66,6 +66,7 @@ class MessageSet(MessageFCBase):
         self.standby = False
         self.screen_display = 0
         self.detect_mode = 0
+        self.standby_detect = [40, 20]
 
     @property
     def _body(self):
@@ -81,8 +82,15 @@ class MessageSet(MessageFCBase):
         anion = 0x20 if self.anion else 0x00
         # byte 10 prompt_tone
         prompt_tone = 0x40 if self.prompt_tone else 0x00
-        # byte 15 standby
-        standby = 0x04 if self.standby else 0x08
+        # byte 15/16/17 standby
+        if self.standby:
+            standby = 0x04
+            standby_detect_high = self.standby_detect[0]
+            standby_detect_low = self.standby_detect[1]
+        else:
+            standby = 0x08
+            standby_detect_high = 0
+            standby_detect_low = 0
         return bytearray([
             power | prompt_tone | detect | 0x02,
             self.mode,
@@ -90,8 +98,8 @@ class MessageSet(MessageFCBase):
             0x00, 0x00, 0x00, 0x00,
             child_lock, self.screen_display, anion,
             0x00, 0x00, 0x00, detect_mode,
-            standby, 0x14, 0x0c, 0x00,
-            0x00, 0x00,
+            standby, standby_detect_high, standby_detect_low,
+            0x00, 0x00, 0x00,
         ])
 
 
@@ -111,7 +119,7 @@ class FCGeneralMessageBody(MessageBody):
         else:
             self.tvoc = None
         self.anion = (body[19] & 0x40 > 0) if len(body) > 19 else False
-        self.standby = ((body[34] & 0xFF) ==0x14) if len(body) > 34 else False
+        self.standby = ((body[34] & 0xFF) == 0x14) if len(body) > 34 else False
         self.child_lock = (body[8] & 0x80 > 0) if len(body) > 8 else False
         if len(body) > 23:
             self.filter1_life = body[23]

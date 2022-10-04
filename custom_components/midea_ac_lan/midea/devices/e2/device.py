@@ -3,7 +3,8 @@ from .message import (
     MessageQuery,
     MessageSet,
     MessageE2Response,
-    MessagePower
+    MessagePower,
+    MessageNewProtocolSet
 )
 from ...core.device import MiedaDevice
 from ...backports.enum import StrEnum
@@ -20,6 +21,7 @@ class DeviceAttributes(StrEnum):
     target_temperature = "target_temperature"
     whole_tank_heating = "whole_tank_heating"
     variable_heating = "variable_heating"
+    heating_power = "heating_power"
 
 
 class MideaE2Device(MiedaDevice):
@@ -55,7 +57,11 @@ class MideaE2Device(MiedaDevice):
             DeviceAttributes.target_temperature: 40,
             DeviceAttributes.whole_tank_heating: False,
             DeviceAttributes.variable_heating: False,
+            DeviceAttributes.heating_power: None
         }
+
+    def old_protocol(self):
+        return self._sub_type <= 82 or self._sub_type == 85 or self._sub_type == 36353
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
@@ -85,8 +91,11 @@ class MideaE2Device(MiedaDevice):
             if attr == DeviceAttributes.power:
                 message = MessagePower(self._device_protocol_version)
                 message.power = value
-            else:
+            elif self.old_protocol():
                 message = self.make_message_set()
+                setattr(message, str(attr), value)
+            else:
+                message = MessageNewProtocolSet(self._device_protocol_version)
                 setattr(message, str(attr), value)
             self.build_send(message)
 

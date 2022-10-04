@@ -49,6 +49,32 @@ class MessagePower(MessageE2Base):
         return bytearray([0x01])
 
 
+class MessageNewProtocolSet(MessageE2Base):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.set,
+            body_type=0x14)
+        self.target_temperature = None
+        self.variable_heating = None
+        self.whole_tank_heating = None
+
+    @property
+    def _body(self):
+        byte1 = 0x00
+        byte2 = 0x00
+        if self.target_temperature is not None:
+            byte1 = 0x07
+            byte2 = int(self.target_temperature) & 0xFF
+        elif self.whole_tank_heating is not None:
+            byte1 = 0x04
+            byte2 = 0x02 if self.whole_tank_heating else 0x01
+        elif self.variable_heating is not None:
+            byte1 = 0x10
+            byte2 = 0x01 if self.variable_heating else 0x00
+        return bytearray([byte1, byte2])
+
+
 class MessageSet(MessageE2Base):
     def __init__(self, device_protocol_version):
         super().__init__(
@@ -94,6 +120,7 @@ class E2GeneralMessageBody(MessageBody):
         self.whole_tank_heating = (body[7] & 0x08) > 0
         self.target_temperature = body[11]
         self.protection = ((body[22] & 0x02) > 0) if len(body) > 22 else False
+        self.heating_power = body[28]
 
 
 class MessageE2Response(MessageResponse):
