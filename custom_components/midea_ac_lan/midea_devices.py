@@ -912,6 +912,13 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            E2Attributes.heating_power: {
+                "type": "sensor",
+                "name": "Heating Power",
+                "device_class": SensorDeviceClass.POWER,
+                "unit": POWER_WATT,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
             E2Attributes.power: {
                 "type": "switch",
                 "name": "Power",

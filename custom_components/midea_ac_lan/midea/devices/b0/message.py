@@ -63,7 +63,7 @@ class B0Message01Body(MessageBody):
             self.time_remaining = (0 if body[22] == 0xFF else body[22]) * 3600 + \
                                   (0 if body[23] == 0xFF else body[23]) * 60 + \
                                   (0 if body[24] == 0xFF else body[24])
-            self.current_temperature = (body[26] << 8) + body[25]
+            self.current_temperature = (body[25] << 8) + (body[26])
             if self.current_temperature == 0:
                 self.current_temperature = (body[27] << 8) + body[28]
             self.tank_ejected = (body[32] & 0x04) > 0
