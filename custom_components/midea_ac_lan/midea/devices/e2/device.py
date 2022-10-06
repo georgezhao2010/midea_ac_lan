@@ -60,7 +60,7 @@ class MideaE2Device(MiedaDevice):
             DeviceAttributes.whole_tank_heating: False,
             DeviceAttributes.variable_heating: False,
             DeviceAttributes.heating_time_remaining: 0,
-            DeviceAttributes.water_consumption: None
+            DeviceAttributes.water_consumption: None,
             DeviceAttributes.heating_power: None
         }
 
