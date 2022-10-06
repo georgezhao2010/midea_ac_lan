@@ -1,4 +1,7 @@
 # Fresh Air Appliance
+
+***Note: Some Midea appliance be named "Fresh Air Appliance", the protocol that actually uses the air conditioner. If your fresh air appliance is identified as an air conditioner, check out [Build-in fresh air system](CE.md#Build-in%20fresh%20air%20system)***
+
 ## Features
 - Supports fan speed
 - Supports preset mode

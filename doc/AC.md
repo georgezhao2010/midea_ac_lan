@@ -6,6 +6,7 @@
 - Supports swing mode
 - Supports preset mode
 - Supports auxiliary heating
+- Supports build-in fresh air system
 
 ### Supported Run-Modes
 - Comfort Mode
@@ -37,7 +38,7 @@ sensor.{DEVICEID}_outdoor_temperature | sensor | Outdoor Temperature
 sensor.{DEVICEID}_total_energy_consumption | sensor | Total Energy Consumption
 sensor.{DEVICEID}_current_energy_consumption | sensor | Current Energy Consumption
 sensor.{DEVICEID}_realtime_power | sensor | Realtime Power
-fan.{DEVICEID}_fresh_air | fan | Fresh Air
+fan.{DEVICEID}_fresh_air | fan | Fresh Air Fan
 switch.{DEVICEID}_aux_heat | switch | Aux Heating
 switch.{DEVICEID}_boost_mode | switch | Boost Mode
 switch.{DEVICEID}_breezeless | switch | Breezeless
@@ -53,6 +54,9 @@ switch.{DEVICEID}_smart_eye | switch | Smart Eye
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical
 
+## Build-in fresh air system
+
+Some Midea appliance be named "Fresh Air Appliance", the protocol that actually uses the air conditioner. If your fresh air appliance is identified as an air conditioner, you should check the Fresh Air Fan entity in CONFIGURE, and use this fan entity to control your fresh air appliance.***
 
 ## Services
 following extra services will be made

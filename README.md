@@ -7,7 +7,7 @@ English | [简体中文](README_hans.md)
 
 Control your Midea M-Smart appliances via local area network.
 
-- Automated device discover and configuration based HA config flow UI.
+- Automated device discover and configuration based Home Assistant config flow UI.
 - Extra sensors and switches.
 - Synchronize status with the appliance by long TCP connection in time.
 
@@ -15,7 +15,7 @@ This component inspired from the repository at [@mac-zhou](https://github.com/ma
 
 Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
-***Note: HomeAssistant 2022.5 or higher requied for this integration***
+***Note: Home Assistant 2022.5 or higher requied for this integration***
 
 # Supported brands
 
@@ -50,12 +50,12 @@ And more.
  FD | Humidifier | [FD.md](doc/FD.md)
 
 # Installation
-Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in HomeAssistant manually. 
+Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. 
 
-Restart HomeAssistant.
+Restart Home Assistant.
 
 # Configuration
-After installation, search and add component Midea AC LAN in HomeAssistant integrations page.
+After installation, search and add component Midea AC LAN in Home Assistant integrations page.
 
 Or click [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)
 
@@ -93,3 +93,9 @@ logger:
   logs:
     custom_components.midea_ac_lan: debug
 ```
+
+# Support my works 
+
+If you like this integration, why do not you support my works by buying me a coffee?
+
+[![Buy me a coffee](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/georgezhao2010)

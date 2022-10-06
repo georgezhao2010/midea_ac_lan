@@ -912,12 +912,26 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            E2Attributes.heating_time_remaining: {
+                "type": "sensor",
+                "name": "Heating Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
             E2Attributes.heating_power: {
                 "type": "sensor",
                 "name": "Heating Power",
                 "device_class": SensorDeviceClass.POWER,
                 "unit": POWER_WATT,
                 "state_class": SensorStateClass.MEASUREMENT
+            },
+            E2Attributes.water_consumption:{
+                "type": "sensor",
+                "name": "Water Consumption",
+                "icon": "mdi:water",
+                "unit": VOLUME_LITERS,
+                "state_class": SensorStateClass.TOTAL_INCREASING
             },
             E2Attributes.power: {
                 "type": "switch",
@@ -1260,11 +1274,6 @@ MIDEA_DEVICES = {
                 "name": "Anion",
                 "icon": "mdi:vanish"
             },
-            FCAttributes.standby: {
-                "type": "switch",
-                "name": "Standby",
-                "icon": "mdi:smoke-detector-variant"
-            },
             FCAttributes.prompt_tone: {
                 "type": "switch",
                 "name": "Prompt Tone",
@@ -1274,6 +1283,11 @@ MIDEA_DEVICES = {
                 "type": "switch",
                 "name": "Power",
                 "icon": "mdi:power"
+            },
+            FCAttributes.standby: {
+                "type": "switch",
+                "name": "Standby",
+                "icon": "mdi:smoke-detector-variant"
             },
             FCAttributes.detect_mode: {
                 "type": "select",

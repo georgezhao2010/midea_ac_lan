@@ -7,7 +7,7 @@
 
 通过本地局域网控制你的美的M-Smart设备
 
-- 通过HomeAssistant UI完成设备的自动搜索和配置.
+- 通过Home Assistant UI完成设备的自动搜索和配置.
 - 生成额外的传感器和开关方便进行设备控制.
 - 与设备保持TCP长连接以便实时同步设备状态.
 
@@ -15,7 +15,7 @@
 
 同时感谢[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 
-***注意: 本集成需要HomeAssistant 2022.5或更高版本***
+***注意: 本集成需要Home Assistant 2022.5或更高版本***
 
 # 已支持的品牌
 
@@ -50,12 +50,12 @@
  FD | 加湿器 | [FD_hans.md](doc/FD_hans.md)
 
 # 安装
-在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的HomeAssistant的`custom_components/midea_ac_lan`中。
+在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
 
-重启HomeAssistant
+重启Home Assistant
 
 # 配置
-安装之后，在HomeAssistant的集成界面搜索添加集成Midea AC LAN, 如果需要添加多台设备，多次添加本集成并执行自动配置即可。
+安装之后，在Home Assistant的集成界面搜索添加集成Midea AC LAN, 如果需要添加多台设备，多次添加本集成并执行自动配置即可。
 
 或者直接点击 [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)
 
@@ -92,3 +92,8 @@ logger:
   logs:
     custom_components.midea_ac_lan: debug
 ```
+
+# 支持我的工作
+如果喜欢这个集成，可以使用支付宝或者微信支付赞助我来支持我的工作。
+
+![alipay](doc/images/alipay.png) ![wechatpay](doc/images/wechatpay.png) 

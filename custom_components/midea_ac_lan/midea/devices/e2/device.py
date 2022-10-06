@@ -21,6 +21,8 @@ class DeviceAttributes(StrEnum):
     target_temperature = "target_temperature"
     whole_tank_heating = "whole_tank_heating"
     variable_heating = "variable_heating"
+    heating_time_remaining = "heating_time_remaining"
+    water_consumption = "water_consumption"
     heating_power = "heating_power"
 
 
@@ -57,6 +59,8 @@ class MideaE2Device(MiedaDevice):
             DeviceAttributes.target_temperature: 40,
             DeviceAttributes.whole_tank_heating: False,
             DeviceAttributes.variable_heating: False,
+            DeviceAttributes.heating_time_remaining: 0,
+            DeviceAttributes.water_consumption: None
             DeviceAttributes.heating_power: None
         }
 

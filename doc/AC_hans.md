@@ -6,6 +6,7 @@
 - 支持摆风模式设定
 - 支持预设模式设定
 - 支持电辅热
+- 支持内置新风系统
 
 ### 支持的模式
 - 舒适模式
@@ -19,7 +20,6 @@
 ```
 {"temperature_step": 1}
 ```
-
 
 ## 生成实体
 ### 默认生成实体
@@ -53,7 +53,10 @@ switch.{DEVICEID}_screen_display | switch | Screen Display | 屏幕显示
 switch.{DEVICEID}_smart_eye | switch | Smart Eye | 智慧眼
 switch.{DEVICEID}_swing_horizontal | switch | Swing Horizontal | 水平摆风
 switch.{DEVICEID}_swing_vertical | switch | Swing Vertical | 垂直摆风
-select.{DEVICEID}_fresh_air | select | Fresh Air | 新风
+
+## 内置新风系统
+
+部分美的的"中央新风机"产品，其实使用了空调的协议。如果你的新风机被识别为空调，则只用在选项中勾选"Fresh Air"的fan实体，然后使用该fan实体控制新风机即可。
 
 ## 服务
 生成以下扩展服务

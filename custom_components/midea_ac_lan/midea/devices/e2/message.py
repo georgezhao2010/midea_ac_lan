@@ -118,9 +118,13 @@ class E2GeneralMessageBody(MessageBody):
         self.variable_heating = (body[2] & 0x80) > 0
         self.current_temperature = body[4]
         self.whole_tank_heating = (body[7] & 0x08) > 0
+        self.heating_time_remaining = body[9] * 60 + body[10]
         self.target_temperature = body[11]
         self.protection = ((body[22] & 0x02) > 0) if len(body) > 22 else False
-        self.heating_power = body[28]
+        if len(body) > 25:
+            self.water_consumption = body[24] + (body[25] << 8)
+        if len(body) > 34:
+            self.heating_power = body[34] * 100
 
 
 class MessageE2Response(MessageResponse):
