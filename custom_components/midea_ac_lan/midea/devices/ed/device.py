@@ -2,6 +2,7 @@ import logging
 from .message import (
     MessageQuery01,
     MessageQuery07,
+    MessageQueryff,
     MessageEDResponse,
     MessageNewSet,
     MessageOldSet
@@ -24,6 +25,8 @@ class DeviceAttributes(StrEnum):
     life2 = "life2"
     life3 = "life3"
     child_lock = "child_lock"
+    heat_start = "heat_start"
+    hot_pot_temperature = "hot_pot_temperature"
 
 
 class MideaEDDevice(MiedaDevice):
@@ -62,7 +65,9 @@ class MideaEDDevice(MiedaDevice):
             DeviceAttributes.life1: None,
             DeviceAttributes.life2: None,
             DeviceAttributes.life3: None,
-            DeviceAttributes.child_lock: False
+            DeviceAttributes.child_lock: False,
+            DeviceAttributes.heat_start: False,
+            DeviceAttributes.hot_pot_temperature: None
         }
 
     def _use_new_set(self):
@@ -72,6 +77,7 @@ class MideaEDDevice(MiedaDevice):
         return [
             MessageQuery01(self._device_protocol_version),
             MessageQuery07(self._device_protocol_version),
+            MessageQueryff(self._device_protocol_version),
         ]
 
     def process_message(self, msg):
@@ -86,16 +92,16 @@ class MideaEDDevice(MiedaDevice):
 
     def set_attribute(self, attr, value):
         message = None
-        if attr in [DeviceAttributes.power]:
-            if self._use_new_set():
-                if attr in [
-                    DeviceAttributes.power,
-                    DeviceAttributes.child_lock
-                ]:
-                    message = MessageNewSet(self._device_protocol_version)
-            else:
-                if attr in []:
-                    message = MessageOldSet(self._device_protocol_version)
+        if self._use_new_set():
+            if attr in [
+                DeviceAttributes.power,
+                DeviceAttributes.child_lock,
+                DeviceAttributes.heat_start
+            ]:
+                message = MessageNewSet(self._device_protocol_version)
+        else:
+            if attr in []:
+                message = MessageOldSet(self._device_protocol_version)
         if message is not None:
             setattr(message, str(attr), value)
             self.build_send(message)

@@ -1,3 +1,5 @@
+# coding=utf8
+
 from homeassistant.const import (
     TIME_DAYS,
     TIME_HOURS,
@@ -1183,6 +1185,17 @@ MIDEA_DEVICES = {
                 "icon": "mdi:water-pump",
                 "unit": VOLUME_LITERS,
                 "state_class": SensorStateClass.TOTAL_INCREASING
+            },
+            EDAttributes.heat_start: {
+                "type": "switch",
+                "name": "Start Heat",
+                "icon": "mdi:heat-wave"
+            },
+            EDAttributes.hot_pot_temperature: {
+                "type": "sensor",
+                "name": "Hot Pot Temperature",
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
             }
         }
     },
