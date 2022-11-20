@@ -88,6 +88,8 @@ class Security:
         header += bytearray([0x20, padding << 4 | msgtype])
         data = self._request_count.to_bytes(2, "big") + data
         self._request_count += 1
+        if self._request_count > 0xFFFF:
+            self._request_count = 0
         if msgtype in (MSGTYPE_ENCRYPTED_RESPONSE, MSGTYPE_ENCRYPTED_REQUEST):
             sign = sha256(header + data).digest()
             data = self.aes_cbc_encrypt(raw=data, key=self._tcp_key) + sign
