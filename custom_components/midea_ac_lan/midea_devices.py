@@ -747,11 +747,78 @@ MIDEA_DEVICES = {
                 "unit": TIME_MINUTES,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            DAAttributes.wash_time: {
+                "type": "sensor",
+                "name": "wash time",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            DAAttributes.soak_time: {
+                "type": "sensor",
+                "name": "soak time",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            DAAttributes.dehydration_time: {
+                "type": "sensor",
+                "name": "dehydration time",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            DAAttributes.dehydration_speed: {
+                "type": "sensor",
+                "name": "dehydration speed",
+                "icon": "mdi:speedometer"
+            },
+            DAAttributes.error_code: {
+                "type": "sensor",
+                "name": "error code",
+                "icon": "mdi:washing-machine-alert"
+            },
+            DAAttributes.rinse_count: {
+                "type": "sensor",
+                "name": "rinse count",
+                "icon": "mdi:water-sync"
+            },
+            DAAttributes.rinse_level: {
+                "type": "sensor",
+                "name": "rinse level",
+                "icon": "mdi:hydraulic-oil-level"
+            },
+            DAAttributes.wash_level: {
+                "type": "sensor",
+                "name": "rinse count",
+                "icon": "mdi:hydraulic-oil-level"
+            },
+            DAAttributes.wash_strength: {
+                "type": "sensor",
+                "name": "wash strength",
+                "icon": "mdi:network-strength-4-cog"
+            },
+            DAAttributes.softener: {
+                "type": "sensor",
+                "name": "softener",
+                "icon": "mdi:tshirt-crew"
+            },
+            DAAttributes.detergent: {
+                "type": "sensor",
+                "name": "detergent",
+                "icon": "mdi:spray-bottle"
+            },
+            DAAttributes.program: {
+                "type": "sensor",
+                "name": "Program",
+                "icon": "mdi:progress-wrench"
+            },
             DAAttributes.progress: {
                 "type": "sensor",
                 "name": "Progress",
                 "icon": "mdi:rotate-360"
             },
+            
             DAAttributes.power: {
                 "type": "switch",
                 "name": "Power",
