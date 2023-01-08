@@ -40,7 +40,12 @@ class DeviceAttributes(StrEnum):
     target_temperature = "target_temperature"
     temperature_max = "temperature_max"
     temperature_min = "temperature_min"
+    status_heating = "status_heating"
+    status_dhw = "status_dwh"
+    status_tbh = "status_tbh"
+    status_ibh = "status_ibh"
     total_energy_consumption = "total_energy_consumption"
+    total_produced_energy = "total_produced_energy"
 
 
 class MideaC3Device(MiedaDevice):
@@ -98,6 +103,11 @@ class MideaC3Device(MiedaDevice):
             DeviceAttributes.temperature_max: [0, 0],
             DeviceAttributes.temperature_min: [0, 0],
             DeviceAttributes.total_energy_consumption: None,
+            DeviceAttributes.status_heating: False,
+            DeviceAttributes.status_dhw: False,
+            DeviceAttributes.status_tbh: False,
+            DeviceAttributes.status_ibh: False,
+            DeviceAttributes.total_produced_energy: None,
         }
 
     def build_query(self):
