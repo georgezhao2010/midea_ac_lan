@@ -103,10 +103,10 @@ class MideaC3Device(MiedaDevice):
             DeviceAttributes.temperature_max: [0, 0],
             DeviceAttributes.temperature_min: [0, 0],
             DeviceAttributes.total_energy_consumption: None,
-            DeviceAttributes.status_heating: False,
-            DeviceAttributes.status_dhw: False,
-            DeviceAttributes.status_tbh: False,
-            DeviceAttributes.status_ibh: False,
+            DeviceAttributes.status_heating: None,
+            DeviceAttributes.status_dhw: None,
+            DeviceAttributes.status_tbh: None,
+            DeviceAttributes.status_ibh: None,
             DeviceAttributes.total_produced_energy: None,
         }
 
