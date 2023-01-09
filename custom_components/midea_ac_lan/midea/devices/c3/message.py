@@ -121,10 +121,10 @@ class C3Notify1MessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
         status_byte = body[data_offset + 0]
-        status_tbh = status_byte & 0x08
-        status_dhw = status_byte & 0x04
-        status_ibh = status_byte & 0x02
-        status_heating = status_byte & 0x01
+        status_tbh = bool(status_byte & 0x08)
+        status_dhw = bool(status_byte & 0x04)
+        status_ibh = bool(status_byte & 0x02)
+        status_heating = bool(status_byte & 0x01)
 
         self.total_energy_consumption = (
             (body[data_offset + 1] << 32) +
