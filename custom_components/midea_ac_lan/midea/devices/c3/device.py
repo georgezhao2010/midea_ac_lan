@@ -41,7 +41,7 @@ class DeviceAttributes(StrEnum):
     temperature_max = "temperature_max"
     temperature_min = "temperature_min"
     status_heating = "status_heating"
-    status_dhw = "status_dwh"
+    status_dhw = "status_dhw"
     status_tbh = "status_tbh"
     status_ibh = "status_ibh"
     total_energy_consumption = "total_energy_consumption"
