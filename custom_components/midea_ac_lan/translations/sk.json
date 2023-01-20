@@ -1,0 +1,71 @@
+{
+    "config": {
+        "error": {
+            "no_devices": "No new available appliances found on the network",
+            "device_exist": "Appliance is already configured",
+            "cant_get_token": "Can't connect to Midea cloud to take appliance‘s key-info(Token and Key)",
+            "config_incorrect": "The configuration is incorrect",
+            "connect_error": "Can't connect to appliance",
+            "invalid_token": "Token or Key in an incorrect format"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "way": "Adding appliances"
+                },
+                "description": "Choose 'Auto' or 'Manual' to add a new appliance",
+                "title": "Add new appliance"
+            },
+            "discover": {
+                "description": "Discover new Midea devices?",
+                "title": "New appliance discover"
+            },
+            "byip": {
+                "description": "Input IP address for device",
+                "title": "By IP",
+                "data": {
+                    "ip_address": "AP address"
+                }
+            },
+            "list":{
+                "description": "{table}",
+                "title": "Appliances"
+            },
+            "auto": {
+                "data": {
+                    "device": "Appliances"
+                },
+                "description": "Choose a appliance to add",
+                "title": "New appliance found"
+            },
+            "manual": {
+                "data": {
+                    "name": "Name (e.g. Living room AC)",
+                    "device_id": "Appliance code",
+                    "type": "Type",
+                    "ip_address": "IP address",
+                    "port": "Port",
+                    "model": "Model",
+                    "protocol": "Protocol",
+                    "token": "Token",
+                    "key": "Key"
+                },
+                "description": "Configuration of appliance",
+                "title": "New appliance"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "Sensors",
+                    "switches": "Controls",
+                    "customize": "Customize"
+                },
+                "description": "Make attributes as extra sensors and controls",
+                "title": "Extra entities"
+            }
+        }
+    }
+}
