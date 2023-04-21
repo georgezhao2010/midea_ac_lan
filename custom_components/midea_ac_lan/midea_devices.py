@@ -96,6 +96,13 @@ MIDEA_DEVICES = {
                 "name": "Tank Status",
                 "icon": "mdi:alert-circle",
                 "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            A1Attributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
             }
         }
     },

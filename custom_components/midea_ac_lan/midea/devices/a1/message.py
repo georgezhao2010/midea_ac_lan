@@ -160,6 +160,7 @@ class A1GeneralMessageBody(MessageBody):
         self.tank = body[10] & 0x7F
         self.water_level_set = body[15]
         self.current_humidity = body[16]
+        self.current_temperature = (body[17] - 50) / 2
         self.swing = (body[19] & 0x20) > 0
         if self.fan_speed < 5:
             self.fan_speed = 1

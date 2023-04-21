@@ -22,6 +22,7 @@ class DeviceAttributes(StrEnum):
     tank = "tank"
     water_level_set = "water_level_set"
     current_humidity = "current_humidity"
+    current_temperature = "current_temperature"
 
 
 class MideaA1Device(MiedaDevice):
@@ -69,7 +70,8 @@ class MideaA1Device(MiedaDevice):
             DeviceAttributes.anion: False,
             DeviceAttributes.tank: 0,
             DeviceAttributes.water_level_set: "50",
-            DeviceAttributes.current_humidity: None
+            DeviceAttributes.current_humidity: None,
+            DeviceAttributes.current_temperature: None
         }
 
     @property
