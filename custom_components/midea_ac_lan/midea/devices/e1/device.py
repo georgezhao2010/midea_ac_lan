@@ -3,6 +3,7 @@ from .message import (
     MessageQuery,
     MessagePower,
     MessageStorage,
+    MessageStrongStart,
     MessageLock,
     MessageE1Response
 )
@@ -31,6 +32,7 @@ class DeviceAttributes(StrEnum):
     storage_remaining = "storage_remaining"
     temperature = "temperature"
     humidity = "humidity"
+    strong = "strong"
 
 
 class MideaE1Device(MiedaDevice):
@@ -70,6 +72,7 @@ class MideaE1Device(MiedaDevice):
             DeviceAttributes.salt: False,
             DeviceAttributes.child_lock: False,
             DeviceAttributes.storage: False,
+            DeviceAttributes.strong: False,
             DeviceAttributes.storage_status: False,
             DeviceAttributes.time_remaining: None,
             DeviceAttributes.progress: None,
@@ -129,7 +132,10 @@ class MideaE1Device(MiedaDevice):
             message = MessageStorage(self._device_protocol_version)
             message.storage = value
             self.build_send(message)
-
+        elif attr == DeviceAttributes.strong:
+            message = MessageStrongStart(self._device_protocol_version)
+            message.strong = value
+            self.build_send(message)
 
 class MideaAppliance(MideaE1Device):
     pass
