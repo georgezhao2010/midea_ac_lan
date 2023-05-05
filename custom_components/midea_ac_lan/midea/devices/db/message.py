@@ -60,7 +60,7 @@ class MessageStart(MessageDBBase):
             message_type=MessageType.set,
             body_type=0x02)
         self.start = False
-        self.washing_data = bytearray([])
+        self.washing_data = bytearray([0x00,0x09,0xFF,0x00,0x01,0x02,0xFF,0xFF,0xFF,0xFF,0x00,0xFF,0xFF])
 
     @property
     def _body(self):
@@ -74,13 +74,45 @@ class MessageStart(MessageDBBase):
                 0xFF, 0x00
             ])
 
+class MessageDehytration(MessageDBBase):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.set,
+            body_type=0x02)
+        self.dehytration = False
+        self.washing_data = bytearray([0x00,0x09,0xFF,0x00,0x01,0x02,0xFF,0xFF,0xFF,0xFF,0x00,0xFF,0xFF])
+
+    @property
+    def _body(self):
+        if self.dehytration: # Pause
+            return bytearray([
+                0xFF, 0x01
+            ]) + self.washing_data
+        else:
+            # Pause
+            return bytearray([
+                0xFF, 0x00
+            ])
+
+
 
 class DBGeneralMessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
         self.power = body[1] > 0
         self.start = True if body[2] in [2, 6] else False
-        self.washing_data = body[3:16]
+        
+        self.dehytration = True if body[2] in [2, 6] else False
+
+        # self.washing_data = body[3:16]
+        print("body start:")
+
+        print(body)
+        print("body end:")
+
+        # self.washing_data=bytearray([0x00,0x09,0xFF,0x00,0x01,0x02,0x00,0x00,0x00,0x00,0x00,0x00])
+        # body[3:16]=bytearray([0x00,0x09,0xFF,0x00,0x01,0x02,0x00,0x00,0x00,0x00,0x00,0x00])
         self.progress = 0
         for i in range(0, 7):
             if (body[16] & (1 << i)) > 0:
