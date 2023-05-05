@@ -66,6 +66,28 @@ class MessageStorage(MessageE1Base):
             bytearray([0xff] * 6) + bytearray([0x00] * 27)
 
 
+class MessageStrongStart(MessageE1Base):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.set,
+            body_type=0x08)
+        self.strong = False
+
+    @property
+    def _body(self):
+        strong = 0x03 if self.strong else 0x01
+        # return bytearray([0x00, 0x00, 0x00, strong]) + \
+        #     bytearray([0xff] * 6) + bytearray([0x00] * 27)
+
+        # return bytearray([
+        #     0x03,0x02,0x00,0x00
+        # ])
+        
+        return bytearray([
+            strong,0x02,0x00,0x00
+        ])
+
 class MessageQuery(MessageE1Base):
     def __init__(self, device_protocol_version):
         super().__init__(
@@ -82,6 +104,9 @@ class E1GeneralMessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
         self.power = body[1] > 0
+        
+        self.strong= body[1] > 2
+
         self.status = body[1]
         self.mode = body[2]
         self.additional = body[3]
@@ -91,8 +116,11 @@ class E1GeneralMessageBody(MessageBody):
         start_pause = (body[5] & 0x08) > 0
         if start_pause:
             self.start = True
+
         elif self.status in [2, 3]:
             self.start = False
+
+
         self.child_lock = (body[5] & 0x10) > 0
         self.uv = (body[4] & 0x2) > 0
         self.dry = (body[4] & 0x10) > 0
@@ -110,6 +138,7 @@ class MessageE1Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
         body = message[10: -1]
+        print(body)
         if (self._message_type == MessageType.set and 0 <= self._body_type <= 7) or \
                 (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0):
             self._body = E1GeneralMessageBody(body)
