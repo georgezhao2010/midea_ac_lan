@@ -3,6 +3,7 @@ from .message import (
     MessageQuery,
     MessagePower,
     MessageStart,
+    MessageDehytration,
     MessageDBResponse
 )
 from ...core.device import MiedaDevice
@@ -17,6 +18,7 @@ class DeviceAttributes(StrEnum):
     washing_data = "washing_data"
     progress = "progress"
     time_remaining = "time_remaining"
+    dehytration="dehytration"
 
 
 class MideaDBDevice(MiedaDevice):
@@ -46,7 +48,10 @@ class MideaDBDevice(MiedaDevice):
         self._attributes = {
             DeviceAttributes.power: False,
             DeviceAttributes.start: False,
-            DeviceAttributes.washing_data: bytearray([]),
+            # DeviceAttributes.washing_data: bytearray([0x00,0x09,0xFF,0x00,0x01,0x02,0x00,0x00,0x00,0x00,0x00,0x00]),
+            DeviceAttributes.washing_data: bytearray([0x00,0x09,0xFF,0x00,0x01,0x02,0xFF,0xFF,0xFF,0xFF,0x00,0xFF,0xFF]),
+            DeviceAttributes.dehytration: False,
+
             DeviceAttributes.progress: "Unknown",
             DeviceAttributes.time_remaining: None
         }
@@ -73,13 +78,25 @@ class MideaDBDevice(MiedaDevice):
         if attr == DeviceAttributes.power:
             message = MessagePower(self._device_protocol_version)
             message.power = value
+            
+            _LOGGER.debug(f"[{self.device_id}] power : {message}")
+
             self.build_send(message)
         elif attr == DeviceAttributes.start:
             message = MessageStart(self._device_protocol_version)
             message.start = value
             message.washing_data = self._attributes[DeviceAttributes.washing_data]
-            self.build_send(message)
+            
+            _LOGGER.debug(f"[{self.device_id}] start washing_data: {message}")
 
+            self.build_send(message)
+        elif attr == DeviceAttributes.dehytration:
+            message = MessageDehytration(self._device_protocol_version)
+            message.dehytration = value
+            message.washing_data = bytearray([0x00,0x09,0xFF,0x00,0x01,0x02,0xFF,0xFF,0xFF,0xFF,0x00,0xFF,0xFF])
+            
+            _LOGGER.debug(f"[{self.device_id}] start washing_data: {message}")
+            self.build_send(message)
 
 class MideaAppliance(MideaDBDevice):
     pass
