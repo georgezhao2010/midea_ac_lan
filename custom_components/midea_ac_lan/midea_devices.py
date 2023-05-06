@@ -30,6 +30,7 @@ from .midea.devices.ed.device import DeviceAttributes as EDAttributes
 from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
+from .midea.devices.f1.device import DeviceAttributes as F1Attributes
 from .midea.devices.fa.device import DeviceAttributes as FAAttributes
 from .midea.devices.fb.device import DeviceAttributes as FBAttributes
 from .midea.devices.fc.device import DeviceAttributes as FCAttributes
@@ -1080,6 +1081,96 @@ MIDEA_DEVICES = {
                 "icon": "mdi:water-pump",
                 "unit": VOLUME_LITERS,
                 "state_class": SensorStateClass.TOTAL_INCREASING
+            }
+        }
+    },
+    0xF1: {
+        "name": "High Speed Blender",
+        "entities": {
+            F1Attributes.mode: {
+                "type": "sensor",
+                "name": "mode",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.error_code: {
+                "type": "sensor",
+                "name": "error_code",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.response_type: {
+                "type": "sensor",
+                "name": "response_type",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.work_status: {
+                "type": "sensor",
+                "name": "work_status",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.step_status: {
+                "type": "sensor",
+                "name": "step_status",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.work_step: {
+                "type": "sensor",
+                "name": "work_step",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.cup_capstatus: {
+                "type": "sensor",
+                "name": "cup_capstatus",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.cup_bodystatus: {
+                "type": "sensor",
+                "name": "cup_bodystatus",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.curworktime: {
+                "type": "sensor",
+                "name": "curworktime",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.curtemperature: {
+                "type": "sensor",
+                "name": "curtemperature",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.curwork_speed: {
+                "type": "sensor",
+                "name": "curwork_speed",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.temperature_reservehot: {
+                "type": "sensor",
+                "name": "temperature_reservehot",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.temperature_reservewarm: {
+                "type": "sensor",
+                "name": "temperature_reservewarm",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.time_reservefinish: {
+                "type": "sensor",
+                "name": "time_reservefinish",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.time_reservework: {
+                "type": "sensor",
+                "name": "time_reservework",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.time_reservewarm: {
+                "type": "sensor",
+                "name": "time_reservewarm",
+                "icon": "mdi:rotate-360"
+            },
+            F1Attributes.code_id: {
+                "type": "sensor",
+                "name": "code_id",
+                "icon": "mdi:rotate-360"
             }
         }
     },
