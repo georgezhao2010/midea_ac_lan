@@ -1,0 +1,71 @@
+{
+    "config": {
+        "error": {
+            "no_devices": "Nem találhatóak új eszközök a hálózaton",
+            "device_exist": "Az eszköz már be van állítva",
+            "cant_get_token": "Nem sikerül csatlakozni a Midea felhőhöz az eszköz kulcs-információjának (Token és Key) eléréséhez",
+            "config_incorrect": "A beállítások helytelenek",
+            "connect_error": "Nem sikerült csatlakozni az eszközhöz",
+            "invalid_token": "A Token vagy a Key formátuma helytelen"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "way": "Eszközök hozzáadása"
+                },
+                "description": "Válassza az 'Auto' vagy 'Manual' opciót új eszköz hozzáadásához",
+                "title": "Új eszköz hozzáadása"
+            },
+            "discover": {
+                "description": "Új Midea eszközöket keres?",
+                "title": "Új eszköz keresése"
+            },
+            "byip": {
+                "description": "Adja meg az eszköz IP címét",
+                "title": "IP alapján",
+                "data": {
+                    "ip_address": "IP cím"
+                }
+            },
+            "list":{
+                "description": "{table}",
+                "title": "Eszközök"
+            },
+            "auto": {
+                "data": {
+                    "device": "Eszközök"
+                },
+                "description": "Válassza ki a hozzáadandó eszközt",
+                "title": "Új eszköz található"
+            },
+            "manual": {
+                "data": {
+                    "name": "Név (pl. Nappali légkondicionáló)",
+                    "device_id": "Eszköz kód",
+                    "type": "Típus",
+                    "ip_address": "IP cím",
+                    "port": "Port",
+                    "model": "Modell",
+                    "protocol": "Protokoll",
+                    "token": "Token",
+                    "key": "Kulcs"
+                },
+                "description": "Eszköz konfigurációja",
+                "title": "Új eszköz"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "Érzékelők",
+                    "switches": "Vezérlők",
+                    "customize": "Személyre szabás"
+                },
+                "description": "Extra érzékelők és vezérlők beállítása",
+                "title": "Extra entitások"
+            }
+        }
+    }
+}
