@@ -1,0 +1,71 @@
+{
+    "config": {
+        "error": {
+            "no_devices": "Aucun nouvel appareil trouvé sur le réseau",
+            "device_exist": "L'appareil est déjà configurée",
+            "cant_get_token": "Impossible de se connecter au cloud Midea pour prendre les informations de l'appareil (jeton et clé)",
+            "config_incorrect": "La configuration est incorrecte",
+            "connect_error": "Impossible de se connecter à l'appareil",
+            "invalid_token": "Jeton ou clé dans un format incorrect"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "way": "Ajout d'appareil"
+                },
+                "description": "Choisissez 'Auto' ou 'Manuel' pour ajouter un nouvel appareil",
+                "title": "Ajouter un nouvel appareil"
+            },
+            "discover": {
+                "description": "Découvrir de nouveaux appareils Midea ?",
+                "title": "Découverte d'un nouvel appareil"
+            },
+            "byip": {
+                "description": "Saisissez l'adresse IP de l'appareil",
+                "title": "Par IP",
+                "data": {
+                    "ip_address": "Adresse IP"
+                }
+            },
+            "list":{
+                "description": "{table}",
+                "title": "Appareil"
+            },
+            "auto": {
+                "data": {
+                    "device": "Appareil"
+                },
+                "description": "Choisissez un appareil à ajouter",
+                "title": "Nouvel appareil trouvé"
+            },
+            "manual": {
+                "data": {
+                    "name": "Nom (ex: Clim Salon)",
+                    "device_id": "Code appareil",
+                    "type": "Type",
+                    "ip_address": "Adresse IP",
+                    "port": "Port",
+                    "model": "Modèle",
+                    "protocol": "Protocole",
+                    "token": "Jeton",
+                    "key": "Clé"
+                },
+                "description": "Configuration de l'appareil",
+                "title": "Nouvel appareil"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "Capteurs",
+                    "switches": "Contrôles",
+                    "customize": "Personnaliser"
+                },
+                "description": "Faire des attributs des capteurs et des contrôles supplémentaires",
+                "title": "Entités supplémentaires"
+            }
+        }
+    }
+}
