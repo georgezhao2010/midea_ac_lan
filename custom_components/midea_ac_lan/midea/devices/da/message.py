@@ -75,17 +75,17 @@ class DAGeneralMessageBody(MessageBody):
         self.power = body[1] > 0
         self.start = True if body[2] in [2, 6] else False
         self.error_code = body[24]
-        self.program = int(hex(body[4]),16)
+        self.program = body[4]
         self.wash_time = body[9]
         self.soak_time = body[12]
-        self.dehydration_time = '{:02x}'.format(body[10])[:1]
-        self.dehydration_speed = int('{:02x}'.format(body[6])[:1],16)
-        self.rinse_count = '{:02x}'.format(body[10])[1:]
-        self.rinse_level = int('{:02x}'.format(body[5])[:1],16)
-        self.wash_level = '{:02x}'.format(body[5])[1:]
-        self.wash_strength = int('{:02x}'.format(body[6])[1:],16)
-        self.softener = int('{:02x}'.format(body[8])[:1],16)
-        self.detergent = int('{:02x}'.format(body[8])[1:],16)
+        self.dehydration_time = (body[10] & 0xf0) >> 4
+        self.dehydration_speed = (body[6] & 0xf0) >> 4
+        self.rinse_count = body[10] & 0xf
+        self.rinse_level = (body[5] & 0xf0) >> 4
+        self.wash_level = body[5] & 0xf
+        self.wash_strength = body[6] & 0xf
+        self.softener = (body[8] & 0xf0) >> 4
+        self.detergent = body[8] & 0x0f
         self.washing_data = body[3:15]
         self.progress = 0
         for i in range(1, 7):
