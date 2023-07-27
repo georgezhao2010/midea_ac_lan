@@ -90,6 +90,12 @@ MIDEA_DEVICES = {
                 "device_class": SensorDeviceClass.HUMIDITY,
                 "unit": PERCENTAGE,
                 "state_class": SensorStateClass.MEASUREMENT
+            },
+            A1Attributes.tank: {
+                "type": "binary_sensor",
+                "name": "Tank Status",
+                "icon": "mdi:alert-circle",
+                "device_class": BinarySensorDeviceClass.PROBLEM
             }
         }
     },
