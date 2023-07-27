@@ -454,6 +454,13 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            C3Attributes.total_energy_consumption: {
+                "type": "sensor",
+                "name": "Total energy consumption",
+                "device_class": SensorDeviceClass.ENERGY,
+                "unit": ENERGY_KILO_WATT_HOUR,
+                "state_class": SensorStateClass.TOTAL_INCREASING
+            },
         }
     },
     0xCA: {
