@@ -6,7 +6,7 @@ from ...core.message import (
 )
 
 
-class MessageCFBase(MessageRequest):
+class MessageB0Base(MessageRequest):
     def __init__(self, device_protocol_version, message_type, body_type):
         super().__init__(
             device_protocol_version=device_protocol_version,
@@ -20,7 +20,7 @@ class MessageCFBase(MessageRequest):
         raise NotImplementedError
 
 
-class MessageQuery00(MessageCFBase):
+class MessageQuery00(MessageB0Base):
     def __init__(self, device_protocol_version):
         super().__init__(
             device_protocol_version=device_protocol_version,
@@ -32,7 +32,7 @@ class MessageQuery00(MessageCFBase):
         return bytearray([])
 
 
-class MessageQuery01(MessageCFBase):
+class MessageQuery01(MessageB0Base):
     def __init__(self, device_protocol_version):
         super().__init__(
             device_protocol_version=device_protocol_version,
