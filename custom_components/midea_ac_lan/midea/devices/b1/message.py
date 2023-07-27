@@ -54,4 +54,3 @@ class MessageB1Response(MessageResponse):
             self._body = B1MessageBody(body)
         self.set_attr()
 
-
