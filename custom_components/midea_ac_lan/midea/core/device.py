@@ -101,6 +101,8 @@ class MiedaDevice(threading.Thread):
             if factual_msg_len >= alleged_msg_len:
                 result.append(msg[:alleged_msg_len])
                 msg = msg[alleged_msg_len:]
+            else:
+                break
         return result, msg
 
     def connect(self, refresh_status=True):
