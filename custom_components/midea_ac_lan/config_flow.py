@@ -26,6 +26,7 @@ from homeassistant.const import (
 )
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from .midea.core.discover import discover
+from .midea.core.cloud2 import MideaCloud2
 from .midea.core.cloud import MideaCloud
 from .midea.core.device import MiedaDevice
 from .midea_devices import MIDEA_DEVICES
@@ -133,7 +134,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             device = self.devices.get(device_id)
             if device.get(CONF_PROTOCOL) == 3:
                 session = async_create_clientsession(self.hass)
-                cloud = MideaCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD, MIDEA_DEFAULT_SERVER)
+                if MIDEA_DEFAULT_SERVER == "cn":
+                    cloud = MideaCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD, MIDEA_DEFAULT_SERVER)
+                else:    
+                    cloud = MideaCloud2(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
                 dm = MiedaDevice(
                     name="",
                     device_id=device_id,

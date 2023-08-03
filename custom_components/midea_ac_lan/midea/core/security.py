@@ -33,7 +33,7 @@ class Security:
             self._loginKey = "ad0ee21d48a64bf49f4fb583ab76e799"
         else:
             self._iotkey = "meicloud"
-            self._loginKey = "ac21b9f9cbfe4ca5a88562ef25e2b768"
+            self._loginKey = "ff0cf6f5f0c3471de36341cab3f7a9af" # "ac21b9f9cbfe4ca5a88562ef25e2b768" for MSmartHome
 
     def aes_decrypt(self, raw):
         cipher = AES.new(self.aes_key, AES.MODE_ECB)
