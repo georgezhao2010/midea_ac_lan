@@ -38,7 +38,7 @@ class PacketBuilder:
             self.packet[3] = 0x10
             self.packet[6] = 0x7b
         else:
-            self.packet.extend(self.security.aes_encrypt(self.command)[:48])
+            self.packet.extend(self.security.aes_encrypt(self.command))
         # PacketLenght
         self.packet[4:6] = (len(self.packet) + 16).to_bytes(2, "little")
         # Append a basic checksum data(16 bytes) to the packet
