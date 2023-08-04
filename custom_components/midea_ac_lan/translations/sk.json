@@ -1,0 +1,71 @@
+{
+    "config": {
+        "error": {
+            "no_devices": "V sieti sa nenašli žiadne nové dostupné zariadenia",
+            "device_exist": "Spotrebič je už nakonfigurovaný",
+            "cant_get_token": "Nedá sa pripojiť ku cloudu Midea a získať informácie o kľúči zariadenia (token a kľúč)",
+            "config_incorrect": "Konfigurácia je nesprávna",
+            "connect_error": "Nedá sa pripojiť k spotrebiču",
+            "invalid_token": "Token alebo kľúč v nesprávnom formáte"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "way": "Pridávanie spotrebičov"
+                },
+                "description": "Ak chcete pridať nový spotrebič, vyberte možnosť „Automaticky“ alebo „Manuálne“.",
+                "title": "Pridať nový spotrebič"
+            },
+            "discover": {
+                "description": "Objaviť nové zariadenia Midea?",
+                "title": "Objavte nové zariadenie"
+            },
+            "byip": {
+                "description": "Zadajte IP adresu pre zariadenie",
+                "title": "Podľa IP",
+                "data": {
+                    "ip_address": "IP adresa"
+                }
+            },
+            "list":{
+                "description": "{table}",
+                "title": "Spotrebiče"
+            },
+            "auto": {
+                "data": {
+                    "device": "Spotrebiče"
+                },
+                "description": "Vyberte zariadenie, ktoré chcete pridať",
+                "title": "Našiel sa nový spotrebič"
+            },
+            "manual": {
+                "data": {
+                    "name": "Názov (napr. AC obývačka)",
+                    "device_id": "Kód spotrebiča",
+                    "type": "Typ",
+                    "ip_address": "IP adresa",
+                    "port": "Port",
+                    "model": "Model",
+                    "protocol": "Protokol",
+                    "token": "Token",
+                    "key": "Kľúč"
+                },
+                "description": "Konfigurácia spotrebiča",
+                "title": "Nový spotrebič"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sensors": "Snímače",
+                    "switches": "Ovládacie prvky",
+                    "customize": "Voliteľné"
+                },
+                "description": "Vytvorte atribúty ako ďalšie senzory a ovládacie prvky",
+                "title": "Extra entities"
+            }
+        }
+    }
+}
