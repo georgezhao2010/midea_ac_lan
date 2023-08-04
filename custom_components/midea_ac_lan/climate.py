@@ -279,7 +279,7 @@ class MideaACClimate(MideaClimate):
 class MideaCCClimate(MideaClimate):
     def __init__(self, device, entity_key):
         super().__init__(device, entity_key)
-        self._modes = [HVACMode.OFF, HVACMode.FAN_ONLY, HVACMode.DRY, HHVACMode.HEAT, HVACMode.COOL, HVACMode.AUTO]
+        self._modes = [HVACMode.OFF, HVACMode.FAN_ONLY, HVACMode.DRY, HVACMode.HEAT, HVACMode.COOL, HVACMode.AUTO]
         self._swing_modes = [
             SWING_OFF.capitalize(),
             SWING_ON.capitalize()

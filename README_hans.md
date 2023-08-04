@@ -55,6 +55,8 @@
 重启Home Assistant
 
 # 配置
+***注意: 首先，在路由器上为你的设备设置一个静态IP地址，以防设置后设备的IP地址发生改变。***
+
 安装之后，在Home Assistant的集成界面搜索添加集成Midea AC LAN, 如果需要添加多台设备，多次添加本集成并执行自动配置即可。
 
 或者直接点击 [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)

@@ -67,5 +67,39 @@
                 "title": "扩展实体"
             }
         }
+    },
+    "services": {
+        "set_ac_fan_speed": {
+            "name": "设置空调风速",
+            "description": "设置空调的风速",
+            "fields" : {
+                "device_id": {
+                    "name": "设备编码",
+                    "description": "设备编码(Deivce ID)"
+                },
+                "fan_speed": {
+                    "name": "风速",
+                    "description": "要设置的风速值(1 - 100 或 'auto')"
+                }
+            }
+        },
+        "set_attribute": {
+            "name": "设置属性",
+            "description": "设置设备的属性值",
+            "fields" : {
+                "device_id": {
+                    "name": "设备编码",
+                    "description": "设备编码(Deivce ID)"
+                },
+                "attribute": {
+                    "name": "Attribute",
+                    "description": "要设置的属性名称"
+                },
+                "value": {
+                    "name": "Value",
+                    "description": "要设置的属性值"
+                }
+            }
+        }
     }
 }

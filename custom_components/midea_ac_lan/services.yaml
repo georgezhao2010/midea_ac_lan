@@ -1,20 +1,13 @@
 set_ac_fan_speed:
-  description: Set the fan speed of climate.
   fields:
     device_id:
-      description: The Appliance code (Device ID) of appliance
     fan_speed:
-      description: fan speed want to set (range from 1 to 100 or 'auto')
       example: "'auto'"
 
 set_attribute:
-  description: Set the attribute of climate.
   fields:
     device_id:
-      description: The Appliance code (Device ID) of appliance
     attribute:
-      description: attribute name want to set
       example: "eco_mode"
     value:
-      description: attribute value want to set
       example: true

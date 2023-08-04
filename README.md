@@ -55,6 +55,8 @@ Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_componen
 Restart Home Assistant.
 
 # Configuration
+***Note: First, set a static IP address for your appliance in the router, in case the IP address of the appliance changes after set-up.***
+
 After installation, search and add component Midea AC LAN in Home Assistant integrations page.
 
 Or click [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)
