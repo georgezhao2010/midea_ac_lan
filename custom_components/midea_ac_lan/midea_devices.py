@@ -460,9 +460,40 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            C3Attributes.status_tbh: {
+                "type": "binary_sensor",
+                "name": "TBH status",
+                "icon": "mdi:water-boiler",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.status_dhw: {
+                "type": "binary_sensor",
+                "name": "DHW status",
+                "icon": "mdi:heat-pump",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.status_ibh: {
+                "type": "binary_sensor",
+                "name": "IBH status",
+                "icon": "mdi:coolant-temperature",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.status_heating: {
+                "type": "binary_sensor",
+                "name": "Heating status",
+                "icon": "mdi:heat-pump",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
             C3Attributes.total_energy_consumption: {
                 "type": "sensor",
                 "name": "Total energy consumption",
+                "device_class": SensorDeviceClass.ENERGY,
+                "unit": ENERGY_KILO_WATT_HOUR,
+                "state_class": SensorStateClass.TOTAL_INCREASING
+            },
+            C3Attributes.total_produced_energy: {
+                "type": "sensor",
+                "name": "Total produced energy",
                 "device_class": SensorDeviceClass.ENERGY,
                 "unit": ENERGY_KILO_WATT_HOUR,
                 "state_class": SensorStateClass.TOTAL_INCREASING

@@ -120,10 +120,23 @@ class C3MessageBody(MessageBody):
 class C3Notify1MessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
+        status_byte = body[data_offset]
+        self.status_tbh = bool(status_byte & 0x08)
+        self.status_dhw = bool(status_byte & 0x04)
+        self.status_ibh = bool(status_byte & 0x02)
+        self.status_heating = bool(status_byte & 0x01)
+
         self.total_energy_consumption = (
-            body[data_offset + 4] +
+            (body[data_offset + 1] << 32) +
+            (body[data_offset + 2] << 16) +
             (body[data_offset + 3] << 8) +
-            (body[data_offset + 2] << 16))
+            (body[data_offset + 4]))
+
+        self.total_produced_energy = (
+            (body[data_offset + 5] << 32) +
+            (body[data_offset + 6] << 16) +
+            (body[data_offset + 7] << 8) +
+            (body[data_offset + 8]))
 
 class MessageC3Response(MessageResponse):
     def __init__(self, message):
