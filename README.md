@@ -29,6 +29,8 @@ And more.
  --- | --- | ---
  A1 | Dehumidifier | [A1.md](doc/A1.md)
  AC | Air Conditioner | [AC.md](doc/AC.md)
+ B0 | Microwave Oven | [B0.md](doc/B0.md)
+ B1 | Electric Oven | [B1.md](doc/B1.md)
  B6 | Range Hood | [B6.md](doc/B6.md)
  C3 | Heat Pump Wi-Fi Controller | [C3.md](doc/C3.md)
  CA | Refrigerator | [CA.md](doc/CA.md)

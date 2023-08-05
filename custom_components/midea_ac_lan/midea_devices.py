@@ -91,6 +91,13 @@ MIDEA_DEVICES = {
                 "unit": PERCENTAGE,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            A1Attributes.current_temperature: {
+                "type": "sensor",
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
             A1Attributes.tank: {
                 "type": "binary_sensor",
                 "name": "Tank Status",
@@ -248,7 +255,7 @@ MIDEA_DEVICES = {
             },
             B0Attributes.tank_ejected: {
                 "type": "binary_sensor",
-                "name": "Tank ejected",
+                "name": "Tank Ejected",
                 "icon": "mdi:cup-water",
                 "device_class": BinarySensorDeviceClass.PROBLEM
             },
@@ -286,7 +293,7 @@ MIDEA_DEVICES = {
         }
     },
     0xB1: {
-        "name": "Oven",
+        "name": "Electric Oven",
         "entities": {
             B1Attributes.door: {
                 "type": "binary_sensor",
@@ -862,7 +869,6 @@ MIDEA_DEVICES = {
                 "name": "Progress",
                 "icon": "mdi:rotate-360"
             },
-            
             DAAttributes.power: {
                 "type": "switch",
                 "name": "Power",

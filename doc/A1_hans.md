@@ -15,8 +15,10 @@ humidifier.{DEVICEID}_humidifier | humidifier | 加湿器实体
 
 EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
+binary_sensor.{DEVICEID}_tank | sensor | Tank Status | 水箱状态
 sensor.{DEVICEID}_current_humidity | sensor | Current Humidity | 当前湿度
-lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
+sensor.{DEVICEID}_current_temperature | sensor | Current Temperatur | 当前温度
+lock.{DEVICEID}_child_lock | lock | Child lock | 童锁
 switch.{DEVICEID}_anion | switch | Anion | 负离子开关
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone | 提示音
 switch.{DEVICEID}_power | switch | Power | 电源开关

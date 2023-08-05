@@ -29,6 +29,8 @@
  --- | --- | ---
  A1 | 除湿器 | [A1_hans.md](doc/A1_hans.md)
  AC | 空调器 | [AC_hans.md](doc/AC_hans.md)
+ B0 | 微波炉 | [B0.md](doc/B0_hans.md)
+ B1 | 电烤箱 | [B1.md](doc/B1_hans.md)
  B6 | 油烟机 | [B6_hans.md](doc/B6_hans.md)
  C3 | 热泵空调Wi-Fi线控器 | [C3_hans.md](doc/C3_hans.md)
  CA | 冰箱 | [CA_hans.md](doc/CA_hans.md)
