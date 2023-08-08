@@ -77,7 +77,6 @@ class MideaCloudBase:
                     break
             except Exception as e:
                 _LOGGER.debug(f"Cloud error: {repr(e)}")
-                pass
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
         return None
@@ -211,7 +210,7 @@ class SmartLifeCloud(MideaCloudBase):
                     response = json.loads(raw)
                     break
             except Exception as e:
-                pass
+                _LOGGER.debug(f"Cloud error: {repr(e)}")
         if "errorCode" in response and int(response["errorCode"]) == 0 and "result" in response:
             return response["result"]
         return None

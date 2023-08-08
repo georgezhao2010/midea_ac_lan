@@ -109,20 +109,14 @@ class LocalSecurity:
         self._response_count = 0
 
     def aes_decrypt(self, raw):
-        cipher = AES.new(self.aes_key, AES.MODE_ECB)
         try:
-            decrypted = cipher.decrypt(bytearray(raw))
-            decrypted = unpad(decrypted, self.blockSize)
-            return decrypted
+            return unpad(AES.new(self.aes_key, AES.MODE_ECB).decrypt(bytearray(raw)), self.blockSize)
         except ValueError as e:
             _LOGGER.error(f"Error in aes_decrypt: {repr(e)} - data: {raw.hex()}")
-            return bytearray(0)
+        return bytearray(0)
 
     def aes_encrypt(self, raw):
-        raw = pad(raw, self.blockSize)
-        cipher = AES.new(self.aes_key, AES.MODE_ECB)
-        encrypted = cipher.encrypt(bytearray(raw))
-        return encrypted
+        return AES.new(self.aes_key, AES.MODE_ECB).encrypt(bytearray(pad(raw, self.blockSize)))
 
     def aes_cbc_decrypt(self, raw, key):
         return AES.new(key=key, mode=AES.MODE_CBC, iv=self.iv).decrypt(raw)
