@@ -21,6 +21,8 @@ from .midea.devices.fb.device import DeviceAttributes as FBAttributes
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
+_LOGGER = logging.getLogger(__name__)
+
 
 TEMPERATURE_MAX = 30
 TEMPERATURE_MIN = 17
@@ -163,7 +165,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
                 self._device.set_target_temperature(
                     target_temperature=temperature, mode=mode)
             except ValueError as e:
-                pass
+                _LOGGER.error(f"set_temperature {e}, kwargs = {kwargs}")
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         hvac_mode = hvac_mode.lower()
@@ -200,8 +202,8 @@ class MideaClimate(MideaEntity, ClimateEntity):
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()
-        except Exception:
-            pass
+        except Exception as e:
+            _LOGGER.debug(f"Entity {self.entity_id} update_state {e}, status = {status}")
 
     def turn_aux_heat_on(self) -> None:
         self._device.set_attribute(attr="aux_heat", value=True)
@@ -417,7 +419,7 @@ class MideaC3Climate(MideaClimate):
                 self._device.set_target_temperature(
                     zone=self._zone, target_temperature=temperature, mode=mode)
             except ValueError as e:
-                pass
+                _LOGGER.error(f"set_temperature {e}, kwargs = {kwargs}")
 
     def set_hvac_mode(self, hvac_mode: str) -> None:
         hvac_mode = hvac_mode.lower()

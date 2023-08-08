@@ -86,16 +86,15 @@ class MideaEDDevice(MiedaDevice):
 
     def set_attribute(self, attr, value):
         message = None
-        if attr in [DeviceAttributes.power]:
-            if self._use_new_set():
-                if attr in [
-                    DeviceAttributes.power,
-                    DeviceAttributes.child_lock
-                ]:
-                    message = MessageNewSet(self._device_protocol_version)
-            else:
-                if attr in []:
-                    message = MessageOldSet(self._device_protocol_version)
+        if self._use_new_set():
+            if attr in [
+                DeviceAttributes.power,
+                DeviceAttributes.child_lock
+            ]:
+                message = MessageNewSet(self._device_protocol_version)
+        else:
+            if attr in []:
+                message = MessageldSet(self._device_protocol_version)
         if message is not None:
             setattr(message, str(attr), value)
             self.build_send(message)

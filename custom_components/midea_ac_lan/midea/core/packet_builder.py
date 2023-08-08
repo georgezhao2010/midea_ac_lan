@@ -1,14 +1,12 @@
 import logging
-from .security import Security
+from .security import LocalSecurity
 import datetime
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class PacketBuilder:
     def __init__(self, device_id: int, command):
         self.command = None
-        self.security = Security()
+        self.security = LocalSecurity()
         # aa20ac00000000000003418100ff03ff000200000000000000000000000006f274
         # Init the packet with the header data.
         self.packet = bytearray([

@@ -108,8 +108,8 @@ class MideaFan(MideaEntity, FanEntity):
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()
-        except Exception:
-            pass
+        except Exception as e:
+            _LOGGER.debug(f"Entity {self.entity_id} update_state {e}, status = {status}")
 
 
 class MideaFAFan(MideaFan):
