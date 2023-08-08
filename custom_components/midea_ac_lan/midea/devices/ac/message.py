@@ -144,7 +144,7 @@ class MessageSubProtocol(MessageACBase):
             len(_subprotocol_body) + 6 + 2 if _subprotocol_body is not None else 6 + 2,
             0x00, 0xFF, 0xFF, self._subprotocol_query_type
         ])
-        if self._subprotocol_data is not None:
+        if _subprotocol_body is not None:
             _body.extend(_subprotocol_body)
         return _body
 
@@ -178,7 +178,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         dry = 0x10 if self.power and self.dry else 0
         boost_mode = 0x10 if self.boost_mode else 0
         mode = self.mode
-        target_temperature = self.target_temperature * 2 + 30
+        target_temperature = int(self.target_temperature * 2 + 30)
         fan_speed = self.fan_speed
         eco = 0x40 if self.eco_mode else 0
         sleep_mode = 0x30 if self.sleep_mode else 0
@@ -534,7 +534,8 @@ class MessageACResponse(MessageResponse):
             self._body = XC0MessageBody(body)
         elif self._message_type == MessageType.query and self._body_type == 0xC1:
             self._body = XC1MessageBody(body)
-        elif self._message_type == MessageType.notify2 and self._body_type == 0xBB and len(body) >= 21:
+        elif self._message_type in [MessageType.query, MessageType.notify2] and \
+                self._body_type == 0xBB and len(body) >= 21:
             self.used_subprotocol = True
             self._body = XBBMessageBody(body)
         self.set_attr()

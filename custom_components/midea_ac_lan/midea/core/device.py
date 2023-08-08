@@ -131,7 +131,7 @@ class MiedaDevice(threading.Thread):
         except RefreshFailed:
             _LOGGER.debug(f"[{self._device_id}] Refresh status is timed out")
         except Exception as e:
-            _LOGGER.error(f"[{self._device_id}] Unknown error :{e.__traceback__.tb_frame.f_globals['__file__']}, "
+            _LOGGER.error(f"[{self._device_id}] Unknown error: {e.__traceback__.tb_frame.f_globals['__file__']}, "
                           f"{e.__traceback__.tb_lineno}, {repr(e)}")
         self.enable_device(False)
         return False

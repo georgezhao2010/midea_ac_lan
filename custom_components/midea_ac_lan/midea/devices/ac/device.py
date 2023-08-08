@@ -138,12 +138,11 @@ class MideaACDevice(MiedaDevice):
                 MessageSubProtocolQuery(self._device_protocol_version, 0x11),
                 MessageSubProtocolQuery(self._device_protocol_version, 0x30)
             ]
-        else:
-            return [
-                MessageQuery(self._device_protocol_version),
-                MessageNewProtocolQuery(self._device_protocol_version),
-                MessagePowerQuery(self._device_protocol_version)
-            ]
+        return [
+            MessageQuery(self._device_protocol_version),
+            MessageNewProtocolQuery(self._device_protocol_version),
+            MessagePowerQuery(self._device_protocol_version)
+        ]
 
     def process_message(self, msg):
         message = MessageACResponse(msg)
