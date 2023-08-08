@@ -198,7 +198,6 @@ class MideaClimate(MideaEntity, ClimateEntity):
         elif old_mode == PRESET_BOOST:
             self._device.set_attribute(attr="boost_mode", value=False)
 
-
     def update_state(self, status):
         try:
             self.schedule_update_ha_state()

@@ -8,6 +8,8 @@ from ...core.message import (
 )
 from ...core.crc8 import calculate
 
+BB_AC_MODES = [0, 3, 2, 1, 4, 5]
+
 
 class NewProtocolTags(IntEnum):
     indoor_humidity = 0x0015
@@ -177,7 +179,10 @@ class MessageSubProtocolSet(MessageSubProtocol):
         power = 0x01 if self.power else 0
         dry = 0x10 if self.power and self.dry else 0
         boost_mode = 0x10 if self.boost_mode else 0
-        mode = self.mode
+        try:
+            mode = BB_AC_MODES[self.mode] - 1
+        except IndexError:
+            mode = 2  # set Auto if invalid mode
         target_temperature = int(self.target_temperature * 2 + 30)
         fan_speed = self.fan_speed
         eco = 0x40 if self.eco_mode else 0
@@ -497,7 +502,10 @@ class XBBMessageBody(MessageBody):
             self.power = (subprotocol_body[0] & 0x1) > 0
             self.dry = (subprotocol_body[0] & 0x10) > 0
             self.boost_mode = (subprotocol_body[1] & 0x10) > 0
-            self.mode = subprotocol_body[5]
+            try:
+                self.mode = BB_AC_MODES.index(subprotocol_body[5] + 1)
+            except ValueError:
+                self.mode = 0
             self.target_temperature = (subprotocol_body[6] - 30) / 2
             self.fan_speed = subprotocol_body[7]
             self.eco_mode = (subprotocol_body[25] & 0x40) > 0 if subprotocol_body_len > 27 else False
