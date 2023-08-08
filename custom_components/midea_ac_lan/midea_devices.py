@@ -148,6 +148,11 @@ MIDEA_DEVICES = {
                 "name": "ECO Mode",
                 "icon": "mdi:leaf-circle"
             },
+            ACAttributes.frost_protect: {
+                "type": "switch",
+                "name": "Frost Protect",
+                "icon": "mdi:snowflake-alert"
+            },
             ACAttributes.indirect_wind: {
                 "type": "switch",
                 "name": "Indirect Wind",
