@@ -53,7 +53,7 @@ class MiedaDevice(threading.Thread):
         self._token = bytearray.fromhex(token) if token else None
         self._key = bytearray.fromhex(key) if key else None
         self._buffer = b""
-        self._name = name
+        self._device_name = name
         self._device_id = device_id
         self._device_type = device_type
         self._protocol = protocol
@@ -68,7 +68,7 @@ class MiedaDevice(threading.Thread):
 
     @property
     def name(self):
-        return self._name
+        return self._device_name
 
     @property
     def available(self):

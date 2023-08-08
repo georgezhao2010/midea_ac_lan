@@ -53,13 +53,33 @@ class MessageBase(ABC):
     def message_type(self):
         return self._message_type
 
+    @message_type.setter
+    def message_type(self, value):
+        self._message_type = value
+
+    @property
+    def device_type(self):
+        return self._device_type
+
+    @device_type.setter
+    def device_type(self, value):
+        self._device_type = value
+
     @property
     def body_type(self):
         return self._body_type
 
+    @body_type.setter
+    def body_type(self, value):
+        self._body_type = value
+
     @property
     def device_protocol_version(self):
         return self._device_protocol_version
+
+    @device_protocol_version.setter
+    def device_protocol_version(self, value):
+        self._device_protocol_version = value
 
     def __str__(self) -> str:
         output = {
@@ -74,10 +94,10 @@ class MessageBase(ABC):
 class MessageRequest(MessageBase):
     def __init__(self, device_protocol_version, device_type, message_type, body_type):
         super().__init__()
-        self._device_protocol_version = device_protocol_version
-        self._device_type = device_type
-        self._message_type = message_type
-        self._body_type = body_type
+        self.device_protocol_version = device_protocol_version
+        self.device_type = device_type
+        self.message_type = message_type
+        self.body_type = body_type
 
     @property
     def header(self):
@@ -139,12 +159,6 @@ class MessageBody:
         return self.data[0]
 
 
-class SubtypeMessageBody(MessageBody):
-    def __init__(self, body):
-        super().__init__(body)
-        self.sub_type = (body[2] if len(body) > 2 else 0) + ((body[3] << 8) if len(body) > 3 else 0)
-
-
 class NewProtocolMessageBody(MessageBody):
     def __init__(self, body, bt):
         super().__init__(body)
@@ -187,12 +201,12 @@ class MessageResponse(MessageBase):
         if message is None or len(message) < self.HEADER_LENGTH + 1:
             raise MessageLenError
         self._header = message[:self.HEADER_LENGTH]
-        self._device_protocol_version = self._header[8]
-        self._message_type = self._header[-1]
-        self._device_type = self._header[2]
+        self.device_protocol_version = self._header[8]
+        self.message_type = self._header[-1]
+        self.device_type = self._header[2]
         body = message[self.HEADER_LENGTH: -1]
         self._body = MessageBody(body)
-        self._body_type = self._body.body_type
+        self.body_type = self._body.body_type
 
     @property
     def header(self):
@@ -214,5 +228,5 @@ class MessageSubtypeResponse(MessageResponse):
         super().__init__(message)
         if self._message_type == MessageType.querySubtype:
             body = message[self.HEADER_LENGTH: -1]
-            self._body = SubtypeMessageBody(body)
-            self.sub_type = self._body.sub_type
+            self.sub_type = (body[2] if len(body) > 2 else 0) + ((body[3] << 8) if len(body) > 3 else 0)
+

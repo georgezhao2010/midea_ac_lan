@@ -22,7 +22,7 @@ class MideaCloudBase:
     IOT_KEY = None
     DEVICE_ID = int(time.time() * 100000)
 
-    def __init__(self, session: ClientSession, username: str, password: str, server: str = None):
+    def __init__(self, session: ClientSession, security, username: str, password: str, server: str = None):
         self.session = session
         self.username = username
         self.password = password
@@ -32,7 +32,7 @@ class MideaCloudBase:
         self.key = ""
         self._api_lock = Lock()
         self.login_session = None
-        self.security = None
+        self.security = security
         self.server = server
 
     async def api_request(self, endpoint, args=None, data=None):
@@ -76,6 +76,7 @@ class MideaCloudBase:
                     response = json.loads(raw)
                     break
             except Exception as e:
+                _LOGGER.debug(f"Cloud error: {repr(e)}")
                 pass
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
@@ -146,8 +147,11 @@ class MSmartHomeCloud(MideaCloudBase):
     SERVER = "https://mp-prod.appsmb.com/mas/v5/app/proxy?alias="
 
     def __init__(self, session: ClientSession, username: str, password: str):
-        super().__init__(session, username, password, self.SERVER)
-        self.security = CloudSecurity(self.IOT_KEY, self.LOGIN_KEY)
+        super().__init__(session=session,
+                         security=CloudSecurity(self.IOT_KEY, self.LOGIN_KEY),
+                         username=username,
+                         password=password,
+                         server=self.SERVER)
 
 
 class MeijuCloud(MideaCloudBase):
@@ -157,8 +161,11 @@ class MeijuCloud(MideaCloudBase):
     SERVER = "https://mp-prod.smartmidea.net/mas/v5/app/proxy?alias="
 
     def __init__(self, session: ClientSession, username: str, password: str):
-        super().__init__(session, username, password, self.SERVER)
-        self.security = MeijuCloudSecurity(self.IOT_KEY, self.LOGIN_KEY)
+        super().__init__(session=session,
+                         security=MeijuCloudSecurity(self.IOT_KEY, self.LOGIN_KEY),
+                         username=username,
+                         password=password,
+                         server=self.SERVER)
 
 
 class SmartLifeCloud(MideaCloudBase):
@@ -169,9 +176,12 @@ class SmartLifeCloud(MideaCloudBase):
     SERVER = "https://mapp.appsmb.com"
 
     def __init__(self, session: ClientSession, username: str, password: str):
-        super().__init__(session, username, password, self.SERVER)
+        super().__init__(session=session,
+                         security=SmartLifeSecurity(self.IOT_KEY, self.LOGIN_KEY),
+                         username=username,
+                         password=password,
+                         server=self.SERVER)
         self.sessionid = None
-        self.security = SmartLifeSecurity(self.IOT_KEY, self.LOGIN_KEY)
 
     async def api_request(self, endpoint, args=None, data=None):
         args = args or {}

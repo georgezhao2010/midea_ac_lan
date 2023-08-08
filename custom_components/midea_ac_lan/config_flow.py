@@ -151,7 +151,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             device_id = user_input[CONF_DEVICE]
             device = self.devices.get(device_id)
-            saved = False
             if device.get(CONF_PROTOCOL) == 3:
                 saved_token, saved_key = load_device_token(self.hass, device_id)
                 if saved_token is not None and saved_key is not None:
@@ -178,73 +177,71 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             CONF_TOKEN: saved_token,
                             CONF_KEY: saved_key,
                         }
-                        saved = True
                         dm.close_socket()
                         return await self.async_step_manual()
-                if not saved:
-                    session = async_create_clientsession(self.hass)
-                    if MIDEA_DEFAULT_SERVER == "MeijuCN":
-                        cloud = MeijuCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
-                    elif MIDEA_DEFAULT_SERVER == "MSmartHome":
-                        cloud = MSmartHomeCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
-                    else:
-                        cloud = SmartLifeCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
-                    dm = MiedaDevice(
-                        name="",
-                        device_id=device_id,
-                        device_type=device.get(CONF_TYPE),
-                        ip_address=device.get(CONF_IP_ADDRESS),
-                        port=device.get(CONF_PORT),
-                        token=DEFAULT_TOKEN,
-                        key=DEFAULT_KEY,
-                        protocol=3,
-                        model=device.get(CONF_MODEL)
-                    )
-                    if dm.connect(refresh_status=False):
-                        self.found_device = {
-                            CONF_DEVICE_ID: device_id,
-                            CONF_TYPE: device.get(CONF_TYPE),
-                            CONF_PROTOCOL: 3,
-                            CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
-                            CONF_PORT: device.get(CONF_PORT),
-                            CONF_MODEL: device.get(CONF_MODEL),
-                            CONF_TOKEN: DEFAULT_TOKEN,
-                            CONF_KEY: DEFAULT_KEY,
-                        }
-                        dm.close_socket()
-                        return await self.async_step_manual()
-                    elif await cloud.login():
-                        for byte_order_big in [False, True]:
-                            token, key = await cloud.get_token(user_input[CONF_DEVICE], byte_order_big=byte_order_big)
-                            if token and key:
-                                dm = MiedaDevice(
-                                    name="",
-                                    device_id=device_id,
-                                    device_type=device.get(CONF_TYPE),
-                                    ip_address=device.get(CONF_IP_ADDRESS),
-                                    port=device.get(CONF_PORT),
-                                    token=token,
-                                    key=key,
-                                    protocol=3,
-                                    model=device.get(CONF_MODEL)
-                                )
-                                _LOGGER.debug(f"Successful to take token and key, token: {token}, key: {key}, "
-                                              f"byte_order_big: {byte_order_big}")
-                                if dm.connect(refresh_status=False):
-                                    self.found_device = {
-                                        CONF_DEVICE_ID: device_id,
-                                        CONF_TYPE: device.get(CONF_TYPE),
-                                        CONF_PROTOCOL: 3,
-                                        CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
-                                        CONF_PORT: device.get(CONF_PORT),
-                                        CONF_MODEL: device.get(CONF_MODEL),
-                                        CONF_TOKEN: token,
-                                        CONF_KEY: key,
-                                    }
-                                    dm.close_socket()
-                                    return await self.async_step_manual()
-                        return await self.async_step_auto(error="connect_error")
-                    return await self.async_step_auto(error="cant_get_token")
+                session = async_create_clientsession(self.hass)
+                if MIDEA_DEFAULT_SERVER == "MeijuCN":
+                    cloud = MeijuCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
+                elif MIDEA_DEFAULT_SERVER == "MSmartHome":
+                    cloud = MSmartHomeCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
+                else:
+                    cloud = SmartLifeCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
+                dm = MiedaDevice(
+                    name="",
+                    device_id=device_id,
+                    device_type=device.get(CONF_TYPE),
+                    ip_address=device.get(CONF_IP_ADDRESS),
+                    port=device.get(CONF_PORT),
+                    token=DEFAULT_TOKEN,
+                    key=DEFAULT_KEY,
+                    protocol=3,
+                    model=device.get(CONF_MODEL)
+                )
+                if dm.connect(refresh_status=False):
+                    self.found_device = {
+                        CONF_DEVICE_ID: device_id,
+                        CONF_TYPE: device.get(CONF_TYPE),
+                        CONF_PROTOCOL: 3,
+                        CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
+                        CONF_PORT: device.get(CONF_PORT),
+                        CONF_MODEL: device.get(CONF_MODEL),
+                        CONF_TOKEN: DEFAULT_TOKEN,
+                        CONF_KEY: DEFAULT_KEY,
+                    }
+                    dm.close_socket()
+                    return await self.async_step_manual()
+                elif await cloud.login():
+                    for byte_order_big in [False, True]:
+                        token, key = await cloud.get_token(user_input[CONF_DEVICE], byte_order_big=byte_order_big)
+                        if token and key:
+                            dm = MiedaDevice(
+                                name="",
+                                device_id=device_id,
+                                device_type=device.get(CONF_TYPE),
+                                ip_address=device.get(CONF_IP_ADDRESS),
+                                port=device.get(CONF_PORT),
+                                token=token,
+                                key=key,
+                                protocol=3,
+                                model=device.get(CONF_MODEL)
+                            )
+                            _LOGGER.debug(f"Successful to take token and key, token: {token}, key: {key}, "
+                                          f"byte_order_big: {byte_order_big}")
+                            if dm.connect(refresh_status=False):
+                                self.found_device = {
+                                    CONF_DEVICE_ID: device_id,
+                                    CONF_TYPE: device.get(CONF_TYPE),
+                                    CONF_PROTOCOL: 3,
+                                    CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
+                                    CONF_PORT: device.get(CONF_PORT),
+                                    CONF_MODEL: device.get(CONF_MODEL),
+                                    CONF_TOKEN: token,
+                                    CONF_KEY: key,
+                                }
+                                dm.close_socket()
+                                return await self.async_step_manual()
+                    return await self.async_step_auto(error="connect_error")
+                return await self.async_step_auto(error="cant_get_token")
             else:
                 self.found_device = {
                     CONF_DEVICE_ID: device_id,

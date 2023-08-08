@@ -78,7 +78,7 @@ class MideaHumidifier(MideaEntity, HumidifierEntity):
         try:
             self.schedule_update_ha_state()
         except Exception as e:
-            _LOGGER.debug(f"Entity {self.entity_id} update_state {e}, status = {status}")
+            _LOGGER.debug(f"Entity {self.entity_id} update_state {repr(e)}, status = {status}")
 
 
 class MideaA1Humidifier(MideaHumidifier):

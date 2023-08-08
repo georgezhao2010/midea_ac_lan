@@ -109,8 +109,8 @@ def discover(discover_type=None, ip_address=None):
                 _LOGGER.debug(f"Found a unsupported device: {device}")
         except socket.timeout:
             break
-        except socket.error:
-            pass
+        except socket.error as e:
+            _LOGGER.debug(f"Socket error: {repr(e)}")
     return found_devices
 
 
