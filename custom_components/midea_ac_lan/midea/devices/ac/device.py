@@ -7,7 +7,9 @@ from .message import (
     MessageACResponse,
     MessageGeneralSet,
     MessageNewProtocolSet,
-    MessagePowerQuery
+    MessagePowerQuery,
+    MessageSubProtocolQuery,
+    MessageSubProtocolSet
 )
 from ...core.device import MiedaDevice
 from ...backports.enum import StrEnum
@@ -17,7 +19,6 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     prompt_tone = "prompt_tone"
-
     power = "power"
     mode = "mode"
     target_temperature = "target_temperature"
@@ -119,6 +120,7 @@ class MideaACDevice(MiedaDevice):
         self._fresh_air_version = None
         self._default_temperature_step = 0.5
         self._temperature_step = self._default_temperature_step
+        self._used_subprotocol = False
         self.set_customize(customize)
 
     @property
@@ -130,17 +132,26 @@ class MideaACDevice(MiedaDevice):
         return list(MideaACDevice._fresh_air_fan_speeds.values())
 
     def build_query(self):
-        return [
-            MessageQuery(self._device_protocol_version),
-            MessageNewProtocolQuery(self._device_protocol_version),
-            MessagePowerQuery(self._device_protocol_version)
-        ]
+        if self._used_subprotocol:
+            return [
+                MessageSubProtocolQuery(self._device_protocol_version, 0x10),
+                MessageSubProtocolQuery(self._device_protocol_version, 0x11),
+                MessageSubProtocolQuery(self._device_protocol_version, 0x30)
+            ]
+        else:
+            return [
+                MessageQuery(self._device_protocol_version),
+                MessageNewProtocolQuery(self._device_protocol_version),
+                MessagePowerQuery(self._device_protocol_version)
+            ]
 
     def process_message(self, msg):
         message = MessageACResponse(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         has_fresh_air = False
+        if hasattr(message, "used_subprotocol"):
+            self._used_subprotocol = True
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 value = getattr(message, status.value)
@@ -192,13 +203,32 @@ class MideaACDevice(MiedaDevice):
         message.comfort_mode = self._attributes[DeviceAttributes.comfort_mode]
         return message
 
+    def make_subptotocol_message_set(self):
+        message = MessageSubProtocolSet(self._device_protocol_version)
+        message.power = self._attributes[DeviceAttributes.power]
+        message.mode = self._attributes[DeviceAttributes.mode]
+        message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
+        message.fan_speed = self._attributes[DeviceAttributes.fan_speed]
+        message.boost_mode = self._attributes[DeviceAttributes.boost_mode]
+        message.dry = self._attributes[DeviceAttributes.dry]
+        message.eco_mode = self._attributes[DeviceAttributes.eco_mode]
+        message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
+        return message
+
     def set_attribute(self, attr, value):
         # if nat a sensor
         message = None
         if attr not in [DeviceAttributes.indoor_temperature,
                         DeviceAttributes.outdoor_temperature,
-                        DeviceAttributes.indoor_humidity]:
-            if attr == DeviceAttributes.prompt_tone:
+                        DeviceAttributes.indoor_humidity,
+                        DeviceAttributes.full_dust,
+                        DeviceAttributes.total_energy_consumption,
+                        DeviceAttributes.current_energy_consumption,
+                        DeviceAttributes.realtime_power]:
+            if self._used_subprotocol:
+                message = self.make_subptotocol_message_set()
+                setattr(message, str(attr), value)
+            elif attr == DeviceAttributes.prompt_tone:
                 self._attributes[DeviceAttributes.prompt_tone] = value
                 self.update_all({DeviceAttributes.prompt_tone.value: value})
             elif attr == DeviceAttributes.screen_display:

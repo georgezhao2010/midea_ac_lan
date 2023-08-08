@@ -125,6 +125,77 @@ class MessageNewProtocolQuery(MessageACBase):
         return _body
 
 
+class MessageSubProtocol(MessageACBase):
+    def __init__(self, device_protocol_version, message_type, subprotocol_query_type):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=message_type,
+            body_type=0xAA)
+        self._subprotocol_query_type = subprotocol_query_type
+
+    @property
+    def _subprotocol_body(self):
+        return None
+
+    @property
+    def _body(self):
+        _subprotocol_body = self._subprotocol_body
+        _body = bytearray([
+            len(_subprotocol_body) + 6 + 2 if _subprotocol_body is not None else 6 + 2,
+            0x00, 0xFF, 0xFF, self._subprotocol_query_type
+        ])
+        if self._subprotocol_data is not None:
+            _body.extend(_subprotocol_body)
+        return _body
+
+
+class MessageSubProtocolQuery(MessageSubProtocol):
+    def __init__(self, device_protocol_version, subprotocol_query_type):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.query,
+            subprotocol_query_type=subprotocol_query_type)
+
+
+class MessageSubProtocolSet(MessageSubProtocol):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.set,
+            subprotocol_query_type=0x20)
+        self.power = False
+        self.mode = 0
+        self.target_temperature = 20.0
+        self.fan_speed = 102
+        self.boost_mode = False
+        self.dry = False
+        self.eco_mode = False
+        self.sleep_mode = False
+
+    @property
+    def _subprotocol_body(self):
+        power = 0x01 if self.power else 0
+        dry = 0x10 if self.power and self.dry else 0
+        boost_mode = 0x10 if self.boost_mode else 0
+        mode = self.mode
+        target_temperature = self.target_temperature * 2 + 30
+        fan_speed = self.fan_speed
+        eco = 0x40 if self.eco_mode else 0
+        sleep_mode = 0x30 if self.sleep_mode else 0
+        return bytearray([
+            power | dry, boost_mode, 0x00, 0x00,
+            0x00, mode, target_temperature, fan_speed,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, eco | sleep_mode, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x08
+        ])
+
+
 class MessageGeneralSet(MessageACBase):
     def __init__(self, device_protocol_version):
         super().__init__(
@@ -415,6 +486,39 @@ class XC1MessageBody(MessageBody):
                      XC1MessageBody.parse_value(byte4)) / 100
 
 
+class XBBMessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        subprotocol_head = body[:6]
+        subprotocol_body = body[6:]
+        data_type = subprotocol_head[-1]
+        subprotocol_body_len = len(subprotocol_body)
+        if data_type == 0x20 or data_type == 0x11:
+            self.power = (subprotocol_body[0] & 0x1) > 0
+            self.dry = (subprotocol_body[0] & 0x10) > 0
+            self.boost_mode = (subprotocol_body[1] & 0x10) > 0
+            self.mode = subprotocol_body[5]
+            self.target_temperature = (subprotocol_body[6] - 30) / 2
+            self.fan_speed = subprotocol_body[7]
+            self.eco_mode = (subprotocol_body[25] & 0x40) > 0 if subprotocol_body_len > 27 else False
+            self.sleep_mode = (subprotocol_body[25] & 0x30) > 0 if subprotocol_body_len > 27 else False
+        elif data_type == 0x10:
+            if subprotocol_body[8] & 0x80 == 0x80:
+                self.indoor_temperature = (0 - (~(subprotocol_body[7] + subprotocol_body[8] * 256) + 1) & 0xffff) / 100
+            else:
+                self.indoor_temperature = (subprotocol_body[7] + subprotocol_body[8] * 256) / 100
+            self.indoor_humidity = subprotocol_body[30]
+        elif data_type == 0x12:
+            pass
+        elif data_type == 0x30:
+            if subprotocol_body[6] & 0x80 == 0x80:
+                self.outdoor_temperature = (0 - (~(subprotocol_body[5] + subprotocol_body[6] * 256) + 1) & 0xffff) / 100
+            else:
+                self.outdoor_temperature = (subprotocol_body[5] + subprotocol_body[6] * 256) / 100
+        elif data_type == 0x13 or data_type == 0x21:
+            pass
+
+
 class MessageACResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
@@ -430,4 +534,7 @@ class MessageACResponse(MessageResponse):
             self._body = XC0MessageBody(body)
         elif self._message_type == MessageType.query and self._body_type == 0xC1:
             self._body = XC1MessageBody(body)
+        elif self._message_type == MessageType.notify2 and self._body_type == 0xBB and len(body) >= 21:
+            self.used_subprotocol = True
+            self._body = XBBMessageBody(body)
         self.set_attr()

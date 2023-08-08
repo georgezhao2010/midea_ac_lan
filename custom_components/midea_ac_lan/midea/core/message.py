@@ -2,7 +2,6 @@ import logging
 from abc import ABC
 from enum import IntEnum
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -165,16 +164,20 @@ class NewProtocolMessageBody(MessageBody):
 
     def parse(self):
         result = {}
-        pos = 2
-        for pack in range(0, self.data[1]):
-            param = self.data[pos] + (self.data[pos + 1] << 8)
-            if self._pack_len == 5:
-                pos += 1
-            length = self.data[pos + 2]
-            if length > 0:
-                value = self.data[pos + 3: pos + 3 + length]
-                result[param] = value
-            pos += (3 + length)
+        try:
+            pos = 2
+            for pack in range(0, self.data[1]):
+                param = self.data[pos] + (self.data[pos + 1] << 8)
+                if self._pack_len == 5:
+                    pos += 1
+                length = self.data[pos + 2]
+                if length > 0:
+                    value = self.data[pos + 3: pos + 3 + length]
+                    result[param] = value
+                pos += (3 + length)
+        except IndexError:
+            # Some device used non-standard new-protocol(美的乐享三代中央空调?)
+            _LOGGER.debug(f"Non-standard new-protocol {self.data.hex()}")
         return result
 
 
