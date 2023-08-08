@@ -1,7 +1,7 @@
 import threading
 from ..backports.enum import StrEnum
 from enum import IntEnum
-from .security import Security, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
+from .security import LocalSecurity, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
 from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse
 import socket
@@ -49,7 +49,7 @@ class MiedaDevice(threading.Thread):
         self._socket = None
         self._ip_address = ip_address
         self._port = port
-        self._security = Security()
+        self._security = LocalSecurity()
         self._token = bytearray.fromhex(token) if token else None
         self._key = bytearray.fromhex(key) if key else None
         self._buffer = b""
@@ -131,7 +131,8 @@ class MiedaDevice(threading.Thread):
         except RefreshFailed:
             _LOGGER.debug(f"[{self._device_id}] Refresh status is timed out")
         except Exception as e:
-            _LOGGER.error(f"[{self._device_id}] Unknown error {repr(e)}")
+            _LOGGER.error(f"[{self._device_id}] Unknown error :{e.__traceback__.tb_frame.f_globals['__file__']}, "
+                          f"{e.__traceback__.tb_lineno}, {repr(e)}")
         self.enable_device(False)
         return False
 
@@ -183,7 +184,7 @@ class MiedaDevice(threading.Thread):
                     else:
                         raise ResponseException
             except socket.timeout:
-                pass
+                _LOGGER.warning("Take sub type timed out")
 
     def refresh_status(self, wait_response=False):
         cmds = self.build_query()
@@ -251,7 +252,10 @@ class MiedaDevice(threading.Thread):
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
                     if self.pre_process_message(decrypted):
-                        status = self.process_message(decrypted)
+                        try:
+                            status = self.process_message(decrypted)
+                        except Exception as e:
+                            _LOGGER.error(f"[{self._device_id}] Error in process message, msg = {decrypted.hex()}")
                         if len(status) > 0:
                             self.update_all(status)
                         else:
@@ -355,7 +359,8 @@ class MiedaDevice(threading.Thread):
                     self.close_socket()
                     break
                 except Exception as e:
-                    _LOGGER.debug(f"[{self._device_id}] Unknown error {repr(e)}")
+                    _LOGGER.error(f"[{self._device_id}] Unknown error :{e.__traceback__.tb_frame.f_globals['__file__']}, "
+                                  f"{e.__traceback__.tb_lineno}, {repr(e)}")
                     self.close_socket()
                     break
 

@@ -9,4 +9,4 @@ EXTRA_CONTROL = ["climate", "water_heater", "fan", "humidifier"] + EXTRA_SWITCH
 ALL_PLATFORM = EXTRA_SENSOR + EXTRA_CONTROL
 MIDEA_DEFAULT_ACCOUNT = 'b99226f1659e9308@hotmail.com'
 MIDEA_DEFAULT_PASSWORD = '_d0e4e9546a738d_'
-MIDEA_DEFAULT_SERVER = "not_cn"
+MIDEA_DEFAULT_SERVER = "MSmartHome" # MSmartHome/MeijuCN/SmartLife

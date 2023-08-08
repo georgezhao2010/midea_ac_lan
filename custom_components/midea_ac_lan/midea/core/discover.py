@@ -2,7 +2,7 @@ import logging
 import socket
 import ifaddr
 from ipaddress import IPv4Network
-from .security import Security
+from .security import LocalSecurity
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -36,7 +36,7 @@ DEVICE_INFO_MSG = bytearray([
 def discover(discover_type=None, ip_address=None):
     if discover_type is None:
         discover_type = []
-    security = Security()
+    security = LocalSecurity()
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.settimeout(5)

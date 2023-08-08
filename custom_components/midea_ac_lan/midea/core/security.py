@@ -16,8 +16,90 @@ MSGTYPE_ENCRYPTED_RESPONSE = 0x3
 MSGTYPE_ENCRYPTED_REQUEST = 0x6
 
 
-class Security:
-    def __init__(self, use_china_server=True):
+class CloudSecurity:
+    def __init__(self, iotKey, loginKey):
+        self._hmackey = "PROD_VnoClJI9aikS8dyy"
+        self._iotkey = iotKey
+        self._loginKey = loginKey
+
+    def sign(self, data: str, random: str) -> str:
+        msg = self._iotkey
+        if data:
+            msg += data
+        msg += random
+        sign = hmac.new(self._hmackey.encode("ascii"), msg.encode("ascii"), sha256)
+        return sign.hexdigest()
+
+    def encryptPassword(self, loginId, data):
+        m = sha256()
+        m.update(data.encode("ascii"))
+        loginHash = loginId + m.hexdigest() + self._loginKey
+        m = sha256()
+        m.update(loginHash.encode("ascii"))
+        return m.hexdigest()
+
+    def encrypt_iam_password(self, loginId, data) -> str:
+        md = md5()
+        md.update(data.encode("ascii"))
+        md_second = md5()
+        md_second.update(md.hexdigest().encode("ascii"))
+        login_hash = loginId + md_second.hexdigest() + self._loginKey
+        sha = sha256()
+        sha.update(login_hash.encode("ascii"))
+        return sha.hexdigest()
+
+    @staticmethod
+    def get_udpid(data):
+        data = bytearray(sha256(data).digest())
+        for i in range(0, 16):
+            data[i] ^= data[i + 16]
+        return data[0: 16].hex()
+
+    @staticmethod
+    def decrypt_with_key(data, key="96c7acdfdb8af79a"):
+        if isinstance(data, str):
+            data = bytes.fromhex(data)
+        if isinstance(key, str):
+            key = key.encode()
+        return unpad(AES.new(key, AES.MODE_ECB).decrypt(data), 16).decode()
+
+    @staticmethod
+    def encrypt_with_key(data, key="96c7acdfdb8af79a"):
+        if isinstance(data, str):
+            data = bytes.fromhex(data)
+        if isinstance(key, str):
+            key = key.encode()
+        return AES.new(key, AES.MODE_ECB).encrypt(pad(data, 16))
+
+
+class MeijuCloudSecurity(CloudSecurity):
+    def __init__(self, iotKey, loginKey):
+        super().__init__(iotKey, loginKey)
+
+    def encrypt_iam_password(self, loginId, data) -> str:
+        md = md5()
+        md.update(data.encode("ascii"))
+        md_second = md5()
+        md_second.update(md.hexdigest().encode("ascii"))
+        return md_second.hexdigest()
+
+
+class SmartLifeSecurity(CloudSecurity):
+    def __init__(self, iotKey, loginKey):
+        super().__init__(iotKey, loginKey)
+
+    def sign(self, url, payload):
+        path = urlparse(url).path
+        query = sorted(payload.items(), key=lambda x: x[0])
+        query = urllib.parse.unquote_plus(urllib.parse.urlencode(query))
+        sign = path + query + self._loginKey
+        m = sha256()
+        m.update(sign.encode("ASCII"))
+        return m.hexdigest()
+
+
+class LocalSecurity:
+    def __init__(self):
         self.blockSize = 16
         self.iv = b"\0" * 16
         self.aes_key = bytes.fromhex("6a92ef406bad2f0359baad994171ea6d")
@@ -26,15 +108,6 @@ class Security:
         self._request_count = 0
         self._response_count = 0
 
-        self._hmackey = "PROD_VnoClJI9aikS8dyy"
-        self._use_china_server = use_china_server
-        if self._use_china_server:
-            self._iotkey = "prod_secret123@muc"
-            self._loginKey = "ad0ee21d48a64bf49f4fb583ab76e799"
-        else:
-            self._iotkey = "meicloud"
-            self._loginKey = "ff0cf6f5f0c3471de36341cab3f7a9af" # "ac21b9f9cbfe4ca5a88562ef25e2b768" for MSmartHome
-
     def aes_decrypt(self, raw):
         cipher = AES.new(self.aes_key, AES.MODE_ECB)
         try:
@@ -42,8 +115,7 @@ class Security:
             decrypted = unpad(decrypted, self.blockSize)
             return decrypted
         except ValueError as e:
-            _LOGGER.error(
-                "aes_decrypt error: {} - data: {}".format(repr(e), raw.hex()))
+            _LOGGER.error(f"Error in aes_decrypt: {repr(e)} - data: {raw.hex()}")
             return bytearray(0)
 
     def aes_encrypt(self, raw):
@@ -127,47 +199,3 @@ class Security:
             packets, incomplete = self.decode_8370(leftover)
             return [data] + packets, incomplete
         return [data], b""
-
-    def sign(self, url, payload):
-        path = urlparse(url).path
-        query = sorted(payload.items(), key=lambda x: x[0])
-        query = urllib.parse.unquote_plus(urllib.parse.urlencode(query))
-        sign = path + query + self._loginKey
-        m = sha256()
-        m.update(sign.encode("ASCII"))
-        return m.hexdigest()
-
-    def new_sign(self, data: str, random: str) -> str:
-        msg = self._iotkey
-        if data:
-            msg += data
-        msg += random
-        sign = hmac.new(self._hmackey.encode("ascii"), msg.encode("ascii"), sha256)
-        return sign.hexdigest()
-
-    def encryptPassword(self, loginId, data):
-        m = sha256()
-        m.update(data.encode("ascii"))
-        loginHash = loginId + m.hexdigest() + self._loginKey
-        m = sha256()
-        m.update(loginHash.encode("ascii"))
-        return m.hexdigest()
-
-    def encrypt_iam_password(self, loginId, data) -> str:
-        md = md5()
-        md.update(data.encode("ascii"))
-        md_second = md5()
-        md_second.update(md.hexdigest().encode("ascii"))
-        if self._use_china_server:
-            return md_second.hexdigest()
-        login_hash = loginId + md_second.hexdigest() + self._loginKey
-        sha = sha256()
-        sha.update(login_hash.encode("ascii"))
-        return sha.hexdigest()
-
-    @staticmethod
-    def get_udpid(data):
-        data = bytearray(sha256(data).digest())
-        for i in range(0, 16):
-            data[i] ^= data[i + 16]
-        return data[0: 16].hex()
