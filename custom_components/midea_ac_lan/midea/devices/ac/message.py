@@ -8,7 +8,7 @@ from ...core.message import (
 )
 from ...core.crc8 import calculate
 
-BB_AC_MODES = [0, 3, 2, 1, 4, 5]
+BB_AC_MODES = [0, 3, 1, 2, 4, 5]
 
 
 class NewProtocolTags(IntEnum):
