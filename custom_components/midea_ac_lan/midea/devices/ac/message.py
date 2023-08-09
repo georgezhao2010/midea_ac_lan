@@ -191,17 +191,18 @@ class MessageSubProtocolSet(MessageSubProtocol):
         except IndexError:
             mode = 2  # set Auto if invalid mode
         target_temperature = int(self.target_temperature * 2 + 30)
+        water_model_temperature_set = int((self.target_temperature - 1) * 2 + 50)
         fan_speed = self.fan_speed
         eco = 0x40 if self.eco_mode else 0
         sleep_mode = 0x30 if self.sleep_mode else 0
         return bytearray([
-            power | dry, boost_mode, 0x00, 0x00,
+            power | dry, boost_mode | 0x80, 0x00, 0x00,
             0x00, mode, target_temperature, fan_speed,
             0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, eco | sleep_mode, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x01,
+            0x01, 0x00, 0x00, water_model_temperature_set,
+            0x00, target_temperature, 0x32, fan_speed,
+            0x00, eco | sleep_mode | 0x4, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x08
