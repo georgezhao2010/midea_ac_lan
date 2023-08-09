@@ -252,15 +252,14 @@ class MiedaDevice(threading.Thread):
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
                     if self.pre_process_message(decrypted):
-                        status = {}
                         try:
                             status = self.process_message(decrypted)
+                            if len(status) > 0:
+                                self.update_all(status)
+                            else:
+                                _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
                         except Exception as e:
                             _LOGGER.error(f"[{self._device_id}] Error in process message, msg = {decrypted.hex()}")
-                        if len(status) > 0:
-                            self.update_all(status)
-                        else:
-                            _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
                 else:
                     _LOGGER.warning(
                         f"[{self._device_id}] Illegal payload, "
