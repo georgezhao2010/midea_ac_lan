@@ -121,7 +121,8 @@ class MideaACDevice(MiedaDevice):
         self._default_temperature_step = 0.5
         self._temperature_step = self._default_temperature_step
         self._used_subprotocol = False
-        self._sn8_flag = False
+        self._bb_sn8_flag = False
+        self._bb_timer = False
         self.set_customize(customize)
 
     @property
@@ -152,7 +153,10 @@ class MideaACDevice(MiedaDevice):
         has_fresh_air = False
         if hasattr(message, "used_subprotocol"):
             self._used_subprotocol = True
-            self._sn8_flag = self.sn8_flag
+            if hasattr(message, "sn8_flag"):
+                self._bb_sn8_flag = message.sn8_flag
+            if hasattr(message, "timer"):
+                self._bb_timer = message.timer
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 value = getattr(message, status.value)
@@ -207,6 +211,7 @@ class MideaACDevice(MiedaDevice):
     def make_subptotocol_message_set(self):
         message = MessageSubProtocolSet(0x02)
         message.power = self._attributes[DeviceAttributes.power]
+        message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
         message.mode = self._attributes[DeviceAttributes.mode]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
         message.fan_speed = self._attributes[DeviceAttributes.fan_speed]
@@ -214,6 +219,8 @@ class MideaACDevice(MiedaDevice):
         message.dry = self._attributes[DeviceAttributes.dry]
         message.eco_mode = self._attributes[DeviceAttributes.eco_mode]
         message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
+        message.sn8_flag = self._bb_sn8_flag
+        message.timer = self._bb_timer
         return message
 
     def set_attribute(self, attr, value):
@@ -226,12 +233,12 @@ class MideaACDevice(MiedaDevice):
                         DeviceAttributes.total_energy_consumption,
                         DeviceAttributes.current_energy_consumption,
                         DeviceAttributes.realtime_power]:
-            if self._used_subprotocol:
-                message = self.make_subptotocol_message_set()
-                setattr(message, str(attr), value)
-            elif attr == DeviceAttributes.prompt_tone:
+            if attr == DeviceAttributes.prompt_tone:
                 self._attributes[DeviceAttributes.prompt_tone] = value
                 self.update_all({DeviceAttributes.prompt_tone.value: value})
+            elif self._used_subprotocol:
+                message = self.make_subptotocol_message_set()
+                setattr(message, str(attr), value)
             elif attr == DeviceAttributes.screen_display:
                 if self._attributes[DeviceAttributes.screen_display_new]:
                     message = MessageNewProtocolSet(self._device_protocol_version)

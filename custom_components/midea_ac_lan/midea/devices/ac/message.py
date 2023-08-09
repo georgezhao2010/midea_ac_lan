@@ -521,6 +521,7 @@ class XBBMessageBody(MessageBody):
                 self.mode = 0
             self.target_temperature = (subprotocol_body[6] - 30) / 2
             self.fan_speed = subprotocol_body[7]
+            self.timer = (subprotocol_body[25] & 0x04) > 0 if subprotocol_body_len > 27 else False
             self.eco_mode = (subprotocol_body[25] & 0x40) > 0 if subprotocol_body_len > 27 else False
             self.sleep_mode = (subprotocol_body[25] & 0x30) > 0 if subprotocol_body_len > 27 else False
         elif data_type == 0x10:
