@@ -252,6 +252,7 @@ class MiedaDevice(threading.Thread):
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
                     if self.pre_process_message(decrypted):
+                        status = {}
                         try:
                             status = self.process_message(decrypted)
                         except Exception as e:
