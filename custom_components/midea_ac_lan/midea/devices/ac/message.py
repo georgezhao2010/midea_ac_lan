@@ -140,10 +140,17 @@ class MessageSubProtocol(MessageACBase):
         return None
 
     @property
+    def body(self):
+        body = bytearray([self._body_type]) + self._body
+        body.append(calculate(body))
+        body.append(self.checksum(body))
+        return body
+
+    @property
     def _body(self):
         _subprotocol_body = self._subprotocol_body
         _body = bytearray([
-            len(_subprotocol_body) + 6 + 2 if _subprotocol_body is not None else 6 + 2,
+            len(_subprotocol_body) + 6 + 2 + 1 if _subprotocol_body is not None else 8,
             0x00, 0xFF, 0xFF, self._subprotocol_query_type
         ])
         if _subprotocol_body is not None:
@@ -180,7 +187,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         dry = 0x10 if self.power and self.dry else 0
         boost_mode = 0x10 if self.boost_mode else 0
         try:
-            mode = BB_AC_MODES[self.mode] - 1
+            mode = 0 if self.mode == 0 else BB_AC_MODES[self.mode] - 1
         except IndexError:
             mode = 2  # set Auto if invalid mode
         target_temperature = int(self.target_temperature * 2 + 30)
