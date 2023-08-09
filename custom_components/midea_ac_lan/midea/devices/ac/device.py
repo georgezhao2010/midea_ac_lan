@@ -203,7 +203,7 @@ class MideaACDevice(MiedaDevice):
         return message
 
     def make_subptotocol_message_set(self):
-        message = MessageSubProtocolSet(self._device_protocol_version)
+        message = MessageSubProtocolSet(0x02)
         message.power = self._attributes[DeviceAttributes.power]
         message.mode = self._attributes[DeviceAttributes.mode]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]

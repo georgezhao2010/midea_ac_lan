@@ -150,7 +150,7 @@ class MessageSubProtocol(MessageACBase):
     def _body(self):
         _subprotocol_body = self._subprotocol_body
         _body = bytearray([
-            len(_subprotocol_body) + 6 + 2 + 1 if _subprotocol_body is not None else 8,
+            6 + 2 + (len(_subprotocol_body) if _subprotocol_body is not None else 0),
             0x00, 0xFF, 0xFF, self._subprotocol_query_type
         ])
         if _subprotocol_body is not None:
