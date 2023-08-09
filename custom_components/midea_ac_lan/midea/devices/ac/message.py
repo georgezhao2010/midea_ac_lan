@@ -180,6 +180,9 @@ class MessageSubProtocolSet(MessageSubProtocol):
         self.dry = False
         self.eco_mode = False
         self.sleep_mode = False
+        self.sn8_flag = False
+        self.timer = False
+        self.prompt_tone = False
 
     @property
     def _subprotocol_body(self):
@@ -195,14 +198,16 @@ class MessageSubProtocolSet(MessageSubProtocol):
         fan_speed = self.fan_speed
         eco = 0x40 if self.eco_mode else 0
         sleep_mode = 0x30 if self.sleep_mode else 0
+        prompt_tone = 0x01 if self.prompt_tone else 0
+        timer = 0x04 if (self.sn8_flag and self.timer) else 0
         return bytearray([
             power | dry, boost_mode | 0x80, 0x00, 0x00,
             0x00, mode, target_temperature, fan_speed,
-            0x00, 0x00, 0x00, 0x00,
+            0x32, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x01,
-            0x01, 0x00, 0x00, water_model_temperature_set,
-            0x00, target_temperature, 0x32, fan_speed,
-            0x00, eco | sleep_mode | 0x4, 0x00, 0x00,
+            0x01, 0x00, 0x01, water_model_temperature_set,
+            prompt_tone, target_temperature, 0x32, 0x66,
+            0x00, eco | sleep_mode | timer, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x08
@@ -524,6 +529,7 @@ class XBBMessageBody(MessageBody):
             else:
                 self.indoor_temperature = (subprotocol_body[7] + subprotocol_body[8] * 256) / 100
             self.indoor_humidity = subprotocol_body[30]
+            self.sn8_flag = subprotocol_body[80] == 0x31
         elif data_type == 0x12:
             pass
         elif data_type == 0x30:

@@ -121,6 +121,7 @@ class MideaACDevice(MiedaDevice):
         self._default_temperature_step = 0.5
         self._temperature_step = self._default_temperature_step
         self._used_subprotocol = False
+        self._sn8_flag = False
         self.set_customize(customize)
 
     @property
@@ -151,6 +152,7 @@ class MideaACDevice(MiedaDevice):
         has_fresh_air = False
         if hasattr(message, "used_subprotocol"):
             self._used_subprotocol = True
+            self._sn8_flag = self.sn8_flag
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 value = getattr(message, status.value)
