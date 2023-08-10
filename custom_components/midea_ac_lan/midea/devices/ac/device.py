@@ -239,6 +239,8 @@ class MideaACDevice(MiedaDevice):
             elif self._used_subprotocol:
                 message = self.make_subptotocol_message_set()
                 setattr(message, str(attr), value)
+                if attr == DeviceAttributes.mode:
+                    setattr(message, DeviceAttributes.power.value, True)
             elif attr == DeviceAttributes.screen_display:
                 if self._attributes[DeviceAttributes.screen_display_new]:
                     message = MessageNewProtocolSet(self._device_protocol_version)
