@@ -238,6 +238,14 @@ class MideaACDevice(MiedaDevice):
                 self.update_all({DeviceAttributes.prompt_tone.value: value})
             elif self._used_subprotocol:
                 message = self.make_subptotocol_message_set()
+                if attr in [
+                    DeviceAttributes.boost_mode,
+                    DeviceAttributes.sleep_mode,
+                    DeviceAttributes.eco_mode
+                ]:
+                    message.boost_mode = False
+                    message.sleep_mode = False
+                    message.eco_mode = False
                 setattr(message, str(attr), value)
                 if attr == DeviceAttributes.mode:
                     setattr(message, DeviceAttributes.power.value, True)
