@@ -209,7 +209,7 @@ class MideaACDevice(MiedaDevice):
         return message
 
     def make_subptotocol_message_set(self):
-        message = MessageSubProtocolSet(0x02)
+        message = MessageSubProtocolSet(self._device_protocol_version)
         message.power = self._attributes[DeviceAttributes.power]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
         message.mode = self._attributes[DeviceAttributes.mode]
@@ -221,6 +221,13 @@ class MideaACDevice(MiedaDevice):
         message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
         message.sn8_flag = self._bb_sn8_flag
         message.timer = self._bb_timer
+        return message
+
+    def make_message_uniq_set(self):
+        if self._used_subprotocol:
+            message = self.make_subptotocol_message_set()
+        else:
+            message = self.make_message_set()
         return message
 
     def set_attribute(self, attr, value):
@@ -236,19 +243,6 @@ class MideaACDevice(MiedaDevice):
             if attr == DeviceAttributes.prompt_tone:
                 self._attributes[DeviceAttributes.prompt_tone] = value
                 self.update_all({DeviceAttributes.prompt_tone.value: value})
-            elif self._used_subprotocol:
-                message = self.make_subptotocol_message_set()
-                if attr in [
-                    DeviceAttributes.boost_mode,
-                    DeviceAttributes.sleep_mode,
-                    DeviceAttributes.eco_mode
-                ]:
-                    message.boost_mode = False
-                    message.sleep_mode = False
-                    message.eco_mode = False
-                setattr(message, str(attr), value)
-                if attr == DeviceAttributes.mode:
-                    setattr(message, DeviceAttributes.power.value, True)
             elif attr == DeviceAttributes.screen_display:
                 if self._attributes[DeviceAttributes.screen_display_new]:
                     message = MessageNewProtocolSet(self._device_protocol_version)
@@ -302,7 +296,7 @@ class MideaACDevice(MiedaDevice):
                         fresh_air
                     )
             elif attr in self._attributes.keys():
-                message = self.make_message_set()
+                message = self.make_message_uniq_set()
                 if attr in [
                     DeviceAttributes.boost_mode,
                     DeviceAttributes.sleep_mode,
@@ -322,7 +316,7 @@ class MideaACDevice(MiedaDevice):
             self.build_send(message)
 
     def set_target_temperature(self, target_temperature, mode):
-        message = self.make_message_set()
+        message = self.make_message_uniq_set()
         message.target_temperature = target_temperature
         if mode is not None:
             message.power = True
@@ -330,7 +324,7 @@ class MideaACDevice(MiedaDevice):
         self.build_send(message)
 
     def set_swing(self, swing_vertical, swing_horizontal):
-        message = self.make_message_set()
+        message = self.make_message_uniq_set()
         message.swing_vertical = swing_vertical
         message.swing_horizontal = swing_horizontal
         self.build_send(message)
