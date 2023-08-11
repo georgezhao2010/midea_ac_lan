@@ -17,6 +17,7 @@ lock.{DEVICEID}_child_lock | lock | Child Lock
 switch.{DEVICEID}_anion | switch | Anion
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone
 switch.{DEVICEID}_power | switch | Power
+switch.{DEVICEID}_standby | switch | Standby
 select.{DEVICEID}_detect_mode | select | Detect Mode 
 select.{DEVICEID}_mode | select | Mode
 select.{DEVICEID}_fan_speed | select | Fan Speed

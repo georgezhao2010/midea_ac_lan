@@ -17,6 +17,7 @@ lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
 switch.{DEVICEID}_anion | switch | Anion | 负离子
 switch.{DEVICEID}_prompt_tone | switch | Prompt Tone | 提示音
 switch.{DEVICEID}_power | switch | Power | 电源开关
+switch.{DEVICEID}_standby | switch | Standby | 待机
 select.{DEVICEID}_detect_mode | select | Detect Mode | 检测模式 
 select.{DEVICEID}_mode | select | Mode | 运行模式
 select.{DEVICEID}_fan_speed | select | Fan Speed | 风速设定
