@@ -200,7 +200,9 @@ class MideaFCDevice(MiedaDevice):
             try:
                 params = json.loads(customize)
                 if params and "standby_detect" in params:
-                    self._standby_detect = params.get("standby_detect")
+                    settings = params.get("standby_detect")
+                    if len(settings) == 2 and settings[0] > settings[1]:
+                        self._standby_detect = settings
             except Exception as e:
                 _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
             self.update_all({"standby_detect": self._standby_detect})

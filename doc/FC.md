@@ -1,5 +1,13 @@
 # Air Purifier
 
+## Customize
+
+Set the high/low value of PM2.5 to automatically turn standby mode on or off.
+
+```
+{"standby_detect": [50, 20]}
+```
+
 ## Entities
 ### Default entity
 No default entity.
