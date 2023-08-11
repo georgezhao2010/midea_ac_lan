@@ -79,8 +79,8 @@ class C3MessageBody(MessageBody):
         self.zone1_power = body[data_offset + 0] & 0x01 > 0
         self.zone2_power = body[data_offset + 0] & 0x02 > 0
         self.dhw_power = body[data_offset + 0] & 0x04 > 0
-        self.zone1_curve_state = body[data_offset + 0] & 0x08 > 0
-        self.zone2_curve_state = body[data_offset + 0] & 0x10 > 0
+        self.zone1_curve = body[data_offset + 0] & 0x08 > 0
+        self.zone2_curve = body[data_offset + 0] & 0x10 > 0
         self.disinfect = body[data_offset + 0] & 0x20 > 0
         self.fast_dhw = body[data_offset + 0] & 0x40 > 0
         self.zone_temp_type = [
@@ -117,6 +117,7 @@ class C3MessageBody(MessageBody):
         self.dhw_temp_min = body[data_offset + 20]
         self.tank_actual_temperature = body[data_offset + 21]
 
+
 class C3Notify1MessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
@@ -137,6 +138,7 @@ class C3Notify1MessageBody(MessageBody):
             (body[data_offset + 6] << 16) +
             (body[data_offset + 7] << 8) +
             (body[data_offset + 8]))
+
 
 class MessageC3Response(MessageResponse):
     def __init__(self, message):
