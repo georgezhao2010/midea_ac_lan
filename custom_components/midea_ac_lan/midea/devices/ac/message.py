@@ -177,6 +177,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         self.target_temperature = 20.0
         self.fan_speed = 102
         self.boost_mode = False
+        self.aux_heat = False
         self.dry = False
         self.eco_mode = False
         self.sleep_mode = False
@@ -189,6 +190,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         power = 0x01 if self.power else 0
         dry = 0x10 if self.power and self.dry else 0
         boost_mode = 0x10 if self.boost_mode else 0
+        aux_heat = 0x40 if self.aux_heat else 0
         try:
             mode = 0 if self.mode == 0 else BB_AC_MODES[self.mode] - 1
         except IndexError:
@@ -201,7 +203,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         prompt_tone = 0x01 if self.prompt_tone else 0
         timer = 0x04 if (self.sn8_flag and self.timer) else 0
         return bytearray([
-            power | dry, boost_mode | 0x80, 0x00, 0x00,
+            power | dry, boost_mode | aux_heat | 0x80, 0x00, 0x00,
             0x00, mode, target_temperature, fan_speed,
             0x32, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x01,
@@ -515,6 +517,7 @@ class XBBMessageBody(MessageBody):
             self.power = (subprotocol_body[0] & 0x1) > 0
             self.dry = (subprotocol_body[0] & 0x10) > 0
             self.boost_mode = (subprotocol_body[1] & 0x10) > 0
+            self.aux_heat = (subprotocol_body[1] & 0x40) > 0
             try:
                 self.mode = BB_AC_MODES.index(subprotocol_body[5] + 1)
             except ValueError:
@@ -557,7 +560,7 @@ class MessageACResponse(MessageResponse):
             self._body = XC0MessageBody(body)
         elif self._message_type == MessageType.query and self._body_type == 0xC1:
             self._body = XC1MessageBody(body)
-        elif self._message_type in [MessageType.query, MessageType.notify2] and \
+        elif self._message_type in [MessageType.set, MessageType.query, MessageType.notify2] and \
                 self._body_type == 0xBB and len(body) >= 21:
             self.used_subprotocol = True
             self._body = XBBMessageBody(body)
