@@ -21,7 +21,7 @@ climate.{DEVICEID}_climate | climate | Climate entity
 EntityID | Class | Description
 --- | --- | ---
 sensor.{DEVICEID}_indoor_temperature | sensor | Indoor Temperature
-switch.{DEVICEID}_aux_heat | switch | Aux Heating
+switch.{DEVICEID}_aux_heating | switch | Aux Heating
 switch.{DEVICEID}_eco_mode | switch | ECO Mode
 switch.{DEVICEID}_night_light | switch | Night Light
 switch.{DEVICEID}_power | switch | Power
@@ -40,7 +40,7 @@ Set the attribute of appliance. Service data:
 Name | Description
 --- | ---
 device_id | The Appliance code (Device ID) of appliance
-attribute | "aux_heat"<br/>"eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing"
+attribute | "aux_heating"<br/>"eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing"
 value | true or false
 
 Example

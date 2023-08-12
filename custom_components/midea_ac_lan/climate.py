@@ -120,7 +120,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     @property
     def is_aux_heat(self):
-        return self._device.get_attribute("aux_heat")
+        return self._device.get_attribute("aux_heating")
 
     @property
     def preset_modes(self):
@@ -205,10 +205,10 @@ class MideaClimate(MideaEntity, ClimateEntity):
             _LOGGER.debug(f"Entity {self.entity_id} update_state {repr(e)}, status = {status}")
 
     def turn_aux_heat_on(self) -> None:
-        self._device.set_attribute(attr="aux_heat", value=True)
+        self._device.set_attribute(attr="aux_heating", value=True)
 
     def turn_aux_heat_off(self) -> None:
-        self._device.set_attribute(attr="aux_heat", value=False)
+        self._device.set_attribute(attr="aux_heating", value=False)
 
 
 class MideaACClimate(MideaClimate):
@@ -229,7 +229,7 @@ class MideaACClimate(MideaClimate):
             SWING_HORIZONTAL.capitalize(),
             SWING_BOTH.capitalize()
         ]
-        self._preset_modes = [PRESET_NONE, PRESET_COMFORT, PRESET_ECO, PRESET_BOOST, PRESET_AWAY]
+        self._preset_modes = [PRESET_NONE, PRESET_COMFORT, PRESET_ECO, PRESET_BOOST, PRESET_SLEEP, PRESET_AWAY]
 
     @property
     def fan_modes(self):

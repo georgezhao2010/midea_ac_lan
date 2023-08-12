@@ -39,7 +39,7 @@ sensor.{DEVICEID}_total_energy_consumption | sensor | Total Energy Consumption |
 sensor.{DEVICEID}_current_energy_consumption | sensor | Current Energy Consumption | 当前能耗
 sensor.{DEVICEID}_realtime_power | sensor | Realtime Power | 实时功率
 fan.{DEVICEID}_fresh_air | fan | Fresh Air | 新风
-switch.{DEVICEID}_aux_heat | switch | Aux Heating | 电辅热
+switch.{DEVICEID}_aux_heating | switch | Aux Heating | 电辅热
 switch.{DEVICEID}_boost_mode | switch | Boost Mode | 强劲模式
 switch.{DEVICEID}_breezeless | switch | Breezeless | 无风感
 switch.{DEVICEID}_comfort_mode | switch | Comfort Mode | 舒省模式
@@ -89,7 +89,7 @@ data:
 名称 | 描述
 --- | ---
 device_id | 设备的编号(Device ID)
-attribute | "aux_heat"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
+attribute | "aux_heating"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode"
 value | true 或 false
 
 示例

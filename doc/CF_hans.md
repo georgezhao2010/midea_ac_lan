@@ -15,7 +15,7 @@ climate.{DEVICEID}_climate | climate | 恒温器实体
 EntityID | 类型 | 名称 | 描述
 --- | --- | --- | --- 
 sensor.{DEVICEID}_current_temperature | sensor | Current Temperature | 当前温度
-switch.{DEVICEID}_aux_heat | switch | Aux Heating | 电辅热
+switch.{DEVICEID}_aux_heating | switch | Aux Heating | 电辅热
 switch.{DEVICEID}_power | switch | Power | 电源开关
 
 ## Service
@@ -30,7 +30,7 @@ switch.{DEVICEID}_power | switch | Power | 电源开关
 名称 | 描述
 --- | ---
 device_id | 设备的编号(Device ID)
-attribute | "aux_heat"<br/>"power"
+attribute | "aux_heating"<br/>"power"
 value | true 或 false
 
 示例
@@ -38,6 +38,6 @@ value | true 或 false
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
-  attribute: aux_heat
+  attribute: aux_heating
   value: true
 ```

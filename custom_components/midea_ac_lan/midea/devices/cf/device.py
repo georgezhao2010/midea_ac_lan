@@ -14,7 +14,7 @@ class DeviceAttributes(StrEnum):
     power = "power"
     mode = "mode"
     target_temperature = "target_temperature"
-    aux_heat = "aux_heat"
+    aux_heating = "aux_heating"
     current_temperature = "current_temperature"
     max_temperature = "max_temperature"
     min_temperature = "min_temperature"
@@ -48,7 +48,7 @@ class MideaCFDevice(MiedaDevice):
             DeviceAttributes.power: False,
             DeviceAttributes.mode: 0,
             DeviceAttributes.target_temperature: None,
-            DeviceAttributes.aux_heat: False,
+            DeviceAttributes.aux_heating: False,
             DeviceAttributes.current_temperature: 0,
             DeviceAttributes.max_temperature: 55,
             DeviceAttributes.min_temperature: 5
@@ -87,8 +87,8 @@ class MideaCFDevice(MiedaDevice):
             message.mode = value
         elif attr == DeviceAttributes.target_temperature:
             message.target_temperature = value
-        elif attr == DeviceAttributes.aux_heat:
-            message.aux_heat = value
+        elif attr == DeviceAttributes.aux_heating:
+            message.aux_heating = value
         self.build_send(message)
 
     @property

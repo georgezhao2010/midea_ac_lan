@@ -32,7 +32,7 @@ sensor.{DEVICEID}_co2 | sensor | Carbon Dioxide | 二氧化碳
 sensor.{DEVICEID}_hcho | sensor | Methanal | 甲醛
 sensor.{DEVICEID}_pm25 | sensor | PM 2.5 | PM 2.5
 lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
-switch.{DEVICEID}_aux_heat | switch | Aux Heating | 电辅热开关
+switch.{DEVICEID}_aux_heating | switch | Aux Heating | 电辅热开关
 switch.{DEVICEID}_eco_mode | switch | ECO Mode | 节能模式开关
 switch.{DEVICEID}_link_to_ac | switch | Link to AC | 空调联动开关
 switch.{DEVICEID}_power | switch | Power | 电源开关
@@ -52,7 +52,7 @@ switch.{DEVICEID}_sleep_mode | switch | Sleep Mode | 睡眠模式开关
 名称 | 描述
 --- | ---
 device_id | 设备的编号(Device ID)
-attribute | "child_lock"<br/>"aux_heat"<br/>"eco_mode"<br/>"link_to_ac"<br/>"power"<br/>"powerful_purify"<br/>"sleep_mode"
+attribute | "child_lock"<br/>"aux_heating"<br/>"eco_mode"<br/>"link_to_ac"<br/>"power"<br/>"powerful_purify"<br/>"sleep_mode"
 value | true 或 false
 
 

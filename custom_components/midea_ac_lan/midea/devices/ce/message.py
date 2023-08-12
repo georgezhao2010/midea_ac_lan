@@ -44,7 +44,7 @@ class MessageSet(MessageFABase):
         self.link_to_ac = False
         self.sleep_mode = False
         self.eco_mode = False
-        self.aux_heat = False
+        self.aux_heating = False
         self.powerful_purify = False
         self.scheduled = False
         self.child_lock = False
@@ -55,14 +55,14 @@ class MessageSet(MessageFABase):
         link_to_ac = 0x01 if self.link_to_ac else 0x00
         sleep_mode = 0x02 if self.sleep_mode else 0x00
         eco_mode = 0x04 if self.eco_mode else 0x00
-        aux_heat = 0x08 if self.aux_heat else 0x00
+        aux_heating = 0x08 if self.aux_heating else 0x00
         powerful_purify = 0x10 if self.powerful_purify else 0x00
         scheduled = 0x01 if self.scheduled else 0x00
         child_lock = 0x7F if self.child_lock else 0x00
         return bytearray([
             power | 0x01,
             self.fan_speed,
-            link_to_ac | sleep_mode | eco_mode | aux_heat | powerful_purify,
+            link_to_ac | sleep_mode | eco_mode | aux_heating | powerful_purify,
             scheduled,
             0x00,
             child_lock
@@ -94,9 +94,9 @@ class CEGeneralMessageBody(MessageBody):
         self.sleep_mode = (body[17] & 0x02) > 0
         self.eco_mode = (body[17] & 0x04) > 0
         if (body[19] & 0x02) > 0:
-            self.aux_heat = (body[17] & 0x08) > 0
+            self.aux_heating = (body[17] & 0x08) > 0
         else:
-            self.aux_heat = None
+            self.aux_heating = None
         self.powerful_purify = (body[17] & 0x10) > 0
         self.filter_cleaning_reminder = (body[18] & 0x01) > 0
         self.filter_change_reminder = (body[18] & 0x02) > 0

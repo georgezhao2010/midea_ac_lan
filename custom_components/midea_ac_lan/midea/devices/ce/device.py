@@ -25,7 +25,7 @@ class DeviceAttributes(StrEnum):
     link_to_ac = "link_to_ac"
     sleep_mode = "sleep_mode"
     eco_mode = "eco_mode"
-    aux_heat = "aux_heat'"
+    aux_heating = "aux_heating'"
     powerful_purify = "powerful_purify"
     filter_cleaning_reminder = "filter_cleaning_reminder"
     filter_change_reminder = "filter_change_reminder"
@@ -74,7 +74,7 @@ class MideaCEDevice(MiedaDevice):
             DeviceAttributes.link_to_ac: False,
             DeviceAttributes.sleep_mode: False,
             DeviceAttributes.eco_mode: False,
-            DeviceAttributes.aux_heat: None,
+            DeviceAttributes.aux_heating: None,
             DeviceAttributes.powerful_purify: False,
             DeviceAttributes.filter_cleaning_reminder: False,
             DeviceAttributes.filter_change_reminder: False,
@@ -120,7 +120,7 @@ class MideaCEDevice(MiedaDevice):
         message.link_to_ac = self._attributes[DeviceAttributes.link_to_ac]
         message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
         message.eco_mode = self._attributes[DeviceAttributes.eco_mode]
-        message.aux_heat = self._attributes[DeviceAttributes.aux_heat]
+        message.aux_heating = self._attributes[DeviceAttributes.aux_heating]
         message.powerful_purify = self._attributes[DeviceAttributes.powerful_purify]
         message.scheduled = self._attributes[DeviceAttributes.scheduled]
         message.child_lock = self._attributes[DeviceAttributes.child_lock]

@@ -32,7 +32,7 @@ sensor.{DEVICEID}_co2 | sensor | Carbon Dioxide
 sensor.{DEVICEID}_hcho | sensor | Methanal
 sensor.{DEVICEID}_pm25 | sensor | PM 2.5
 lock.{DEVICEID}_child_lock | lock | Child Lock
-switch.{DEVICEID}_aux_heat | switch | Aux Heating
+switch.{DEVICEID}_aux_heating | switch | Aux Heating
 switch.{DEVICEID}_eco_mode | switch | ECO Mode
 switch.{DEVICEID}_link_to_ac | switch | Link to AC
 switch.{DEVICEID}_power | switch | Power
@@ -54,7 +54,7 @@ Set the attribute of appliance. Service data:
 Name | Description
 --- | ---
 device_id | The Appliance code (Device ID) of appliance
-attribute | "child_lock"<br/>"aux_heat"<br/>"eco_mode"<br/>"link_to_ac"<br/>"power"<br/>"powerful_purify"<br/>"sleep_mode"
+attribute | "child_lock"<br/>"aux_heating"<br/>"eco_mode"<br/>"link_to_ac"<br/>"power"<br/>"powerful_purify"<br/>"sleep_mode"
 value | true or false
 
 

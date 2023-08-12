@@ -15,7 +15,7 @@ climate.{DEVICEID}_climate | climate | Climate entity
 EntityID | Class | Description
 --- | --- | ---
 sensor.{DEVICEID}_current_temperature | sensor | Current Temperature
-switch.{DEVICEID}_aux_heat | switch | Aux Heating
+switch.{DEVICEID}_aux_heating | switch | Aux Heating
 switch.{DEVICEID}_power | switch | Power
 
 ## Service
@@ -30,7 +30,7 @@ Set the attribute of appliance. Service data:
 Name | Description
 --- | ---
 device_id | The Appliance code (Device ID) of appliance
-attribute | "aux_heat"<br/>"power"
+attribute | "aux_heating"<br/>"power"
 value | true or false
 
 Example
@@ -38,6 +38,6 @@ Example
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
-  attribute: aux_heat
+  attribute: aux_heating
   value: true
 ```

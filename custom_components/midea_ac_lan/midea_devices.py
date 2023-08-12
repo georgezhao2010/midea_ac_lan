@@ -118,7 +118,7 @@ MIDEA_DEVICES = {
                 "icon": "mdi:fan",
                 "name": "Fresh Air"
             },
-            ACAttributes.aux_heat: {
+            ACAttributes.aux_heating: {
                 "type": "switch",
                 "name": "Aux Heating",
                 "icon": "mdi:heat-wave"
@@ -178,11 +178,11 @@ MIDEA_DEVICES = {
                 "name": "Screen Display",
                 "icon": "mdi:television-ambient-light"
             },
-            # ACAttributes.sleep_mode: {
-            #     "type": "switch",
-            #     "name": "Sleep Mode",
-            #     "icon": "mdi:power-sleep"
-            # },
+            ACAttributes.sleep_mode: {
+                "type": "switch",
+                "name": "Sleep Mode",
+                "icon": "mdi:power-sleep"
+            },
             ACAttributes.smart_eye: {
                 "type": "switch",
                 "name": "Smart Eye",
@@ -635,7 +635,7 @@ MIDEA_DEVICES = {
                 "icon": "hass:air-conditioner",
                 "default": True
             },
-            CCAttributes.aux_heat: {
+            CCAttributes.aux_heating: {
                 "type": "switch",
                 "name": "Aux Heating",
                 "icon": "mdi:heat-wave"
@@ -733,7 +733,7 @@ MIDEA_DEVICES = {
                 "type": "lock",
                 "name": "Child Lock"
             },
-            CEAttributes.aux_heat: {
+            CEAttributes.aux_heating: {
                 "type": "switch",
                 "name": "Aux Heating",
                 "icon": "mdi:heat-wave"
@@ -773,7 +773,7 @@ MIDEA_DEVICES = {
                 "icon": "hass:air-conditioner",
                 "default": True
             },
-            CFAttributes.aux_heat: {
+            CFAttributes.aux_heating: {
                 "type": "switch",
                 "name": "Aux Heating",
                 "icon": "mdi:heat-wave"

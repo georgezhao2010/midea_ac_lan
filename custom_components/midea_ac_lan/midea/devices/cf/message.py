@@ -41,16 +41,16 @@ class MessageSet(MessageCFBase):
         self.power = False
         self.mode = 0  # 1 自动 2 制冷 3 制热
         self.target_temperature = None
-        self.aux_heat = None
+        self.aux_heating = None
 
     @property
     def _body(self):
         power = 0x01 if self.power else 0x00
         mode = self.mode
         target_temperature = 0xFF if self.target_temperature is None else (int(self.target_temperature) & 0xFF)
-        aux_heat = 0xFF if self.aux_heat is None else (0x01 if self.aux_heat else 0x00)
+        aux_heating = 0xFF if self.aux_heating is None else (0x01 if self.aux_heating else 0x00)
         return bytearray([
-            power, mode, target_temperature, aux_heat
+            power, mode, target_temperature, aux_heating
         ])
 
 
@@ -58,7 +58,7 @@ class CFMessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
         self.power = (body[data_offset + 0] & 0x01) > 0
-        self.aux_heat = (body[data_offset + 0] & 0x02) > 0
+        self.aux_heating = (body[data_offset + 0] & 0x02) > 0
         self.silent = (body[data_offset + 0] & 0x04) > 0
         self.mode = body[data_offset + 3]
         self.target_temperature = body[data_offset + 4]

@@ -18,7 +18,7 @@ class DeviceAttributes(StrEnum):
     eco_mode = "eco_mode"
     sleep_mode = "sleep_mode"
     night_light = "night_light"
-    aux_heat = "aux_heat"
+    aux_heating = "aux_heating"
     swing = "swing"
     ventilation = "ventilation"
     temperature_precision = "temperature_precision"
@@ -70,7 +70,7 @@ class MideaCCDevice(MiedaDevice):
             DeviceAttributes.eco_mode: False,
             DeviceAttributes.night_light: False,
             DeviceAttributes.ventilation: False,
-            DeviceAttributes.aux_heat: False,
+            DeviceAttributes.aux_heating: False,
             DeviceAttributes.aux_heat_status: 0,
             DeviceAttributes.auto_aux_heat_running: False,
             DeviceAttributes.swing: False,
@@ -111,12 +111,12 @@ class MideaCCDevice(MiedaDevice):
             else:
                 self._attributes[DeviceAttributes.fan_speed] = None
             new_status[DeviceAttributes.fan_speed.value] = self._attributes[DeviceAttributes.fan_speed]
-        aux_heat = \
+        aux_heating = \
             self._attributes[DeviceAttributes.aux_heat_status] == 1 or \
             self._attributes[DeviceAttributes.auto_aux_heat_running]
-        if self._attributes[DeviceAttributes.aux_heat] != aux_heat:
-            self._attributes[DeviceAttributes.aux_heat] = aux_heat
-            new_status[DeviceAttributes.aux_heat.value] = self._attributes[DeviceAttributes.aux_heat]
+        if self._attributes[DeviceAttributes.aux_heating] != aux_heating:
+            self._attributes[DeviceAttributes.aux_heating] = aux_heating
+            new_status[DeviceAttributes.aux_heating.value] = self._attributes[DeviceAttributes.aux_heating]
         return new_status
 
     def make_message_set(self):
@@ -163,7 +163,7 @@ class MideaCCDevice(MiedaDevice):
                     setattr(message, DeviceAttributes.sleep_mode.value, False)
                 elif attr == DeviceAttributes.sleep_mode and value:
                     setattr(message, DeviceAttributes.eco_mode.value, False)
-                elif attr == DeviceAttributes.aux_heat:
+                elif attr == DeviceAttributes.aux_heating:
                     if value:
                         setattr(message, DeviceAttributes.aux_heat_status.value, 1)
                     else:

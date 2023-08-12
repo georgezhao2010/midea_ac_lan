@@ -59,14 +59,14 @@ class MessageSet(MessageCCBase):
         fan_speed = self.fan_speed
         # Byte3 Integer of target_temperature
         temperature_integer = int(self.target_temperature) & 0xFF
-        # Byte6 eco_mode ventilation aux_heat
+        # Byte6 eco_mode ventilation aux_heating
         eco_mode = 0x01 if self.eco_mode else 0
         if self.aux_heat_status == 1:
-            aux_heat = 0x10
+            aux_heating = 0x10
         elif self.aux_heat_status == 2:
-            aux_heat = 0x20
+            aux_heating = 0x20
         else:
-            aux_heat = 0
+            aux_heating = 0
         swing = 0x04 if self.swing else 0
         ventilation = 0x08 if self.ventilation else 0
         # Byte8 sleep_mode night_light
@@ -80,7 +80,7 @@ class MessageSet(MessageCCBase):
             temperature_integer,
             # timer
             0x00, 0x00,
-            eco_mode | ventilation | swing | aux_heat,
+            eco_mode | ventilation | swing | aux_heating,
             # non-stepless fan speed
             0xFF,
             sleep_mode | night_light,

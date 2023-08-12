@@ -177,7 +177,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         self.target_temperature = 20.0
         self.fan_speed = 102
         self.boost_mode = False
-        self.aux_heat = False
+        self.aux_heating = False
         self.dry = False
         self.eco_mode = False
         self.sleep_mode = False
@@ -189,8 +189,8 @@ class MessageSubProtocolSet(MessageSubProtocol):
     def _subprotocol_body(self):
         power = 0x01 if self.power else 0
         dry = 0x10 if self.power and self.dry else 0
-        boost_mode = 0x10 if self.boost_mode else 0
-        aux_heat = 0x40 if self.aux_heat else 0x80
+        boost_mode = 0x20 if self.boost_mode else 0
+        aux_heating = 0x40 if self.aux_heating else 0x80
         sleep_mode = 0x80 if self.sleep_mode else 0
         try:
             mode = 0 if self.mode == 0 else BB_AC_MODES[self.mode] - 1
@@ -204,7 +204,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         prompt_tone = 0x01 if self.prompt_tone else 0
         timer = 0x04 if (self.sn8_flag and self.timer) else 0
         return bytearray([
-            power | dry, boost_mode | aux_heat, sleep_mode, 0x00,
+            boost_mode | power | dry,  aux_heating, sleep_mode, 0x00,
             0x00, mode, target_temperature, fan_speed,
             0x32, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x01,
@@ -233,7 +233,7 @@ class MessageGeneralSet(MessageACBase):
         self.boost_mode = False
         self.smart_eye = False
         self.dry = False
-        self.aux_heat = False
+        self.aux_heating = False
         self.eco_mode = False
         self.temp_fahrenheit = False
         self.sleep_mode = False
@@ -258,10 +258,10 @@ class MessageGeneralSet(MessageACBase):
                      (0x03 if self.swing_horizontal else 0)
         # Byte 8, turbo
         boost_mode = 0x20 if self.boost_mode else 0
-        # Byte 9 aux_heat eco_mode
+        # Byte 9 aux_heating eco_mode
         smart_eye = 0x01 if self.smart_eye else 0
         dry = 0x04 if self.dry else 0
-        aux_heat = 0x08 if self.aux_heat else 0
+        aux_heating = 0x08 if self.aux_heating else 0
         eco_mode = 0x80 if self.eco_mode else 0
         # Byte 10 temp_fahrenheit
         temp_fahrenheit = 0x04 if self.temp_fahrenheit else 0
@@ -281,7 +281,7 @@ class MessageGeneralSet(MessageACBase):
             0x00, 0x00, 0x00,
             swing_mode,
             boost_mode,
-            smart_eye | dry | aux_heat | eco_mode,
+            smart_eye | dry | aux_heating | eco_mode,
             temp_fahrenheit | sleep_mode | boost_mode_1,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00,
@@ -377,10 +377,10 @@ class XA0MessageBody(MessageBody):
         self.fan_speed = body[3] & 0x7f
         self.swing_vertical = (body[7] & 0xC) > 0
         self.swing_horizontal = (body[7] & 0x3) > 0
-        self.boost_mode = (body[8] & 0x20) > 0
+        self.boost_mode = ((body[8] & 0x20) > 0) or ((body[10] & 0x2) > 0)
         self.smart_eye = (body[9] & 0x01) > 0
         self.dry = (body[9] & 0x04) > 0
-        self.aux_heat = (body[9] & 0x08) > 0
+        self.aux_heating = (body[9] & 0x08) > 0
         self.eco_mode = (body[9] & 0x10) > 0
         self.sleep_mode = (body[10] & 0x01) > 0
         self.natural_wind = (body[10] & 0x40) > 0
@@ -449,7 +449,7 @@ class XC0MessageBody(MessageBody):
         self.natural_wind = (body[9] & 0x2) > 0
         self.dry = (body[9] & 0x4) > 0
         self.eco_mode = (body[9] & 0x10) > 0
-        self.aux_heat = (body[9] & 0x08) > 0
+        self.aux_heating = (body[9] & 0x08) > 0
         self.temp_fahrenheit = (body[10] & 0x04) > 0
         self.sleep_mode = (body[10] & 0x01) > 0
         if body[11] != 0xFF:
@@ -518,8 +518,8 @@ class XBBMessageBody(MessageBody):
         if data_type == 0x20 or data_type == 0x11:
             self.power = (subprotocol_body[0] & 0x1) > 0
             self.dry = (subprotocol_body[0] & 0x10) > 0
-            self.boost_mode = (subprotocol_body[1] & 0x10) > 0
-            self.aux_heat = (subprotocol_body[1] & 0x40) > 0
+            self.boost_mode = (subprotocol_body[0] & 0x20) > 0
+            self.aux_heating = (subprotocol_body[1] & 0x40) > 0
             self.sleep_mode = (subprotocol_body[2] & 0x80) > 0
             try:
                 self.mode = BB_AC_MODES.index(subprotocol_body[5] + 1)
