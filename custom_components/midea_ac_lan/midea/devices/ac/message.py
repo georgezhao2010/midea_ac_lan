@@ -265,6 +265,7 @@ class MessageGeneralSet(MessageACBase):
         # Byte 10 temp_fahrenheit
         temp_fahrenheit = 0x04 if self.temp_fahrenheit else 0
         sleep_mode = 0x01 if self.sleep_mode else 0
+        boost_mode_1 = 0x02 if self.boost_mode else 0
         # Byte 17 natural_wind
         natural_wind = 0x40 if self.natural_wind else 0
         # Byte 21 frost_protect
@@ -280,7 +281,7 @@ class MessageGeneralSet(MessageACBase):
             swing_mode,
             boost_mode,
             smart_eye | dry | aux_heat | eco_mode,
-            temp_fahrenheit | sleep_mode,
+            temp_fahrenheit | sleep_mode | boost_mode_1,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00,
             natural_wind,
