@@ -190,7 +190,8 @@ class MessageSubProtocolSet(MessageSubProtocol):
         power = 0x01 if self.power else 0
         dry = 0x10 if self.power and self.dry else 0
         boost_mode = 0x10 if self.boost_mode else 0
-        aux_heat = 0x40 if self.aux_heat else 0
+        aux_heat = 0x40 if self.aux_heat else 0x80
+        sleep_mode = 0x80 if self.sleep_mode else 0
         try:
             mode = 0 if self.mode == 0 else BB_AC_MODES[self.mode] - 1
         except IndexError:
@@ -199,17 +200,17 @@ class MessageSubProtocolSet(MessageSubProtocol):
         water_model_temperature_set = int((self.target_temperature - 1) * 2 + 50)
         fan_speed = self.fan_speed
         eco = 0x40 if self.eco_mode else 0
-        sleep_mode = 0x30 if self.sleep_mode else 0
+
         prompt_tone = 0x01 if self.prompt_tone else 0
         timer = 0x04 if (self.sn8_flag and self.timer) else 0
         return bytearray([
-            power | dry, boost_mode | aux_heat | 0x80, 0x00, 0x00,
+            power | dry, boost_mode | aux_heat, sleep_mode, 0x00,
             0x00, mode, target_temperature, fan_speed,
             0x32, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x01,
             0x01, 0x00, 0x01, water_model_temperature_set,
             prompt_tone, target_temperature, 0x32, 0x66,
-            0x00, eco | sleep_mode | timer, 0x00, 0x00,
+            0x00, eco | timer, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x08
@@ -519,6 +520,7 @@ class XBBMessageBody(MessageBody):
             self.dry = (subprotocol_body[0] & 0x10) > 0
             self.boost_mode = (subprotocol_body[1] & 0x10) > 0
             self.aux_heat = (subprotocol_body[1] & 0x40) > 0
+            self.sleep_mode = (subprotocol_body[2] & 0x80) > 0
             try:
                 self.mode = BB_AC_MODES.index(subprotocol_body[5] + 1)
             except ValueError:
@@ -527,7 +529,6 @@ class XBBMessageBody(MessageBody):
             self.fan_speed = subprotocol_body[7]
             self.timer = (subprotocol_body[25] & 0x04) > 0 if subprotocol_body_len > 27 else False
             self.eco_mode = (subprotocol_body[25] & 0x40) > 0 if subprotocol_body_len > 27 else False
-            self.sleep_mode = (subprotocol_body[25] & 0x30) > 0 if subprotocol_body_len > 27 else False
         elif data_type == 0x10:
             if subprotocol_body[8] & 0x80 == 0x80:
                 self.indoor_temperature = (0 - (~(subprotocol_body[7] + subprotocol_body[8] * 256) + 1) & 0xffff) / 100
