@@ -25,7 +25,11 @@ from homeassistant.const import (
     CONF_CUSTOMIZE
 )
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-from homeassistant.util.json import load_json, save_json
+from homeassistant.util.json import load_json
+try:
+    from homeassistant.util.json import save_json
+except ImportError:
+    from homeassistant.helpers.json import save_json
 from .midea.core.discover import discover
 from .midea.core.cloud import MeijuCloud, MSmartHomeCloud, SmartLifeCloud
 from .midea.core.device import MiedaDevice
