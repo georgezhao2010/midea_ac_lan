@@ -11,10 +11,12 @@ EntityID | 类型 | 名称 | 描述
 binary_sensor.{DEVICEID}_door | binary_sensor | Door | 门状态 
 binary_sensor.{DEVICEID}_rinse_aid | binary_sensor | Rinse Aid Shortage | 漂洗剂不足 
 binary_sensor.{DEVICEID}_salt | binary_sensor | Salt Shortage | 软水盐不足
+sensor.{DEVICEID}_humidity | sensor | Humidity | 湿度
 sensor.{DEVICEID}_progress | sensor | Progress | 当前程序
 sensor.{DEVICEID}_status | sensor | Status | 状态
 sensor.{DEVICEID}_storage_remaining | sensor | Storage Time Remaining | 保管剩余时间
 sensor.{DEVICEID}_time_remaining | sensor | Time Remaining | 剩余时间
+sensor.{DEVICEID}_temperature | sensor | Temperature | 温度
 lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_storage | switch | Storage | 保管开关

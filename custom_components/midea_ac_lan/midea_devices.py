@@ -960,6 +960,13 @@ MIDEA_DEVICES = {
                 "icon": "mdi:drag",
                 "device_class": BinarySensorDeviceClass.PROBLEM
             },
+            FDAttributes.humidity: {
+                "type": "sensor",
+                "name": "Humidity",
+                "device_class": SensorDeviceClass.HUMIDITY,
+                "unit": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
             E1Attributes.progress: {
                 "type": "sensor",
                 "name": "Progress",
@@ -975,6 +982,13 @@ MIDEA_DEVICES = {
                 "name": "Storage Remaining",
                 "icon": "mdi:progress-clock",
                 "unit": TIME_HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            FDAttributes.temperature: {
+                "type": "sensor",
+                "name": "Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
             E1Attributes.time_remaining: {
