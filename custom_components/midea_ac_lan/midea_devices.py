@@ -960,7 +960,7 @@ MIDEA_DEVICES = {
                 "icon": "mdi:drag",
                 "device_class": BinarySensorDeviceClass.PROBLEM
             },
-            FDAttributes.humidity: {
+            E1Attributes.humidity: {
                 "type": "sensor",
                 "name": "Humidity",
                 "device_class": SensorDeviceClass.HUMIDITY,
@@ -984,7 +984,7 @@ MIDEA_DEVICES = {
                 "unit": TIME_HOURS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
-            FDAttributes.temperature: {
+            E1Attributes.temperature: {
                 "type": "sensor",
                 "name": "Temperature",
                 "device_class": SensorDeviceClass.TEMPERATURE,
