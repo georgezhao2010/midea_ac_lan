@@ -444,7 +444,7 @@ class XC0MessageBody(MessageBody):
         self.fan_speed = body[3] & 0x7F
         self.swing_vertical = (body[7] & 0x0C) > 0
         self.swing_horizontal = (body[7] & 0x03) > 0
-        self.boost_mode = (body[8] & 0x20) > 0
+        self.boost_mode = ((body[8] & 0x20) > 0) or ((body[10] & 0x2) > 0)
         self.smart_eye = (body[8] & 0x40) > 0
         self.natural_wind = (body[9] & 0x2) > 0
         self.dry = (body[9] & 0x4) > 0
