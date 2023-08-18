@@ -63,41 +63,41 @@
                     "switches": "Contrôles",
                     "customize": "Personnaliser"
                 },
-                "description": "Faire des attributs des capteurs et des contrôles supplémentaires",
+                "description": "Ajouter des attributs de capteurs et de contrôles supplémentaires",
                 "title": "Entités supplémentaires"
             }
         }
     },
     "services": {
         "set_ac_fan_speed": {
-            "name": "Set AC fan speed",
-            "description": "Set the fan speed of climate deivce",
+            "name": "Régler la vitesse du ventilateur AC",
+            "description": "Réglage de la vitesse du ventilateur de l'appareil climatique",
             "fields" : {
                 "device_id": {
                     "name": "Code appareil",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "Code de l'appareil (ID de l'appareil)"
                 },
                 "fan_speed": {
-                    "name": "Fan speed",
-                    "description": "The fan gear value want to set (range from 1 to 100 or 'auto')"
+                    "name": "Vitesse ventilateur",
+                    "description": "Valeur de vitesse du ventilateur que vous souhaitez définir (plage de 1 à 100 ou 'auto')"
                 }
             }
         },
         "set_attribute": {
-            "name": "Set attribute",
-            "description": "Set the attribute value of device",
+            "name": "Définir l'attribut",
+            "description": "Définir la valeur d'attribut de l'appareil",
             "fields" : {
                 "device_id": {
                     "name": "Code appareil",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "Code de l'appareil (ID de l'appareil)"
                 },
                 "attribute": {
-                    "name": "Attribute",
-                    "description": "The attribute name want to set"
+                    "name": "Attribut",
+                    "description": "Nom de l'attribut que vous souhaitez définir"
                 },
                 "value": {
-                    "name": "Value",
-                    "description": "The attribute value want to set"
+                    "name": "Valeur",
+                    "description": "Valeur d'attribut que vous souhaitez définir"
                 }
             }
         }
