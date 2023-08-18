@@ -71,7 +71,7 @@
     "services": {
         "set_ac_fan_speed": {
             "name": "Set AC fan speed",
-            "description": "Set the fan speed of climate deivce",
+            "description": "Set the fan speed of climate device",
             "fields" : {
                 "device_id": {
                     "name": "Appliance code",
