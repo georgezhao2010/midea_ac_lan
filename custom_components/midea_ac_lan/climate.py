@@ -2,6 +2,7 @@ from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
 from homeassistant.const import (
     TEMP_CELSIUS,
+    TEMP_FAHRENHEIT,
     PRECISION_WHOLE,
     PRECISION_HALVES,
     ATTR_TEMPERATURE,
@@ -81,7 +82,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     @property
     def temperature_unit(self):
-        return TEMP_CELSIUS
+        return TEMP_FAHRENHEIT if self._device.get_attribute("temp_fahrenheit") else TEMP_CELSIUS
 
     @property
     def target_temperature_low(self):
