@@ -59,12 +59,12 @@
         "step": {
             "init": {
                 "data": {
-                    "sensors": "Érzékelők",
-                    "switches": "Vezérlők",
+                    "ip_address": "IP cím",
+                    "sensors": "Extra Érzékelők",
+                    "switches": "Extra Vezérlők",
                     "customize": "Személyre szabás"
                 },
-                "description": "Extra érzékelők és vezérlők beállítása",
-                "title": "Extra entitások"
+                "title": "Konfigurálás"
             }
         }
     },
@@ -98,6 +98,24 @@
                 "value": {
                     "name": "Value",
                     "description": "The attribute value want to set"
+                }
+            }
+        },
+        "send_command": {
+            "name": "Customize command",
+            "description": "Send a customize command to device",
+            "fields" : {
+                "device_id": {
+                    "name": "Eszköz kód",
+                    "description": "The Appliance code (Device ID) of appliance"
+                },
+                "cmd_type": {
+                    "name": "command type",
+                    "description": "The type of command，should be 3（query) or 2（set)"
+                },
+                "cmd_body": {
+                    "name": "command body",
+                    "description": "The body of command, (not include MSmart protocol head and cheksum at the end)"
                 }
             }
         }

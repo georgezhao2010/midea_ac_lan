@@ -59,12 +59,12 @@
         "step": {
             "init": {
                 "data": {
-                    "sensors": "Capteurs",
-                    "switches": "Contrôles",
+                    "ip_address": "Adresse IP",
+                    "sensors": "Capteurs supplémentaire",
+                    "switches": "Contrôles supplémentaire",
                     "customize": "Personnaliser"
                 },
-                "description": "Ajouter des attributs de capteurs et de contrôles supplémentaires",
-                "title": "Entités supplémentaires"
+                "title": "Configurer"
             }
         }
     },
@@ -98,6 +98,24 @@
                 "value": {
                     "name": "Valeur",
                     "description": "Valeur d'attribut que vous souhaitez définir"
+                }
+            }
+        },
+        "send_command": {
+            "name": "Customize command",
+            "description": "Send a customize command to device",
+            "fields" : {
+                "device_id": {
+                    "name": "Code appareil",
+                    "description": "Code de l'appareil (ID de l'appareil)"
+                },
+                "cmd_type": {
+                    "name": "command type",
+                    "description": "The type of command，should be 3（query) or 2（set)"
+                },
+                "cmd_body": {
+                    "name": "command body",
+                    "description": "The body of command, (not include MSmart protocol head and cheksum at the end)"
                 }
             }
         }

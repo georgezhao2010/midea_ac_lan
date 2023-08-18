@@ -90,7 +90,7 @@ class MideaE3Device(MiedaDevice):
             if attr == DeviceAttributes.power:
                 message = MessagePower(self._device_protocol_version)
                 message.power = value
-            elif self._sub_type in self._old_sub_types:
+            elif self.sub_type in self._old_sub_types:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
             else:

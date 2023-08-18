@@ -172,7 +172,7 @@ class MideaFDDevice(MiedaDevice):
         return super().attributes
 
     def set_subtype(self):
-        if self._sub_type > 5:
+        if self.sub_type > 5:
             self._speeds = MideaFDDevice._speeds_new
 
 

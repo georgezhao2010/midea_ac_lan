@@ -129,7 +129,12 @@ class MessageRequest(MessageBase):
 
     @property
     def body(self):
-        return bytearray([self._body_type]) + self._body
+        body = bytearray([])
+        if self._body_type:
+            body.append(self._body_type)
+        if self._body:
+            body.extend(self._body)
+        return body
 
     def serialize(self):
         stream = self.header + self.body
@@ -148,6 +153,24 @@ class MessageQuerySubtype(MessageRequest):
     @property
     def _body(self):
         return bytearray([0x00] * 18)
+
+
+class MessageQuestCustom(MessageRequest):
+    def __init__(self, device_type, cmd_type, cmd_body):
+        super().__init__(
+            device_protocol_version=0,
+            device_type=device_type,
+            message_type=cmd_type,
+            body_type=None)
+        self._cmd_body = cmd_body
+
+    @property
+    def _body(self):
+        return bytearray([])
+
+    @property
+    def body(self):
+        return self._cmd_body
 
 
 class MessageBody:

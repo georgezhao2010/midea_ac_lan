@@ -13,3 +13,12 @@ set_attribute:
       example: "eco_mode"
     value:
       example: true
+
+send_command:
+  fields:
+    device_id:
+      example: "1234567890"
+    cmd_type:
+      example: 2
+    cmd_body:
+      example: "B0FF01370E0000A500"

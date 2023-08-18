@@ -82,13 +82,13 @@ class MideaFBDevice(MiedaDevice):
 
     def set_attribute(self, attr, value):
         if attr == DeviceAttributes.mode:
-            message = MessageSet(self._device_protocol_version, self._sub_type)
+            message = MessageSet(self._device_protocol_version, self.sub_type)
             if value in MideaFBDevice._modes.values():
                 message.mode = list(MideaFBDevice._modes.keys())[
                     list(MideaFBDevice._modes.values()).index(value)
                 ]
         else:
-            message = MessageSet(self._device_protocol_version, self._sub_type)
+            message = MessageSet(self._device_protocol_version, self.sub_type)
             setattr(message, str(attr), value)
         self.build_send(message)
 

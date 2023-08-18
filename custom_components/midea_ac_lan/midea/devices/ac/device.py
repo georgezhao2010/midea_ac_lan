@@ -55,7 +55,7 @@ class DeviceAttributes(StrEnum):
 
 class MideaACDevice(MiedaDevice):
     _fresh_air_fan_speeds = {
-        0: "Off", 20: "Silent", 40: "Low", 60: "Medium", 80: "High", 100: "Boost"
+        0: "Off", 20: "Silent", 40: "Low", 60: "Medium", 80: "High", 100: "Full"
     }
     _fresh_air_fan_speeds_rev = dict(reversed(_fresh_air_fan_speeds.items()))
 

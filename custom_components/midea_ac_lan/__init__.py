@@ -42,9 +42,14 @@ async def update_listener(hass, config_entry):
     customize = config_entry.options.get(
         CONF_CUSTOMIZE, ""
     )
+    ip_address = config_entry.options.get(
+        CONF_IP_ADDRESS, None
+    )
     dev = hass.data[DOMAIN][DEVICES].get(device_id)
     if dev:
         dev.set_customize(customize)
+        if ip_address:
+            dev.set_ip_address(ip_address)
 
 
 async def async_setup(hass: HomeAssistant, hass_config: dict):
@@ -70,11 +75,27 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
         value = service.data.get("value")
         dev = hass.data[DOMAIN][DEVICES].get(device_id)
         if dev:
+            if attr == "fan_speed" and value == "auto":
+                value = 102
             item = MIDEA_DEVICES.get(dev.device_type).get("entities").get(attr)
-            if item and item.get("type") in EXTRA_SWITCH:
+            if item and (item.get("type") in EXTRA_SWITCH or
+                         (dev.device_type == 0xAC and attr == "fan_speed" and value in range(0, 103))):
                 dev.set_attribute(attr=attr, value=value)
             else:
-                _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} can be set")
+                _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} or invalid value")
+
+    def service_send_command(service):
+        device_id = service.data.get("device_id")
+        cmd_type = service.data.get("cmd_type")
+        cmd_body = service.data.get("cmd_body")
+        try:
+            cmd_body = bytearray.fromhex(cmd_body)
+        except ValueError:
+            _LOGGER.error(f"Appliance [{device_id}] invalid cmd_body, a hexadecimal string required")
+            return
+        dev = hass.data[DOMAIN][DEVICES].get(device_id)
+        if dev:
+            dev.send_command(cmd_type, cmd_body)
 
     hass.services.async_register(
         DOMAIN,
@@ -101,6 +122,19 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
             }
         )
     )
+
+    hass.services.async_register(
+        DOMAIN,
+        "send_command",
+        service_send_command,
+        schema=vol.Schema(
+            {
+                vol.Required("device_id"): vol.Coerce(int),
+                vol.Required("cmd_type"): vol.In([2, 3]),
+                vol.Required("cmd_body"): vol.Any(cv.boolean, str, int)
+            }
+        )
+    )
     return True
 
 
@@ -114,11 +148,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         device_type = 0xac
     token = config_entry.data.get(CONF_TOKEN)
     key = config_entry.data.get(CONF_KEY)
-    ip_address = config_entry.data.get(CONF_IP_ADDRESS)
-    # Compatibility with earlier versions
-    if ip_address is None:
-        ip_address = config_entry.data.get(CONF_HOST)
-    # End of compatibility with earlier versions
+    ip_address = config_entry.options.get(CONF_IP_ADDRESS, None)
+    if not ip_address:
+        ip_address = config_entry.data.get(CONF_IP_ADDRESS)
     port = config_entry.data.get(CONF_PORT)
     model = config_entry.data.get(CONF_MODEL)
     protocol = config_entry.data.get(CONF_PROTOCOL)

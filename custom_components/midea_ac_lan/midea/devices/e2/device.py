@@ -63,9 +63,12 @@ class MideaE2Device(MiedaDevice):
             DeviceAttributes.water_consumption: None,
             DeviceAttributes.heating_power: None
         }
+        self._default_old_protocol = "auto"
+        self._old_protocol = self._default_old_protocol
+        self.set_customize(customize)
 
     def old_protocol(self):
-        return self._sub_type <= 82 or self._sub_type == 85 or self._sub_type == 36353
+        return self.sub_type <= 82 or self.sub_type == 85 or self.sub_type == 36353
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
@@ -92,16 +95,32 @@ class MideaE2Device(MiedaDevice):
         if attr not in [DeviceAttributes.heating,
                         DeviceAttributes.keep_warm,
                         DeviceAttributes.current_temperature]:
+            if self._old_protocol is not None and self._old_protocol != "auto":
+                old_protocol = self._old_protocol
+            else:
+                old_protocol = self.old_protocol()
             if attr == DeviceAttributes.power:
                 message = MessagePower(self._device_protocol_version)
                 message.power = value
-            elif self.old_protocol():
+            elif old_protocol:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
             else:
                 message = MessageNewProtocolSet(self._device_protocol_version)
                 setattr(message, str(attr), value)
             self.build_send(message)
+
+    def set_customize(self, customize):
+        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        self._old_protocol = self._default_old_protocol
+        if customize:
+            try:
+                params = json.loads(customize)
+                if params and "old_protocol" in params:
+                    self._old_protocol = params.get("old_protocol")
+            except Exception as e:
+                _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
+            self.update_all({"old_protocol": self._old_protocol})
 
 
 class MideaAppliance(MideaE2Device):

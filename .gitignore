@@ -125,5 +125,4 @@ venv.bak/
 
 .DS_Store
 
-#PyCharm
 .idea

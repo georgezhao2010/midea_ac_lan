@@ -59,12 +59,12 @@
         "step": {
             "init": {
                 "data": {
-                    "sensors": "传感器",
-                    "switches": "控制",
+                    "ip_address": "IP地址",
+                    "sensors": "扩展传感器",
+                    "switches": "扩展控制",
                     "customize": "自定义"
                 },
-                "description": "将属性实体化为扩展的传感器及控制",
-                "title": "扩展实体"
+                "title": "配置"
             }
         }
     },
@@ -92,12 +92,30 @@
                     "description": "设备编码(Deivce ID)"
                 },
                 "attribute": {
-                    "name": "Attribute",
+                    "name": "属性",
                     "description": "要设置的属性名称"
                 },
                 "value": {
-                    "name": "Value",
+                    "name": "值",
                     "description": "要设置的属性值"
+                }
+            }
+        },
+        "send_command": {
+            "name": "自定义命令",
+            "description": "向设备发送一个自定义命令",
+            "fields" : {
+                "device_id": {
+                    "name": "设备编码",
+                    "description": "设备编码(Deivce ID)"
+                },
+                "cmd_type": {
+                    "name": "命令类型",
+                    "description": "命令类型，可以为2(查询)或3(设置)"
+                },
+                "cmd_body": {
+                    "name": "命令体",
+                    "description": "命令的消息体(不包括前部的MSmart协议头及后部的校验码)"
                 }
             }
         }

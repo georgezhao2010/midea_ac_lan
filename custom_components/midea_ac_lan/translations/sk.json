@@ -59,12 +59,12 @@
         "step": {
             "init": {
                 "data": {
-                    "sensors": "Snímače",
-                    "switches": "Ovládacie prvky",
+                    "ip_address": "IP adresa",
+                    "sensors": "Extra Snímače",
+                    "switches": "Extra Ovládacie prvky",
                     "customize": "Voliteľné"
                 },
-                "description": "Vytvorte atribúty ako ďalšie senzory a ovládacie prvky",
-                "title": "Extra entities"
+                "title": "Konfigurovať"
             }
         }
     },
@@ -98,6 +98,24 @@
                 "value": {
                     "name": "Value",
                     "description": "The attribute value want to set"
+                }
+            }
+        },
+        "send_command": {
+            "name": "Customize command",
+            "description": "Send a customize command to device",
+            "fields" : {
+                "device_id": {
+                    "name": "Kód spotrebiča",
+                    "description": "The Appliance code (Device ID) of appliance"
+                },
+                "cmd_type": {
+                    "name": "command type",
+                    "description": "The type of command，should be 3（query) or 2（set)"
+                },
+                "cmd_body": {
+                    "name": "command body",
+                    "description": "The body of command, (not include MSmart protocol head and cheksum at the end)"
                 }
             }
         }

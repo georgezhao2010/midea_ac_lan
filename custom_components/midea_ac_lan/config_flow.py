@@ -66,6 +66,7 @@ def load_device_token(hass, device_id):
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    _session = None
     available_device = []
     devices = {}
     found_device = {}
@@ -117,7 +118,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_list(self, user_input=None, error=None):
         all_devices = discover()
-
         if len(all_devices) > 0:
             table = "Appliance code|Type|IP address|SN|Supported\n:--:|:--:|:--:|:--:|:--:"
             for device_id, device in all_devices.items():
@@ -183,13 +183,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         }
                         dm.close_socket()
                         return await self.async_step_manual()
-                session = async_create_clientsession(self.hass)
+                if self._session is None:
+                    self._session = async_create_clientsession(self.hass)
                 if MIDEA_DEFAULT_SERVER == "MeijuCN":
-                    cloud = MeijuCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
+                    cloud = MeijuCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
                 elif MIDEA_DEFAULT_SERVER == "MSmartHome":
-                    cloud = MSmartHomeCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
+                    cloud = MSmartHomeCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
                 else:
-                    cloud = SmartLifeCloud(session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
+                    cloud = SmartLifeCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
                 dm = MiedaDevice(
                     name="",
                     device_id=device_id,
@@ -387,6 +388,13 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 sensors[attribute_name] = attribute_config.get("name")
             elif attribute_config.get("type") in EXTRA_CONTROL and not attribute_config.get("default"):
                 switches[attribute_name] = attribute_config.get("name")
+        ip_address = self.config_entry.options.get(
+            CONF_IP_ADDRESS, None
+        )
+        if not ip_address:
+            ip_address = self.config_entry.data.get(
+                CONF_IP_ADDRESS, None
+            )
         extra_sensors = self.config_entry.options.get(
             CONF_SENSORS, []
         )
@@ -400,6 +408,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
+                vol.Required(
+                    CONF_IP_ADDRESS,
+                    default=ip_address
+                ): str,
                 vol.Required(
                     CONF_SENSORS,
                     default=extra_sensors,

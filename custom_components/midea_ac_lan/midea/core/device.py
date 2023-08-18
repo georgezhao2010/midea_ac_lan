@@ -3,7 +3,7 @@ from ..backports.enum import StrEnum
 from enum import IntEnum
 from .security import LocalSecurity, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
-from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse
+from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse, MessageQuestCustom
 import socket
 import logging
 import time
@@ -88,7 +88,7 @@ class MiedaDevice(threading.Thread):
 
     @property
     def sub_type(self):
-        return self._sub_type
+        return self._sub_type if self._sub_type else 0
 
     @staticmethod
     def fetch_v2_message(msg):
@@ -109,14 +109,13 @@ class MiedaDevice(threading.Thread):
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.settimeout(10)
+            _LOGGER.debug(f"[{self._device_id}] Connecting to {self._ip_address}:{self._port}")
             self._socket.connect((self._ip_address, self._port))
             _LOGGER.debug(f"[{self._device_id}] Connected")
             if self._protocol == 3:
                 self.authenticate()
             _LOGGER.debug(f"[{self._device_id}] Authentication success")
             if refresh_status:
-                if self._sub_type is None:
-                    self.get_sub_type()
                 self.refresh_status(wait_response=True)
             self.enable_device(True)
             return True
@@ -156,6 +155,8 @@ class MiedaDevice(threading.Thread):
     def send_message_V2(self, data):
         if self._socket is not None:
             self._socket.send(data)
+        else:
+            _LOGGER.debug(f"[{self._device_id}] Send failure, device disconnected, data: {data.hex()}")
 
     def send_message_V3(self, data, msg_type=MSGTYPE_ENCRYPTED_REQUEST):
         data = self._security.encode_8370(data, msg_type)
@@ -167,27 +168,10 @@ class MiedaDevice(threading.Thread):
         msg = PacketBuilder(self._device_id, data).finalize()
         self.send_message(msg)
 
-    def get_sub_type(self):
-        cmd = MessageQuerySubtype(self.device_type)
-        if cmd is not None:
-            self.build_send(cmd)
-            try:
-                while True:
-                    msg = self._socket.recv(512)
-                    if len(msg) == 0:
-                        raise socket.error
-                    result = self.parse_message(msg)
-                    if result == ParseMessageResult.SUCCESS:
-                        break
-                    elif result == ParseMessageResult.PADDING:
-                        continue
-                    else:
-                        raise ResponseException
-            except socket.timeout:
-                _LOGGER.warning("Take sub type timed out")
-
     def refresh_status(self, wait_response=False):
         cmds = self.build_query()
+        if self._sub_type is None:
+            cmds.append(MessageQuerySubtype(self.device_type))
         error_count = 0
         for cmd in cmds:
             if cmd.__class__.__name__ not in self._unsupported_protocol:
@@ -282,6 +266,14 @@ class MiedaDevice(threading.Thread):
     def process_message(self, msg):
         raise NotImplementedError
 
+    def send_command(self, cmd_type, cmd_body: bytearray):
+        cmd = MessageQuestCustom(self._device_type, cmd_type, cmd_body)
+        try:
+            self.build_send(cmd)
+        except socket.error as e:
+            _LOGGER.debug(f"[{self._device_id}] Interface send_command failure, {repr(e)}, "
+                          f"cmd_type: {cmd_type}, cmd_body: {cmd_body.hex()}")
+
     def send_heartbeat(self):
         msg = PacketBuilder(self._device_id, bytearray([0x00])).finalize(msg_type=0)
         self.send_message(msg)
@@ -315,6 +307,11 @@ class MiedaDevice(threading.Thread):
         if self._socket:
             self._socket.close()
             self._socket = None
+
+    def set_ip_address(self, ip_address):
+        _LOGGER.debug(f"[{self._device_id}] Update IP address to {ip_address}")
+        self._ip_address = ip_address
+        self.close_socket()
 
     def run(self):
         while self._is_run:

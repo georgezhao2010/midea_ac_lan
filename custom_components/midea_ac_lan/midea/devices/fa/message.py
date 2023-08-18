@@ -42,7 +42,7 @@ class MessageSet(MessageFABase):
             device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x00)
-        self._sub_type = sub_type if sub_type is not None else 0
+        self._sub_type = sub_type
         self.power = None
         self.lock = None
         self.mode = None
@@ -60,11 +60,9 @@ class MessageSet(MessageFABase):
                 0x00, 0x00, 0x00, 0x80,
                 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00
+                0x00, 0x00
             ])
-            if self._sub_type != 10:
+            if self._sub_type not in [0, 10]:
                 _body_return[13] = 0xFF
         else:
             _body_return = bytearray([
@@ -105,7 +103,7 @@ class MessageSet(MessageFABase):
             _body_return[7] = 1 | _body_return[7] | ((self.oscillation_angle << 4) & 0x70)
         if self.oscillation_mode is not None:
             _body_return[7] = 1 | _body_return[7] | ((self.oscillation_mode << 1) & 0x0E)
-        if self.tilting_angle is not None:
+        if self.tilting_angle is not None and len(_body_return) > 24:
             _body_return[24] = self.tilting_angle
         return _body_return
 
