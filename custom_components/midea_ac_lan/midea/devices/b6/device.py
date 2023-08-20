@@ -138,7 +138,7 @@ class MideaB6Device(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
         self._speeds = self._default_speeds
         self._power_speed = self._default_power_speed
-        if customize:
+        if customize and len(customize) > 0:
             try:
                 params = json.loads(customize)
                 if params:

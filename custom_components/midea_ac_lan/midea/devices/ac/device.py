@@ -337,7 +337,7 @@ class MideaACDevice(MiedaDevice):
     def set_customize(self, customize):
         _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
         self._temperature_step = self._default_temperature_step
-        if customize:
+        if customize and len(customize) > 0:
             try:
                 params = json.loads(customize)
                 if params and "temperature_step" in params:

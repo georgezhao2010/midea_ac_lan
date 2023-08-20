@@ -1,4 +1,5 @@
 import logging
+import json
 from .message import (
     MessageQuery,
     MessageSet,
@@ -113,7 +114,7 @@ class MideaE2Device(MiedaDevice):
     def set_customize(self, customize):
         _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
         self._old_protocol = self._default_old_protocol
-        if customize:
+        if customize and len(customize) > 0:
             try:
                 params = json.loads(customize)
                 if params and "old_protocol" in params:

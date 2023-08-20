@@ -265,7 +265,7 @@ class MideaFADevice(MiedaDevice):
     def set_customize(self, customize):
         _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
         self._speed_count = self._default_speed_count
-        if customize:
+        if customize and len(customize) > 0:
             try:
                 params = json.loads(customize)
                 if params and "speed_count" in params:
