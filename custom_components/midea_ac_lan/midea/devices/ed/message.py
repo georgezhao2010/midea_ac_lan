@@ -44,18 +44,6 @@ class MessageQuery(MessageEDBase):
         return bytearray([0x01])
 
 
-class MessageQuery01(MessageQuery):  # 净水器
-    def __init__(self, device_protocol_version):
-        super().__init__(
-            device_protocol_version=device_protocol_version, device_class=0x01)
-
-
-class MessageQuery07(MessageQuery):  # 管线机
-    def __init__(self, device_protocol_version):
-        super().__init__(
-            device_protocol_version=device_protocol_version, device_class=0x07)
-
-
 class MessageNewSet(MessageEDBase):
     def __init__(self, device_protocol_version):
         super().__init__(
@@ -108,12 +96,11 @@ class MessageOldSet(MessageEDBase):
 class EDMessageBody01(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        self.device_class = 0x01
         self.power = (body[2] & 0x01) > 0
-        self.water_yield = body[7] + (body[8] << 8)
+        self.water_consumption = body[7] + (body[8] << 8)
         self.in_tds = body[36] + (body[37] << 8)
         self.out_tds = body[38] + (body[39] << 8)
-        self.child_lock = body[15]
+        self.child_lock = body[15] > 0
         self.filter1 = round((body[25] + (body[26] << 8)) / 24)
         self.filter2 = round((body[27] + (body[28] << 8)) / 24)
         self.filter3 = round((body[29] + (body[30] << 8)) / 24)
@@ -125,24 +112,63 @@ class EDMessageBody01(MessageBody):
 class EDMessageBody03(MessageBody):
     def __init__(self, body):
         super().__init__(body)
+        self.water_consumption = body[20] + (body[21] << 8)
+        self.life1 = body[22]
+        self.life2 = body[23]
+        self.life3 = body[24]
+        self.in_tds = body[27] + (body[28] << 8)
+        self.out_tds = body[29] + (body[30] << 8)
 
 
 class EDMessageBody05(MessageBody):
     def __init__(self, body):
         super().__init__(body)
+        self.power = (body[51] & 0x01) > 0
+        self.child_lock = (body[51] & 0x08) > 0
+        self.water_consumption = body[20] + (body[21] << 8)
 
 
 class EDMessageBody06(MessageBody):
     def __init__(self, body):
         super().__init__(body)
+        self.power = (body[51] & 0x01) > 0
+        self.child_lock = (body[51] & 0x08) > 0
+        self.water_consumption = body[25] + (body[26] << 8)
 
 
 class EDMessageBody07(MessageBody):
     def __init__(self, body):
         super().__init__(body)
-        self.water_yield = (body[21] << 8) + body[20]
+        self.water_consumption = (body[21] << 8) + body[20]
         self.power = (body[51] & 0x01) > 0
         self.child_lock = (body[51] & 0x08) > 0
+
+
+class EDMessageBodyFF(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        data_offset = 2
+        while True:
+            length = (body[data_offset + 2] >> 4) + 2
+            attr = ((body[data_offset + 2] % 16) << 8) + body[data_offset + 1]
+            if attr == 0x000:
+                self.child_lock = (body[data_offset + 5] & 0x01) > 0
+                self.power = (body[data_offset + 6] & 0x01) > 0
+            elif attr == 0x011:
+                self.water_consumption = body[data_offset + 3] + \
+                                        (body[4] << 8) + \
+                                        (body[5] << 16) + \
+                                        (body[5] << 24)
+            elif attr == 0x013:
+                self.in_tds = body[data_offset + 3] + (body[data_offset + 4] << 8)
+                self.out_tds = body[data_offset + 5] + (body[data_offset + 6] << 8)
+            elif attr == 0x10:
+                self.life1 = body[data_offset + 3]
+                self.life2 = body[data_offset + 4]
+                self.life3 = body[data_offset + 5]
+            if data_offset + length > len(body):
+                break
+            data_offset += length
 
 
 class MessageEDResponse(MessageResponse):
@@ -150,7 +176,8 @@ class MessageEDResponse(MessageResponse):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.notify1]:
-            if self._body_type == 0x01:
+            self.device_class = self._body_type
+            if self._body_type == 0x01: # 净水器
                 self._body = EDMessageBody01(body)
             elif self._body_type in [0x03, 0x04]:
                 self._body = EDMessageBody03(body)
@@ -160,4 +187,6 @@ class MessageEDResponse(MessageResponse):
                 self._body = EDMessageBody06(body)
             elif self._body_type == 0x07:
                 self._body = EDMessageBody07(body)
+            elif self._body_type == 0xFF:
+                self._body = EDMessageBodyFF(body)
         self.set_attr()

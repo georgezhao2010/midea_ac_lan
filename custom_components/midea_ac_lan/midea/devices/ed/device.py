@@ -1,7 +1,6 @@
 import logging
 from .message import (
-    MessageQuery01,
-    MessageQuery07,
+    MessageQuery,
     MessageEDResponse,
     MessageNewSet,
     MessageOldSet
@@ -15,6 +14,7 @@ _LOGGER = logging.getLogger(__name__)
 class DeviceAttributes(StrEnum):
     power = "power"
     water_yield = "water_yield"
+    water_consumption = "water_consumption"
     in_tds = "in_tds"
     out_tds = "out_tds"
     filter1 = "filter1"
@@ -64,20 +64,22 @@ class MideaEDDevice(MiedaDevice):
             DeviceAttributes.life3: None,
             DeviceAttributes.child_lock: False
         }
+        self._device_class = 0
 
     def _use_new_set(self):
         return True if (self.sub_type > 342 or self.sub_type == 340) else False
 
     def build_query(self):
         return [
-            MessageQuery01(self._device_protocol_version),
-            MessageQuery07(self._device_protocol_version),
+            MessageQuery(self._device_protocol_version, self._device_class)
         ]
 
     def process_message(self, msg):
         message = MessageEDResponse(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
+        if hasattr(message, "device_class"):
+            self._device_class = message.device_class
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 new_status[status.value] = getattr(message, status.value)
@@ -94,7 +96,7 @@ class MideaEDDevice(MiedaDevice):
                 message = MessageNewSet(self._device_protocol_version)
         else:
             if attr in []:
-                message = MessageldSet(self._device_protocol_version)
+                message = MessageOldSet(self._device_protocol_version)
         if message is not None:
             setattr(message, str(attr), value)
             self.build_send(message)
