@@ -13,7 +13,6 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     power = "power"
-    water_yield = "water_yield"
     water_consumption = "water_consumption"
     in_tds = "in_tds"
     out_tds = "out_tds"
@@ -53,7 +52,7 @@ class MideaEDDevice(MiedaDevice):
         )
         self._attributes = {
             DeviceAttributes.power: False,
-            DeviceAttributes.water_yield: None,
+            DeviceAttributes.water_consumption: None,
             DeviceAttributes.in_tds: None,
             DeviceAttributes.out_tds: None,
             DeviceAttributes.filter1: None,
