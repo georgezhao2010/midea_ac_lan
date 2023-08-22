@@ -17,6 +17,3 @@ body:
       required: true
     attributes:
       label: 新功能的描述
-  - type: textarea
-    attributes:
-      label: 其他说明

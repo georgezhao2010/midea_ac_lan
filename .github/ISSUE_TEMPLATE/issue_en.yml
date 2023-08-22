@@ -27,6 +27,3 @@ body:
     attributes:
       label: The logs
       description: Should enable the debug log of Midea AC LAN, and post or upload the log when the error occurs to here
-  - type: textarea
-    attributes:
-      label: Anything else

@@ -27,6 +27,3 @@ body:
     attributes:
       label: The logs
       description: 打开Midea AC LAN的调试日志，并将发生错误时的日志发送或上传到这里
-  - type: textarea
-    attributes:
-      label: 其他说明

@@ -17,6 +17,3 @@ body:
       required: true
     attributes:
       label: The description of new feature
-  - type: textarea
-    attributes:
-      label: Anything else
