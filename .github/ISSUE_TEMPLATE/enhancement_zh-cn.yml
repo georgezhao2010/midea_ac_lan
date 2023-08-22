@@ -1,0 +1,22 @@
+name: 新功能请求
+description: 请求增加新设备支持或请求为已有设备增加新的功能
+body:
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: 设备类型或型号 (或SN)
+      placeholder: Air Conditioner 22012225
+      description: |
+        > 设备型号可以在 配置 -> 设备与服务 -> Midea AC LAN -> 设备 -> 设备信息 找到
+        > SN可以在 配置 -> 设备与服务 -> Midea AC LAN -> 添加设备 -> Just list appliances 找到
+        > 出于隐私原因, 你应该将SN后10个字节隐藏起来，
+        > 如将"0000BF31163200988193162YLW17116Y"替换成"BF3116320098819316XXXXXXXXXX"
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: 新功能的描述
+  - type: textarea
+    attributes:
+      label: 其他说明
