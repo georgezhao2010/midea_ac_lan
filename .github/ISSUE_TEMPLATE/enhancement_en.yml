@@ -1,5 +1,5 @@
 name: Enhancement
-description: New feature or new device supports request
+description: New feature or new device support request
 body:
   - type: input
     validations:
@@ -11,7 +11,7 @@ body:
         > The model can be found in Settings -> Devices & Services -> Midea AC LAN -> Devices -> Device Info
         > The SN can be found in Settings -> Devices & Services -> Midea AC LAN -> Add device -> Just list appliances
         > For privacy reason, You should mask the last 10 bytes of the SN.
-        > e.g., replace "0000BF31163200988193162YLW17116Y" with "BF3116320098819316XXXXXXXXXX"
+        > e.g., replace "0000BF31163200988193162YLW17116Y" with "0000BF3116320098819316XXXXXXXXXX"
   - type: textarea
     validations:
       required: true
