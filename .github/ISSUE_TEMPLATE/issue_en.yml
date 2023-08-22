@@ -1,5 +1,5 @@
 name: Bug report
-description: Intergration or entities is not working right
+description: Intergration or entity is not working right
 body:
   - type: input
     attributes:
