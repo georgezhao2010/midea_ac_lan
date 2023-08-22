@@ -1,6 +1,5 @@
 import threading
-from ..backports.enum import StrEnum
-from enum import IntEnum
+from enum import IntEnum, StrEnum
 from .security import LocalSecurity, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
 from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse, MessageQuestCustom

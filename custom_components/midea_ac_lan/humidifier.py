@@ -1,6 +1,7 @@
 from homeassistant.components.humidifier import *
 from homeassistant.components.humidifier.const import *
 from homeassistant.const import (
+    Platform,
     CONF_DEVICE_ID,
     CONF_SWITCHES,
     STATE_ON,
@@ -22,7 +23,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     devs = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "humidifier" and (config.get("default") or entity_key in extra_switches):
+        if config["type"] == Platform.HUMIDIFIER and (config.get("default") or entity_key in extra_switches):
             if device.device_type == 0xA1:
                 devs.append(MideaA1Humidifier(device, entity_key))
             if device.device_type == 0xFD:

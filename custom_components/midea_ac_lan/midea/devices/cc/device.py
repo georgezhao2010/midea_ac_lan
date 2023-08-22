@@ -1,11 +1,14 @@
 import logging
-from ...core.device import MiedaDevice
 from .message import (
     MessageQuery,
     MessageSet,
     MessageCCResponse
 )
-from ...backports.enum import StrEnum
+try:
+    from enum import StrEnum
+except ModuleNotFoundError:
+    from ...backports.enum import StrEnum
+from ...core.device import MiedaDevice
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +29,7 @@ class DeviceAttributes(StrEnum):
     indoor_temperature = "indoor_temperature"
     aux_heat_status = "aux_heat_status"
     auto_aux_heat_running = "auto_aux_heat_running"
+    temp_fahrenheit = "temp_fahrenheit"
 
 
 class MideaCCDevice(MiedaDevice):
@@ -76,7 +80,8 @@ class MideaCCDevice(MiedaDevice):
             DeviceAttributes.swing: False,
             DeviceAttributes.fan_speed_level: None,
             DeviceAttributes.indoor_temperature: None,
-            DeviceAttributes.temperature_precision: 1
+            DeviceAttributes.temperature_precision: 1,
+            DeviceAttributes.temp_fahrenheit: False
         }
         self._fan_speeds = None
 

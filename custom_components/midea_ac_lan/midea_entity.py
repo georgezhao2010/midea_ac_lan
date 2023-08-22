@@ -22,7 +22,7 @@ class MideaEntity(Entity):
         return {
             "manufacturer": "Midea",
             "model": f"{MIDEA_DEVICES[self._device.device_type]['name']} "
-                     f"{self._device.model}({self._device.sub_type})",
+                     f"{self._device.model}",
             "identifiers": {(DOMAIN, self._device.device_id)},
             "name": self._device_name
         }

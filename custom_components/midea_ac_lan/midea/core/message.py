@@ -181,6 +181,10 @@ class MessageBody:
     def body_type(self):
         return self.data[0]
 
+    @staticmethod
+    def read_byte(body, byte, default_value=0):
+        return body[byte] if len(body) > byte else default_value
+
 
 class NewProtocolMessageBody(MessageBody):
     def __init__(self, body, bt):

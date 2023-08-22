@@ -1,11 +1,14 @@
 import logging
-from ...core.device import MiedaDevice
 from .message import (
     MessageQuery,
     MessageCFResponse,
     MessageSet
 )
-from ...backports.enum import StrEnum
+try:
+    from enum import StrEnum
+except ModuleNotFoundError:
+    from ...backports.enum import StrEnum
+from ...core.device import MiedaDevice
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -2,6 +2,7 @@ from .midea_entity import MideaEntity
 from .midea_devices import MIDEA_DEVICES
 from homeassistant.components.lock import LockEntity
 from homeassistant.const import (
+    Platform,
     STATE_LOCKED,
     STATE_UNLOCKED,
     CONF_DEVICE_ID,
@@ -21,7 +22,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     locks = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "lock" and entity_key in extra_switches:
+        if config["type"] == Platform.LOCK and entity_key in extra_switches:
             dev = MideaLock(device, entity_key)
             locks.append(dev)
     async_add_entities(locks)

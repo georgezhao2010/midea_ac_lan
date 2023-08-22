@@ -1,7 +1,7 @@
 import logging
 from .message import (
     MessageQuery,
-    MessageB1Response
+    MessageBFResponse
 )
 try:
     from enum import StrEnum
@@ -22,7 +22,7 @@ class DeviceAttributes(StrEnum):
     water_shortage = "water_shortage"
 
 
-class MideaB1Device(MiedaDevice):
+class MideaBFDevice(MiedaDevice):
     _status = {
         0x01: "Standby", 0x02: "Idle", 0x03: "Working",
         0x04: "Finished", 0x05: "Delay", 0x06: "Paused"
@@ -43,7 +43,7 @@ class MideaB1Device(MiedaDevice):
         super().__init__(
             name=name,
             device_id=device_id,
-            device_type=0xB1,
+            device_type=0xBF,
             ip_address=ip_address,
             port=port,
             token=token,
@@ -65,15 +65,15 @@ class MideaB1Device(MiedaDevice):
         return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
-        message = MessageB1Response(msg)
+        message = MessageBFResponse(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 value = getattr(message, status.value)
                 if status == DeviceAttributes.status:
-                    if value in MideaB1Device._status.keys():
-                        self._attributes[DeviceAttributes.status] = MideaB1Device._status.get(value)
+                    if value in MideaBFDevice._status.keys():
+                        self._attributes[DeviceAttributes.status] = MideaBFDevice._status.get(value)
                     else:
                         self._attributes[DeviceAttributes.status] = "Unknown"
                 else:
@@ -89,5 +89,5 @@ class MideaB1Device(MiedaDevice):
         return super().attributes
 
 
-class MideaAppliance(MideaB1Device):
+class MideaAppliance(MideaBFDevice):
     pass

@@ -1,6 +1,7 @@
 from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
 from homeassistant.const import (
+    Platform,
     TEMP_CELSIUS,
     TEMP_FAHRENHEIT,
     PRECISION_WHOLE,
@@ -42,7 +43,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     devs = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "climate" and (config.get("default") or entity_key in extra_switches):
+        if config["type"] == Platform.CLIMATE and (config.get("default") or entity_key in extra_switches):
             if device.device_type == 0xAC:
                 devs.append(MideaACClimate(device, entity_key))
             elif device.device_type == 0xCC:

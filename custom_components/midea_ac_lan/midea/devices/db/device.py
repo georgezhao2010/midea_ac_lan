@@ -5,8 +5,11 @@ from .message import (
     MessageStart,
     MessageDBResponse
 )
+try:
+    from enum import StrEnum
+except ModuleNotFoundError:
+    from ...backports.enum import StrEnum
 from ...core.device import MiedaDevice
-from ...backports.enum import StrEnum
 
 _LOGGER = logging.getLogger(__name__)
 

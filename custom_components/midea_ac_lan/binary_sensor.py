@@ -1,11 +1,11 @@
-from .midea_entity import MideaEntity
-from .midea_devices import MIDEA_DEVICES
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import CONF_DEVICE_ID, CONF_SENSORS, STATE_ON, STATE_OFF
+from homeassistant.const import Platform, CONF_DEVICE_ID, CONF_SENSORS, STATE_ON, STATE_OFF
 from .const import (
     DOMAIN,
     DEVICES
 )
+from .midea_entity import MideaEntity
+from .midea_devices import MIDEA_DEVICES
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -16,7 +16,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     binary_sensors = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "binary_sensor" and entity_key in extra_sensors:
+        if config["type"] == Platform.BINARY_SENSOR and entity_key in extra_sensors:
             sensor = MideaSensor(device, entity_key)
             binary_sensors.append(sensor)
     async_add_entities(binary_sensors)

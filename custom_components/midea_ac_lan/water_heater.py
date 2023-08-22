@@ -1,6 +1,7 @@
 import functools as ft
 from homeassistant.components.water_heater import *
 from homeassistant.const import (
+    Platform,
     TEMP_CELSIUS,
     PRECISION_WHOLE,
     ATTR_TEMPERATURE,
@@ -31,7 +32,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     devs = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "water_heater" and (config.get("default") or entity_key in extra_switches):
+        if config["type"] == Platform.WATER_HEATER and (config.get("default") or entity_key in extra_switches):
             if device.device_type == 0xE2:
                 devs.append(MideaE2WaterHeater(device, entity_key))
             elif device.device_type == 0xE3:
@@ -48,7 +49,7 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def state(self):
-        return STATE_ON if self._device.get_attribute("power") else STATE_OFF
+        return STATE_ON if self._device.get_attribute(C3Attributes.power) else STATE_OFF
 
     @property
     def supported_features(self):
@@ -72,17 +73,17 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def current_temperature(self):
-        return self._device.get_attribute("current_temperature")
+        return self._device.get_attribute(C3Attributes.current_temperature)
 
     @property
     def target_temperature(self):
-        return self._device.get_attribute("target_temperature")
+        return self._device.get_attribute(C3Attributes.target_temperature)
 
     def set_temperature(self, **kwargs):
         if ATTR_TEMPERATURE not in kwargs:
             return
         temperature = int(kwargs.get(ATTR_TEMPERATURE))
-        self._device.set_attribute("target_temperature", temperature)
+        self._device.set_attribute(C3Attributes.target_temperature, temperature)
 
     def set_operation_mode(self, operation_mode):
         pass
@@ -92,10 +93,10 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
         return []
 
     def turn_on(self):
-        self._device.set_attribute(attr="power", value=True)
+        self._device.set_attribute(attr=C3Attributes.power, value=True)
 
     def turn_off(self):
-        self._device.set_attribute(attr="power", value=False)
+        self._device.set_attribute(attr=C3Attributes.power, value=False)
 
     async def async_turn_on(self, **kwargs):
         await self.hass.async_add_executor_job(ft.partial(self.turn_on, **kwargs))

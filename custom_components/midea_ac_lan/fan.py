@@ -1,6 +1,7 @@
 import logging
 from homeassistant.components.fan import *
 from homeassistant.const import (
+    Platform,
     CONF_DEVICE_ID,
     CONF_SWITCHES,
     STATE_ON,
@@ -26,7 +27,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     devs = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "fan" and (config.get("default") or entity_key in extra_switches):
+        if config["type"] == Platform.FAN and (config.get("default") or entity_key in extra_switches):
             if device.device_type == 0xFA:
                 devs.append(MideaFAFan(device, entity_key))
             elif device.device_type == 0xB6:
@@ -93,10 +94,10 @@ class MideaFan(MideaEntity, FanEntity):
 
     @property
     def percentage(self):
-        return int(self.fan_speed * self.percentage_step + 0.5)
+        return round(self.fan_speed * self.percentage_step)
 
     def set_percentage(self, percentage: int):
-        fan_speed = int(percentage / self.percentage_step + 0.5)
+        fan_speed = round(percentage / self.percentage_step)
         self._device.set_attribute(attr="fan_speed", value=fan_speed)
 
     async def async_set_percentage(self, percentage: int):

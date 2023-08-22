@@ -185,7 +185,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         return await self.async_step_manual()
                 if self._session is None:
                     self._session = async_create_clientsession(self.hass)
-                if MIDEA_DEFAULT_SERVER == "MeijuCN":
+                if MIDEA_DEFAULT_SERVER == "美居":
                     cloud = MeijuCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
                 elif MIDEA_DEFAULT_SERVER == "MSmartHome":
                     cloud = MSmartHomeCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)

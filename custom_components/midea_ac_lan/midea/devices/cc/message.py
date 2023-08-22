@@ -113,6 +113,7 @@ class CCGeneralMessageBody(MessageBody):
         self.fan_speed_level = (body[13] & 0x40) > 0
         self.temperature_precision = 1 if (body[14] & 0x80) > 0 else 0.5
         self.swing = (body[13] & 0x04) > 0
+        self.temp_fahrenheit = (body[20] & 0x80) > 0
 
 
 class MessageCCResponse(MessageResponse):

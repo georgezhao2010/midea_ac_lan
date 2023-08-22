@@ -12,6 +12,7 @@ from .const import (
     ALL_PLATFORM,
 )
 from .midea_devices import MIDEA_DEVICES
+
 from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     CONF_NAME,

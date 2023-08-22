@@ -1,7 +1,8 @@
 import logging
 from .message import (
     MessageQuery,
-    MessageB1Response
+    MessageSet,
+    Message40Response
 )
 try:
     from enum import StrEnum
@@ -13,21 +14,13 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class DeviceAttributes(StrEnum):
-    door = "door"
-    status = "status"
-    time_remaining = "time_remaining"
+    main_light = "light"
+    ventilation_mode = "ventilation_mode"
+    blowing_mode = "blowing_mode"
     current_temperature = "current_temperature"
-    tank_ejected = "tank_ejected"
-    water_change_reminder = "water_change_reminder"
-    water_shortage = "water_shortage"
 
 
-class MideaB1Device(MiedaDevice):
-    _status = {
-        0x01: "Standby", 0x02: "Idle", 0x03: "Working",
-        0x04: "Finished", 0x05: "Delay", 0x06: "Paused"
-    }
-
+class Midea40Device(MiedaDevice):
     def __init__(
             self,
             name: str,
@@ -43,7 +36,7 @@ class MideaB1Device(MiedaDevice):
         super().__init__(
             name=name,
             device_id=device_id,
-            device_type=0xB1,
+            device_type=0x40,
             ip_address=ip_address,
             port=port,
             token=token,
@@ -52,42 +45,45 @@ class MideaB1Device(MiedaDevice):
             model=model
         )
         self._attributes = {
-            DeviceAttributes.door: False,
-            DeviceAttributes.status: "Unknown",
-            DeviceAttributes.time_remaining: None,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.tank_ejected: False,
-            DeviceAttributes.water_change_reminder: False,
-            DeviceAttributes.water_shortage: False,
+            DeviceAttributes.light: False,
+            DeviceAttributes.ventilation_mode: False,
+            DeviceAttributes.blowing_mode: False,
+            DeviceAttributes.current_temperature: None
         }
+        self._fields = {}
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
-        message = MessageB1Response(msg)
+        message = Message40Response(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
+        self._fields = getattr(message, "fields")
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 value = getattr(message, status.value)
-                if status == DeviceAttributes.status:
-                    if value in MideaB1Device._status.keys():
-                        self._attributes[DeviceAttributes.status] = MideaB1Device._status.get(value)
-                    else:
-                        self._attributes[DeviceAttributes.status] = "Unknown"
-                else:
-                    self._attributes[status] = value
-                new_status[status.value] = self._attributes[status]
+                self._attributes[status] = value
+                new_status[status.value] = value
         return new_status
 
     def set_attribute(self, attr, value):
-        pass
+        if attr in DeviceAttributes and attr not in [DeviceAttributes.current_temperature]:
+            message = MessageSet(self._device_protocol_version)
+            message.fields = self._fields
+            message.light = self._attributes[DeviceAttributes.light]
+            message.ventilation_mode = self._attributes[DeviceAttributes.ventilation_mode]
+            message.blowing_mode = self._attributes[DeviceAttributes.blowing_mode]
+            if attr in [DeviceAttributes.ventilation_mode,
+                        DeviceAttributes.blowing_mode]:
+                message.ventilation_mode = False
+                message.blowing_mode = False
+            setattr(message, str(attr), value)
 
     @property
     def attributes(self):
         return super().attributes
 
 
-class MideaAppliance(MideaB1Device):
+class MideaAppliance(Midea40Device):
     pass

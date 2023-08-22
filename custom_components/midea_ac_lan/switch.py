@@ -2,6 +2,7 @@ from .midea_entity import MideaEntity
 from .midea_devices import MIDEA_DEVICES
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.const import (
+    Platform,
     STATE_ON,
     STATE_OFF,
     CONF_DEVICE_ID,
@@ -21,7 +22,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     switches = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "switch" and entity_key in extra_switches:
+        if config["type"] == Platform.SWITCH and entity_key in extra_switches:
             dev = MideaSwitch(device, entity_key)
             switches.append(dev)
     async_add_entities(switches)

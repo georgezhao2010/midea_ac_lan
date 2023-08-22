@@ -2,6 +2,7 @@ from .midea_entity import MideaEntity
 from .midea_devices import MIDEA_DEVICES
 from homeassistant.components.select import SelectEntity
 from homeassistant.const import (
+    Platform,
     CONF_DEVICE_ID,
     CONF_SWITCHES
 )
@@ -19,7 +20,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     selects = []
     for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == "select" and entity_key in extra_switches:
+        if config["type"] == Platform.SELECT and entity_key in extra_switches:
             dev = MideaSelect(device, entity_key)
             selects.append(dev)
     async_add_entities(selects)
