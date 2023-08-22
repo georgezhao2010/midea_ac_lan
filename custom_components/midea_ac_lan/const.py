@@ -1,8 +1,4 @@
 from homeassistant.const import Platform
-try:
-    from enum import StrEnum
-except ModuleNotFoundError:
-    from .midea.backports.enum import StrEnum
 DOMAIN = "midea_ac_lan"
 COMPONENT = "component"
 DEVICES = "devices"
