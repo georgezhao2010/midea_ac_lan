@@ -5,7 +5,7 @@ body:
     validations:
       required: true
     attributes:
-      label: Device type and (model or SN)
+      label: Device type and model (or SN)
       placeholder: Air Conditioner 22012225
       description: |
         > The model can be found in Settings -> Devices & Services -> Midea AC LAN -> Devices -> Device Info
