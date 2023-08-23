@@ -102,6 +102,7 @@ class Midea26Device(MiedaDevice):
                 message.blowing_mode = False
                 message.gentle_wind_mode = False
             setattr(message, str(attr), value)
+            self.build_send(message)
 
     @property
     def attributes(self):
