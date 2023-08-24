@@ -1,5 +1,6 @@
 name: 新功能请求
 description: 请求增加新设备支持或请求为已有设备增加新的功能
+labels: ["enhancement"]
 body:
   - type: input
     validations:

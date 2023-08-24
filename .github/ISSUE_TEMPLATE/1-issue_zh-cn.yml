@@ -1,5 +1,6 @@
 name: 错误报告
 description: 集成或实体无法正常工作
+labels: ["bug"]
 body:
   - type: input
     attributes:

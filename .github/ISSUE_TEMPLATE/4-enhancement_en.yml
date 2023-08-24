@@ -1,5 +1,6 @@
 name: Enhancement
 description: New feature or new device support request
+labels: ["enhancement"]
 body:
   - type: input
     validations:
