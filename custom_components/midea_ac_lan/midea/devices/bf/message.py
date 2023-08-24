@@ -24,16 +24,18 @@ class MessageQuery(MessageBFBase):
     def __init__(self, device_protocol_version):
         super().__init__(
             device_protocol_version=device_protocol_version,
-            message_type=MessageType.query)
+            message_type=MessageType.query,
+            body_type=0x01)
 
     @property
     def _body(self):
-        return bytearray([0x01])
+        return bytearray([])
 
 
 class MessageBFBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
+        self.status = body[31]
         self.time_remaining = (0 if body[22] == 0xFF else body[22]) * 3600 + \
                               (0 if body[23] == 0xFF else body[23]) * 60 + \
                               (0 if body[24] == 0xFF else body[24])

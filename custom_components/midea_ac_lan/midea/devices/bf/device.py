@@ -24,7 +24,7 @@ class DeviceAttributes(StrEnum):
 
 class MideaBFDevice(MiedaDevice):
     _status = {
-        0x01: "Standby", 0x02: "Idle", 0x03: "Working",
+        0x01: "PowerSave", 0x02: "Standby", 0x03: "Working",
         0x04: "Finished", 0x05: "Delay", 0x06: "Paused"
     }
 
