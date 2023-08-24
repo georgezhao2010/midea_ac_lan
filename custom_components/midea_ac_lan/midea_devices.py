@@ -26,17 +26,19 @@ from .midea.devices.bf.device import DeviceAttributes as BFAttributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.ca.device import DeviceAttributes as CAAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
+from .midea.devices.cd.device import DeviceAttributes as CDAttributes
 from .midea.devices.ce.device import DeviceAttributes as CEAttributes
 from .midea.devices.cf.device import DeviceAttributes as CFAttributes
 from .midea.devices.da.device import DeviceAttributes as DAAttributes
 from .midea.devices.db.device import DeviceAttributes as DBAttributes
 from .midea.devices.dc.device import DeviceAttributes as DCAttributes
-from .midea.devices.ea.device import DeviceAttributes as EAAttributes
-from .midea.devices.ec.device import DeviceAttributes as ECAttributes
-from .midea.devices.ed.device import DeviceAttributes as EDAttributes
 from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
+from .midea.devices.e6.device import DeviceAttributes as E6Attributes
+from .midea.devices.ea.device import DeviceAttributes as EAAttributes
+from .midea.devices.ec.device import DeviceAttributes as ECAttributes
+from .midea.devices.ed.device import DeviceAttributes as EDAttributes
 from .midea.devices.fa.device import DeviceAttributes as FAAttributes
 from .midea.devices.fb.device import DeviceAttributes as FBAttributes
 from .midea.devices.fc.device import DeviceAttributes as FCAttributes
@@ -826,6 +828,37 @@ MIDEA_DEVICES = {
             },
         }
     },
+    0xCD: {
+        "name": "Heat Pump Water Heater",
+        "entities": {
+            "water_heater": {
+                "type": Platform.WATER_HEATER,
+                "icon": "mdi:meter-gas",
+                "default": True
+            },
+            CDAttributes.compressor_temperature:{
+                "type": Platform.SENSOR,
+                "name": "Compressor Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            CDAttributes.condenser_temperature:{
+                "type": Platform.SENSOR,
+                "name": "Condenser Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            CDAttributes.outdoor_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Outdoor Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+        }
+    },
     0xCE: {
         "name": "Fresh Air Appliance",
         "entities": {
@@ -1283,6 +1316,69 @@ MIDEA_DEVICES = {
                 "type": Platform.SWITCH,
                 "name": "Zero Cold Water (Pulse)",
                 "icon": "mdi:restore-alert"
+            },
+        }
+    },
+    0xE6: {
+        "name": "Gas Boilers",
+        "entities": {
+            "water_heater_heating": {
+                "type": Platform.WATER_HEATER,
+                "icon": "mdi:meter-gas",
+                "use": 0,
+                "default": True
+            },
+            "water_heater_bathing": {
+                "type": Platform.WATER_HEATER,
+                "icon": "mdi:meter-gas",
+                "use": 1,
+                "default": True
+            },
+            E6Attributes.burning_state: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Burning State",
+                "icon": "mdi:fire",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E6Attributes.heating_working: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Heating Working",
+                "icon": "mdi:fire",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E6Attributes.bathing_working: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Bathing Working",
+                "icon": "mdi:fire",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
+            E6Attributes.heating_leaving_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Heating Leaving Water Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            E6Attributes.bathing_leaving_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Bathing Leaving Water Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            E6Attributes.heating_returning_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Heating Returning Water Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            E6Attributes.bathing_returning_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Bathing Returning Water Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
             },
         }
     },

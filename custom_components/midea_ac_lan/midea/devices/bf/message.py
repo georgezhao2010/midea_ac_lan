@@ -32,6 +32,22 @@ class MessageQuery(MessageBFBase):
         return bytearray([])
 
 
+class MessageSet(MessageBFBase):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.query,
+            body_type=0x02)
+        self.power = None
+        self.child_lock = None
+
+    @property
+    def _body(self):
+        power = 0xFF if self.power is None else 0x11 if self.power else 0x01
+        child_lock = 0xFF if self.child_lock is None else 0x01 if self.child_lock else 0x00
+        return bytearray([power, child_lock] + [0xFF] * 7)
+
+
 class MessageBFBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
@@ -43,6 +59,7 @@ class MessageBFBody(MessageBody):
         if cur_temperature == 0:
             cur_temperature = body[27] * 256 + body[28]
         self.current_temperature = cur_temperature
+        self.child_lock = (body[32] & 0x01) > 0
         self.door = (body[32] & 0x02) > 0
         self.tank_ejected = (body[32] & 0x04) > 0
         self.water_state = (body[32] & 0x08) > 0
@@ -56,4 +73,3 @@ class MessageBFResponse(MessageResponse):
         if self._message_type in [MessageType.set, MessageType.notify1, MessageType.query] and self._body_type == 0x01:
             self._body = MessageBFBody(body)
         self.set_attr()
-

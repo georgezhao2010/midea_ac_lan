@@ -14,6 +14,7 @@ from .const import (
     DOMAIN,
     DEVICES
 )
+from .midea.devices.e6.device import DeviceAttributes as E6Attributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
@@ -37,6 +38,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 devs.append(MideaE2WaterHeater(device, entity_key))
             elif device.device_type == 0xE3:
                 devs.append(MideaE3WaterHeater(device, entity_key))
+            elif device.device_type == 0xE6:
+                devs.append(MideaE6WaterHeater(device, entity_key, config["use"]))
             elif device.device_type == 0xC3:
                 devs.append(MideaC3WaterHeater(device, entity_key))
     async_add_entities(devs)
@@ -49,7 +52,7 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def state(self):
-        return STATE_ON if self._device.get_attribute(C3Attributes.power) else STATE_OFF
+        return STATE_ON if self._device.get_attribute("power") else STATE_OFF
 
     @property
     def supported_features(self):
@@ -73,17 +76,17 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def current_temperature(self):
-        return self._device.get_attribute(C3Attributes.current_temperature)
+        return self._device.get_attribute("current_temperature")
 
     @property
     def target_temperature(self):
-        return self._device.get_attribute(C3Attributes.target_temperature)
+        return self._device.get_attribute("target_temperature")
 
     def set_temperature(self, **kwargs):
         if ATTR_TEMPERATURE not in kwargs:
             return
         temperature = int(kwargs.get(ATTR_TEMPERATURE))
-        self._device.set_attribute(C3Attributes.target_temperature, temperature)
+        self._device.set_attribute("target_temperature", temperature)
 
     def set_operation_mode(self, operation_mode):
         pass
@@ -93,10 +96,10 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
         return []
 
     def turn_on(self):
-        self._device.set_attribute(attr=C3Attributes.power, value=True)
+        self._device.set_attribute(attr="power", value=True)
 
     def turn_off(self):
-        self._device.set_attribute(attr=C3Attributes.power, value=False)
+        self._device.set_attribute(attr="power", value=False)
 
     async def async_turn_on(self, **kwargs):
         await self.hass.async_add_executor_job(ft.partial(self.turn_on, **kwargs))
@@ -172,3 +175,72 @@ class MideaC3WaterHeater(MideaWaterHeater):
 
     def turn_off(self):
         self._device.set_attribute(attr=C3Attributes.dhw_power, value=False)
+
+
+class MideaE6WaterHeater(MideaWaterHeater):
+    _powers = [
+        E6Attributes.heating_power,
+        E6Attributes.bathing_power,
+    ]
+    _current_temperatures = [
+        E6Attributes.heating_leaving_temperature,
+        E6Attributes.bathing_leaving_temperature,
+    ]
+    _target_temperatures = [
+        E6Attributes.heating_temperature,
+        E6Attributes.bathing_temperature,
+    ]
+
+    def __init__(self, device, entity_key, use):
+        super().__init__(device, entity_key)
+        self._use = use
+        self._power_attr = MideaE6WaterHeater._powers[self._use]
+        self._current_temperature_attr = MideaE6WaterHeater._current_temperatures[self._use]
+        self._target_temperature_attr = MideaE6WaterHeater._target_temperatures[self._use]
+
+    @property
+    def state(self):
+        return STATE_ON if self._device.get_attribute(E6Attributes.power) else STATE_OFF
+
+    @property
+    def current_temperature(self):
+        return self._device.get_attribute(self._current_temperature_attr)
+
+    @property
+    def target_temperature(self):
+        return self._device.get_attribute(E6Attributes.target_temperature[self._use])
+
+    def set_temperature(self, **kwargs):
+        if ATTR_TEMPERATURE not in kwargs:
+            return
+        temperature = int(kwargs.get(ATTR_TEMPERATURE))
+        self._device.set_attribute(self._target_temperature_attr, temperature)
+
+    @property
+    def min_temp(self):
+        return self._device.get_attribute(E6Attributes.temperature_minp[self._use])
+
+    @property
+    def max_temp(self):
+        return self._device.get_attribute(E6Attributes.temperature_max[self._use])
+
+    def turn_on(self):
+        pass
+        # self._device.set_attribute(attr=self._power_attr, value=True)
+
+    def turn_off(self):
+        pass
+        # self._device.set_attribute(attr=self._power_attr, value=False)
+
+
+class MideaCDWaterHeater(MideaWaterHeater):
+    def __init__(self, device, entity_key):
+        super().__init__(device, entity_key)
+
+    @property
+    def min_temp(self):
+        return self._device.get_attribute(E6Attributes.min_temperature)
+
+    @property
+    def max_temp(self):
+        return self._device.get_attribute(E6Attributes.max_temperature)

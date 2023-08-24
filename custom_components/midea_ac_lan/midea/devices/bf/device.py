@@ -5,7 +5,7 @@ from .message import (
 )
 try:
     from enum import StrEnum
-except ModuleNotFoundError:
+except ImportError:
     from ...backports.enum import StrEnum
 from ...core.device import MiedaDevice
 
@@ -52,13 +52,13 @@ class MideaBFDevice(MiedaDevice):
             model=model
         )
         self._attributes = {
-            DeviceAttributes.door: False,
-            DeviceAttributes.status: "Unknown",
+            DeviceAttributes.door: None,
+            DeviceAttributes.status: None,
             DeviceAttributes.time_remaining: None,
             DeviceAttributes.current_temperature: None,
-            DeviceAttributes.tank_ejected: False,
-            DeviceAttributes.water_change_reminder: False,
-            DeviceAttributes.water_shortage: False,
+            DeviceAttributes.tank_ejected: None,
+            DeviceAttributes.water_change_reminder: None,
+            DeviceAttributes.water_shortage: None,
         }
 
     def build_query(self):

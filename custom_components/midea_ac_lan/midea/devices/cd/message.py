@@ -1,0 +1,98 @@
+from ...core.message import (
+    MessageType,
+    MessageRequest,
+    MessageResponse,
+    MessageBody,
+)
+
+
+class MessageCDBase(MessageRequest):
+    def __init__(self, device_protocol_version, message_type, body_type):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            device_type=0xCD,
+            message_type=message_type,
+            body_type=body_type
+        )
+
+    @property
+    def _body(self):
+        raise NotImplementedError
+
+
+class MessageQuery(MessageCDBase):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.query,
+            body_type=0x01)
+
+    @property
+    def _body(self):
+        return bytearray([0x01])
+
+
+class MessageSet(MessageCDBase):
+    def __init__(self, device_protocol_version):
+        super().__init__(
+            device_protocol_version=device_protocol_version,
+            message_type=MessageType.set,
+            body_type=0x01)
+        self.power = False
+        self.target_temperature = 0
+        self.fields = {}
+
+    def read_field(self, field):
+        value = self.fields.get(field, 0)
+        return value if value else 0
+
+    @property
+    def _body(self):
+        power = 0x01 if self.power else 0x00
+        target_temperature = self.target_temperature * 2 + 30
+        return bytearray[
+            0x01, power,
+            self.read_field("modeValue"),
+            target_temperature,
+            self.read_field("trValue"),
+            self.read_field("openPTC"),
+            self.read_field("ptcTemp"),
+            self.read_field("byte8")
+        ]
+
+
+class CDGeneralMessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        self.power = (body[2] & 0x01) > 0
+        self.target_temperature = round((body[3] - 30) / 2)
+        self.current_temperature = round((body[4] - 30) / 2)
+        self.condenser_temperature = (body[7] - 30) / 2
+        self.outdoor_temperature = (body[8] - 30) / 2
+        self.compressor_temperature = (body[9] - 30) / 2
+        self.max_temperature = round((body[10] - 30) / 2)
+        self.min_temperature = round((body[11] - 30) / 2)
+
+
+class CD02MessageBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        self.fields = {}
+        self.power = (body[2] & 0x01) > 0
+        self.fields["modeValue"] = body[3]
+        self.target_temperature = round((body[4] - 30) / 2)
+        self.fields["trValue"] = body[5]
+        self.fields["openPTC"] = body[6]
+        self.fields["ptcTemp"] = body[7]
+        self.fields["byte8"] = body[8]
+
+
+class MessageCDResponse(MessageResponse):
+    def __init__(self, message):
+        super().__init__(message)
+        body = message[self.HEADER_LENGTH: -1]
+        if self._message_type in [MessageType.query, MessageType.notify2]:
+            self._body = CDGeneralMessageBody(body)
+        elif self._message_type == MessageType.set and self._body_type == 0x01:
+            self._body = CD02MessageBody(body)
+        self.set_attr()

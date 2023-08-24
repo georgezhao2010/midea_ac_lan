@@ -27,9 +27,9 @@ from homeassistant.const import (
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.util.json import load_json
 try:
-    from homeassistant.util.json import save_json
-except ImportError:
     from homeassistant.helpers.json import save_json
+except ImportError:
+    from homeassistant.util.json import save_json
 from .midea.core.discover import discover
 from .midea.core.cloud import MeijuCloud, MSmartHomeCloud, SmartLifeCloud
 from .midea.core.device import MiedaDevice
@@ -121,8 +121,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if len(all_devices) > 0:
             table = "Appliance code|Type|IP address|SN|Supported\n:--:|:--:|:--:|:--:|:--:"
             for device_id, device in all_devices.items():
-                table += f"\n{device_id}|{'%02X' % device.get(CONF_TYPE)}|{device.get(CONF_IP_ADDRESS)}|" + \
-                         f"{device.get('sn')}|{device.get(CONF_TYPE) in self.supports.keys()}"
+                supported = device.get(CONF_TYPE) in self.supports.keys()
+                table += f"\n{device_id}|{'%02X' % device.get(CONF_TYPE)}|{device.get(CONF_IP_ADDRESS)}|" \
+                         f"{device.get('sn')}|" \
+                         f"{'<font color=gree>YES</font>' if supported else '<font color=red>NO</font>'}"
         else:
             table = "Not found"
         return self.async_show_form(

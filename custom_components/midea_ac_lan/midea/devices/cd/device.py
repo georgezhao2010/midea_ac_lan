@@ -2,7 +2,7 @@ import logging
 from .message import (
     MessageQuery,
     MessageSet,
-    Message13Response
+    MessageCDResponse
 )
 try:
     from enum import StrEnum
@@ -14,17 +14,17 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class DeviceAttributes(StrEnum):
-    brightness = "brightness"
-    color_temperature = "color_temperature"
-    rgb_color = "rgb_color"
-    effect = "effect"
     power = "power"
-    delay_off = "delay_off"
+    max_temperature = "max_temperature"
+    min_temperature = "min_temperature"
+    target_temperature = "target_temperature"
+    current_temperature = "target_temperature"
+    outdoor_temperature = "outdoor_temperature"
+    condenser_temperature = "condenser_temperature"
+    compressor_temperature = "compressor_temperature"
 
 
-class Midea13Device(MiedaDevice):
-    _effects = ["Manual", "Living", "Reading", "Mildly", "Film", "Bright"]
-
+class MideaCDDevice(MiedaDevice):
     def __init__(
             self,
             name: str,
@@ -40,7 +40,7 @@ class Midea13Device(MiedaDevice):
         super().__init__(
             name=name,
             device_id=device_id,
-            device_type=0x13,
+            device_type=0xCD,
             ip_address=ip_address,
             port=port,
             token=token,
@@ -49,44 +49,38 @@ class Midea13Device(MiedaDevice):
             model=model
         )
         self._attributes = {
-            DeviceAttributes.brightness: None,
-            DeviceAttributes.color_temperature: None,
-            DeviceAttributes.rgb_color: None,
-            DeviceAttributes.effect: None,
             DeviceAttributes.power: False,
-            DeviceAttributes.delay_off: False
+            DeviceAttributes.max_temperature: 65,
+            DeviceAttributes.min_temperature: 35,
+            DeviceAttributes.target_temperature: 40,
+            DeviceAttributes.current_temperature: None,
+            DeviceAttributes.outdoor_temperature: None,
+            DeviceAttributes.condenser_temperature: None,
+            DeviceAttributes.compressor_temperature: None
         }
         self._fields = {}
-
-    @property
-    def effects(self):
-        return Midea13Device._effects
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
-        message = Message13Response(msg)
+        message = MessageCDResponse(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
+        self._fields = getattr(message, "fields")
         for status in self._attributes.keys():
             if hasattr(message, status.value):
-                value = getattr(message, status.value)
-                self._attributes[status] = value
-                new_status[status.value] = value
+                self._attributes[status] = getattr(message, status.value)
+                new_status[status.value] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):
-        if attr in [DeviceAttributes.brightness,
-                    DeviceAttributes.color_temperature,
-                    DeviceAttributes.effect,
-                    DeviceAttributes.power,
-                    DeviceAttributes.delay_off]:
+        if attr in [DeviceAttributes.power, DeviceAttributes.target_temperature]:
             message = MessageSet(self._device_protocol_version)
-            if attr == DeviceAttributes.effect and value in self._effects:
-                setattr(message, str(attr), self._effects.index(value))
-            else:
-                setattr(message, str(attr), value)
+            message.fields = self._fields
+            message.power = self._attributes[DeviceAttributes.power]
+            message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
+            setattr(message, str(attr), value)
             self.build_send(message)
 
     @property
@@ -94,5 +88,5 @@ class Midea13Device(MiedaDevice):
         return super().attributes
 
 
-class MideaAppliance(Midea13Device):
+class MideaAppliance(MideaCDDevice):
     pass
