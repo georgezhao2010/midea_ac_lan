@@ -67,7 +67,8 @@ class MideaCDDevice(MiedaDevice):
         message = MessageCDResponse(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
-        self._fields = getattr(message, "fields")
+        if hasattr(message, "fields"):
+            self._fields = getattr(message, "fields")
         for status in self._attributes.keys():
             if hasattr(message, status.value):
                 self._attributes[status] = getattr(message, status.value)

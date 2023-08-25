@@ -42,6 +42,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 devs.append(MideaE6WaterHeater(device, entity_key, config["use"]))
             elif device.device_type == 0xC3:
                 devs.append(MideaC3WaterHeater(device, entity_key))
+            elif device.device_type == 0xCD:
+                devs.append(MideaCDWaterHeater(device, entity_key))
     async_add_entities(devs)
 
 
