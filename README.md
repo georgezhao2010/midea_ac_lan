@@ -50,6 +50,7 @@ And more.
  FB | Electric Heater | [FB.md](doc/FB.md)
  FC | Air Purifier | [FC.md](doc/FC.md)
  FD | Humidifier | [FD.md](doc/FD.md)
+ x34 | Sink Dishwasher | [x34.md](doc/x34.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. 

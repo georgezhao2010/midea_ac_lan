@@ -45,7 +45,7 @@ from .midea.devices.fd.device import DeviceAttributes as FDAttributes
 
 
 MIDEA_DEVICES = {
-        0x34: {
+    0x34: {
         "name": "Sink Dishwasher",
         "entities": {
             X34Attributes.door: {
@@ -118,6 +118,26 @@ MIDEA_DEVICES = {
                 "name": "Storage",
                 "icon": "mdi:repeat-variant"
             },
+            X34Attributes.mode: {
+                "type": Platform.SENSOR,
+                "name": "Working Mode",
+                "icon": "mdi:dishwasher"
+            },
+            X34Attributes.error_code: {
+                "type": Platform.SENSOR,
+                "name": "Error Code",
+                "icon": "mdi:alert-box"
+            },
+            X34Attributes.softwater: {
+                "type": Platform.SENSOR,
+                "name": "Softwater Level",
+                "icon": "mdi:shaker-outline",
+            },
+            X34Attributes.bright: {
+                "type": Platform.SENSOR,
+                "name": "Bright Level",
+                "icon": "mdi:star-four-points"
+            }
         }
     },
     0x13: {
@@ -1240,6 +1260,26 @@ MIDEA_DEVICES = {
                 "name": "Storage",
                 "icon": "mdi:repeat-variant"
             },
+            E1Attributes.mode: {
+                "type": Platform.SENSOR,
+                "name": "Working Mode",
+                "icon": "mdi:dishwasher"
+            },
+            E1Attributes.error_code: {
+                "type": Platform.SENSOR,
+                "name": "Error Code",
+                "icon": "mdi:alert-box"
+            },
+            E1Attributes.softwater: {
+                "type": Platform.SENSOR,
+                "name": "Softwater Level",
+                "icon": "mdi:shaker-outline",
+            },
+            E1Attributes.bright: {
+                "type": Platform.SENSOR,
+                "name": "Bright Level",
+                "icon": "mdi:star-four-points"
+            }
         }
     },
     0xE2: {
