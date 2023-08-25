@@ -27,6 +27,7 @@
 
  类型 | 名称 |文档
  --- | --- | ---
+ 34 | 集成水槽洗碗机（厨房净洗中心） | [34_hans.md](doc/34_hans.md)
  A1 | 除湿器 | [A1_hans.md](doc/A1_hans.md)
  AC | 空调器 | [AC_hans.md](doc/AC_hans.md)
  B0 | 微波炉 | [B0_hans.md](doc/B0_hans.md)

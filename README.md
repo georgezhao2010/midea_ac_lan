@@ -27,6 +27,7 @@ And more.
 
   Type | Name | Documents
  --- | --- | ---
+ 34 | Sink Dishwasher | [34.md](doc/34.md)
  A1 | Dehumidifier | [A1.md](doc/A1.md)
  AC | Air Conditioner | [AC.md](doc/AC.md)
  B0 | Microwave Oven | [B0.md](doc/B0.md)
