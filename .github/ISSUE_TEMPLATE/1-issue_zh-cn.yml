@@ -19,6 +19,13 @@ body:
       label: 设备类型及型号
       placeholder: Air Conditioner 22012225
       description: 可以在 配置 -> 设备与服务 -> Midea AC LAN -> 设备 -> 设备信息 找到
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: 使用的App
+      placeholder: 美的美居
+      description: 使用的哪个App控制设备
   - type: textarea
     validations:
       required: true

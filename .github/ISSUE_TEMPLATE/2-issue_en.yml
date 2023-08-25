@@ -19,6 +19,13 @@ body:
       label: Device type and model
       placeholder: Air Conditioner 22012225
       description: Can be found in Settings -> Devices & Services -> Midea AC LAN -> Devices -> Device Info
+  - type: input
+      validations:
+        required: true
+      attributes:
+        label: Used App
+        placeholder: MSmartHome
+        description: Which app is used to control the device
   - type: textarea
     validations:
       required: true
