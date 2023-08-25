@@ -20,6 +20,11 @@ sensor.{DEVICEID}_temperature | sensor | Temperature | 温度
 lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
 switch.{DEVICEID}_power | switch | Power | 电源开关
 switch.{DEVICEID}_storage | switch | Storage | 保管开关
+sensor.{DEVICEID}_mode | sensor | Working Mode | 工作模式
+sensor.{DEVICEID}_error_code | sensor | Error Code | 错误码
+sensor.{DEVICEID}_softwater | sensor | Softwater Level | 软水盐档位
+sensor.{DEVICEID}_bright | sensor | Bright Level | 亮碟剂档位
+
 
 ## 服务
 生成以下扩展服务
