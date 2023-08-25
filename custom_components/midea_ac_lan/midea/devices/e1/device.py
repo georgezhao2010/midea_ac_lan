@@ -123,7 +123,7 @@ class MideaE1Device(MiedaDevice):
         return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
-        message = Message34Response(msg)
+        message = MessageE1Response(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
