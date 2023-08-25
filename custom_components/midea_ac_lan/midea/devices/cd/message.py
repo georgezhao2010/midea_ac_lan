@@ -50,7 +50,7 @@ class MessageSet(MessageCDBase):
     def _body(self):
         power = 0x01 if self.power else 0x00
         target_temperature = self.target_temperature * 2 + 30
-        return bytearray[
+        return bytearray([
             0x01, power,
             self.read_field("modeValue"),
             target_temperature,
@@ -58,7 +58,7 @@ class MessageSet(MessageCDBase):
             self.read_field("openPTC"),
             self.read_field("ptcTemp"),
             self.read_field("byte8")
-        ]
+        ])
 
 
 class CDGeneralMessageBody(MessageBody):
