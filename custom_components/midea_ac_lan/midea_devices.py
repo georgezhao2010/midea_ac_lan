@@ -14,9 +14,9 @@ from homeassistant.const import (
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
-from .midea.devices.x34.device import DeviceAttributes as X34Attributes
 from .midea.devices.x13.device import DeviceAttributes as X13Attributes
 from .midea.devices.x26.device import DeviceAttributes as X26Attributes
+from .midea.devices.x34.device import DeviceAttributes as X34Attributes
 from .midea.devices.x40.device import DeviceAttributes as X40Attributes
 from .midea.devices.a1.device import DeviceAttributes as A1Attributes
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
@@ -47,7 +47,79 @@ from .midea.devices.fd.device import DeviceAttributes as FDAttributes
 
 
 MIDEA_DEVICES = {
-        0x34: {
+    0x13: {
+        "name": "Light",
+        "entities": {
+            "light": {
+                "type": Platform.LIGHT,
+                "icon": "mdi:lightbulb",
+                "default": True
+            },
+            X13Attributes.delay_off: {
+                "type": Platform.SWITCH,
+                "name": "Delay Off",
+                "icon": "mdi:timer"
+            },
+            X13Attributes.effect: {
+                "type": Platform.SELECT,
+                "name": "Effect",
+                "icon": "mdi:ceiling-light-multiple-outline"
+            }
+        },
+    },
+    0x26: {
+        "name": "Bathroom Master",
+        "entities": {
+            X26Attributes.current_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            X26Attributes.main_light: {
+                "type": Platform.SWITCH,
+                "name": "Main Light",
+                "icon": "mdi:lightbulb"
+            },
+            X26Attributes.night_light: {
+                "type": Platform.SWITCH,
+                "name": "Night Light",
+                "icon": "mdi:lightbulb"
+            },
+            X26Attributes.heating_mode: {
+                "type": Platform.SWITCH,
+                "name": "Heating Mode",
+                "icon": "mdi:heating-coil"
+            },
+            X26Attributes.bath_mode: {
+                "type": Platform.SWITCH,
+                "name": "Bath Mode",
+                "icon": "mdi:bathtub"
+            },
+            X26Attributes.ventilation_mode: {
+                "type": Platform.SWITCH,
+                "name": "Ventilation Mode",
+                "icon": "mdi:fan"
+            },
+            X26Attributes.drying_mode: {
+                "type": Platform.SWITCH,
+                "name": "Drying Mode",
+                "icon": "mdi:heat-wave"
+            },
+            X26Attributes.blowing_mode: {
+                "type": Platform.SWITCH,
+                "name": "Blowing Mode",
+                "icon": "mdi:air-filter"
+            },
+            X26Attributes.gentle_wind_mode: {
+                "type": Platform.SWITCH,
+                "name": "Gentle Wind Mode",
+                "icon": "mdi:tailwind"
+            },
+        }
+    },
+    0x34: {
         "name": "Sink Dishwasher",
         "entities": {
             X34Attributes.door: {
@@ -119,78 +191,6 @@ MIDEA_DEVICES = {
                 "type": Platform.SWITCH,
                 "name": "Storage",
                 "icon": "mdi:repeat-variant"
-            },
-        }
-    },
-    0x13: {
-        "name": "Light",
-        "entities": {
-            "light": {
-                "type": Platform.LIGHT,
-                "icon": "mdi:lightbulb",
-                "default": True
-            },
-            X13Attributes.delay_off: {
-                "type": Platform.SWITCH,
-                "name": "Delay Off",
-                "icon": "mdi:timer"
-            },
-            X13Attributes.effect: {
-                "type": Platform.SELECT,
-                "name": "Effect",
-                "icon": "mdi:ceiling-light-multiple-outline"
-            }
-        },
-    },
-    0x26: {
-        "name": "Bathroom Master",
-        "entities": {
-            X26Attributes.current_temperature: {
-                "type": Platform.SENSOR,
-                "name": "Current Temperature",
-                "device_class": SensorDeviceClass.TEMPERATURE,
-                "unit": TEMP_CELSIUS,
-                "state_class": SensorStateClass.MEASUREMENT
-            },
-            X26Attributes.main_light: {
-                "type": Platform.SWITCH,
-                "name": "Main Light",
-                "icon": "mdi:lightbulb"
-            },
-            X26Attributes.night_light: {
-                "type": Platform.SWITCH,
-                "name": "Night Light",
-                "icon": "mdi:lightbulb"
-            },
-            X26Attributes.heating_mode: {
-                "type": Platform.SWITCH,
-                "name": "Heating Mode",
-                "icon": "mdi:heating-coil"
-            },
-            X26Attributes.bath_mode: {
-                "type": Platform.SWITCH,
-                "name": "Bath Mode",
-                "icon": "mdi:bathtub"
-            },
-            X26Attributes.ventilation_mode: {
-                "type": Platform.SWITCH,
-                "name": "Ventilation Mode",
-                "icon": "mdi:fan"
-            },
-            X26Attributes.drying_mode: {
-                "type": Platform.SWITCH,
-                "name": "Drying Mode",
-                "icon": "mdi:heat-wave"
-            },
-            X26Attributes.blowing_mode: {
-                "type": Platform.SWITCH,
-                "name": "Blowing Mode",
-                "icon": "mdi:air-filter"
-            },
-            X26Attributes.gentle_wind_mode: {
-                "type": Platform.SWITCH,
-                "name": "Gentle Wind Mode",
-                "icon": "mdi:tailwind"
             },
         }
     },
