@@ -27,6 +27,7 @@ And more.
 
   Type | Name | Documents
  --- | --- | ---
+ 34 | Sink Dishwasher | [34.md](doc/34.md)
  A1 | Dehumidifier | [A1.md](doc/A1.md)
  AC | Air Conditioner | [AC.md](doc/AC.md)
  B0 | Microwave Oven | [B0.md](doc/B0.md)
@@ -50,7 +51,6 @@ And more.
  FB | Electric Heater | [FB.md](doc/FB.md)
  FC | Air Purifier | [FC.md](doc/FC.md)
  FD | Humidifier | [FD.md](doc/FD.md)
- x34 | Sink Dishwasher | [x34.md](doc/x34.md)
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. 

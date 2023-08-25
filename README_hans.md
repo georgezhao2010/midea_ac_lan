@@ -27,6 +27,7 @@
 
  类型 | 名称 |文档
  --- | --- | ---
+ 34 | 集成水槽洗碗机（厨房净洗中心） | [34_hans.md](doc/34_hans.md)
  A1 | 除湿器 | [A1_hans.md](doc/A1_hans.md)
  AC | 空调器 | [AC_hans.md](doc/AC_hans.md)
  B0 | 微波炉 | [B0_hans.md](doc/B0_hans.md)
@@ -50,7 +51,6 @@
  FB | 电取暖器 | [FB_hans.md](doc/FB_hans.md)
  FC | 空气净化器 | [FC_hans.md](doc/FC_hans.md)
  FD | 加湿器 | [FD_hans.md](doc/FD_hans.md)
- x34 | 集成水槽洗碗机（厨房净洗中心） | [x34_hans.md](doc/x34_hans.md)
 
 # 安装
 在HACS中搜索'Midea AC LAN'并安装，或者从[Latest release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest)下载最新的Release版本，将其中的`custom_components/midea_ac_lan`放到你的Home Assistant的`custom_components/midea_ac_lan`中。
