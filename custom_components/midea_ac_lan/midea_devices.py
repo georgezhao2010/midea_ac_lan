@@ -14,6 +14,7 @@ from homeassistant.const import (
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
+from .midea.devices.x34.device import DeviceAttributes as X34Attributes
 from .midea.devices.x13.device import DeviceAttributes as X13Attributes
 from .midea.devices.x26.device import DeviceAttributes as X26Attributes
 from .midea.devices.x40.device import DeviceAttributes as X40Attributes
@@ -46,6 +47,81 @@ from .midea.devices.fd.device import DeviceAttributes as FDAttributes
 
 
 MIDEA_DEVICES = {
+        0x34: {
+        "name": "Sink Dishwasher",
+        "entities": {
+            X34Attributes.door: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
+            },
+            X34Attributes.rinse_aid: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Rinse Aid Shortage",
+                "icon": "mdi:bottle-tonic",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            X34Attributes.salt: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Salt Shortage",
+                "icon": "mdi:drag",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            X34Attributes.humidity: {
+                "type": Platform.SENSOR,
+                "name": "Humidity",
+                "device_class": SensorDeviceClass.HUMIDITY,
+                "unit": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            X34Attributes.progress: {
+                "type": Platform.SENSOR,
+                "name": "Progress",
+                "icon": "mdi:rotate-360"
+            },
+            X34Attributes.status: {
+                "type": Platform.SENSOR,
+                "name": "Status",
+                "icon": "mdi:information"
+            },
+            X34Attributes.storage_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Storage Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_HOURS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            X34Attributes.temperature: {
+                "type": Platform.SENSOR,
+                "name": "Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            X34Attributes.time_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_MINUTES,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            X34Attributes.child_lock: {
+                "type": Platform.LOCK,
+                "name": "Child Lock"
+            },
+            X34Attributes.power: {
+                "type": Platform.SWITCH,
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            X34Attributes.storage: {
+                "type": Platform.SWITCH,
+                "name": "Storage",
+                "icon": "mdi:repeat-variant"
+            },
+        }
+    },
     0x13: {
         "name": "Light",
         "entities": {
