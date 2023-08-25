@@ -67,7 +67,7 @@ class MessageStorage(Message34Base):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
-            body_type=0x081)
+            body_type=0x81)
         self.storage = False
 
     @property
