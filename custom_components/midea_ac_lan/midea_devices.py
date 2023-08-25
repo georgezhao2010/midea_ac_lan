@@ -909,7 +909,7 @@ MIDEA_DEVICES = {
         "entities": {
             "water_heater": {
                 "type": Platform.WATER_HEATER,
-                "icon": "mdi:meter-gas",
+                "icon": "mdi:heat-pump",
                 "default": True
             },
             CDAttributes.compressor_temperature:{
