@@ -25,7 +25,6 @@ class MessageQuery(Message34Base):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
-            # body type具体应该是多少？
             body_type=0x00)
 
     @property
