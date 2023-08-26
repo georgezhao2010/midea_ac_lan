@@ -49,7 +49,7 @@ class MessageSet(MessageCDBase):
     @property
     def _body(self):
         power = 0x01 if self.power else 0x00
-        target_temperature = self.target_temperature * 2 + 30
+        target_temperature = round(self.target_temperature * 2 + 30)
         return bytearray([
             0x01, power,
             self.read_field("modeValue"),

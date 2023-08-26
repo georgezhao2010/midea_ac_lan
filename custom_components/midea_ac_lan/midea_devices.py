@@ -759,6 +759,13 @@ MIDEA_DEVICES = {
                 "unit": ENERGY_KILO_WATT_HOUR,
                 "state_class": SensorStateClass.TOTAL_INCREASING
             },
+            C3Attributes.outdoor_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Outdoor Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            }
         }
     },
     0xCA: {

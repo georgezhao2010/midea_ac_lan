@@ -174,7 +174,7 @@ class MiedaDevice(threading.Thread):
     def refresh_status(self, wait_response=False):
         cmds = self.build_query()
         if self._sub_type is None:
-            cmds.append(MessageQuerySubtype(self.device_type))
+            cmds = [MessageQuerySubtype(self.device_type)] + cmds
         error_count = 0
         for cmd in cmds:
             if cmd.__class__.__name__ not in self._unsupported_protocol:

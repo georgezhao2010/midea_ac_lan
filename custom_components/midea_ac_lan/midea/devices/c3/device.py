@@ -49,6 +49,7 @@ class DeviceAttributes(StrEnum):
     status_ibh = "status_ibh"
     total_energy_consumption = "total_energy_consumption"
     total_produced_energy = "total_produced_energy"
+    outdoor_temperature = "outdoor_temperature"
 
 
 class MideaC3Device(MiedaDevice):
@@ -111,6 +112,7 @@ class MideaC3Device(MiedaDevice):
             DeviceAttributes.status_tbh: None,
             DeviceAttributes.status_ibh: None,
             DeviceAttributes.total_produced_energy: None,
+            DeviceAttributes.outdoor_temperature: None
         }
 
     def build_query(self):
