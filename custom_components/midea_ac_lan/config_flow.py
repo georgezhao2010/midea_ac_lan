@@ -45,7 +45,6 @@ PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
 DEFAULT_TOKEN = "EE755A84A115703768BCC7C6C13D3D629AA416F1E2FD798BEB9F78CBB1381D09" \
                 "1CC245D7B063AAD2A900E5B498FBD936C811F5D504B2E656D4F33B3BBC6D1DA3"
 DEFAULT_KEY = "ED37BD31558A4B039AAF4E7A7A59AA7A75FD9101682045F69BAF45D28380AE5C"
-
 STORAGE_PATH = f".storage/{DOMAIN}"
 
 
@@ -72,7 +71,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     found_device = {}
     supports = {}
     for device_type, device_info in MIDEA_DEVICES.items():
-        supports[device_type] = device_info["name"]
+        supports[device_type] = f"[{'%02X' % device_type}] {device_info['name']}"
 
     def _already_configured(self, device_id, ip_address):
         for entry in self._async_current_entries():

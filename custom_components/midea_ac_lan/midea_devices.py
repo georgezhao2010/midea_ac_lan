@@ -1478,26 +1478,26 @@ MIDEA_DEVICES = {
             "water_heater_heating": {
                 "type": Platform.WATER_HEATER,
                 "icon": "mdi:meter-gas",
-                "name": "Heating Boilers",
+                "name": "Heating",
                 "use": 0,
                 "default": True
             },
             "water_heater_bathing": {
                 "type": Platform.WATER_HEATER,
                 "icon": "mdi:meter-gas",
-                "name": "Bathing Boilers",
+                "name": "Bathing",
                 "use": 1,
                 "default": True
             },
             E6Attributes.heating_working: {
                 "type": Platform.BINARY_SENSOR,
-                "name": "Heating Working",
+                "name": "Heating Working Status",
                 "icon": "mdi:fire",
                 "device_class": BinarySensorDeviceClass.RUNNING
             },
             E6Attributes.bathing_working: {
                 "type": Platform.BINARY_SENSOR,
-                "name": "Bathing Working",
+                "name": "Bathing Working Status",
                 "icon": "mdi:fire",
                 "device_class": BinarySensorDeviceClass.RUNNING
             },

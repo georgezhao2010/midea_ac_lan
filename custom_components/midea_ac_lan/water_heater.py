@@ -235,11 +235,9 @@ class MideaE6WaterHeater(MideaWaterHeater):
         return self._device.get_attribute(E6Attributes.max_temperature)[self._use]
 
     def turn_on(self):
-        pass
         self._device.set_attribute(attr=self._power_attr, value=True)
 
     def turn_off(self):
-        pass
         self._device.set_attribute(attr=self._power_attr, value=False)
 
 
