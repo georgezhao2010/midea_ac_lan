@@ -5,9 +5,6 @@ sensitive/
 custom_components/midea_ac_lan/midea/devices/bc/
 custom_components/midea_ac_lan/midea/devices/b2/
 custom_components/midea_ac_lan/midea/devices/b4/
-custom_components/midea_ac_lan/midea/devices/C2/
-
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

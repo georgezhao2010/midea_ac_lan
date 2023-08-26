@@ -24,6 +24,7 @@ from .midea.devices.b0.device import DeviceAttributes as B0Attributes
 from .midea.devices.b1.device import DeviceAttributes as B1Attributes
 from .midea.devices.b6.device import DeviceAttributes as B6Attributes
 from .midea.devices.bf.device import DeviceAttributes as BFAttributes
+from .midea.devices.c3.device import DeviceAttributes as C2Attributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.ca.device import DeviceAttributes as CAAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
@@ -251,7 +252,7 @@ MIDEA_DEVICES = {
             },
             A1Attributes.child_lock: {
                 "type": Platform.LOCK,
-                "name": "Child Lock",
+                "name": "Child Lock"
             },
             A1Attributes.anion: {
                 "type": Platform.SWITCH,
@@ -630,6 +631,35 @@ MIDEA_DEVICES = {
                 "unit": TIME_SECONDS,
                 "state_class": SensorStateClass.MEASUREMENT
             }
+        }
+    },
+    0xC2: {
+        "name": "Smart Toilet",
+        "entities": {
+            C2Attributes.power: {
+                "type": Platform.SWITCH,
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            C2Attributes.light: {
+                "type": Platform.SWITCH,
+                "name": "Light",
+                "icon": "mdi:lightbulb"
+            },
+            C2Attributes.child_lock: {
+                "type": Platform.LOCK,
+                "name": "Child Lock"
+            },
+            C2Attributes.seat_status: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Seat Status",
+                "icon": "mdi:seat-legroom-normal"
+            },
+            C2Attributes.flip_status: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Flip Status",
+                "icon": "mdi:toilet"
+            },
         }
     },
     0xC3: {
@@ -1744,7 +1774,7 @@ MIDEA_DEVICES = {
             },
             FBAttributes.child_lock: {
                 "type": Platform.LOCK,
-                "name": "Child Lock",
+                "name": "Child Lock"
             },
             FBAttributes.heating_level: {
                 "type": Platform.NUMBER,
@@ -1773,7 +1803,7 @@ MIDEA_DEVICES = {
         "entities": {
             FCAttributes.child_lock: {
                 "type": Platform.LOCK,
-                "name": "Child Lock",
+                "name": "Child Lock"
             },
             FCAttributes.anion: {
                 "type": Platform.SWITCH,
