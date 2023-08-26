@@ -14,10 +14,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class DeviceAttributes(StrEnum):
-    power = "power"
-    burning_state = "burning_state"
+    main_power = "main_power"
     heating_power = "heating_power"
-    bathing_power = "bathing_power"
     heating_working = "heating_working"
     bathing_working = "bathing_working"
     min_temperature = "temperature_min"
@@ -26,8 +24,6 @@ class DeviceAttributes(StrEnum):
     bathing_temperature = "bathing_temperature"
     heating_leaving_temperature = "heating_leaving_temperature"
     bathing_leaving_temperature = "bathing_leaving_temperature"
-    heating_returning_temperature = "heating_returning_temperature"
-    bathing_returning_temperature = "bathing_returning_temperature"
 
 
 class MideaE6Device(MiedaDevice):
@@ -55,10 +51,8 @@ class MideaE6Device(MiedaDevice):
             model=model
         )
         self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.burning_state: None,
+            DeviceAttributes.main_power: False,
             DeviceAttributes.heating_power: True,
-            DeviceAttributes.bathing_power: True,
             DeviceAttributes.heating_working: None,
             DeviceAttributes.bathing_working: None,
             DeviceAttributes.min_temperature: [30, 35],
@@ -66,9 +60,7 @@ class MideaE6Device(MiedaDevice):
             DeviceAttributes.heating_temperature: 50,
             DeviceAttributes.bathing_temperature: 40,
             DeviceAttributes.heating_leaving_temperature: None,
-            DeviceAttributes.bathing_leaving_temperature: None,
-            DeviceAttributes.heating_returning_temperature: None,
-            DeviceAttributes.bathing_returning_temperature: None
+            DeviceAttributes.bathing_leaving_temperature: None
         }
 
     def build_query(self):
@@ -85,7 +77,8 @@ class MideaE6Device(MiedaDevice):
         return new_status
 
     def set_attribute(self, attr, value):
-        if attr in [DeviceAttributes.power,
+        if attr in [DeviceAttributes.main_power,
+                    DeviceAttributes.heating_power,
                     DeviceAttributes.heating_temperature,
                     DeviceAttributes.bathing_temperature]:
             message = MessageSet(self._device_protocol_version)

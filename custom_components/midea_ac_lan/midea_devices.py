@@ -24,7 +24,7 @@ from .midea.devices.b0.device import DeviceAttributes as B0Attributes
 from .midea.devices.b1.device import DeviceAttributes as B1Attributes
 from .midea.devices.b6.device import DeviceAttributes as B6Attributes
 from .midea.devices.bf.device import DeviceAttributes as BFAttributes
-from .midea.devices.c3.device import DeviceAttributes as C2Attributes
+from .midea.devices.c2.device import DeviceAttributes as C2Attributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
 from .midea.devices.ca.device import DeviceAttributes as CAAttributes
 from .midea.devices.cc.device import DeviceAttributes as CCAttributes
@@ -1478,20 +1478,16 @@ MIDEA_DEVICES = {
             "water_heater_heating": {
                 "type": Platform.WATER_HEATER,
                 "icon": "mdi:meter-gas",
+                "name": "Heating Boilers",
                 "use": 0,
                 "default": True
             },
             "water_heater_bathing": {
                 "type": Platform.WATER_HEATER,
                 "icon": "mdi:meter-gas",
+                "name": "Bathing Boilers",
                 "use": 1,
                 "default": True
-            },
-            E6Attributes.burning_state: {
-                "type": Platform.BINARY_SENSOR,
-                "name": "Burning State",
-                "icon": "mdi:fire",
-                "device_class": BinarySensorDeviceClass.RUNNING
             },
             E6Attributes.heating_working: {
                 "type": Platform.BINARY_SENSOR,
@@ -1519,20 +1515,16 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
-            E6Attributes.heating_returning_temperature: {
-                "type": Platform.SENSOR,
-                "name": "Heating Returning Water Temperature",
-                "device_class": SensorDeviceClass.TEMPERATURE,
-                "unit": TEMP_CELSIUS,
-                "state_class": SensorStateClass.MEASUREMENT
+            E6Attributes.main_power: {
+                "type": Platform.SWITCH,
+                "name": "Main Power",
+                "icon": "mdi:power"
             },
-            E6Attributes.bathing_returning_temperature: {
-                "type": Platform.SENSOR,
-                "name": "Bathing Returning Water Temperature",
-                "device_class": SensorDeviceClass.TEMPERATURE,
-                "unit": TEMP_CELSIUS,
-                "state_class": SensorStateClass.MEASUREMENT
-            },
+            E6Attributes.heating_power: {
+                "type": Platform.SWITCH,
+                "name": "Heating Power",
+                "icon": "mdi:heating-coil"
+            }
         }
     },
     0xEA: {

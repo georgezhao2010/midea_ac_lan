@@ -182,7 +182,7 @@ class MideaC3WaterHeater(MideaWaterHeater):
 class MideaE6WaterHeater(MideaWaterHeater):
     _powers = [
         E6Attributes.heating_power,
-        E6Attributes.bathing_power,
+        E6Attributes.main_power,
     ]
     _current_temperatures = [
         E6Attributes.heating_leaving_temperature,
@@ -202,7 +202,15 @@ class MideaE6WaterHeater(MideaWaterHeater):
 
     @property
     def state(self):
-        return STATE_ON if self._device.get_attribute(E6Attributes.power) else STATE_OFF
+        if self._use == 0:  # for heating
+            return STATE_ON if \
+                self._device.get_attribute(E6Attributes.main_power) and \
+                self._device.get_attribute(E6Attributes.heating_power) \
+                else STATE_OFF
+        else:  # for bathing
+            return STATE_ON if \
+                self._device.get_attribute(E6Attributes.main_power) \
+                else STATE_OFF
 
     @property
     def current_temperature(self):
@@ -210,7 +218,7 @@ class MideaE6WaterHeater(MideaWaterHeater):
 
     @property
     def target_temperature(self):
-        return self._device.get_attribute(E6Attributes.target_temperature[self._use])
+        return self._device.get_attribute(self._target_temperature_attr)
 
     def set_temperature(self, **kwargs):
         if ATTR_TEMPERATURE not in kwargs:
@@ -220,19 +228,19 @@ class MideaE6WaterHeater(MideaWaterHeater):
 
     @property
     def min_temp(self):
-        return self._device.get_attribute(E6Attributes.temperature_minp[self._use])
+        return self._device.get_attribute(E6Attributes.min_temperature)[self._use]
 
     @property
     def max_temp(self):
-        return self._device.get_attribute(E6Attributes.temperature_max[self._use])
+        return self._device.get_attribute(E6Attributes.max_temperature)[self._use]
 
     def turn_on(self):
         pass
-        # self._device.set_attribute(attr=self._power_attr, value=True)
+        self._device.set_attribute(attr=self._power_attr, value=True)
 
     def turn_off(self):
         pass
-        # self._device.set_attribute(attr=self._power_attr, value=False)
+        self._device.set_attribute(attr=self._power_attr, value=False)
 
 
 class MideaCDWaterHeater(MideaWaterHeater):
