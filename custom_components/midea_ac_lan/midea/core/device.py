@@ -377,5 +377,5 @@ class MiedaDevice(threading.Thread):
     def attributes(self):
         ret = {}
         for status in self._attributes.keys():
-            ret[status.value] = self._attributes[status]
+            ret[str(status)] = self._attributes[status]
         return ret

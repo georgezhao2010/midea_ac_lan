@@ -64,12 +64,12 @@ class MideaDADevice(MiedaDevice):
         progress = ["Prog0", "Prog1", "Prog2", "Prog3",
                     "Prog4", "Prog5", "Prog6", "Prog7"]
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
+            if hasattr(message, str(status)):
                 if status == DeviceAttributes.progress:
-                    self._attributes[status] = progress[getattr(message, status.value)]
+                    self._attributes[status] = progress[getattr(message, str(status))]
                 else:
-                    self._attributes[status] = getattr(message, status.value)
-                new_status[status.value] = self._attributes[status]
+                    self._attributes[status] = getattr(message, str(status))
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):

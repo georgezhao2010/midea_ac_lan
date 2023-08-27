@@ -82,8 +82,8 @@ class MideaB6Device(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                value = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                value = getattr(message, str(status))
                 if status == DeviceAttributes.fan_level:
                     if value in self._speeds.keys():
                         self._attributes[DeviceAttributes.mode] = self._speeds.get(value)
@@ -93,8 +93,8 @@ class MideaB6Device(MiedaDevice):
                         self._attributes[DeviceAttributes.fan_speed] = 0
                     new_status[DeviceAttributes.mode.value] = self._attributes[DeviceAttributes.mode]
                     new_status[DeviceAttributes.fan_speed.value] = self._attributes[DeviceAttributes.fan_speed]
-                self._attributes[status] = getattr(message, status.value)
-                new_status[status.value] = self._attributes[status]
+                self._attributes[status] = getattr(message, str(status))
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):

@@ -69,8 +69,8 @@ class MideaB0Device(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                value = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                value = getattr(message, str(status))
                 if status == DeviceAttributes.status:
                     if value in MideaB0Device._status.keys():
                         self._attributes[DeviceAttributes.status] = MideaB0Device._status.get(value)
@@ -78,7 +78,7 @@ class MideaB0Device(MiedaDevice):
                         self._attributes[DeviceAttributes.status] = "Unknown"
                 else:
                     self._attributes[status] = value
-                new_status[status.value] = self._attributes[status]
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):

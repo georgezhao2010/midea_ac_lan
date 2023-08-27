@@ -86,9 +86,9 @@ class MideaCADevice(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                self._attributes[status] = getattr(message, status.value)
-                new_status[status.value] = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                self._attributes[status] = getattr(message, str(status))
+                new_status[str(status)] = getattr(message, str(status))
         return new_status
 
     def set_attribute(self, attr, value):

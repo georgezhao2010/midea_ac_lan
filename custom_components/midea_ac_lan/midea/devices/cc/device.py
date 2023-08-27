@@ -98,13 +98,13 @@ class MideaCCDevice(MiedaDevice):
         new_status = {}
         fan_speed = None
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                value = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                value = getattr(message, str(status))
                 if status == DeviceAttributes.fan_speed:
                     fan_speed = value
                 else:
-                    self._attributes[status] = getattr(message, status.value)
-                    new_status[status.value] = getattr(message, status.value)
+                    self._attributes[status] = getattr(message, str(status))
+                    new_status[str(status)] = getattr(message, str(status))
         if fan_speed is not None and self._attributes[DeviceAttributes.fan_speed_level] is not None:
             if self._fan_speeds is None:
                 if self._attributes[DeviceAttributes.fan_speed_level]:
@@ -170,9 +170,9 @@ class MideaCCDevice(MiedaDevice):
                     setattr(message, DeviceAttributes.eco_mode.value, False)
                 elif attr == DeviceAttributes.aux_heating:
                     if value:
-                        setattr(message, DeviceAttributes.aux_heat_status.value, 1)
+                        setattr(message, DeviceAttributes.aux_heat_str(status), 1)
                     else:
-                        setattr(message, DeviceAttributes.aux_heat_status.value, 2)
+                        setattr(message, DeviceAttributes.aux_heat_str(status), 2)
             self.build_send(message)
 
     @property

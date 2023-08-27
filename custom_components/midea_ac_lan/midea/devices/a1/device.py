@@ -99,8 +99,8 @@ class MideaA1Device(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                value = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                value = getattr(message, str(status))
                 if status == DeviceAttributes.mode:
                     if value <= len(MideaA1Device._modes):
                         self._attributes[status] = MideaA1Device._modes[value - 1]
@@ -115,7 +115,7 @@ class MideaA1Device(MiedaDevice):
                     self._attributes[status] = str(value)
                 else:
                     self._attributes[status] = value
-                new_status[status.value] = self._attributes[status]
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def make_message_set(self):

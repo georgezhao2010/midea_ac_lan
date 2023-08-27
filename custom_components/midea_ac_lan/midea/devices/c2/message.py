@@ -10,6 +10,9 @@ from ...core.message import (
 class C2MessageEnum(IntEnum):
     child_lock = 0x10
     light = 0x0d
+    water_temp_level = 0x09
+    seat_temp_level = 0x0a
+    dry_level = 0x0c
 
 
 C2_MESSAGE_KEYS = {
@@ -88,9 +91,15 @@ class C2MessageBody(MessageBody):
         super().__init__(body)
         self.power = (body[2] & 0x01) > 0
         self.seat_status = (body[3] & 0x01) > 0
-        self.flip_status = (body[12] & 0x08) > 0
+        self.dry_level = ((body[6] & 0x7E) >> 1)
+        self.water_temp_level = (body[9] & 0x07)
+        self.seat_temp_level = ((body[9] & 0x38) >> 3)
+        self.lid_status = (body[12] & 0x08) > 0
         self.light = (body[14] & 0x02) > 0
         self.child_lock = (body[14] & 0x04) > 0
+        self.water_temperature = body[11]
+        self.seat_temperature = body[11]
+        self.filter_life = 100 - body[19]
 
 
 class C2Notify1MessageBody(MessageBody):

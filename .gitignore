@@ -104,7 +104,7 @@ celerybeat.pid
 .env
 .venv
 env/
-venv/
+custom_components/midea_ac_lan/venv/
 ENV/
 env.bak/
 venv.bak/
@@ -121,7 +121,12 @@ venv.bak/
 # Pyre type checker
 .pyre/
 
-
 .DS_Store
-
 .idea
+
+# for test
+test.py
+cloud_extend.py
+
+# todo list
+TODO.md

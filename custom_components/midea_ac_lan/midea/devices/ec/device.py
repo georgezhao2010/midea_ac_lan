@@ -93,11 +93,11 @@ class MideaECDevice(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                value = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                value = getattr(message, str(status))
                 if status == DeviceAttributes.progress:
                     if value < len(MideaECDevice._progress):
-                        self._attributes[status] = MideaECDevice._progress[getattr(message, status.value)]
+                        self._attributes[status] = MideaECDevice._progress[getattr(message, str(status))]
                     else:
                         self._attributes[status] = "Unknown"
                 elif status == DeviceAttributes.mode:
@@ -107,7 +107,7 @@ class MideaECDevice(MiedaDevice):
                         self._attributes[status] = "Cloud"
                 else:
                     self._attributes[status] = value
-                new_status[status.value] = self._attributes[status]
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):

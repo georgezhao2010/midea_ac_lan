@@ -161,12 +161,12 @@ class MideaACDevice(MiedaDevice):
             if hasattr(message, "timer"):
                 self._bb_timer = message.timer
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                value = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                value = getattr(message, str(status))
                 if status == DeviceAttributes.fresh_air_power:
                     has_fresh_air = True
                 self._attributes[status] = value
-                new_status[status.value] = self._attributes[status]
+                new_status[str(status)] = self._attributes[status]
         if has_fresh_air:
             if self._attributes[DeviceAttributes.fresh_air_power]:
                 for k, v in MideaACDevice._fresh_air_fan_speeds_rev.items():

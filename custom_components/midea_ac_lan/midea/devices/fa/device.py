@@ -105,8 +105,8 @@ class MideaFADevice(MiedaDevice):
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
-                value = getattr(message, status.value)
+            if hasattr(message, str(status)):
+                value = getattr(message, str(status))
                 if status == DeviceAttributes.oscillation_angle:
                     if value < len(MideaFADevice._oscillation_angles):
                         self._attributes[status] = MideaFADevice._oscillation_angles[value]
@@ -135,7 +135,7 @@ class MideaFADevice(MiedaDevice):
                     self._attributes[status] = 0
                 else:
                     self._attributes[status] = value
-                new_status[status.value] = self._attributes[status]
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_oscillation(self, attr, value):

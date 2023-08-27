@@ -97,32 +97,32 @@ class MideaDADevice(MiedaDevice):
         softener = ["No", "Intelligent", "Programed", "3", "4",
                     "5", "6", "7", "8", "Insufficient"]
         for status in self._attributes.keys():
-            if hasattr(message, status.value):
+            if hasattr(message, str(status)):
                 if status == DeviceAttributes.progress:
-                    self._attributes[status] = progress[getattr(message, status.value)]
+                    self._attributes[status] = progress[getattr(message, str(status))]
                 elif status == DeviceAttributes.program:
-                    self._attributes[status] = program[getattr(message, status.value)]
+                    self._attributes[status] = program[getattr(message, str(status))]
                 elif status == DeviceAttributes.rinse_level:
-                    temp_rinse_level = getattr(message, status.value)
+                    temp_rinse_level = getattr(message, str(status))
                     if temp_rinse_level == 15:
                         self._attributes[status] = "-"
                     else:
                         self._attributes[status] = temp_rinse_level
                 elif status == DeviceAttributes.dehydration_speed:
-                    temp_speed = getattr(message, status.value)
+                    temp_speed = getattr(message, str(status))
                     if temp_speed == 15:
                         self._attributes[status] = "-"
                     else:
                         self._attributes[status] = speed[temp_speed]
                 elif status == DeviceAttributes.detergent:
-                    self._attributes[status] = detergent[getattr(message, status.value)]
+                    self._attributes[status] = detergent[getattr(message, str(status))]
                 elif status == DeviceAttributes.softener:
-                    self._attributes[status] = softener[getattr(message, status.value)]
+                    self._attributes[status] = softener[getattr(message, str(status))]
                 elif status == DeviceAttributes.wash_strength:
-                    self._attributes[status] = strength[getattr(message, status.value)]
+                    self._attributes[status] = strength[getattr(message, str(status))]
                 else:
-                    self._attributes[status] = getattr(message, status.value)
-                new_status[status.value] = self._attributes[status]
+                    self._attributes[status] = getattr(message, str(status))
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):

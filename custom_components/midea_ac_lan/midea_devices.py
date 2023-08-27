@@ -655,11 +655,56 @@ MIDEA_DEVICES = {
                 "name": "Seat Status",
                 "icon": "mdi:seat-legroom-normal"
             },
-            C2Attributes.flip_status: {
+            C2Attributes.lid_status: {
                 "type": Platform.BINARY_SENSOR,
                 "name": "Flip Status",
                 "icon": "mdi:toilet"
             },
+            C2Attributes.water_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Water Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            C2Attributes.seat_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Seat Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            C2Attributes.filter_life: {
+                "type": Platform.SENSOR,
+                "name": "Filter Life",
+                "icon": "mdi:toilet",
+                "unit": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            C2Attributes.dry_level: {
+                "type": Platform.NUMBER,
+                "name": "Dry Level",
+                "icon": "mdi:fire",
+                "max": "max_dry_level",
+                "min": 0,
+                "step": 1
+            },
+            C2Attributes.water_temp_level: {
+                "type": Platform.NUMBER,
+                "name": "Water Temperature Level",
+                "icon": "mdi:fire",
+                "max": "max_water_temp_level",
+                "min": 0,
+                "step": 1
+            },
+            C2Attributes.seat_temp_level: {
+                "type": Platform.NUMBER,
+                "name": "Seat Temperature Level",
+                "icon": "mdi:fire",
+                "max": "max_seat_temp_level",
+                "min": 0,
+                "step": 1
+            }
         }
     },
     0xC3: {
