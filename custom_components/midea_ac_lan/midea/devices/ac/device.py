@@ -338,7 +338,7 @@ class MideaACDevice(MiedaDevice):
         return super().attributes
 
     def set_customize(self, customize):
-        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        super().set_customize(customize)
         self._temperature_step = self._default_temperature_step
         if customize and len(customize) > 0:
             try:

@@ -9,6 +9,7 @@ from .packet_builder import PacketBuilder
 from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse, MessageQuestCustom
 import socket
 import logging
+import json
 import time
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,8 +54,8 @@ class MiedaDevice(threading.Thread):
         self._ip_address = ip_address
         self._port = port
         self._security = LocalSecurity()
-        self._token = bytearray.fromhex(token) if token else None
-        self._key = bytearray.fromhex(key) if key else None
+        self._token = bytes.fromhex(token) if token else None
+        self._key = bytes.fromhex(key) if key else None
         self._buffer = b""
         self._device_name = name
         self._device_id = device_id
@@ -68,6 +69,9 @@ class MiedaDevice(threading.Thread):
         self._device_protocol_version = 0
         self._sub_type = None
         self._sn = None
+        self._refresh_interval = 30
+        self._heartbeat_interval = 10
+        self._default_refresh_interval = 30
 
     @property
     def name(self):
@@ -328,13 +332,14 @@ class MiedaDevice(threading.Thread):
             start = time.time()
             previous_refresh = start
             previous_heartbeat = start
+            self._socket.settimeout(1)
             while True:
                 try:
                     now = time.time()
-                    if now - previous_refresh >= 30:
+                    if now - previous_refresh >= self._refresh_interval:
                         self.refresh_status()
                         previous_refresh = now
-                    if now - previous_heartbeat >= 10:
+                    if now - previous_heartbeat >= self._heartbeat_interval:
                         self.send_heartbeat()
                         previous_heartbeat = now
                     msg = self._socket.recv(512)
@@ -350,7 +355,7 @@ class MiedaDevice(threading.Thread):
                         timeout_counter = 0
                 except socket.timeout:
                     timeout_counter = timeout_counter + 1
-                    if timeout_counter >= 12:
+                    if timeout_counter >= 120:
                         _LOGGER.debug(f"[{self._device_id}] Heartbeat timed out")
                         self.close_socket()
                         break
@@ -371,7 +376,15 @@ class MiedaDevice(threading.Thread):
         return self._attributes.get(attr)
 
     def set_customize(self, customize):
-        pass
+        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        self._refresh_interval = self._default_refresh_interval
+        if customize and len(customize) > 0:
+            try:
+                params = json.loads(customize)
+                if params and "refresh_interval" in params:
+                    self._refresh_interval = params.get("refresh_interval")
+            except Exception as e:
+                _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
 
     @property
     def attributes(self):

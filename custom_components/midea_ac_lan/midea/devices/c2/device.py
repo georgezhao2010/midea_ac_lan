@@ -125,7 +125,7 @@ class MideaC2Device(MiedaDevice):
         return super().attributes
 
     def set_customize(self, customize):
-        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        super().set_customize(customize)
         self._max_dry_level = self._default_max_dry_level
         self._max_water_temp_level = self._default_max_water_temp_level
         self._max_seat_temp_level = self._default_max_seat_temp_level

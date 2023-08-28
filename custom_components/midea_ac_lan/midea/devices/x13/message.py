@@ -42,7 +42,7 @@ class MessageSet(Message13Base):
             body_type=0x00)
         self.brightness = None
         self.color_temperature = None
-        self.effect_code = None
+        self.effect = None
         self.power = None
         self.delay_off = None
 
@@ -51,10 +51,10 @@ class MessageSet(Message13Base):
         body_byte = 0x00
         if self.power is not None:
             self._body_type = 0x01
-            body_byte = 0x01
-        elif self.effect_code is not None and self.effect_code in range(1, 6):
+            body_byte = 0x01 if self.power else 0x00
+        elif self.effect is not None and self.effect in range(1, 6):
             self._body_type = 0x02
-            body_byte = self.effect_code + 1
+            body_byte = self.effect + 1
         elif self.color_temperature is not None:
             self._body_type = 0x03
             body_byte = self.color_temperature
@@ -72,21 +72,29 @@ class MessageMainLightBody(MessageBody):
         super().__init__(body)
         self.brightness = self.read_byte(body, 1)
         self.color_temperature = self.read_byte(body, 2)
-        self.effect_code = self.read_byte(body, 3)
-        if self.effect_code < 1 or self.effect_code > 6:
-            self.effect_code = 1
+        self.effect = self.read_byte(body, 3)
+        if self.effect < 1 or self.effect > 6:
+            self.effect = 1
         self.delay_off = self.read_byte(body, 4)
+        '''
         self.rgb_color = [self.read_byte(body, 5),
                           self.read_byte(body, 6),
                           self.read_byte(body, 7)]
+        '''
         self.power = self.read_byte(body, 8) > 0
 
+class MessageMainLightResponseBody(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        self.control_success = body[1] > 0
 
 class Message13Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
-        if self._message_type in [MessageType.set, MessageType.notify1, MessageType.query] and self._body_type == 0xa4:
+        if self._body_type == 0xa4:
             self._body = MessageMainLightBody(body)
+        elif self.message_type == MessageType.set and self._body_type > 0x80:
+            self._body = MessageMainLightResponseBody(body)
         self.set_attr()
 

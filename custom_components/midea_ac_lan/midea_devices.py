@@ -64,6 +64,7 @@ MIDEA_DEVICES = {
             X13Attributes.effect: {
                 "type": Platform.SELECT,
                 "name": "Effect",
+                "options": "effects",
                 "icon": "mdi:ceiling-light-multiple-outline"
             }
         },

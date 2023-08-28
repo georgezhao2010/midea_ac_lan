@@ -138,7 +138,7 @@ class MideaB6Device(MiedaDevice):
         self.build_send(message)
 
     def set_customize(self, customize):
-        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        super().set_customize(customize)
         self._speeds = self._default_speeds
         self._power_speed = self._default_power_speed
         if customize and len(customize) > 0:

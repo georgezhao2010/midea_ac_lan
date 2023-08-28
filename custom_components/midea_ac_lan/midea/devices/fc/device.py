@@ -197,7 +197,7 @@ class MideaFCDevice(MiedaDevice):
             self.build_send(message)
 
     def set_customize(self, customize):
-        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        super().set_customize(customize)
         self._standby_detect = self._standby_detect_default
         if customize and len(customize) > 0:
             try:

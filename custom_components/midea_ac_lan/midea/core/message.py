@@ -130,9 +130,9 @@ class MessageRequest(MessageBase):
     @property
     def body(self):
         body = bytearray([])
-        if self._body_type:
-            body.append(self._body_type)
-        if self._body:
+        if self.body_type is not None:
+            body.append(self.body_type)
+        if self._body is not None:
             body.extend(self._body)
         return body
 

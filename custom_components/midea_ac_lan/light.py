@@ -36,7 +36,7 @@ class MideaLight(MideaEntity, LightEntity):
         super().__init__(device, entity_key)
 
     @property
-    def is_on(self) -> bool:
+    def is_on(self):
         return self.state == STATE_ON
 
     @property
@@ -44,23 +44,43 @@ class MideaLight(MideaEntity, LightEntity):
         return STATE_ON if self._device.get_attribute(X13Attributes.power) else STATE_OFF
 
     @property
-    def brightness(self) -> int | None:
+    def brightness(self):
         return self._device.get_attribute(X13Attributes.brightness)
 
     @property
-    def rgb_color(self) -> tuple[int, int, int] | None:
+    def rgb_color(self):
         return self._device.get_attribute(X13Attributes.rgb_color)
 
     @property
-    def color_temp(self) -> int | None:
+    def color_temp(self):
+        return round(1000000 / self.color_temp_kelvin)
+
+    @property
+    def color_temp_kelvin(self):
         return self._device.get_attribute(X13Attributes.color_temperature)
 
     @property
-    def effect_list(self) -> list[str] | None:
+    def min_mireds(self) -> int:
+        return round(1000000 / self.max_color_temp_kelvin)
+
+    @property
+    def max_mireds(self) -> int:
+        return round(1000000 / self.min_color_temp_kelvin)
+
+    @property
+    def min_color_temp_kelvin(self) -> int:
+        return self._device.color_temp_range[0]
+
+    @property
+    def max_color_temp_kelvin(self) -> int:
+        return self._device.color_temp_range[1]
+
+    @property
+    def effect_list(self):
         return getattr(self._device, "effects")
 
     @property
-    def effect(self) -> str | None:
+    def effect(self):
         return self._device.get_attribute(X13Attributes.effect)
 
     @property
@@ -84,7 +104,7 @@ class MideaLight(MideaEntity, LightEntity):
             if key == ATTR_BRIGHTNESS:
                 self._device.set_attribute(attr=X13Attributes.brightness, value=value)
             if key == ATTR_COLOR_TEMP:
-                self._device.set_attribute(attr=X13Attributes.color_temperature, value=value)
+                self._device.set_attribute(attr=X13Attributes.color_temperature, value=round(1000000 / value))
             if key == ATTR_EFFECT:
                 self._device.set_attribute(attr=X13Attributes.effect, value=value)
 
