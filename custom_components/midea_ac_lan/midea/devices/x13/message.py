@@ -72,8 +72,8 @@ class MessageMainLightBody(MessageBody):
         super().__init__(body)
         self.brightness = self.read_byte(body, 1)
         self.color_temperature = self.read_byte(body, 2)
-        self.effect = self.read_byte(body, 3)
-        if self.effect < 1 or self.effect > 6:
+        self.effect = self.read_byte(body, 3) - 1
+        if self.effect > 5:
             self.effect = 1
         self.delay_off = self.read_byte(body, 4)
         '''

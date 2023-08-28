@@ -24,7 +24,7 @@ class DeviceAttributes(StrEnum):
 
 
 class Midea13Device(MiedaDevice):
-    _effects = ["Manual", "Living", "Reading", "Mildly", "Film", "Bright"]
+    _effects = ["Manual", "Living", "Reading", "Mildly", "Cinema", "Night"]
 
     def __init__(
             self,
