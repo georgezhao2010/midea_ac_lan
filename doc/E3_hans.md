@@ -4,21 +4,21 @@
 
 ## 生成实体
 ### 默认生成实体
-实体ID | 类型 | 描述
---- | --- | ---
-water_heater.{DEVICEID}_water_heater | water_heater | 热水器实体
+| 实体ID                                 | 类型           | 描述    |
+|--------------------------------------|--------------|-------|
+| water_heater.{DEVICEID}_water_heater | water_heater | 热水器实体 |
 
 ### 额外生成实体
 
-EntityID | Class | Description | 描述
---- | --- | --- | --- 
-binary_sensor.{DEVICEID}_burning_state | binary_sensor | Burning State | 燃烧状态
-binary_sensor.{DEVICEID}_protection | binary_sensor | Protection | 安全防护
-sensor.{DEVICEID}_current_temperature | sensor | Current Temperature | 温度
-switch.{DEVICEID}_power | switch | Power | 电源开关
-switch.{DEVICEID}_smart_volume | switch | Smart Volume | 智能变容
-switch.{DEVICEID}_zero_cold_water | switch | Zero Cold Water | 零冷水
-switch.{DEVICEID}_zero_cold_pulse | switch | Zero Cold Water (Pulse) | 零冷水(点动)
+| 实体ID                                   | 类型            | 名称                      | 描述      |
+|----------------------------------------|---------------|-------------------------|---------|
+| binary_sensor.{DEVICEID}_burning_state | binary_sensor | Burning State           | 燃烧状态    |
+| binary_sensor.{DEVICEID}_protection    | binary_sensor | Protection              | 安全防护    |
+| sensor.{DEVICEID}_current_temperature  | sensor        | Current Temperature     | 温度      |
+| switch.{DEVICEID}_power                | switch        | Power                   | 电源开关    |
+| switch.{DEVICEID}_smart_volume         | switch        | Smart Volume            | 智能变容    |
+| switch.{DEVICEID}_zero_cold_water      | switch        | Zero Cold Water         | 零冷水     |
+| switch.{DEVICEID}_zero_cold_pulse      | switch        | Zero Cold Water (Pulse) | 零冷水(点动) |
 
 ## 服务
 生成以下扩展服务
@@ -29,11 +29,11 @@ switch.{DEVICEID}_zero_cold_pulse | switch | Zero Cold Water (Pulse) | 零冷水
 
 设置设备属性, 服务数据:
 
-名称 | 描述
---- | ---
-device_id | 设备的编号(Device ID)
-attribute | "energy_saving"<br/>"power"<br />"smart_volume"<br/>"zero_cold_water"<br/>"zero_cold_pulse"
-value | true or false
+| 名称        | 描述                                                                                          |
+|-----------|---------------------------------------------------------------------------------------------|
+| device_id | 设备的编号(Device ID)                                                                            |
+| attribute | "energy_saving"<br/>"power"<br />"smart_volume"<br/>"zero_cold_water"<br/>"zero_cold_pulse" |
+| value     | true or false                                                                               |
 
 示例
 ```

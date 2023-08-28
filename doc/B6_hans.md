@@ -16,20 +16,19 @@
 
 ## 生成实体
 ### 默认生成实体
-实体ID | 类型 | 描述
---- | --- | ---
-fan.{DEVICEID}_fan | fan | 风扇实体
+| 实体ID               | 类型  | 描述   |
+|--------------------|-----|------|
+| fan.{DEVICEID}_fan | fan | 风扇实体 |
 
 ### 额外生成实体
 
-EntityID | 类型 | 名称 | 描述
---- | --- | --- | --- 
-binary_sensor.{DEVICEID}_cleaning_reminder | lock | Cleaning Reminder | 清洁提示
-binary_sensor.{DEVICEID}_oilcup_full | select | Oil-cup Full | 油杯满提示
-sensor.{DEVICEID}_fan_level | sensor | Current Fan Level | 当前风扇档位
-switch.{DEVICEID}_light | switch | Light | 灯开关
-switch.{DEVICEID}_power | switch | Power | 电源开关
-
+| EntityID                                   | 类型     | 名称                | 描述     |
+|--------------------------------------------|--------|-------------------|--------|
+| binary_sensor.{DEVICEID}_cleaning_reminder | lock   | Cleaning Reminder | 清洁提示   |
+| binary_sensor.{DEVICEID}_oilcup_full       | select | Oil-cup Full      | 油杯满提示  |
+| sensor.{DEVICEID}_fan_level                | sensor | Current Fan Level | 当前风扇档位 |
+| switch.{DEVICEID}_light                    | switch | Light             | 灯开关    |
+| switch.{DEVICEID}_power                    | switch | Power             | 电源开关   |
 
 ## 服务
 无服务
