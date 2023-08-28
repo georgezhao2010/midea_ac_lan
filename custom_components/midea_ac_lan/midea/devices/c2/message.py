@@ -16,11 +16,11 @@ class C2MessageEnum(IntEnum):
 
 
 C2_MESSAGE_KEYS = {
-    C2MessageEnum.child_lock: {True: 0x10, False: 0x00},
+    C2MessageEnum.child_lock: {True: 0x01 << 4, False: 0x00},
     C2MessageEnum.light: {True: 0x01, False: 0x00},
-    C2MessageEnum.dry_level: {0: 0, 1: 1, 2: 2, 3: 3},
-    C2MessageEnum.seat_temp_level: {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5},
-    C2MessageEnum.water_temp_level: {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+    C2MessageEnum.dry_level: {0: 0x00, 1: 0x01 << 1, 2: 0x02 << 1, 3: 0x03 << 1},
+    C2MessageEnum.seat_temp_level: {0: 0x00, 1: 0x01 << 3, 2: 0x02 << 3, 3: 0x03 << 3, 4: 0x04 << 3, 5: 0x05 << 3},
+    C2MessageEnum.water_temp_level: {0: 0x00, 1: 0x01, 2: 0x02, 3: 0x03, 4: 0x04, 5: 0x05}
 }
 
 
@@ -50,15 +50,19 @@ class MessageQuery(MessageC2Base):
         return bytearray([0x01])
 
 
-class MessagePowerOn(MessageC2Base):
+class MessagePower(MessageC2Base):
     def __init__(self, device_protocol_version):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
-            body_type=0x01)
-
+            body_type=0x00)
+        self.power = False
     @property
     def _body(self):
+        if self.power:
+            self._body_type = 0x01
+        else:
+            self._body_type = 0x02
         return bytearray([0x01])
 
 
@@ -75,18 +79,41 @@ class MessagePowerOff(MessageC2Base):
 
 
 class MessageSet(MessageC2Base):
-    def __init__(self, device_protocol_version, key: C2MessageEnum, value: bool):
+    def __init__(self, device_protocol_version):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
-            body_type=0x14)
+            body_type=0x00)
 
-        self.key = key
-        self.value = C2_MESSAGE_KEYS.get(self.key).get(value)
+        self.child_lock = None
+        self.light = None
+        self.water_temp_level = None
+        self.seat_temp_level = None
+        self.dry_level = None
 
     @property
     def _body(self):
-        return bytearray([self.key, self.value])
+        self._body_type = 0x14
+        key = 0x00
+        value = 0x00
+        if self.child_lock is not None:
+            key = C2MessageEnum.child_lock
+            value = self.child_lock
+        elif self.light is not None:
+            key = C2MessageEnum.light
+            value = self.light
+        elif self.water_temp_level is not None:
+            key = C2MessageEnum.water_temp_level
+            value = self.water_temp_level
+
+        elif self.seat_temp_level is not None:
+            key = C2MessageEnum.seat_temp_level
+            value = self.seat_temp_level
+        elif self.dry_level is not None:
+            key = C2MessageEnum.dry_level
+            value = self.dry_level
+        value = C2_MESSAGE_KEYS.get(key).get(value)
+        return bytearray([key, value])
 
 
 class C2MessageBody(MessageBody):

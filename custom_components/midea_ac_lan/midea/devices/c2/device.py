@@ -4,9 +4,7 @@ from .message import (
     MessageQuery,
     MessageC2Response,
     MessageSet,
-    MessagePowerOn,
-    MessagePowerOff,
-    C2MessageEnum
+    MessagePower
 )
 try:
     from enum import StrEnum
@@ -103,20 +101,23 @@ class MideaC2Device(MiedaDevice):
     def set_attribute(self, attr, value):
         message = None
         if attr == DeviceAttributes.power:
-            if value:
-                message = MessagePowerOn(self._device_protocol_version)
-            else:
-                message = MessagePowerOff(self._device_protocol_version)
+            message = MessagePower(self._device_protocol_version)
+            message.power = value
         elif attr == DeviceAttributes.child_lock:
-            message = MessageSet(self._device_protocol_version, C2MessageEnum.child_lock, value)
+            message = MessageSet(self._device_protocol_version)
+            message.child_lock = value
         elif attr == DeviceAttributes.light:
-            message = MessageSet(self._device_protocol_version, C2MessageEnum.light, value)
+            message = MessageSet(self._device_protocol_version)
+            message.light = value
         elif attr == DeviceAttributes.water_temp_level:
-            message = MessageSet(self._device_protocol_version, C2MessageEnum.water_temp_level, value)
+            message = MessageSet(self._device_protocol_version)
+            message.water_temp_level = value
         elif attr == DeviceAttributes.seat_temp_level:
-            message = MessageSet(self._device_protocol_version, C2MessageEnum.seat_temp_level, value)
+            message = MessageSet(self._device_protocol_version)
+            message.seat_temp_level = value
         elif attr == DeviceAttributes.dry_level:
-            message = MessageSet(self._device_protocol_version, C2MessageEnum.dry_level, value)
+            message = MessageSet(self._device_protocol_version)
+            message.dry_level = value
         if message:
             self.build_send(message)
 
