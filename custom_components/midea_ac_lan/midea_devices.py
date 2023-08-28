@@ -635,7 +635,7 @@ MIDEA_DEVICES = {
         }
     },
     0xC2: {
-        "name": "Smart Toilet",
+        "name": "Toilet",
         "entities": {
             C2Attributes.power: {
                 "type": Platform.SWITCH,
