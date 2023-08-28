@@ -1,4 +1,5 @@
 import logging
+import math
 from .message import (
     MessageQuery,
     MessageSet,
@@ -16,16 +17,15 @@ _LOGGER = logging.getLogger(__name__)
 class DeviceAttributes(StrEnum):
     main_light = "main_light"
     night_light = "night_light"
-    heating_mode = "heating_mode"
-    bath_mode = "bath_mode"
-    ventilation_mode = "ventilation_mode"
-    drying_mode = "drying_mode"
-    blowing_mode = "blowing_mode"
-    gentle_wind_mode = "gentle_wind_mode"
+    mode = "mode"
+    direction = "direction"
     current_temperature = "current_temperature"
 
 
 class Midea26Device(MiedaDevice):
+    _modes = ["Off", "Heat(high)", "Heat(low)", "Bath", "Blow", "Ventilation", "Dry"]
+    _directions = ["60", "70", "80", "90", "100", "110", "120", "Oscillate"]
+
     def __init__(
             self,
             name: str,
@@ -52,15 +52,36 @@ class Midea26Device(MiedaDevice):
         self._attributes = {
             DeviceAttributes.main_light: False,
             DeviceAttributes.night_light: False,
-            DeviceAttributes.heating_mode: False,
-            DeviceAttributes.bath_mode: False,
-            DeviceAttributes.ventilation_mode: False,
-            DeviceAttributes.drying_mode: False,
-            DeviceAttributes.blowing_mode: False,
-            DeviceAttributes.gentle_wind_mode: False,
+            DeviceAttributes.mode: None,
+            DeviceAttributes.direction: None,
             DeviceAttributes.current_temperature: None
         }
         self._fields = {}
+
+    @staticmethod
+    def convert_to_midea_direction(direction):
+        if direction == "Oscillate":
+            result = 0xFD
+        else:
+            result = Midea26Device._directions.index(direction) * 10 + 60 \
+                if direction in Midea26Device._directions else 0xFD
+        return result
+
+    @staticmethod
+    def convert_from_midea_direction(direction):
+        if direction > 120 or direction < 60:
+            result = 7
+        else:
+            result = math.floor((direction - 60 + 5) / 10)
+        return result
+
+    @property
+    def preset_modes(self):
+        return Midea26Device._modes
+
+    @property
+    def directions(self):
+        return Midea26Device._directions
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
@@ -73,35 +94,40 @@ class Midea26Device(MiedaDevice):
         for status in self._attributes.keys():
             if hasattr(message, str(status)):
                 value = getattr(message, str(status))
-                self._attributes[status] = value
-                new_status[str(status)] = value
+                if status == DeviceAttributes.mode:
+                    self._attributes[status] = Midea26Device._modes[value]
+                elif status == DeviceAttributes.direction:
+                    self._attributes[status] = Midea26Device._directions[
+                        self.convert_from_midea_direction(value)
+                    ]
+                else:
+                    self._attributes[status] = value
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):
-        if attr in DeviceAttributes and attr not in [DeviceAttributes.current_temperature]:
+        if attr in [DeviceAttributes.main_light,
+                    DeviceAttributes.night_light,
+                    DeviceAttributes.mode,
+                    DeviceAttributes.direction
+                    ]:
             message = MessageSet(self._device_protocol_version)
             message.fields = self._fields
             message.main_light = self._attributes[DeviceAttributes.main_light]
             message.night_light = self._attributes[DeviceAttributes.night_light]
-            message.heating_mode = self._attributes[DeviceAttributes.heating_mode]
-            message.bath_mode = self._attributes[DeviceAttributes.bath_mode]
-            message.ventilation_mode = self._attributes[DeviceAttributes.ventilation_mode]
-            message.drying_mode = self._attributes[DeviceAttributes.drying_mode]
-            message.blowing_mode = self._attributes[DeviceAttributes.blowing_mode]
-            message.gentle_wind_mode = self._attributes[DeviceAttributes.gentle_wind_mode]
-            if attr in [DeviceAttributes.heating_mode,
-                        DeviceAttributes.bath_mode,
-                        DeviceAttributes.ventilation_mode,
-                        DeviceAttributes.drying_mode,
-                        DeviceAttributes.blowing_mode,
-                        DeviceAttributes.gentle_wind_mode]:
-                message.heating_mode = False
-                message.bath_mode = False
-                message.ventilation_mode = False
-                message.drying_mode = False
-                message.blowing_mode = False
-                message.gentle_wind_mode = False
-            setattr(message, str(attr), value)
+            message.mode = Midea26Device._modes.index(self._attributes[DeviceAttributes.mode])
+            message.direction = self.convert_to_midea_direction(self._attributes[DeviceAttributes.direction])
+            if attr in [
+                DeviceAttributes.main_light,
+                DeviceAttributes.night_light
+            ]:
+                message.main_light = False
+                message.night_light = False
+                setattr(message, str(attr), value)
+            elif attr == DeviceAttributes.mode:
+                message.mode = Midea26Device._modes.index(value)
+            elif attr == DeviceAttributes.direction:
+                message.direction = self.convert_to_midea_direction(value)
             self.build_send(message)
 
     @property

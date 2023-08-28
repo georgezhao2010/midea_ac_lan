@@ -89,36 +89,18 @@ MIDEA_DEVICES = {
                 "name": "Night Light",
                 "icon": "mdi:lightbulb"
             },
-            X26Attributes.heating_mode: {
-                "type": Platform.SWITCH,
-                "name": "Heating Mode",
-                "icon": "mdi:heating-coil"
-            },
-            X26Attributes.bath_mode: {
-                "type": Platform.SWITCH,
-                "name": "Bath Mode",
-                "icon": "mdi:bathtub"
-            },
-            X26Attributes.ventilation_mode: {
-                "type": Platform.SWITCH,
-                "name": "Ventilation Mode",
+            X26Attributes.mode: {
+                "type": Platform.SELECT,
+                "name": "Mode",
+                "options": "preset_modes",
                 "icon": "mdi:fan"
             },
-            X26Attributes.drying_mode: {
-                "type": Platform.SWITCH,
-                "name": "Drying Mode",
-                "icon": "mdi:heat-wave"
-            },
-            X26Attributes.blowing_mode: {
-                "type": Platform.SWITCH,
-                "name": "Blowing Mode",
-                "icon": "mdi:air-filter"
-            },
-            X26Attributes.gentle_wind_mode: {
-                "type": Platform.SWITCH,
-                "name": "Gentle Wind Mode",
-                "icon": "mdi:tailwind"
-            },
+            X26Attributes.direction: {
+                "type": Platform.SELECT,
+                "name": "Direction",
+                "options": "directions",
+                "icon": "mdi:arrow-split-vertical"
+            }
         }
     },
     0x34: {
