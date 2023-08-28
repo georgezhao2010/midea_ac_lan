@@ -40,6 +40,7 @@ class MessageSet(MessageCDBase):
             body_type=0x01)
         self.power = False
         self.target_temperature = 0
+        self.aux_heating = False
         self.fields = {}
 
     def read_field(self, field):
@@ -49,15 +50,16 @@ class MessageSet(MessageCDBase):
     @property
     def _body(self):
         power = 0x01 if self.power else 0x00
+        aux_heating = 0x01 if self.aux_heating else 0x00
         target_temperature = round(self.target_temperature * 2 + 30)
         return bytearray([
             0x01, power,
             self.read_field("modeValue"),
             target_temperature,
             self.read_field("trValue"),
-            self.read_field("openPTC"),
+            aux_heating,
             self.read_field("ptcTemp"),
-            self.read_field("byte8")
+            0  # self.read_field("byte8")
         ])
 
 
@@ -72,6 +74,7 @@ class CDGeneralMessageBody(MessageBody):
         self.compressor_temperature = (body[9] - 30) / 2
         self.max_temperature = round((body[10] - 30) / 2)
         self.min_temperature = round((body[11] - 30) / 2)
+        self.compressor_status = (body[27] & 0x08) > 0
 
 
 class CD02MessageBody(MessageBody):
@@ -82,9 +85,9 @@ class CD02MessageBody(MessageBody):
         self.fields["modeValue"] = body[3]
         self.target_temperature = round((body[4] - 30) / 2)
         self.fields["trValue"] = body[5]
-        self.fields["openPTC"] = body[6]
+        self.aux_heating = body[6] > 0
         self.fields["ptcTemp"] = body[7]
-        self.fields["byte8"] = body[8]
+        # self.fields["byte8"] = body[8]
 
 
 class MessageCDResponse(MessageResponse):

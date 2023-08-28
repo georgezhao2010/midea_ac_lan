@@ -1,4 +1,5 @@
 import logging
+import json
 from .message import (
     MessageQuery,
     MessageSet,
@@ -22,6 +23,8 @@ class DeviceAttributes(StrEnum):
     outdoor_temperature = "outdoor_temperature"
     condenser_temperature = "condenser_temperature"
     compressor_temperature = "compressor_temperature"
+    compressor_status = "condenser_status"
+    aux_heating = "aux_heating"
 
 
 class MideaCDDevice(MiedaDevice):
@@ -56,9 +59,18 @@ class MideaCDDevice(MiedaDevice):
             DeviceAttributes.current_temperature: None,
             DeviceAttributes.outdoor_temperature: None,
             DeviceAttributes.condenser_temperature: None,
-            DeviceAttributes.compressor_temperature: None
+            DeviceAttributes.compressor_temperature: None,
+            DeviceAttributes.compressor_status: None,
+            DeviceAttributes.aux_heating: None
         }
         self._fields = {}
+        self._temperature_step = None
+        self._default_temperature_step = 1
+        self.set_customize(customize)
+
+    @property
+    def temperature_step(self):
+        return self._temperature_step
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
@@ -80,6 +92,7 @@ class MideaCDDevice(MiedaDevice):
             message = MessageSet(self._device_protocol_version)
             message.fields = self._fields
             message.power = self._attributes[DeviceAttributes.power]
+            message.aux_heating = self._attributes[DeviceAttributes.aux_heating]
             message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
             setattr(message, str(attr), value)
             self.build_send(message)
@@ -87,6 +100,18 @@ class MideaCDDevice(MiedaDevice):
     @property
     def attributes(self):
         return super().attributes
+
+    def set_customize(self, customize):
+        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
+        self._temperature_step = self._default_temperature_step
+        if customize and len(customize) > 0:
+            try:
+                params = json.loads(customize)
+                if params and "temperature_step" in params:
+                    self._temperature_step = params.get("temperature_step")
+            except Exception as e:
+                _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
+            self.update_all({"temperature_step": self._temperature_step})
 
 
 class MideaAppliance(MideaCDDevice):

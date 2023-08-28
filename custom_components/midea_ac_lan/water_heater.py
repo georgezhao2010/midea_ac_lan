@@ -16,6 +16,7 @@ from .const import (
 )
 from .midea.devices.e6.device import DeviceAttributes as E6Attributes
 from .midea.devices.c3.device import DeviceAttributes as C3Attributes
+from .midea.devices.cd.device import DeviceAttributes as CDAttributes
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
@@ -62,7 +63,10 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def extra_state_attributes(self) -> dict:
-        return self._device.attributes
+        attrs = self._device.attributes
+        if hasattr(self._device, "temperature_step"):
+            attrs["target_temp_step"] = self._device.temperature_step
+        return attrs
 
     @property
     def precision(self):
@@ -247,8 +251,8 @@ class MideaCDWaterHeater(MideaWaterHeater):
 
     @property
     def min_temp(self):
-        return self._device.get_attribute(E6Attributes.min_temperature)
+        return self._device.get_attribute(CDAttributes.min_temperature)
 
     @property
     def max_temp(self):
-        return self._device.get_attribute(E6Attributes.max_temperature)
+        return self._device.get_attribute(CDAttributes.max_temperature)

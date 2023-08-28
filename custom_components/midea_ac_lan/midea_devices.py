@@ -1014,6 +1014,12 @@ MIDEA_DEVICES = {
                 "icon": "mdi:heat-pump",
                 "default": True
             },
+            CDAttributes.compressor_status: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Compressor Status",
+                "icon": "mdi:drag",
+                "device_class": BinarySensorDeviceClass.RUNNING
+            },
             CDAttributes.compressor_temperature:{
                 "type": Platform.SENSOR,
                 "name": "Compressor Temperature",
@@ -1035,6 +1041,16 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            CDAttributes.power: {
+                "type": Platform.SWITCH,
+                "name": "Power",
+                "icon": "mdi:power"
+            },
+            CDAttributes.aux_heating: {
+                "type": Platform.SWITCH,
+                "name": "Aux Heating",
+                "icon": "mdi:heat-wave"
+            }
         }
     },
     0xCE: {
