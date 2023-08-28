@@ -132,7 +132,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
             {
                 vol.Required("device_id"): vol.Coerce(int),
                 vol.Required("cmd_type"): vol.In([2, 3]),
-                vol.Required("cmd_body"): vol.Any(cv.boolean, str, int)
+                vol.Required("cmd_body"): str
             }
         )
     )

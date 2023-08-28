@@ -7,7 +7,7 @@
 
 ### 额外生成实体
 
-EntityID | 类型 | 名称 | 描述 
+实体ID | 类型 | 名称 | 描述 
 --- | --- | --- | ---
 binary_sensor.{DEVICEID}_door | binary_sensor | Door | 门状态 
 binary_sensor.{DEVICEID}_rinse_aid | binary_sensor | Rinse Aid Shortage | 漂洗剂不足 
