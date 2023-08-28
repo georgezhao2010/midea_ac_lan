@@ -17,7 +17,10 @@ class C2MessageEnum(IntEnum):
 
 C2_MESSAGE_KEYS = {
     C2MessageEnum.child_lock: {True: 0x10, False: 0x00},
-    C2MessageEnum.light: {True: 0x01, False: 0x00}
+    C2MessageEnum.light: {True: 0x01, False: 0x00},
+    C2MessageEnum.dry_level: {0: 0, 1: 1, 2: 2, 3: 3},
+    C2MessageEnum.seat_temp_level: {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5},
+    C2MessageEnum.water_temp_level: {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
 }
 
 
