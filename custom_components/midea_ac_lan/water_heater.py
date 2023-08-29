@@ -1,4 +1,4 @@
-import functools as ft
+import logging
 from homeassistant.components.water_heater import *
 from homeassistant.const import (
     Platform,
@@ -24,6 +24,8 @@ E2_TEMPERATURE_MAX = 75
 E2_TEMPERATURE_MIN = 30
 E3_TEMPERATURE_MAX = 65
 E3_TEMPERATURE_MIN = 35
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -69,6 +71,22 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
         return attrs
 
     @property
+    def min_temp(self):
+        return NotImplementedError
+
+    @property
+    def max_temp(self):
+        return NotImplementedError
+
+    @property
+    def target_temperature_low(self):
+        return self.min_temp
+
+    @property
+    def target_temperature_high(self):
+        return self.max_temp
+
+    @property
     def precision(self):
         return PRECISION_WHOLE
 
@@ -95,11 +113,11 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
         self._device.set_attribute("target_temperature", temperature)
 
     def set_operation_mode(self, operation_mode):
-        pass
+        self._device.set_attribute(attr="mode", value=operation_mode)
 
     @property
     def operation_list(self):
-        return []
+        return getattr(self._device, "modes")
 
     def turn_on(self):
         self._device.set_attribute(attr="power", value=True)
@@ -248,6 +266,11 @@ class MideaE6WaterHeater(MideaWaterHeater):
 class MideaCDWaterHeater(MideaWaterHeater):
     def __init__(self, device, entity_key):
         super().__init__(device, entity_key)
+
+    @property
+    def supported_features(self):
+        return WaterHeaterEntityFeature.TARGET_TEMPERATURE | \
+               WaterHeaterEntityFeature.OPERATION_MODE
 
     @property
     def min_temp(self):

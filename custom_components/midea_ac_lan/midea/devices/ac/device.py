@@ -122,10 +122,12 @@ class MideaACDevice(MiedaDevice):
         }
         self._fresh_air_version = None
         self._default_temperature_step = 0.5
-        self._temperature_step = self._default_temperature_step
+        self._temperature_step = None
         self._used_subprotocol = False
         self._bb_sn8_flag = False
         self._bb_timer = False
+        self._power_analysis_method = None
+        self._default_power_analysis_method = 2
         self.set_customize(customize)
 
     @property
@@ -150,7 +152,7 @@ class MideaACDevice(MiedaDevice):
         ]
 
     def process_message(self, msg):
-        message = MessageACResponse(msg)
+        message = MessageACResponse(msg, self._power_analysis_method)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         has_fresh_air = False
@@ -340,11 +342,14 @@ class MideaACDevice(MiedaDevice):
     def set_customize(self, customize):
         super().set_customize(customize)
         self._temperature_step = self._default_temperature_step
+        self._power_analysis_method = self._default_power_analysis_method
         if customize and len(customize) > 0:
             try:
                 params = json.loads(customize)
                 if params and "temperature_step" in params:
                     self._temperature_step = params.get("temperature_step")
+                if params and "power_analysis_method" in params:
+                    self._power_analysis_method = params.get("power_analysis_method")
             except Exception as e:
                 _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
             self.update_all({"temperature_step": self._temperature_step})

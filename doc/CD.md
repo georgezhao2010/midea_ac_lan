@@ -2,6 +2,7 @@
 
 ## Features
 - Supports target temperature
+- Supports operating modes
 
 ## Customize
 
@@ -19,14 +20,14 @@ Set the temperature step of water heater (1 by default).
 
 ### Extra entities
 
-| EntityID                                     | Class             | Description            |
-|----------------------------------------------|-------------------|------------------------|
-| sensor.{DEVICEID}_compressor_temperature     | sensor            | Compressor Temperature |
-| sensor.{DEVICEID}_condenser_temperature      | sensor            | Condenser Temperature  |
-| sensor.{DEVICEID}_outdoor_temperature        | sensor            | Outdoor Temperature    |
-| binary_sensor.{DEVICEID}_outdoor_temperature | compressor_status | Compressor Status      |
-| switch.{DEVICEID}_power                      | switch            | Power                  |
-| switch.{DEVICEID}_aux_heating                | switch            | Aux Heating            |
+| EntityID                                   | Class         | Description                                             |
+|--------------------------------------------|---------------|---------------------------------------------------------|
+| sensor.{DEVICEID}_compressor_temperature   | sensor        | Compressor Temperature                                  |
+| sensor.{DEVICEID}_condenser_temperature    | sensor        | Condenser Temperature                                   |
+| sensor.{DEVICEID}_outdoor_temperature      | sensor        | Outdoor Temperature                                     |
+| binary_sensor.{DEVICEID}_compressor_status | binary_sensor | Compressor Status (It may doesn't work in some devices) |
+| switch.{DEVICEID}_power                    | switch        | Power                                                   |
+
 
 ## Services
 following extra service will be made
@@ -40,7 +41,7 @@ Set the attribute of appliance. Service data:
 | Name      | Description                                 |
 |-----------|---------------------------------------------|
 | device_id | The Appliance code (Device ID) of appliance |
-| attribute | "power"</br>"aux_heating"                   |
+| attribute | "power"                                     |
 | value     | true or false                               |
 
 Example

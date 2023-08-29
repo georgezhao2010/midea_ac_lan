@@ -44,7 +44,6 @@ class MessageSet(Message13Base):
         self.color_temperature = None
         self.effect = None
         self.power = None
-        self.delay_off = None
 
     @property
     def _body(self):
@@ -61,9 +60,6 @@ class MessageSet(Message13Base):
         elif self.brightness is not None:
             self._body_type = 0x04
             body_byte = self.brightness
-        elif self.delay_off is not None:
-            self._body_type = 0x05
-            body_byte = 0x01 if self.delay_off else 0x00
         return bytearray([body_byte, 0x00, 0x00, 0x00])
 
 
@@ -75,7 +71,6 @@ class MessageMainLightBody(MessageBody):
         self.effect = self.read_byte(body, 3) - 1
         if self.effect > 5:
             self.effect = 1
-        self.delay_off = self.read_byte(body, 4)
         '''
         self.rgb_color = [self.read_byte(body, 5),
                           self.read_byte(body, 6),

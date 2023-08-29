@@ -20,7 +20,6 @@ class DeviceAttributes(StrEnum):
     rgb_color = "rgb_color"
     effect = "effect"
     power = "power"
-    delay_off = "delay_off"
 
 
 class Midea13Device(MiedaDevice):
@@ -54,8 +53,7 @@ class Midea13Device(MiedaDevice):
             DeviceAttributes.color_temperature: None,
             DeviceAttributes.rgb_color: None,
             DeviceAttributes.effect: None,
-            DeviceAttributes.power: False,
-            DeviceAttributes.delay_off: False
+            DeviceAttributes.power: False
         }
         self._color_temp_range = None
         self._default_color_temp_range = [2700, 6500]
@@ -105,11 +103,10 @@ class Midea13Device(MiedaDevice):
         if attr in [DeviceAttributes.brightness,
                     DeviceAttributes.color_temperature,
                     DeviceAttributes.effect,
-                    DeviceAttributes.power,
-                    DeviceAttributes.delay_off]:
+                    DeviceAttributes.power]:
             message = MessageSet(self._device_protocol_version)
             if attr == DeviceAttributes.effect and value in self._effects:
-                setattr(message, str(attr), self._effects.index(value))
+                setattr(message, str(attr), Midea13Device._effects.index(value))
             elif attr == DeviceAttributes.color_temperature:
                 setattr(message, str(attr), self.kelvin_to_midea(value))
             else:

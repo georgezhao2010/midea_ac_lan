@@ -475,37 +475,41 @@ class XC0MessageBody(MessageBody):
 
 
 class XC1MessageBody(MessageBody):
-    def __init__(self, body):
+    def __init__(self, body, analysis_method=3):
         super().__init__(body)
         if body[3] == 0x44:
             self.total_energy_consumption = XC1MessageBody.parse_consumption(
+                analysis_method,
                 body[4], body[5], body[6], body[7]
             )
             self.current_energy_consumption = XC1MessageBody.parse_consumption(
+                analysis_method,
                 body[12], body[13], body[14], body[15]
             )
             self.realtime_power = XC1MessageBody.parse_power(
+                analysis_method,
                 body[16], body[17], body[18]
             )
         elif body[3] == 0x40:
             pass
 
     @staticmethod
-    def parse_value(byte):
-        return (byte >> 4) * 10 + (byte & 0x0F)
+    def parse_power(analysis_method, byte1, byte2, byte3):
+        if analysis_method == 1:
+            return byte1 + float(byte2) / 100 + byte3 / 10000
+        elif analysis_method == 2:
+            return float((byte1 << 16) + (byte2 << 8) + byte3) / 1000
+        else:
+            return float(byte1 * 10000 + byte2 * 100 + byte3) / 10
 
     @staticmethod
-    def parse_power(byte1, byte2, byte3):
-        return float(XC1MessageBody.parse_value(byte1) * 10000 +
-                     XC1MessageBody.parse_value(byte2) * 100 +
-                     XC1MessageBody.parse_value(byte3)) / 10
-
-    @staticmethod
-    def parse_consumption(byte1, byte2, byte3, byte4):
-        return float(XC1MessageBody.parse_value(byte1) * 1000000 +
-                     XC1MessageBody.parse_value(byte2) * 10000 +
-                     XC1MessageBody.parse_value(byte3) * 100 +
-                     XC1MessageBody.parse_value(byte4)) / 100
+    def parse_consumption(analysis_method, byte1, byte2, byte3, byte4):
+        if analysis_method == 1:
+            return byte1 * 10000 + byte2 * 100 + byte3 + float(byte4) / 100
+        elif analysis_method == 2:
+            return float((byte1 << 32) + (byte2 << 16) + (byte3 << 8) + byte4) / 1000
+        else:
+            return float(byte1 * 1000000 + byte2 * 10000 + byte3 * 100 + byte4) / 100
 
 
 class XBBMessageBody(MessageBody):
@@ -548,7 +552,7 @@ class XBBMessageBody(MessageBody):
 
 
 class MessageACResponse(MessageResponse):
-    def __init__(self, message):
+    def __init__(self, message, power_analysis_method=3):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type == MessageType.notify2 and self._body_type == 0xA0:
@@ -561,7 +565,7 @@ class MessageACResponse(MessageResponse):
         elif self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0xC0:
             self._body = XC0MessageBody(body)
         elif self._message_type == MessageType.query and self._body_type == 0xC1:
-            self._body = XC1MessageBody(body)
+            self._body = XC1MessageBody(body, power_analysis_method)
         elif self._message_type in [MessageType.set, MessageType.query, MessageType.notify2] and \
                 self._body_type == 0xBB and len(body) >= 21:
             self.used_subprotocol = True

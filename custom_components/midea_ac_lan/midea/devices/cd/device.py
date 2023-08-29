@@ -16,18 +16,20 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     power = "power"
+    mode = "mode"
     max_temperature = "max_temperature"
     min_temperature = "min_temperature"
     target_temperature = "target_temperature"
-    current_temperature = "target_temperature"
+    current_temperature = "current_temperature"
     outdoor_temperature = "outdoor_temperature"
     condenser_temperature = "condenser_temperature"
     compressor_temperature = "compressor_temperature"
-    compressor_status = "condenser_status"
-    aux_heating = "aux_heating"
+    compressor_status = "compressor_status"
 
 
 class MideaCDDevice(MiedaDevice):
+    _modes = ["Electric", "Standard", "Dual", "Smart"]
+
     def __init__(
             self,
             name: str,
@@ -60,8 +62,7 @@ class MideaCDDevice(MiedaDevice):
             DeviceAttributes.outdoor_temperature: None,
             DeviceAttributes.condenser_temperature: None,
             DeviceAttributes.compressor_temperature: None,
-            DeviceAttributes.compressor_status: None,
-            DeviceAttributes.aux_heating: None
+            DeviceAttributes.compressor_status: None
         }
         self._fields = {}
         self._temperature_step = None
@@ -71,6 +72,10 @@ class MideaCDDevice(MiedaDevice):
     @property
     def temperature_step(self):
         return self._temperature_step
+
+    @property
+    def modes(self):
+        return MideaCDDevice._modes
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
@@ -83,7 +88,11 @@ class MideaCDDevice(MiedaDevice):
             self._fields = getattr(message, "fields")
         for status in self._attributes.keys():
             if hasattr(message, str(status)):
-                self._attributes[status] = getattr(message, str(status))
+                value = getattr(message, str(status))
+                if status == DeviceAttributes.mode:
+                    self._attributes[status] = MideaCDDevice._modes[value]
+                else:
+                    self._attributes[status] = value
                 new_status[str(status)] = self._attributes[status]
         return new_status
 
@@ -91,10 +100,14 @@ class MideaCDDevice(MiedaDevice):
         if attr in [DeviceAttributes.power, DeviceAttributes.target_temperature]:
             message = MessageSet(self._device_protocol_version)
             message.fields = self._fields
+            message.mode = MideaCDDevice._modes.index(self._attributes[DeviceAttributes.mode])
             message.power = self._attributes[DeviceAttributes.power]
-            message.aux_heating = self._attributes[DeviceAttributes.aux_heating]
             message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
-            setattr(message, str(attr), value)
+            if attr == DeviceAttributes.mode:
+                if value in MideaCDDevice._modes:
+                    setattr(message, str(attr), MideaCDDevice._modes.index(value))
+            else:
+                setattr(message, str(attr), value)
             self.build_send(message)
 
     @property

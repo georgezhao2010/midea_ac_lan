@@ -30,9 +30,7 @@ TEMPERATURE_MAX = 30
 TEMPERATURE_MIN = 17
 
 FAN_SILENT = "Silent"
-FAN_FULL_SPEED = "Super high"
-
-PRESET_SILENT = "Silent"
+FAN_FULL_SPEED = "Full"
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):

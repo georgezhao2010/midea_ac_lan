@@ -17,14 +17,14 @@
 
 ### Extra entities
 
-| EntityID                                     | 类型                | 名称                     | 描述    |
-|----------------------------------------------|-------------------|------------------------|-------|
-| sensor.{DEVICEID}_compressor_temperature     | sensor            | Compressor Temperature | 压缩机温度 |
-| sensor.{DEVICEID}_condenser_temperature      | sensor            | Condenser Temperature  | 冷凝器温度 |
-| sensor.{DEVICEID}_outdoor_temperature        | sensor            | Outdoor Temperature    | 室外温度  |
-| binary_sensor.{DEVICEID}_outdoor_temperature | compressor_status | Compressor Status      | 压缩机状态 |
-| switch.{DEVICEID}_power                      | switch            | Power                  | 电源    |
-| switch.{DEVICEID}_aux_heating                | switch            | Aux Heating            | 电辅热   |
+| EntityID                                   | 类型            | 名称                     | 描述                       |
+|--------------------------------------------|---------------|------------------------|--------------------------|
+| sensor.{DEVICEID}_compressor_temperature   | sensor        | Compressor Temperature | 压缩机温度                    |
+| sensor.{DEVICEID}_condenser_temperature    | sensor        | Condenser Temperature  | 冷凝器温度                    |
+| sensor.{DEVICEID}_outdoor_temperature      | sensor        | Outdoor Temperature    | 室外温度                     |
+| binary_sensor.{DEVICEID}_compressor_status | binary_sensor | Compressor Status      | 压缩机状态 (可能在部分机型上无法正确显示状态) |
+| switch.{DEVICEID}_power                    | switch        | Power                  | 电源                       |
+
 
 ## 服务
 生成以下扩展服务
@@ -35,11 +35,11 @@
 
 设置设备属性, 服务数据:
 
-| 名称        | 描述                        |
-|-----------|---------------------------|
-| device_id | 设备的编号(Device ID)          |
-| attribute | "power"</br>"aux_heating" |
-| value     | true 或 false              |
+| 名称        | 描述               |
+|-----------|------------------|
+| device_id | 设备的编号(Device ID) |
+| attribute | "power"          |
+| value     | true 或 false     |
 
 示例
 ```

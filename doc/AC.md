@@ -15,10 +15,20 @@
 
 ## Customize
 
-Set the temperature step of AC (0.5 by default).
+- Set the temperature step of AC (0.5 by default).
 
 ```
 {"temperature_step": 1}
+```
+
+- power consumption analysis method (3 by default)
+
+  There are 3 different methods to analyze the power consumption of an AC, but I don’t know which is right for your device. 
+  If the power consumption data looks incorrect, try another method and see if they are correct. 
+  The options include 1, 2, and 3.
+  
+```
+{"power_analysis_method": 1}
 ```
 
 ## Entities

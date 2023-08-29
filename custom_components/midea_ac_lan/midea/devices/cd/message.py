@@ -42,6 +42,7 @@ class MessageSet(MessageCDBase):
         self.target_temperature = 0
         self.aux_heating = False
         self.fields = {}
+        self.mode = 1
 
     def read_field(self, field):
         value = self.fields.get(field, 0)
@@ -50,14 +51,12 @@ class MessageSet(MessageCDBase):
     @property
     def _body(self):
         power = 0x01 if self.power else 0x00
-        aux_heating = 0x01 if self.aux_heating else 0x00
+        mode = self.mode + 1
         target_temperature = round(self.target_temperature * 2 + 30)
         return bytearray([
-            0x01, power,
-            self.read_field("modeValue"),
-            target_temperature,
+            0x01, power, mode, target_temperature,
             self.read_field("trValue"),
-            aux_heating,
+            self.fields["openPTC"],
             self.read_field("ptcTemp"),
             0  # self.read_field("byte8")
         ])
@@ -68,6 +67,12 @@ class CDGeneralMessageBody(MessageBody):
         super().__init__(body)
         self.power = (body[2] & 0x01) > 0
         self.target_temperature = round((body[3] - 30) / 2)
+        if (body[2] & 0x02) > 0:
+            self.mode = 0
+        elif (body[2] & 0x04) > 0:
+            self.mode = 1
+        elif (body[2] & 0x08) > 0:
+            self.mode = 2
         self.current_temperature = round((body[4] - 30) / 2)
         self.condenser_temperature = (body[7] - 30) / 2
         self.outdoor_temperature = (body[8] - 30) / 2
@@ -75,19 +80,20 @@ class CDGeneralMessageBody(MessageBody):
         self.max_temperature = round((body[10] - 30) / 2)
         self.min_temperature = round((body[11] - 30) / 2)
         self.compressor_status = (body[27] & 0x08) > 0
-
+        if (body[28] & 0x20) > 0:
+            self.mode = 3
 
 class CD02MessageBody(MessageBody):
     def __init__(self, body):
         super().__init__(body)
         self.fields = {}
         self.power = (body[2] & 0x01) > 0
-        self.fields["modeValue"] = body[3]
+        self.mode = body[3]
         self.target_temperature = round((body[4] - 30) / 2)
         self.fields["trValue"] = body[5]
-        self.aux_heating = body[6] > 0
+        self.fields["openPTC"] = body[5]
         self.fields["ptcTemp"] = body[7]
-        # self.fields["byte8"] = body[8]
+        self.fields["byte8"] = body[8]
 
 
 class MessageCDResponse(MessageResponse):

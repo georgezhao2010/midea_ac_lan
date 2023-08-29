@@ -55,19 +55,8 @@ MIDEA_DEVICES = {
                 "type": Platform.LIGHT,
                 "icon": "mdi:lightbulb",
                 "default": True
-            },
-            X13Attributes.delay_off: {
-                "type": Platform.SWITCH,
-                "name": "Delay Off",
-                "icon": "mdi:timer"
-            },
-            X13Attributes.effect: {
-                "type": Platform.SELECT,
-                "name": "Effect",
-                "options": "effects",
-                "icon": "mdi:ceiling-light-multiple-outline"
             }
-        },
+        }
     },
     0x26: {
         "name": "Bathroom Master",
@@ -208,21 +197,23 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
-            X40Attributes.main_light: {
+            X40Attributes.light: {
                 "type": Platform.SWITCH,
                 "name": "Main Light",
                 "icon": "mdi:lightbulb"
             },
-            X40Attributes.ventilation_mode: {
-                "type": Platform.SWITCH,
-                "name": "Ventilation Mode",
+            X40Attributes.mode: {
+                "type": Platform.SELECT,
+                "name": "Mode",
+                "options": "preset_modes",
                 "icon": "mdi:fan"
             },
-            X40Attributes.blowing_mode: {
+            X40Attributes.oscillate: {
                 "type": Platform.SWITCH,
-                "name": "Blowing Mode",
-                "icon": "mdi:air-filter"
-            },
+                "name": "Oscillate",
+                "options": "oscillate",
+                "icon": "mdi:arrow-split-vertical"
+            }
         }
     },
     0xA1: {
@@ -1028,11 +1019,6 @@ MIDEA_DEVICES = {
                 "type": Platform.SWITCH,
                 "name": "Power",
                 "icon": "mdi:power"
-            },
-            CDAttributes.aux_heating: {
-                "type": Platform.SWITCH,
-                "name": "Aux Heating",
-                "icon": "mdi:heat-wave"
             }
         }
     },
