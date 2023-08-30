@@ -14,7 +14,6 @@ from homeassistant.const import (
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
-from .midea.devices.x13.device import DeviceAttributes as X13Attributes
 from .midea.devices.x26.device import DeviceAttributes as X26Attributes
 from .midea.devices.x34.device import DeviceAttributes as X34Attributes
 from .midea.devices.x40.device import DeviceAttributes as X40Attributes
@@ -190,6 +189,11 @@ MIDEA_DEVICES = {
     0x40: {
         "name": "Integrated Ceiling Fan",
         "entities": {
+            "fan": {
+                "type": Platform.FAN,
+                "icon": "mdi:fan",
+                "default": True
+            },
             X40Attributes.current_temperature: {
                 "type": Platform.SENSOR,
                 "name": "Current Temperature",
@@ -199,7 +203,7 @@ MIDEA_DEVICES = {
             },
             X40Attributes.light: {
                 "type": Platform.SWITCH,
-                "name": "Main Light",
+                "name": "Light",
                 "icon": "mdi:lightbulb"
             },
             X40Attributes.mode: {

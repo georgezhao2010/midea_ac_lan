@@ -41,8 +41,10 @@ class MessageSet(Message40Base):
             body_type=0x01)
         self.fields = {}
         self.light = False
-        self.ventilation_mode = False
-        self.blowing_mode = False
+        self.power = False
+        self.fan_speed = 30
+        self.oscillate = False
+        self.ventilation = False
 
     def read_field(self, field):
         value = self.fields.get(field, 0)
@@ -50,6 +52,7 @@ class MessageSet(Message40Base):
 
     @property
     def _body(self):
+        fan_speed = 0xFF if self.fan_speed == 0 else 30 if self.fan_speed <= 50 else 100
         return bytearray([
             1 if self.light else 0,
             self.read_field("MAIN_LIGHT_BRIGHTNESS"),
@@ -60,7 +63,6 @@ class MessageSet(Message40Base):
             self.read_field("LIGHT_INTENSITY_THRESHOLD"),
             self.read_field("RADAR_SENSITIVITY"),
             self.read_field("HEATING_ENABLE"),
-            self.read_field("HEATING_TEMPERATURE"),
             self.read_field("HEATING_SPEED"),
             self.read_field("HEATING_DIRECTION"),
             self.read_field("BATH_ENABLE"),
@@ -68,7 +70,7 @@ class MessageSet(Message40Base):
             self.read_field("BATH_TEMPERATURE"),
             self.read_field("BATH_SPEED"),
             self.read_field("BATH_DIRECTION"),
-            1 if self.ventilation_mode else 0,
+            1 if self.ventilation else 0,
             self.read_field("VENTILATION_SPEED"),
             self.read_field("VENTILATION_DIRECTION"),
             self.read_field("DRYING_ENABLE"),
@@ -76,13 +78,13 @@ class MessageSet(Message40Base):
             self.read_field("DRYING_TEMPERATURE"),
             self.read_field("DRYING_SPEED"),
             self.read_field("DRYING_DIRECTION"),
-            1 if self.blowing_mode else 0,
-            self.read_field("BLOWING_SPEED"),
-            self.read_field("BLOWING_DIRECTION"),
+            1 if self.power else 0,
+            fan_speed,
+            0xFD if self.oscillate else 0x66,
             self.read_field("DELAY_ENABLE"),
             self.read_field("DELAY_TIME"),
             self.read_field("SOFT_WIND_ENABLE"),
-            self.read_field("SOFT_WIND_HEATING_TIME"),
+            self.read_field("SOFT_WIND_TIME"),
             self.read_field("SOFT_WIND_TEMPERATURE"),
             self.read_field("SOFT_WIND_SPEED"),
             self.read_field("SOFT_WIND_DIRECTION"),
@@ -97,46 +99,46 @@ class Message40Body(MessageBody):
     def __init__(self, body):
         super().__init__(body)
         self.fields = {}
-        self.light = self.read_byte(body, 1) > 0
-        self.fields["MAIN_LIGHT_BRIGHTNESS"] = self.read_byte(body, 2)
-        self.night_light = self.read_byte(body, 3) > 0
-        self.fields["NIGHT_LIGHT_BRIGHTNESS"] = self.read_byte(body, 4)
-        self.fields["RADAR_INDUCTION_ENABLE"] = self.read_byte(body, 5)
-        self.fields["RADAR_INDUCTION_CLOSING_TIME"] = self.read_byte(body, 6)
-        self.fields["LIGHT_INTENSITY_THRESHOLD"] = self.read_byte(body, 7)
-        self.fields["RADAR_SENSITIVITY"] = self.read_byte(body, 8)
-        self.heating_mode = self.read_byte(body, 9) > 0
-        self.fields["HEATING_TEMPERATURE"] = self.read_byte(body, 10)
-        self.fields["HEATING_SPEED"] = self.read_byte(body, 11)
-        self.fields["HEATING_DIRECTION"] = self.read_byte(body, 12)
-        self.bath_mode = self.read_byte(body, 13) > 0
-        self.fields["BATH_HEATING_TIME"] = self.read_byte(body, 14)
-        self.fields["BATH_TEMPERATURE"] = self.read_byte(body, 15)
-        self.fields["BATH_SPEED"] = self.read_byte(body, 16)
-        self.fields["BATH_DIRECTION"] = self.read_byte(body, 17)
-        self.ventilation_mode = self.read_byte(body, 18) > 0
-        self.fields["VENTILATION_SPEED"] = self.read_byte(body, 19)
-        self.fields["VENTILATION_DIRECTION"] = self.read_byte(body, 20)
-        self.fields["DRYING_ENABLE"] = self.read_byte(body, 21)
-        self.fields["DRYING_TIME"] = self.read_byte(body, 22)
-        self.drying_mode = self.read_byte(body, 23) > 0
-        self.fields["DRYING_SPEED"] = self.read_byte(body, 24)
-        self.fields["DRYING_DIRECTION"] = self.read_byte(body, 25)
-        self.blowing_mode = self.read_byte(body, 26) > 0
-        self.fields["BLOWING_SPEED"] = self.read_byte(body, 27)
-        self.fields["BLOWING_DIRECTION"] = self.read_byte(body, 28)
-        self.fields["DELAY_ENABLE"] = self.read_byte(body, 29)
-        self.fields["DELAY_TIME"] = self.read_byte(body, 30)
-        self.current_temperature = self.read_byte(body, 33)
-        self.fields["SOFT_WIND_ENABLE"] = self.read_byte(body, 38)
-        self.gentle_wind_mode = self.read_byte(body, 39) > 0
-        self.fields["SOFT_WIND_TEMPERATURE"] = self.read_byte(body, 40)
-        self.fields["SOFT_WIND_SPEED"] = self.read_byte(body, 41)
-        self.fields["SOFT_WIND_DIRECTION"] = self.read_byte(body, 42)
-        self.fields["WINDLESS_ENABLE"] = self.read_byte(body, 43)
-        self.fields["ANION_ENABLE"] = self.read_byte(body, 44)
-        self.fields["SMELLY_ENABLE"] = self.read_byte(body, 45)
-        self.fields["SMELLY_THRESHOLD"] = self.read_byte(body, 46)
+        self.light = body[1] > 0
+        self.fields["MAIN_LIGHT_BRIGHTNESS"] = body[2]
+        self.fields["NIGHT_LIGHT_ENABLE"] = body[3]
+        self.fields["NIGHT_LIGHT_BRIGHTNESS"] = body[4]
+        self.fields["RADAR_INDUCTION_ENABLE"] = body[5]
+        self.fields["RADAR_INDUCTION_CLOSING_TIME"] = body[6]
+        self.fields["LIGHT_INTENSITY_THRESHOLD"] = body[7]
+        self.fields["RADAR_SENSITIVITY"] = body[8]
+        self.fields["HEATING_ENABLE"] = body[9]
+        self.fields["HEATING_TEMPERATURE"]= body[10]
+        self.fields["HEATING_SPEED"] = body[11]
+        self.fields["HEATING_DIRECTION"] = body[12]
+        self.fields["BATH_ENABLE"] = body[13] > 0
+        self.fields["BATH_HEATING_TIME"] = body[14]
+        self.fields["BATH_TEMPERATURE"] = body[15]
+        self.fields["BATH_SPEED"] = body[16]
+        self.fields["BATH_DIRECTION"] = body[17]
+        self.ventilation = body[18] > 0
+        self.fields["VENTILATION_SPEED"] = body[19]
+        self.fields["VENTILATION_DIRECTION"] = body[20]
+        self.fields["DRYING_ENABLE"] = body[21] > 0
+        self.fields["DRYING_TIME"] = body[22]
+        self.fields["DRYING_TEMPERATURE"] = body[23]
+        self.fields["DRYING_SPEED"] = body[24]
+        self.fields["DRYING_DIRECTION"] = body[25]
+        self.power = body[26] > 0
+        self.fan_speed = 0 if body[27] == 0xFF else 50 if body[27] <= 30 else 100
+        self.oscillate = (body[28] == 0xFD)
+        self.fields["DELAY_ENABLE"] = body[29]
+        self.fields["DELAY_TIME"] = body[30]
+        self.current_temperature = body[33]
+        self.fields["SOFT_WIND_ENABLE"] = body[38]
+        self.fields["SOFT_WIND_TIME"] = body[39]
+        self.fields["SOFT_WIND_TEMPERATURE"] = body[40]
+        self.fields["SOFT_WIND_SPEED"] = body[41]
+        self.fields["SOFT_WIND_DIRECTION"] = body[42]
+        self.fields["WINDLESS_ENABLE"] = body[43]
+        self.fields["ANION_ENABLE"] = body[44]
+        self.fields["SMELLY_ENABLE"] = body[45]
+        self.fields["SMELLY_THRESHOLD"] = body[46]
 
 
 class Message40Response(MessageResponse):

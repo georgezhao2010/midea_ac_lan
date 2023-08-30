@@ -70,8 +70,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     devices = {}
     found_device = {}
     supports = {}
+    unsorted = {}
     for device_type, device_info in MIDEA_DEVICES.items():
-        supports[device_type] = f"[{'%02X' % device_type}] {device_info['name']}"
+        unsorted[device_type] = device_info["name"]
+
+    unsorted = sorted(unsorted.items(), key=lambda x: x[1])
+    for item in unsorted:
+        supports[item[0]] = item[1]
 
     def _already_configured(self, device_id, ip_address):
         for entry in self._async_current_entries():

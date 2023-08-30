@@ -14,13 +14,18 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class DeviceAttributes(StrEnum):
-    main_light = "light"
-    ventilation_mode = "ventilation_mode"
-    blowing_mode = "blowing_mode"
+    light = "light"
+    mode = "mode"
+    power = "power"
+    oscillate = "oscillate"
+    ventilation = "ventilation"
     current_temperature = "current_temperature"
+    fan_speed = "fan_speed"
 
 
 class Midea40Device(MiedaDevice):
+    _modes = {255: "Off", 30: "Low", 100: "High"}
+
     def __init__(
             self,
             name: str,
@@ -46,11 +51,18 @@ class Midea40Device(MiedaDevice):
         )
         self._attributes = {
             DeviceAttributes.light: False,
-            DeviceAttributes.ventilation_mode: False,
-            DeviceAttributes.blowing_mode: False,
-            DeviceAttributes.current_temperature: None
+            DeviceAttributes.mode: None,
+            DeviceAttributes.power: False,
+            DeviceAttributes.oscillate: False,
+            DeviceAttributes.ventilation: False,
+            DeviceAttributes.current_temperature: None,
+            DeviceAttributes.fan_speed: None
         }
         self._fields = {}
+
+    @property
+    def preset_modes(self):
+        return Midea40Device._modes
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
@@ -63,22 +75,43 @@ class Midea40Device(MiedaDevice):
         for status in self._attributes.keys():
             if hasattr(message, str(status)):
                 value = getattr(message, str(status))
-                self._attributes[status] = value
-                new_status[str(status)] = value
+                if status == DeviceAttributes.mode:
+                    self._attributes[status] = Midea40Device._modes[value]
+                else:
+                    self._attributes[status] = value
+                new_status[str(status)] = self._attributes[status]
         return new_status
 
     def set_attribute(self, attr, value):
-        if attr in DeviceAttributes and attr not in [DeviceAttributes.current_temperature]:
+        if attr in [DeviceAttributes.light,
+                    DeviceAttributes.mode,
+                    DeviceAttributes.fan_speed,
+                    DeviceAttributes.ventilation,
+                    DeviceAttributes.oscillate]:
             message = MessageSet(self._device_protocol_version)
             message.fields = self._fields
             message.light = self._attributes[DeviceAttributes.light]
-            message.ventilation_mode = self._attributes[DeviceAttributes.ventilation_mode]
-            message.blowing_mode = self._attributes[DeviceAttributes.blowing_mode]
-            if attr in [DeviceAttributes.ventilation_mode,
-                        DeviceAttributes.blowing_mode]:
-                message.ventilation_mode = False
-                message.blowing_mode = False
-            setattr(message, str(attr), value)
+            message.ventilation = self._attributes[DeviceAttributes.ventilation]
+            message.oscillate = self._attributes[DeviceAttributes.oscillate]
+            message.fan_speed = self._attributes[DeviceAttributes.fan_speed]
+            message.power = self._attributes[DeviceAttributes.power]
+            if attr == DeviceAttributes.mode:
+                message.fan_speed = list(Midea40Device._modes.keys())[
+                    list(Midea40Device._modes.values()).index(self._attributes[value])
+                ]
+                message.power = (message.fan_speed > 0)
+            elif attr == DeviceAttributes.fan_speed:
+                message.fan_speed = value
+                message.power = (message.fan_speed > 0)
+            elif attr == DeviceAttributes.power:
+                message.power = value
+                if message.power:
+                    if message.fan_speed == 0:
+                        message.fan_speed = 50
+                else:
+                    message.fan_speed = 0
+            else:
+                setattr(message, str(attr), value)
 
     @property
     def attributes(self):
