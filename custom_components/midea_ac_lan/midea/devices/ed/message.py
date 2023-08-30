@@ -178,15 +178,15 @@ class MessageEDResponse(MessageResponse):
         if self._message_type in [MessageType.query, MessageType.notify1]:
             self.device_class = self._body_type
             if self._body_type == 0x01: # 净水器
-                self._body = EDMessageBody01(body)
+                self.set_body(EDMessageBody01(body))
             elif self._body_type in [0x03, 0x04]:
-                self._body = EDMessageBody03(body)
+                self.set_body(EDMessageBody03(body))
             elif self._body_type == 0x05:
-                self._body = EDMessageBody05(body)
+                self.set_body(EDMessageBody05(body))
             elif self._body_type == 0x06:
-                self._body = EDMessageBody06(body)
+                self.set_body(EDMessageBody06(body))
             elif self._body_type == 0x07:
-                self._body = EDMessageBody07(body)
+                self.set_body(EDMessageBody07(body))
             elif self._body_type == 0xFF:
-                self._body = EDMessageBodyFF(body)
+                self.set_body(EDMessageBodyFF(body))
         self.set_attr()

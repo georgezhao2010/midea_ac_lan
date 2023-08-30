@@ -556,18 +556,18 @@ class MessageACResponse(MessageResponse):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type == MessageType.notify2 and self._body_type == 0xA0:
-            self._body = XA0MessageBody(body)
+            self.set_body(XA0MessageBody(body))
         elif self._message_type == MessageType.notify1 and self._body_type == 0xA1:
-            self._body = XA1MessageBody(body)
+            self.set_body(XA1MessageBody(body))
         elif self._message_type in [MessageType.query, MessageType.set, MessageType.notify2] and \
                 self._body_type in [0xB0, 0xB1, 0xB5]:
-            self._body = XBXMessageBody(body, self._body_type)
+            self.set_body(XBXMessageBody(body, self._body_type))
         elif self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0xC0:
-            self._body = XC0MessageBody(body)
+            self.set_body(XC0MessageBody(body))
         elif self._message_type == MessageType.query and self._body_type == 0xC1:
-            self._body = XC1MessageBody(body, power_analysis_method)
+            self.set_body(XC1MessageBody(body, power_analysis_method))
         elif self._message_type in [MessageType.set, MessageType.query, MessageType.notify2] and \
                 self._body_type == 0xBB and len(body) >= 21:
             self.used_subprotocol = True
-            self._body = XBBMessageBody(body)
+            self.set_body(XBBMessageBody(body))
         self.set_attr()

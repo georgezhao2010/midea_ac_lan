@@ -106,12 +106,12 @@ class MessageCAResponse(MessageResponse):
         body = message[self.HEADER_LENGTH: -1]
         if (self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0x00) or \
                 (self._message_type == MessageType.notify1 and self._body_type == 0x02):
-            self._body = CAGeneralMessageBody(body)
+            self.set_body(CAGeneralMessageBody(body))
         elif (self._message_type == MessageType.exception and self._body_type == 0x01) or \
                 (self._message_type == 0x03 and self._body_type == 0x02):
-            self._body = CAExceptionMessageBody(body)
+            self.set_body(CAExceptionMessageBody(body))
         elif self._message_type == MessageType.notify1 and self._body_type == 0x00:
-            self._body = CANotify00MessageBody(body)
+            self.set_body(CANotify00MessageBody(body))
         elif self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0x01:
-            self._body = CANotify01MessageBody(body)
+            self.set_body(CANotify01MessageBody(body))
         self.set_attr()

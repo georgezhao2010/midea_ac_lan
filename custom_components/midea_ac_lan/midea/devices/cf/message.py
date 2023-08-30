@@ -79,8 +79,8 @@ class MessageCFResponse(MessageResponse):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0x01:
-            self._body = CFMessageBody(body, data_offset=1)
+            self.set_body(CFMessageBody(body, data_offset=1))
         elif self._message_type in [MessageType.notify1, MessageType.notify2]:
-            self._body = CFMessageBody(body, data_offset=0)
+            self.set_body(CFMessageBody(body, data_offset=0))
         self.set_attr()
 

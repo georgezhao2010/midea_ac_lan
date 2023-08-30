@@ -77,10 +77,10 @@ class MessageB0Response(MessageResponse):
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.notify1, MessageType.query]:
             if self._body_type == 0x01:
-                self._body = B0Message01Body(body)
+                self.set_body(B0Message01Body(body))
             elif self._body_type == 0x04:
                 pass
             else:
-                self._body = B0MessageBody(body)
+                self.set_body(B0MessageBody(body))
         self.set_attr()
 

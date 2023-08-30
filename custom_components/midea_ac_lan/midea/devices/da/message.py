@@ -104,5 +104,5 @@ class MessageDAResponse(MessageResponse):
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set] or \
                 (self._message_type == MessageType.notify1 and self._body_type == 0x04):
-            self._body = DAGeneralMessageBody(body)
+            self.set_body(DAGeneralMessageBody(body))
         self.set_attr()

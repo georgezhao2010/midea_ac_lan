@@ -71,5 +71,5 @@ class MessageBFResponse(MessageResponse):
         super().__init__(message)
         body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.set, MessageType.notify1, MessageType.query] and self._body_type == 0x01:
-            self._body = MessageBFBody(body)
+            self.set_body(MessageBFBody(body))
         self.set_attr()

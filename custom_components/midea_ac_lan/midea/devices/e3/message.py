@@ -142,5 +142,5 @@ class MessageE3Response(MessageResponse):
         if (self._message_type == MessageType.query and self._body_type == 0x01) or \
                 (self._message_type == MessageType.set and self._body_type in [0x01, 0x02, 0x04, 0x14]) or \
                 (self._message_type == MessageType.notify1 and self._body_type in [0x00, 0x01]):
-            self._body = E3GeneralMessageBody(body)
+            self.set_body(E3GeneralMessageBody(body))
         self.set_attr()

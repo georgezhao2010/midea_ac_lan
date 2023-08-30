@@ -133,5 +133,5 @@ class MessageE2Response(MessageResponse):
         body = message[self.HEADER_LENGTH: -1]
         if (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0x01) or \
                 (self._message_type == MessageType.set and self._body_type in [0x01, 0x02, 0x04, 0x14]):
-            self._body = E2GeneralMessageBody(body)
+            self.set_body(E2GeneralMessageBody(body))
         self.set_attr()

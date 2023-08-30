@@ -83,19 +83,19 @@ class MessageEAResponse(MessageResponse):
         body = message[self.HEADER_LENGTH: -1]
         if self._device_protocol_version == 0:
             if self._message_type == MessageType.set and body[5] == 0x16:  # 381
-                self._body = EABody1(body)
+                self.set_body(EABody1(body))
             elif self._message_type == MessageType.query:
                 if body[6] == 0x52 and body[7] == 0xc3:  # 404
-                    self._body = EABody2(body)
+                    self.set_body(EABody2(body))
                 elif body[5] == 0x3d:  # 420
-                    self._body = EABody1(body)
+                    self.set_body(EABody1(body))
             elif self._message_type == MessageType.notify1 and body[5] == 0x3d:  # 463
-                self._body = EABody1(body)
+                self.set_body(EABody1(body))
         else:
             if(self._message_type == MessageType.set and body[3] == 0x02) or \
                     (self._message_type == MessageType.query and body[3] == 0x03) or \
                     (self._message_type == MessageType.notify1 and body[3] == 0x04):  # 351
-                self._body = EABody3(body)
+                self.set_body(EABody3(body))
             elif self._message_type == MessageType.notify1 and body[3] == 0x06:
                 self.mode = body[4] + (body[5] << 8)
         self.set_attr()

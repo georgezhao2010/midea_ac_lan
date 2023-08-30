@@ -117,5 +117,5 @@ class Message34Response(MessageResponse):
         body = message[10: -1]
         if (self._message_type == MessageType.set and 0 <= self._body_type <= 7) or \
                 (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0):
-            self._body = Message34Body(body)
+            self.set_body(Message34Body(body))
         self.set_attr()

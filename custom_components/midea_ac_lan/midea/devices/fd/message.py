@@ -132,9 +132,9 @@ class MessageFDResponse(MessageResponse):
             if self._body_type in [0xB0, 0xB1]:
                 pass
             elif self._body_type == 0xA0:
-                self._body = FDA0MessageBody(body)
+                self.set_body(FDA0MessageBody(body))
             elif self._body_type == 0xC8:
-                self._body = FDC8MessageBody(body)
+                self.set_body(FDC8MessageBody(body))
         self.set_attr()
-        if self.fan_speed is not None and self.fan_speed < 5:
+        if hasattr(self, "fan_speed") and self.fan_speed is not None and self.fan_speed < 5:
             self.fan_speed = 1

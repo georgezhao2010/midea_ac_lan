@@ -174,7 +174,7 @@ class MessageFCResponse(MessageResponse):
         else:
             if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1] and \
                     self._body_type == 0xC8:
-                self._body = FCGeneralMessageBody(body)
+                self.set_body(FCGeneralMessageBody(body))
             elif self._message_type == MessageType.notify1 and self._body_type == 0xA0:
-                self._body = FCNotifyMessageBody(body)
+                self.set_body(FCNotifyMessageBody(body))
         self.set_attr()

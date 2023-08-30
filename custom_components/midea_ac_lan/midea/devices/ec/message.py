@@ -62,7 +62,7 @@ class MessageECResponse(MessageResponse):
                 (self._message_type == MessageType.query and body[3] == 0x03) or \
                 (self._message_type == MessageType.notify1 and body[3] == 0x04) or \
                 (self._message_type == MessageType.notify1 and body[3] == 0x3d):
-            self._body = ECGeneralMessageBody(body)
+            self.set_body(ECGeneralMessageBody(body))
         elif self._message_type == MessageType.notify1 and body[3] == 0x06:
             self.mode = body[4] + (body[5] << 8)
         self.set_attr()
