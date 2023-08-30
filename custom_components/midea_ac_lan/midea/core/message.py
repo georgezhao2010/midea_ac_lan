@@ -243,6 +243,9 @@ class MessageResponse(MessageBase):
     def body(self):
         return self._body.data
 
+    def set_body(self, body: MessageBody):
+        self._body = body
+
     def set_attr(self):
         for key in vars(self._body).keys():
             if key != "data":
