@@ -25,9 +25,7 @@ class MessageQuery(MessageB6Base):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
-            body_type=0x31)
-        if device_protocol_version == 2:
-            self._body_type = 0x11
+            body_type=0x11 if device_protocol_version == 2 else 0x31)
 
     @property
     def _body(self):
@@ -51,14 +49,10 @@ class MessageSet(MessageB6Base):
         super().__init__(
             device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
-            body_type=0x00)
+            body_type=0x22 if device_protocol_version in [0x00, 0x01] else 0x11)
         self.light = None
         self.power = None
         self.fan_level = None
-        if self._device_protocol_version in [0x00, 0x01]:
-            self._body_type = 0x22
-        else:
-            self._body_type = 0x11
 
     @property
     def _body(self):

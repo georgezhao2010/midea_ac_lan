@@ -174,7 +174,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         token=saved_token,
                         key=saved_key,
                         protocol=3,
-                        model=device.get(CONF_MODEL)
+                        model=device.get(CONF_MODEL),
+                        attributes={}
                     )
                     if dm.connect(refresh_status=False):
                         self.found_device = {
@@ -206,7 +207,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     token=DEFAULT_TOKEN,
                     key=DEFAULT_KEY,
                     protocol=3,
-                    model=device.get(CONF_MODEL)
+                    model=device.get(CONF_MODEL),
+                    attributes={}
                 )
                 if dm.connect(refresh_status=False):
                     self.found_device = {
@@ -234,7 +236,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                 token=token,
                                 key=key,
                                 protocol=3,
-                                model=device.get(CONF_MODEL)
+                                model=device.get(CONF_MODEL),
+                                attributes={}
                             )
                             _LOGGER.debug(f"Successful to take token and key, token: {token}, key: {key}, "
                                           f"byte_order_big: {byte_order_big}")
