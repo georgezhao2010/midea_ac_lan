@@ -82,9 +82,6 @@ class MideaFan(MideaEntity, FanEntity):
         return self._device.get_attribute("fan_speed")
 
     def turn_off(self):
-        self._device.set_attribute(attr="power", value=True)
-
-    def turn_off(self):
         self._device.set_attribute(attr="power", value=False)
 
     def toggle(self):
