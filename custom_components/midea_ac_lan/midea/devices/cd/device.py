@@ -51,19 +51,18 @@ class MideaCDDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.max_temperature: 65,
-            DeviceAttributes.min_temperature: 35,
-            DeviceAttributes.target_temperature: 40,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.outdoor_temperature: None,
-            DeviceAttributes.condenser_temperature: None,
-            DeviceAttributes.compressor_temperature: None,
-            DeviceAttributes.compressor_status: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.max_temperature: 65,
+                DeviceAttributes.min_temperature: 35,
+                DeviceAttributes.target_temperature: 40,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.outdoor_temperature: None,
+                DeviceAttributes.condenser_temperature: None,
+                DeviceAttributes.compressor_temperature: None,
+                DeviceAttributes.compressor_status: None
+            })
         self._fields = {}
         self._temperature_step = None
         self._default_temperature_step = 1

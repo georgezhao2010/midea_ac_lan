@@ -46,15 +46,14 @@ class Midea13Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.brightness: None,
-            DeviceAttributes.color_temperature: None,
-            DeviceAttributes.rgb_color: None,
-            DeviceAttributes.effect: None,
-            DeviceAttributes.power: False
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.brightness: None,
+                DeviceAttributes.color_temperature: None,
+                DeviceAttributes.rgb_color: None,
+                DeviceAttributes.effect: None,
+                DeviceAttributes.power: False
+            })
         self._color_temp_range = None
         self._default_color_temp_range = [2700, 6500]
         self.set_customize(customize)

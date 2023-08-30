@@ -55,27 +55,26 @@ class MideaCADevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.energy_consumption: None,
-            DeviceAttributes.refrigerator_actual_temp: None,
-            DeviceAttributes.freezer_actual_temp: None,
-            DeviceAttributes.flex_zone_actual_temp: None,
-            DeviceAttributes.right_flex_zone_actual_temp: None,
-            DeviceAttributes.refrigerator_setting_temp: None,
-            DeviceAttributes.freezer_setting_temp: None,
-            DeviceAttributes.flex_zone_setting_temp: None,
-            DeviceAttributes.right_flex_zone_setting_temp: None,
-            DeviceAttributes.refrigerator_door_overtime: False,
-            DeviceAttributes.freezer_door_overtime: False,
-            DeviceAttributes.bar_door_overtime: False,
-            DeviceAttributes.flex_zone_door_overtime: False,
-            DeviceAttributes.refrigerator_door: False,
-            DeviceAttributes.freezer_door: False,
-            DeviceAttributes.bar_door: False,
-            DeviceAttributes.flex_zone_door: False
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.energy_consumption: None,
+                DeviceAttributes.refrigerator_actual_temp: None,
+                DeviceAttributes.freezer_actual_temp: None,
+                DeviceAttributes.flex_zone_actual_temp: None,
+                DeviceAttributes.right_flex_zone_actual_temp: None,
+                DeviceAttributes.refrigerator_setting_temp: None,
+                DeviceAttributes.freezer_setting_temp: None,
+                DeviceAttributes.flex_zone_setting_temp: None,
+                DeviceAttributes.right_flex_zone_setting_temp: None,
+                DeviceAttributes.refrigerator_door_overtime: False,
+                DeviceAttributes.freezer_door_overtime: False,
+                DeviceAttributes.bar_door_overtime: False,
+                DeviceAttributes.flex_zone_door_overtime: False,
+                DeviceAttributes.refrigerator_door: False,
+                DeviceAttributes.freezer_door: False,
+                DeviceAttributes.bar_door: False,
+                DeviceAttributes.flex_zone_door: False
+            })
         self._modes = [""]
 
     def build_query(self):

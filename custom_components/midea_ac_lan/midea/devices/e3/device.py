@@ -48,18 +48,17 @@ class MideaE3Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.burning_state: False,
-            DeviceAttributes.zero_cold_water: False,
-            DeviceAttributes.protection: False,
-            DeviceAttributes.zero_cold_pulse: False,
-            DeviceAttributes.smart_volume: False,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.target_temperature: 40,
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.burning_state: False,
+                DeviceAttributes.zero_cold_water: False,
+                DeviceAttributes.protection: False,
+                DeviceAttributes.zero_cold_pulse: False,
+                DeviceAttributes.smart_volume: False,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.target_temperature: 40,
+            })
         self._old_sub_types = [
             32, 33, 34, 35, 36, 37, 40, 43, 48, 49, 80
         ]

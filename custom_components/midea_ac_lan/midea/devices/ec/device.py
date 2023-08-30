@@ -72,18 +72,17 @@ class MideaECDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.cooking: False,
-            DeviceAttributes.mode: 0,
-            DeviceAttributes.time_remaining: None,
-            DeviceAttributes.top_temperature: None,
-            DeviceAttributes.bottom_temperature: None,
-            DeviceAttributes.keep_warm_time: None,
-            DeviceAttributes.progress: "Unknown",
-            DeviceAttributes.with_pressure: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.cooking: False,
+                DeviceAttributes.mode: 0,
+                DeviceAttributes.time_remaining: None,
+                DeviceAttributes.top_temperature: None,
+                DeviceAttributes.bottom_temperature: None,
+                DeviceAttributes.keep_warm_time: None,
+                DeviceAttributes.progress: "Unknown",
+                DeviceAttributes.with_pressure: None
+            })
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]

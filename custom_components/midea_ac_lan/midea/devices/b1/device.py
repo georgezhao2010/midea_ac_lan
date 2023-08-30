@@ -49,17 +49,16 @@ class MideaB1Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.door: False,
-            DeviceAttributes.status: "Unknown",
-            DeviceAttributes.time_remaining: None,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.tank_ejected: False,
-            DeviceAttributes.water_change_reminder: False,
-            DeviceAttributes.water_shortage: False,
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.door: False,
+                DeviceAttributes.status: "Unknown",
+                DeviceAttributes.time_remaining: None,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.tank_ejected: False,
+                DeviceAttributes.water_change_reminder: False,
+                DeviceAttributes.water_shortage: False,
+            })
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]

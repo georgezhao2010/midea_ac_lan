@@ -47,17 +47,16 @@ class Midea40Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.light: False,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.power: False,
-            DeviceAttributes.oscillate: False,
-            DeviceAttributes.ventilation: False,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.fan_speed: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.light: False,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.power: False,
+                DeviceAttributes.oscillate: False,
+                DeviceAttributes.ventilation: False,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.fan_speed: None
+            })
         self._fields = {}
 
     @property

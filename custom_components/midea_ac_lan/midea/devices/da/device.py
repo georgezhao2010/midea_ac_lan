@@ -56,27 +56,26 @@ class MideaDADevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.start: False,
-            DeviceAttributes.error_code: None,
-            DeviceAttributes.washing_data: bytearray([]),
-            DeviceAttributes.program: None,
-            DeviceAttributes.progress: "Unknown",
-            DeviceAttributes.time_remaining: None,
-            DeviceAttributes.wash_time: None,
-            DeviceAttributes.soak_time: None,
-            DeviceAttributes.dehydration_time: None,
-            DeviceAttributes.dehydration_speed: None,
-            DeviceAttributes.rinse_count: None,
-            DeviceAttributes.rinse_level: None,
-            DeviceAttributes.wash_level: None,
-            DeviceAttributes.wash_strength: None,
-            DeviceAttributes.softener: None,
-            DeviceAttributes.detergent: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.start: False,
+                DeviceAttributes.error_code: None,
+                DeviceAttributes.washing_data: bytearray([]),
+                DeviceAttributes.program: None,
+                DeviceAttributes.progress: "Unknown",
+                DeviceAttributes.time_remaining: None,
+                DeviceAttributes.wash_time: None,
+                DeviceAttributes.soak_time: None,
+                DeviceAttributes.dehydration_time: None,
+                DeviceAttributes.dehydration_speed: None,
+                DeviceAttributes.rinse_count: None,
+                DeviceAttributes.rinse_level: None,
+                DeviceAttributes.wash_level: None,
+                DeviceAttributes.wash_strength: None,
+                DeviceAttributes.softener: None,
+                DeviceAttributes.detergent: None
+            })
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]

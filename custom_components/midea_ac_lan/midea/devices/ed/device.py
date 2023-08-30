@@ -51,21 +51,20 @@ class MideaEDDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.water_consumption: None,
-            DeviceAttributes.in_tds: None,
-            DeviceAttributes.out_tds: None,
-            DeviceAttributes.filter1: None,
-            DeviceAttributes.filter2: None,
-            DeviceAttributes.filter3: None,
-            DeviceAttributes.life1: None,
-            DeviceAttributes.life2: None,
-            DeviceAttributes.life3: None,
-            DeviceAttributes.child_lock: False
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.water_consumption: None,
+                DeviceAttributes.in_tds: None,
+                DeviceAttributes.out_tds: None,
+                DeviceAttributes.filter1: None,
+                DeviceAttributes.filter2: None,
+                DeviceAttributes.filter3: None,
+                DeviceAttributes.life1: None,
+                DeviceAttributes.life2: None,
+                DeviceAttributes.life3: None,
+                DeviceAttributes.child_lock: False
+            })
         self._device_class = 0
 
     def _use_new_set(self):

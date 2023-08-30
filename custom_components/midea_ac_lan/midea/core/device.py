@@ -47,9 +47,10 @@ class MiedaDevice(threading.Thread):
                  token: str,
                  key: str,
                  protocol: int,
-                 model: str):
+                 model: str,
+                 attributes: dict):
         threading.Thread.__init__(self)
-        self._attributes = {}
+        self._attributes = attributes if attributes else {}
         self._socket = None
         self._ip_address = ip_address
         self._port = port

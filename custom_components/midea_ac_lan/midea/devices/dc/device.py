@@ -44,15 +44,14 @@ class MideaDADevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.start: False,
-            DeviceAttributes.washing_data: bytearray([]),
-            DeviceAttributes.progress: "Unknown",
-            DeviceAttributes.time_remaining: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.start: False,
+                DeviceAttributes.washing_data: bytearray([]),
+                DeviceAttributes.progress: "Unknown",
+                DeviceAttributes.time_remaining: None
+            })
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]

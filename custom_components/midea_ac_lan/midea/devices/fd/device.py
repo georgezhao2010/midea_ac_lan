@@ -62,20 +62,19 @@ class MideaFDDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.fan_speed: None,
-            DeviceAttributes.prompt_tone: True,
-            DeviceAttributes.target_humidity: 60,
-            DeviceAttributes.current_humidity: None,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.tank: 0,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.screen_display: None,
-            DeviceAttributes.disinfect: None,
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.fan_speed: None,
+                DeviceAttributes.prompt_tone: True,
+                DeviceAttributes.target_humidity: 60,
+                DeviceAttributes.current_humidity: None,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.tank: 0,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.screen_display: None,
+                DeviceAttributes.disinfect: None,
+            })
         self._speeds = MideaFDDevice._speeds_old
 
     @property

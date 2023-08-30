@@ -53,23 +53,22 @@ class MideaC2Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.child_lock: False,
-            DeviceAttributes.sensor_light: False,
-            DeviceAttributes.foam_shield: False,
-            DeviceAttributes.light_status: None,
-            DeviceAttributes.seat_status: None,
-            DeviceAttributes.lid_status: None,
-            DeviceAttributes.dry_level: 0,
-            DeviceAttributes.water_temp_level: 0,
-            DeviceAttributes.seat_temp_level: 0,
-            DeviceAttributes.water_temperature: None,
-            DeviceAttributes.seat_temperature: None,
-            DeviceAttributes.filter_life: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.child_lock: False,
+                DeviceAttributes.sensor_light: False,
+                DeviceAttributes.foam_shield: False,
+                DeviceAttributes.light_status: None,
+                DeviceAttributes.seat_status: None,
+                DeviceAttributes.lid_status: None,
+                DeviceAttributes.dry_level: 0,
+                DeviceAttributes.water_temp_level: 0,
+                DeviceAttributes.seat_temp_level: 0,
+                DeviceAttributes.water_temperature: None,
+                DeviceAttributes.seat_temperature: None,
+                DeviceAttributes.filter_life: None
+            })
         self._max_dry_level = None
         self._max_water_temp_level = None
         self._max_seat_temp_level = None

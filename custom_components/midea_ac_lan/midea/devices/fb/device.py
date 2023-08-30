@@ -48,16 +48,15 @@ class MideaFBDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.heating_level: 0,
-            DeviceAttributes.target_temperature: None,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.child_lock: False,
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.heating_level: 0,
+                DeviceAttributes.target_temperature: None,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.child_lock: False,
+            })
 
     @property
     def modes(self):

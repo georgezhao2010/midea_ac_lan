@@ -46,17 +46,16 @@ class MideaB6Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.light: None,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.fan_level: 0,
-            DeviceAttributes.fan_speed: 0,
-            DeviceAttributes.oilcup_full: False,
-            DeviceAttributes.cleaning_reminder: False
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.light: None,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.fan_level: 0,
+                DeviceAttributes.fan_speed: 0,
+                DeviceAttributes.oilcup_full: False,
+                DeviceAttributes.cleaning_reminder: False
+            })
         self._default_speeds = {
             0: "Off", 1: "Level 1", 2: "Level 2"
         }

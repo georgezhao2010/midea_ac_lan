@@ -60,22 +60,21 @@ class MideaA1Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.prompt_tone: True,
-            DeviceAttributes.child_lock: False,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.fan_speed: "60",
-            DeviceAttributes.swing: False,
-            DeviceAttributes.target_humidity: 35,
-            DeviceAttributes.anion: False,
-            DeviceAttributes.tank: 0,
-            DeviceAttributes.water_level_set: "50",
-            DeviceAttributes.current_humidity: None,
-            DeviceAttributes.current_temperature: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.prompt_tone: True,
+                DeviceAttributes.child_lock: False,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.fan_speed: "60",
+                DeviceAttributes.swing: False,
+                DeviceAttributes.target_humidity: 35,
+                DeviceAttributes.anion: False,
+                DeviceAttributes.tank: 0,
+                DeviceAttributes.water_level_set: "50",
+                DeviceAttributes.current_humidity: None,
+                DeviceAttributes.current_temperature: None
+            })
 
     @property
     def modes(self):

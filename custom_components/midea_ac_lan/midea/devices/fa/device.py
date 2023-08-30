@@ -61,18 +61,17 @@ class MideaFADevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.child_lock: False,
-            DeviceAttributes.mode: 0,
-            DeviceAttributes.fan_speed: 0,
-            DeviceAttributes.oscillate: False,
-            DeviceAttributes.oscillation_angle: None,
-            DeviceAttributes.tilting_angle: None,
-            DeviceAttributes.oscillation_mode: None,
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.child_lock: False,
+                DeviceAttributes.mode: 0,
+                DeviceAttributes.fan_speed: 0,
+                DeviceAttributes.oscillate: False,
+                DeviceAttributes.oscillation_angle: None,
+                DeviceAttributes.tilting_angle: None,
+                DeviceAttributes.oscillation_mode: None,
+            })
         self._default_speed_count = 3
         self._speed_count = self._default_speed_count
         self.set_customize(customize)

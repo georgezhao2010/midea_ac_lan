@@ -64,34 +64,33 @@ class MideaE1Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.status: None,
-            DeviceAttributes.mode: 0,
-            DeviceAttributes.additional: 0,
-            DeviceAttributes.uv: False,
-            DeviceAttributes.dry: False,
-            DeviceAttributes.dry_status: False,
-            DeviceAttributes.door: False,
-            DeviceAttributes.rinse_aid: False,
-            DeviceAttributes.salt: False,
-            DeviceAttributes.child_lock: False,
-            DeviceAttributes.storage: False,
-            DeviceAttributes.storage_status: False,
-            DeviceAttributes.time_remaining: None,
-            DeviceAttributes.progress: None,
-            DeviceAttributes.storage_remaining: None,
-            DeviceAttributes.temperature: None,
-            DeviceAttributes.humidity: None,
-            DeviceAttributes.waterswitch: False,
-            DeviceAttributes.water_lack: False,
-            DeviceAttributes.error_code: None,
-            DeviceAttributes.softwater: 0,
-            DeviceAttributes.wrong_operation: None,
-            DeviceAttributes.bright: 0
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.status: None,
+                DeviceAttributes.mode: 0,
+                DeviceAttributes.additional: 0,
+                DeviceAttributes.uv: False,
+                DeviceAttributes.dry: False,
+                DeviceAttributes.dry_status: False,
+                DeviceAttributes.door: False,
+                DeviceAttributes.rinse_aid: False,
+                DeviceAttributes.salt: False,
+                DeviceAttributes.child_lock: False,
+                DeviceAttributes.storage: False,
+                DeviceAttributes.storage_status: False,
+                DeviceAttributes.time_remaining: None,
+                DeviceAttributes.progress: None,
+                DeviceAttributes.storage_remaining: None,
+                DeviceAttributes.temperature: None,
+                DeviceAttributes.humidity: None,
+                DeviceAttributes.waterswitch: False,
+                DeviceAttributes.water_lack: False,
+                DeviceAttributes.error_code: None,
+                DeviceAttributes.softwater: 0,
+                DeviceAttributes.wrong_operation: None,
+                DeviceAttributes.bright: 0
+            })
         self._modes = {
             0x0: "Neutral Gear",        # BYTE_MODE_NEUTRAL_GEAR
             0x1: "Auto",                # BYTE_MODE_AUTO_WASH

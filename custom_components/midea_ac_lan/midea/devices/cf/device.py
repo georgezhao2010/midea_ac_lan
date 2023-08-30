@@ -45,17 +45,16 @@ class MideaCFDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.mode: 0,
-            DeviceAttributes.target_temperature: None,
-            DeviceAttributes.aux_heating: False,
-            DeviceAttributes.current_temperature: 0,
-            DeviceAttributes.max_temperature: 55,
-            DeviceAttributes.min_temperature: 5
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.mode: 0,
+                DeviceAttributes.target_temperature: None,
+                DeviceAttributes.aux_heating: False,
+                DeviceAttributes.current_temperature: 0,
+                DeviceAttributes.max_temperature: 55,
+                DeviceAttributes.min_temperature: 5
+            })
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]

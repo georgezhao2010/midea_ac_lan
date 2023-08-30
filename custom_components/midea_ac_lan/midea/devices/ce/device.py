@@ -61,28 +61,27 @@ class MideaCEDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.child_lock: False,
-            DeviceAttributes.scheduled: False,
-            DeviceAttributes.fan_speed: 0,
-            DeviceAttributes.pm25: None,
-            DeviceAttributes.co2: None,
-            DeviceAttributes.current_humidity: None,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.hcho: None,
-            DeviceAttributes.link_to_ac: False,
-            DeviceAttributes.sleep_mode: False,
-            DeviceAttributes.eco_mode: False,
-            DeviceAttributes.aux_heating: None,
-            DeviceAttributes.powerful_purify: False,
-            DeviceAttributes.filter_cleaning_reminder: False,
-            DeviceAttributes.filter_change_reminder: False,
-            DeviceAttributes.error_code: 0
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.child_lock: False,
+                DeviceAttributes.scheduled: False,
+                DeviceAttributes.fan_speed: 0,
+                DeviceAttributes.pm25: None,
+                DeviceAttributes.co2: None,
+                DeviceAttributes.current_humidity: None,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.hcho: None,
+                DeviceAttributes.link_to_ac: False,
+                DeviceAttributes.sleep_mode: False,
+                DeviceAttributes.eco_mode: False,
+                DeviceAttributes.aux_heating: None,
+                DeviceAttributes.powerful_purify: False,
+                DeviceAttributes.filter_cleaning_reminder: False,
+                DeviceAttributes.filter_change_reminder: False,
+                DeviceAttributes.error_code: 0
+            })
         self._default_speed_count = 7
         self._speed_count = self._default_speed_count
         self.set_customize(customize)

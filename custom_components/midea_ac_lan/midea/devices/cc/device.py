@@ -63,26 +63,25 @@ class MideaCCDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.mode: 1,
-            DeviceAttributes.target_temperature: 26.0,
-            DeviceAttributes.fan_speed: 0x80,
-            DeviceAttributes.sleep_mode: False,
-            DeviceAttributes.eco_mode: False,
-            DeviceAttributes.night_light: False,
-            DeviceAttributes.ventilation: False,
-            DeviceAttributes.aux_heating: False,
-            DeviceAttributes.aux_heat_status: 0,
-            DeviceAttributes.auto_aux_heat_running: False,
-            DeviceAttributes.swing: False,
-            DeviceAttributes.fan_speed_level: None,
-            DeviceAttributes.indoor_temperature: None,
-            DeviceAttributes.temperature_precision: 1,
-            DeviceAttributes.temp_fahrenheit: False
-        }
+            model=model,
+            attributes = {
+                DeviceAttributes.power: False,
+                DeviceAttributes.mode: 1,
+                DeviceAttributes.target_temperature: 26.0,
+                DeviceAttributes.fan_speed: 0x80,
+                DeviceAttributes.sleep_mode: False,
+                DeviceAttributes.eco_mode: False,
+                DeviceAttributes.night_light: False,
+                DeviceAttributes.ventilation: False,
+                DeviceAttributes.aux_heating: False,
+                DeviceAttributes.aux_heat_status: 0,
+                DeviceAttributes.auto_aux_heat_running: False,
+                DeviceAttributes.swing: False,
+                DeviceAttributes.fan_speed_level: None,
+                DeviceAttributes.indoor_temperature: None,
+                DeviceAttributes.temperature_precision: 1,
+                DeviceAttributes.temp_fahrenheit: False
+            })
         self._fan_speeds = None
 
     @property

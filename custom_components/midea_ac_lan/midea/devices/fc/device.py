@@ -64,24 +64,23 @@ class MideaFCDevice(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.fan_speed: None,
-            DeviceAttributes.anion: False,
-            DeviceAttributes.standby: False,
-            DeviceAttributes.screen_display: None,
-            DeviceAttributes.detect_mode: None,
-            DeviceAttributes.pm25: None,
-            DeviceAttributes.tvoc: None,
-            DeviceAttributes.hcho: None,
-            DeviceAttributes.child_lock: False,
-            DeviceAttributes.prompt_tone: True,
-            DeviceAttributes.filter1_life: None,
-            DeviceAttributes.filter2_life: None,
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.fan_speed: None,
+                DeviceAttributes.anion: False,
+                DeviceAttributes.standby: False,
+                DeviceAttributes.screen_display: None,
+                DeviceAttributes.detect_mode: None,
+                DeviceAttributes.pm25: None,
+                DeviceAttributes.tvoc: None,
+                DeviceAttributes.hcho: None,
+                DeviceAttributes.child_lock: False,
+                DeviceAttributes.prompt_tone: True,
+                DeviceAttributes.filter1_life: None,
+                DeviceAttributes.filter2_life: None,
+            })
 
         self._standby_detect_default = [40, 20]
         self._standby_detect = self._standby_detect_default

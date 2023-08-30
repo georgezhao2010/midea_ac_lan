@@ -48,20 +48,19 @@ class MideaE6Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.main_power: False,
-            DeviceAttributes.heating_power: True,
-            DeviceAttributes.heating_working: None,
-            DeviceAttributes.bathing_working: None,
-            DeviceAttributes.min_temperature: [30, 35],
-            DeviceAttributes.max_temperature: [80, 60],
-            DeviceAttributes.heating_temperature: 50,
-            DeviceAttributes.bathing_temperature: 40,
-            DeviceAttributes.heating_leaving_temperature: None,
-            DeviceAttributes.bathing_leaving_temperature: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.main_power: False,
+                DeviceAttributes.heating_power: True,
+                DeviceAttributes.heating_working: None,
+                DeviceAttributes.bathing_working: None,
+                DeviceAttributes.min_temperature: [30, 35],
+                DeviceAttributes.max_temperature: [80, 60],
+                DeviceAttributes.heating_temperature: 50,
+                DeviceAttributes.bathing_temperature: 40,
+                DeviceAttributes.heating_leaving_temperature: None,
+                DeviceAttributes.bathing_leaving_temperature: None
+            })
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]

@@ -47,15 +47,14 @@ class Midea26Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.main_light: False,
-            DeviceAttributes.night_light: False,
-            DeviceAttributes.mode: None,
-            DeviceAttributes.direction: None,
-            DeviceAttributes.current_temperature: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.main_light: False,
+                DeviceAttributes.night_light: False,
+                DeviceAttributes.mode: None,
+                DeviceAttributes.direction: None,
+                DeviceAttributes.current_temperature: None
+            })
         self._fields = {}
 
     @staticmethod

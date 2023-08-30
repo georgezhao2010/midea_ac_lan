@@ -52,21 +52,20 @@ class MideaE2Device(MiedaDevice):
             token=token,
             key=key,
             protocol=protocol,
-            model=model
-        )
-        self._attributes = {
-            DeviceAttributes.power: False,
-            DeviceAttributes.heating: False,
-            DeviceAttributes.keep_warm: False,
-            DeviceAttributes.protection: False,
-            DeviceAttributes.current_temperature: None,
-            DeviceAttributes.target_temperature: 40,
-            DeviceAttributes.whole_tank_heating: False,
-            DeviceAttributes.variable_heating: False,
-            DeviceAttributes.heating_time_remaining: 0,
-            DeviceAttributes.water_consumption: None,
-            DeviceAttributes.heating_power: None
-        }
+            model=model,
+            attributes={
+                DeviceAttributes.power: False,
+                DeviceAttributes.heating: False,
+                DeviceAttributes.keep_warm: False,
+                DeviceAttributes.protection: False,
+                DeviceAttributes.current_temperature: None,
+                DeviceAttributes.target_temperature: 40,
+                DeviceAttributes.whole_tank_heating: False,
+                DeviceAttributes.variable_heating: False,
+                DeviceAttributes.heating_time_remaining: 0,
+                DeviceAttributes.water_consumption: None,
+                DeviceAttributes.heating_power: None
+            })
         self._default_old_protocol = "auto"
         self._old_protocol = self._default_old_protocol
         self.set_customize(customize)
