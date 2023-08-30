@@ -18,9 +18,11 @@ _LOGGER = logging.getLogger(__name__)
 class DeviceAttributes(StrEnum):
     power = "power"
     child_lock = "child_lock"
+    sensor_light = "sensor_light"
+    foam_shield = "foam_shield"
     seat_status = "seat_status"
     lid_status = "lid_status"
-    light = "light"
+    light_status = "light_status"
     dry_level = "dry_level"
     water_temp_level = "water_temp_level"
     seat_temp_level = "seat_temp_level"
@@ -56,7 +58,9 @@ class MideaC2Device(MiedaDevice):
         self._attributes = {
             DeviceAttributes.power: False,
             DeviceAttributes.child_lock: False,
-            DeviceAttributes.light: False,
+            DeviceAttributes.sensor_light: False,
+            DeviceAttributes.foam_shield: False,
+            DeviceAttributes.light_status: None,
             DeviceAttributes.seat_status: None,
             DeviceAttributes.lid_status: None,
             DeviceAttributes.dry_level: 0,
@@ -103,21 +107,16 @@ class MideaC2Device(MiedaDevice):
         if attr == DeviceAttributes.power:
             message = MessagePower(self._device_protocol_version)
             message.power = value
-        elif attr == DeviceAttributes.child_lock:
+        elif attr in [
+            DeviceAttributes.child_lock,
+            DeviceAttributes.sensor_light,
+            DeviceAttributes.foam_shield,
+            DeviceAttributes.water_temp_level,
+            DeviceAttributes.seat_temp_level,
+            DeviceAttributes.dry_level
+        ]:
             message = MessageSet(self._device_protocol_version)
-            message.child_lock = value
-        elif attr == DeviceAttributes.light:
-            message = MessageSet(self._device_protocol_version)
-            message.light = value
-        elif attr == DeviceAttributes.water_temp_level:
-            message = MessageSet(self._device_protocol_version)
-            message.water_temp_level = value
-        elif attr == DeviceAttributes.seat_temp_level:
-            message = MessageSet(self._device_protocol_version)
-            message.seat_temp_level = value
-        elif attr == DeviceAttributes.dry_level:
-            message = MessageSet(self._device_protocol_version)
-            message.dry_level = value
+            setattr(message, attr, value)
         if message:
             self.build_send(message)
 

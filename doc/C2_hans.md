@@ -24,7 +24,8 @@
 | sensor.{DEVICEID}_filter_life        | sensor        | Filter Life               | 滤芯寿命 |
 | switch.{DEVICEID}_child_lock         | lock          | Child Lock                | 童锁   |
 | switch.{DEVICEID}_power              | switch        | Power                     | 电源   |
-| switch.{DEVICEID}_light              | switch        | Light                     | 夜灯   |
+| switch.{DEVICEID}_sensor_light       | switch        | Sensor Light              | 感应夜灯 |
+| switch.{DEVICEID}_foam_shield        | switch        | Foam Shield               | 泡沫盾  |
 | number.{DEVICEID}_dry_level          | number        | Dry Level                 | 烘干档位 |
 | number.{DEVICEID}_water_temp_level   | number        | Water Temperature Level   | 水温档位 |
 | number.{DEVICEID}_seat_temp_level    | number        | Seat Temperature  Level   | 座温档位 |

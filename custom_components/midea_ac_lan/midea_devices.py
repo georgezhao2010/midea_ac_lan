@@ -615,10 +615,15 @@ MIDEA_DEVICES = {
                 "name": "Power",
                 "icon": "mdi:power"
             },
-            C2Attributes.light: {
+            C2Attributes.sensor_light: {
                 "type": Platform.SWITCH,
-                "name": "Light",
+                "name": "Sensor Light",
                 "icon": "mdi:lightbulb"
+            },
+            C2Attributes.foam_shield: {
+                "type": Platform.SWITCH,
+                "name": "Foam Shield",
+                "icon": "mdi:chart-bubble",
             },
             C2Attributes.child_lock: {
                 "type": Platform.LOCK,
@@ -631,8 +636,14 @@ MIDEA_DEVICES = {
             },
             C2Attributes.lid_status: {
                 "type": Platform.BINARY_SENSOR,
-                "name": "Flip Status",
+                "name": "Lid Status",
                 "icon": "mdi:toilet"
+            },
+            C2Attributes.light_status: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Light Status",
+                "icon": "mdi:lightbulb",
+                "device_class": BinarySensorDeviceClass.LIGHT
             },
             C2Attributes.water_temperature: {
                 "type": Platform.SENSOR,
