@@ -285,7 +285,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_PORT: user_input[CONF_PORT],
                 CONF_MODEL: user_input[CONF_MODEL],
                 CONF_TOKEN: user_input[CONF_TOKEN],
-                CONF_KEY: user_input[CONF_KEY],
+                CONF_KEY: user_input[CONF_KEY]
             }
             try:
                 bytearray.fromhex(user_input[CONF_TOKEN])
@@ -303,7 +303,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 token=user_input[CONF_TOKEN],
                 key=user_input[CONF_KEY],
                 protocol=user_input[CONF_PROTOCOL],
-                model=user_input[CONF_MODEL])
+                model=user_input[CONF_MODEL],
+                attributes={}
+            )
             if dm.connect(refresh_status=False):
                 dm.close_socket()
                 save_device_token(self.hass, user_input[CONF_DEVICE_ID], user_input[CONF_TOKEN], user_input[CONF_KEY])
