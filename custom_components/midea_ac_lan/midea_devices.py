@@ -208,7 +208,7 @@ MIDEA_DEVICES = {
             },
             X40Attributes.direction: {
                 "type": Platform.SELECT,
-                "name": "Oscillate",
+                "name": "Direction",
                 "options": "directions",
                 "icon": "mdi:arrow-split-vertical"
             }
@@ -560,12 +560,6 @@ MIDEA_DEVICES = {
     0xBF: {
         "name": "Microwave Steam Oven",
         "entities": {
-            BFAttributes.door: {
-                "type": Platform.BINARY_SENSOR,
-                "name": "Door",
-                "icon": "mdi:box-shadow",
-                "device_class": BinarySensorDeviceClass.DOOR
-            },
             BFAttributes.tank_ejected: {
                 "type": Platform.BINARY_SENSOR,
                 "name": "Tank ejected",
@@ -577,6 +571,12 @@ MIDEA_DEVICES = {
                 "name": "Water Change Reminder",
                 "icon": "mdi:cup-water",
                 "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            BFAttributes.door: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
             },
             BFAttributes.water_shortage: {
                 "type": Platform.BINARY_SENSOR,

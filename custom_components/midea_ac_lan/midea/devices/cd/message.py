@@ -56,7 +56,7 @@ class MessageSet(MessageCDBase):
         return bytearray([
             0x01, power, mode, target_temperature,
             self.read_field("trValue"),
-            self.fields["openPTC"],
+            self.read_field("openPTC"),
             self.read_field("ptcTemp"),
             0  # self.read_field("byte8")
         ])
