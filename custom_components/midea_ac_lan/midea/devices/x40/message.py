@@ -42,7 +42,7 @@ class MessageSet(Message40Base):
         self.fields = {}
         self.light = False
         self.power = False
-        self.fan_speed = 30
+        self.fan_speed = 0
         self.oscillate = False
         self.ventilation = False
 
@@ -52,7 +52,7 @@ class MessageSet(Message40Base):
 
     @property
     def _body(self):
-        fan_speed = 0xFF if self.fan_speed == 0 else 30 if self.fan_speed <= 50 else 100
+        fan_speed = 0xFF if self.fan_speed == 0 else 30 if self.fan_speed == 1 else 100
         return bytearray([
             1 if self.light else 0,
             self.read_field("MAIN_LIGHT_BRIGHTNESS"),
@@ -63,6 +63,7 @@ class MessageSet(Message40Base):
             self.read_field("LIGHT_INTENSITY_THRESHOLD"),
             self.read_field("RADAR_SENSITIVITY"),
             self.read_field("HEATING_ENABLE"),
+            self.read_field("HEATING_TEMPERATURE"),
             self.read_field("HEATING_SPEED"),
             self.read_field("HEATING_DIRECTION"),
             self.read_field("BATH_ENABLE"),
@@ -124,9 +125,9 @@ class Message40Body(MessageBody):
         self.fields["DRYING_TEMPERATURE"] = body[23]
         self.fields["DRYING_SPEED"] = body[24]
         self.fields["DRYING_DIRECTION"] = body[25]
-        self.power = body[26] > 0
-        self.fan_speed = 0 if body[27] == 0xFF else 50 if body[27] <= 30 else 100
-        self.oscillate = (body[28] == 0xFD)
+        blow = body[26] > 0
+        blow_speed = body[27]
+        self.direction = (body[28] == 0xFD)
         self.fields["DELAY_ENABLE"] = body[29]
         self.fields["DELAY_TIME"] = body[30]
         self.current_temperature = body[33]
@@ -139,6 +140,13 @@ class Message40Body(MessageBody):
         self.fields["ANION_ENABLE"] = body[44]
         self.fields["SMELLY_ENABLE"] = body[45]
         self.fields["SMELLY_THRESHOLD"] = body[46]
+        if blow:
+            if blow_speed <= 30:
+                self.mode = 1
+            else:
+                self.mode = 2
+        else:
+            self.mode = 0
 
 
 class Message40Response(MessageResponse):

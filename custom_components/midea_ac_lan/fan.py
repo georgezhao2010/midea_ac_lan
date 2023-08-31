@@ -36,8 +36,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 devs.append(MideaACFreshAirFan(device, entity_key))
             elif device.device_type == 0xCE:
                 devs.append(MideaCEFan(device, entity_key))
-            elif device.device_type == 0x40:
-                devs.append(Midea40Fan(device, entity_key))
     async_add_entities(devs)
 
 
@@ -184,10 +182,3 @@ class MideaCEFan(MideaFan):
 
     async def async_set_percentage(self, percentage: int):
         await self.hass.async_add_executor_job(self.set_percentage, percentage)
-
-
-class Midea40Fan(MideaFan):
-    def __init__(self, device, entity_key):
-        super().__init__(device, entity_key)
-        self._attr_supported_features = SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE
-        self._attr_speed_count = 3

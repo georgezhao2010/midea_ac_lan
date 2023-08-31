@@ -58,7 +58,7 @@ class Midea26Device(MiedaDevice):
         self._fields = {}
 
     @staticmethod
-    def convert_to_midea_direction(direction):
+    def _convert_to_midea_direction(direction):
         if direction == "Oscillate":
             result = 0xFD
         else:
@@ -67,7 +67,7 @@ class Midea26Device(MiedaDevice):
         return result
 
     @staticmethod
-    def convert_from_midea_direction(direction):
+    def _convert_from_midea_direction(direction):
         if direction > 120 or direction < 60:
             result = 7
         else:
@@ -97,7 +97,7 @@ class Midea26Device(MiedaDevice):
                     self._attributes[status] = Midea26Device._modes[value]
                 elif status == DeviceAttributes.direction:
                     self._attributes[status] = Midea26Device._directions[
-                        self.convert_from_midea_direction(value)
+                        self._convert_from_midea_direction(value)
                     ]
                 else:
                     self._attributes[status] = value
@@ -115,7 +115,7 @@ class Midea26Device(MiedaDevice):
             message.main_light = self._attributes[DeviceAttributes.main_light]
             message.night_light = self._attributes[DeviceAttributes.night_light]
             message.mode = Midea26Device._modes.index(self._attributes[DeviceAttributes.mode])
-            message.direction = self.convert_to_midea_direction(self._attributes[DeviceAttributes.direction])
+            message.direction = self._convert_to_midea_direction(self._attributes[DeviceAttributes.direction])
             if attr in [
                 DeviceAttributes.main_light,
                 DeviceAttributes.night_light
@@ -126,7 +126,7 @@ class Midea26Device(MiedaDevice):
             elif attr == DeviceAttributes.mode:
                 message.mode = Midea26Device._modes.index(value)
             elif attr == DeviceAttributes.direction:
-                message.direction = self.convert_to_midea_direction(value)
+                message.direction = self._convert_to_midea_direction(value)
             self.build_send(message)
 
     @property

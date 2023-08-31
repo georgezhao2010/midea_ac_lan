@@ -189,11 +189,6 @@ MIDEA_DEVICES = {
     0x40: {
         "name": "Integrated Ceiling Fan",
         "entities": {
-            "fan": {
-                "type": Platform.FAN,
-                "icon": "mdi:fan",
-                "default": True
-            },
             X40Attributes.current_temperature: {
                 "type": Platform.SENSOR,
                 "name": "Current Temperature",
@@ -212,10 +207,10 @@ MIDEA_DEVICES = {
                 "options": "preset_modes",
                 "icon": "mdi:fan"
             },
-            X40Attributes.oscillate: {
-                "type": Platform.SWITCH,
+            X40Attributes.direction: {
+                "type": Platform.SELECT,
                 "name": "Oscillate",
-                "options": "oscillate",
+                "options": "directions",
                 "icon": "mdi:arrow-split-vertical"
             }
         }
