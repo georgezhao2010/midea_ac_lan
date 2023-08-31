@@ -54,6 +54,7 @@ class MideaCDDevice(MiedaDevice):
             model=model,
             attributes={
                 DeviceAttributes.power: False,
+                DeviceAttributes.mode: None,
                 DeviceAttributes.max_temperature: 65,
                 DeviceAttributes.min_temperature: 35,
                 DeviceAttributes.target_temperature: 40,
