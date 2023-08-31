@@ -15,24 +15,22 @@
 
 ## 生成实体
 ### 默认生成实体
-实体ID | 类型 | 描述
---- | --- | ---
-fan.{DEVICEID}_fan | fan | 风扇实体
+| 实体ID               | 类型  | 描述   |
+|--------------------|-----|------|
+| fan.{DEVICEID}_fan | fan | 风扇实体 |
 
 ### 额外生成实体
 
-EntityID | 类型 | 名称 | 描述
---- | --- | --- | --- 
-select.{DEVICEID}_oscillation_mode | select | Oscillation Mode | 摆头模式
-select.{DEVICEID}_oscillation_angle | select | Oscillation Angle | 水平摆头角度
-select.{DEVICEID}_tilting_angle | select | Tilting Angle | 垂直摆头角度
-lock.{DEVICEID}_child_lock | lock | Child Lock | 童锁
-switch.{DEVICEID}_oscillate | switch | Oscillate | 摆头开关
-switch.{DEVICEID}_power | switch | Power | 电源开关
-
+| EntityID                            | 类型     | 名称                | 描述     |
+|-------------------------------------|--------|-------------------|--------|
+| select.{DEVICEID}_oscillation_mode  | select | Oscillation Mode  | 摆头模式   |
+| select.{DEVICEID}_oscillation_angle | select | Oscillation Angle | 水平摆头角度 |
+| select.{DEVICEID}_tilting_angle     | select | Tilting Angle     | 垂直摆头角度 |
+| lock.{DEVICEID}_child_lock          | lock   | Child Lock        | 童锁     |
+| switch.{DEVICEID}_oscillate         | switch | Oscillate         | 摆头开关   |
+| switch.{DEVICEID}_power             | switch | Power             | 电源开关   |
 
 ## 服务
-生成以下扩展服务
 
 ### midea_ac_lan.set_attribute
 
@@ -40,29 +38,29 @@ switch.{DEVICEID}_power | switch | Power | 电源开关
 
 设置设备属性, 服务数据:
 
-名称 | 描述
---- | ---
-device_id | 设备的编号(Device ID)
-attribute | "child_lock"<br/>"oscillate"
-value | true 或 false
+| 名称        | 描述                           |
+|-----------|------------------------------|
+| device_id | 设备的编号(Device ID)             |
+| attribute | "child_lock"<br/>"oscillate" |
+| value     | true 或 false                 |
 
-名称 | 描述
---- | ---
-device_id | 设备的编号(Device ID)
-attribute | "oscillation_mode"
-value | "Off"<br/>"Oscillation"<br/>"Tilting"<br/>"Curve-W"<br/>"Curve-8"<br/>"Reserved"<br/>"Both"
+| 名称        | 描述                                                                                          |
+|-----------|---------------------------------------------------------------------------------------------|
+| device_id | 设备的编号(Device ID)                                                                            |
+| attribute | "oscillation_mode"                                                                          |
+| value     | "Off"<br/>"Oscillation"<br/>"Tilting"<br/>"Curve-W"<br/>"Curve-8"<br/>"Reserved"<br/>"Both" |
 
-名称 | 描述
---- | ---
-device_id | 设备的编号(Device ID)
-attribute | "oscillation_angle"
-value | "Off"<br/>"30"<br/>"60"<br/>"90"<br/>"120"<br/>"180"<br/>"360"
+| 名称        | 描述                                                             |
+|-----------|----------------------------------------------------------------|
+| device_id | 设备的编号(Device ID)                                               |
+| attribute | "oscillation_angle"                                            |
+| value     | "Off"<br/>"30"<br/>"60"<br/>"90"<br/>"120"<br/>"180"<br/>"360" |
 
-名称 | 描述
---- | ---
-device_id | 设备的编号(Device ID)
-attribute | "tilting_angle"
-value | "Off"<br/>"30"<br/>"60"<br/>"90"<br/>"120"<br/>"180"<br/>"360"<br/>"+60"<br/>"-60"<br/>"40"
+| 名称        | 描述                                                                                          |
+|-----------|---------------------------------------------------------------------------------------------|
+| device_id | 设备的编号(Device ID)                                                                            |
+| attribute | "tilting_angle"                                                                             |
+| value     | "Off"<br/>"30"<br/>"60"<br/>"90"<br/>"120"<br/>"180"<br/>"360"<br/>"+60"<br/>"-60"<br/>"40" |
 
 示例
 ```

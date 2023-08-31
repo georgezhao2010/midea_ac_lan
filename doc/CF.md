@@ -6,20 +6,20 @@
 
 ## Entities
 ### Default entity
-EntityID | Class | Description
---- | --- | ---
-climate.{DEVICEID}_climate | climate | Climate entity
+| EntityID                   | Class   | Description    |
+|----------------------------|---------|----------------|
+| climate.{DEVICEID}_climate | climate | Climate entity |
 
 ### Extra entities
 
-EntityID | Class | Description
---- | --- | ---
-sensor.{DEVICEID}_current_temperature | sensor | Current Temperature
-switch.{DEVICEID}_aux_heating | switch | Aux Heating
-switch.{DEVICEID}_power | switch | Power
+| EntityID                              | Class  | Description         |
+|---------------------------------------|--------|---------------------|
+| sensor.{DEVICEID}_current_temperature | sensor | Current Temperature |
+| switch.{DEVICEID}_aux_heating         | switch | Aux Heating         |
+| switch.{DEVICEID}_power               | switch | Power               |
 
 ## Service
-following extra service will be made
+
 
 ### midea_ac_lan.set_attribute
 
@@ -27,11 +27,11 @@ following extra service will be made
 
 Set the attribute of appliance. Service data:
 
-Name | Description
---- | ---
-device_id | The Appliance code (Device ID) of appliance
-attribute | "aux_heating"<br/>"power"
-value | true or false
+| Name      | Description                                 |
+|-----------|---------------------------------------------|
+| device_id | The Appliance code (Device ID) of appliance |
+| attribute | "aux_heating"<br/>"power"                   |
+| value     | true or false                               |
 
 Example
 ```

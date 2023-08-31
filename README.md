@@ -15,7 +15,9 @@ This component inspired from the repository at [@mac-zhou](https://github.com/ma
 
 Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
-***Note: Home Assistant 2022.5 or higher requied for this integration***
+If this component is helpful for you, please star it, it encourages me a lot.
+
+***Note: Home Assistant 2022.5 or higher required for this integration***
 
 # Supported brands
 
@@ -25,54 +27,60 @@ And more.
 
 # Supported appliances
 
-  Type | Name | Documents
- --- | --- | ---
- 34 | Sink Dishwasher | [34.md](doc/34.md)
- A1 | Dehumidifier | [A1.md](doc/A1.md)
- AC | Air Conditioner | [AC.md](doc/AC.md)
- B0 | Microwave Oven | [B0.md](doc/B0.md)
- B1 | Electric Oven | [B1.md](doc/B1.md)
- B6 | Range Hood | [B6.md](doc/B6.md)
- C3 | Heat Pump Wi-Fi Controller | [C3.md](doc/C3.md)
- CA | Refrigerator | [CA.md](doc/CA.md)
- CC | MDV Wi-Fi Controller | [CC.md](doc/CC.md)
- CE | Fresh Air Appliance | [CE.md](doc/CE.md)
- CF | Heat Pump | [CF.md](doc/CF.md)
- DA | Top Load Washer | [DA.md](doc/DA.md)
- DB | Front Load Washer | [DB.md](doc/DB.md)
- DC | Clothes Dryer | [DC.md](doc/DC.md)
- E1 | Dishwasher | [E1.md](doc/E1.md)
- E2 | Electric Water Heater | [E2.md](doc/E2.md)
- E3 | Gas Water Heater | [E3.md](doc/E3.md)
- EA | Electric Rice Cooker | [EA.md](doc/EA.md)
- EC | Electric Pressure Cooker | [EC.md](doc/EC.md)
- ED | Water Drinking Appliance | [ED.md](doc/ED.md)
- FA | Fan | [FA.md](doc/FA.md)
- FB | Electric Heater | [FB.md](doc/FB.md)
- FC | Air Purifier | [FC.md](doc/FC.md)
- FD | Humidifier | [FD.md](doc/FD.md)
+| Type | Name                       | Documents          |
+|------|----------------------------|--------------------|
+| 13   | Light                      | [13.md](doc/13.md) |
+| 26   | Bathroom Master            | [26.md](doc/26.md) |
+| 34   | Sink Dishwasher            | [34.md](doc/34.md) |
+| 40   | Integrated Ceiling Fan     | [40.md](doc/40.md) |
+| A1   | Dehumidifier               | [A1.md](doc/A1.md) |
+| AC   | Air Conditioner            | [AC.md](doc/AC.md) |
+| B0   | Microwave Oven             | [B0.md](doc/B0.md) |
+| B1   | Electric Oven              | [B1.md](doc/B1.md) |
+| B6   | Range Hood                 | [B6.md](doc/B6.md) |
+| BF   | Microwave Steam Oven       | [BF.md](doc/BF.md) |
+| C2   | Toilet                     | [C2.md](doc/C2.md) |
+| C3   | Heat Pump Wi-Fi Controller | [C3.md](doc/C3.md) |
+| CA   | Refrigerator               | [CA.md](doc/CA.md) |
+| CC   | MDV Wi-Fi Controller       | [CC.md](doc/CC.md) |
+| CE   | Fresh Air Appliance        | [CE.md](doc/CE.md) |
+| CF   | Heat Pump                  | [CF.md](doc/CF.md) |
+| DA   | Top Load Washer            | [DA.md](doc/DA.md) |
+| DB   | Front Load Washer          | [DB.md](doc/DB.md) |
+| DC   | Clothes Dryer              | [DC.md](doc/DC.md) |
+| E1   | Dishwasher                 | [E1.md](doc/E1.md) |
+| E2   | Electric Water Heater      | [E2.md](doc/E2.md) |
+| E3   | Gas Water Heater           | [E3.md](doc/E3.md) |
+| E6   | Gas Stove                  | [E6.md](doc/E6.md) |
+| EA   | Electric Rice Cooker       | [EA.md](doc/EA.md) |
+| EC   | Electric Pressure Cooker   | [EC.md](doc/EC.md) |
+| ED   | Water Drinking Appliance   | [ED.md](doc/ED.md) |
+| FA   | Fan                        | [FA.md](doc/FA.md) |
+| FB   | Electric Heater            | [FB.md](doc/FB.md) |
+| FC   | Air Purifier               | [FC.md](doc/FC.md) |
+| FD   | Humidifier                 | [FD.md](doc/FD.md) |
 
 # Installation
 Search 'Midea AC LAN' in HACS and install, or copy all files in `custom_components/midea_ac_lan` from [Latest Release](https://github.com/georgezhao2010/midea_ac_lan/releases/latest) to your `/custom_components/midea_ac_lan` in Home Assistant manually. 
 
 Restart Home Assistant.
 
-# Configuration
+# Add device
 ***Note: First, set a static IP address for your appliance in the router, in case the IP address of the appliance changes after set-up.***
 
 After installation, search and add component Midea AC LAN in Home Assistant integrations page.
 
 Or click [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)
 
-## Config automatically
+## Automatically
 This component could auto-discover and list Midea M-Smart appliances in network, select one and add it in. You could repeat the above action to add multiple devices.
 
 ***Note: Automatic configuration requires your appliances and your Home Assistant must be in the same sub-network. Otherwise, devices may not be auto-discovered.  Check this by yourself.***
 
-## Config by IP
+## By IP
 If auto-discover could not work, you could try to discover the appliance with the specified IP Address.
 
-## Config manually
+## Manually
 If you already know following information, you could add the appliance manually.
 - Appliance code
 - Appliance type (one of [Supported appliances](README.md#supported-appliances))
@@ -83,16 +91,40 @@ If you already know following information, you could add the appliance manually.
 - Key
 
 
+# Configure
+
+Configure can be found in `Settings -> Devices & Services -> Midea AC LAN -> Devices -> Device Info`.
+You can re-set the IP address when device IP changed.
+You can also add extra sensor and switch entities or customize your own device.
+
 ## Extra sensor and switch entities
-Only one main entity (e.g. climate entity) will be generated after configuration. If you want to make the attributes to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported).
+After configuration, one of few main entity (e.g. climate entity) may be generated . If you want to make the attributes to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported).
 
 ## Customize
-Some appliance need more settings (like fan), your can set the customize parameters in JSON format, see the documentation of appliance get more information.
+All types of device have the following common customizations, but some types of device also have their own configuration items. Refer to the device documentation for specific information.
+The format of customizations must be JSON.
+
+- Set refresh interval of single device's status (the unit is second) (30 by default)
+
+In most cases, the status update of midea devices relies on the active information notification of the device, but this component will also actively query the device status at regular intervals, and the default time is 30 seconds. Some devices do not have active information notifications when their status changes, so synchronization with the status in HA will be slower. If you are very concerned about the synchronization speed of the status, you can try to set a shorter status refresh interval.
+
+```json
+{"refresh_interval": 15}
+```
+
+***None: shorter refresh interval may mean more power consumption***
+
+If multiple customization items need to be configured, the settings must comply with the JSON format.
+
+Example
+```json
+{"refresh_interval": 15, "fan_speed":  100}
+```
 
 # Debug
 
 Turn on the debug log out，config in configuration.yaml
-```
+```yaml
 logger:
   default: warn
   logs:

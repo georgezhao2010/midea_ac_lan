@@ -36,7 +36,6 @@
 | switch.{DEVICEID}_zone2_power                  | switch        | Zone2 Power                  | 区域2恒温器开关                             |
 
 ## 服务
-生成以下扩展服务
 
 ### midea_ac_lan.set_attribute
 

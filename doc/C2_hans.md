@@ -31,7 +31,6 @@
 | number.{DEVICEID}_seat_temp_level    | number        | Seat Temperature  Level   | 座温档位 |
 
 ## Service
-following extra service will be made
 
 ### midea_ac_lan.set_attribute
 

@@ -6,21 +6,20 @@
 
 ## Entities
 ### Default entity
-EntityID | Class | Description
---- | --- | ---
-climate.{DEVICEID}_climate | climate | Climate entity
+| EntityID                   | Class   | Description    |
+|----------------------------|---------|----------------|
+| climate.{DEVICEID}_climate | climate | Climate entity |
 
 ### Extra entities
 
-EntityID | Class | Description
---- | --- | ---
-sensor.{DEVICEID}_current_temperature | sensor | Current Temperature
-lock.{DEVICEID}_child_lock | lock | Child Lock
-number.{DEVICEID}_heating_level | number | Heating Level
-switch.{DEVICEID}_power | switch | Power
+| EntityID                              | Class  | Description         |
+|---------------------------------------|--------|---------------------|
+| sensor.{DEVICEID}_current_temperature | sensor | Current Temperature |
+| lock.{DEVICEID}_child_lock            | lock   | Child Lock          |
+| number.{DEVICEID}_heating_level       | number | Heating Level       |
+| switch.{DEVICEID}_power               | switch | Power               |
 
 ## Service
-following extra service will be made
 
 ### midea_ac_lan.set_attribute
 
@@ -28,17 +27,17 @@ following extra service will be made
 
 Set the attribute of appliance. Service data:
 
-Name | Description
---- | ---
-device_id | The Appliance code (Device ID) of appliance
-attribute | "child_lock"<br/>"power"
-value | true or false
+| Name      | Description                                 |
+|-----------|---------------------------------------------|
+| device_id | The Appliance code (Device ID) of appliance |
+| attribute | "child_lock"<br/>"power"                    |
+| value     | true or false                               |
 
-Name | Description
---- | ---
-device_id | The Appliance code (Device ID) of appliance
-attribute | "heating_level"
-value | 1 - 10
+| Name      | Description                                 |
+|-----------|---------------------------------------------|
+| device_id | The Appliance code (Device ID) of appliance |
+| attribute | "heating_level"                             |
+| value     | 1 - 10                                      |
 
 Example
 ```

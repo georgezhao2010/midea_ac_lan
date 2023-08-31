@@ -27,7 +27,6 @@
 
 
 ## 服务
-生成以下扩展服务
 
 ### midea_ac_lan.set_attribute
 

@@ -30,7 +30,6 @@ Set the temperature step of water heater (1 by default).
 
 
 ## Services
-following extra service will be made
 
 ### midea_ac_lan.set_attribute
 

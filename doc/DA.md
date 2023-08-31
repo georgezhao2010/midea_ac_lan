@@ -6,15 +6,15 @@ No default entity
 
 ### Extra entities
 
-EntityID | Class | Description
---- | --- | ---
-sensor.{DEVICEID}_progress | sensor | Progress
-sensor.{DEVICEID}_time_remaining | sensor | Time Remaining
-switch.{DEVICEID}_power | switch | Power
-switch.{DEVICEID}_start | switch | Start
+| EntityID                         | Class  | Description    |
+|----------------------------------|--------|----------------|
+| sensor.{DEVICEID}_progress       | sensor | Progress       |
+| sensor.{DEVICEID}_time_remaining | sensor | Time Remaining |
+| switch.{DEVICEID}_power          | switch | Power          |
+| switch.{DEVICEID}_start          | switch | Start          |
 
 ## Service
-following extra service will be made
+
 
 ### midea_ac_lan.set_attribute
 
@@ -22,11 +22,11 @@ following extra service will be made
 
 Set the attribute of appliance. Service data:
 
-Name | Description
---- | ---
-device_id | The Appliance code (Device ID) of appliance
-attribute | "power"<br/>"start"
-value | true or false
+| Name      | Description                                 |
+|-----------|---------------------------------------------|
+| device_id | The Appliance code (Device ID) of appliance |
+| attribute | "power"<br/>"start"                         |
+| value     | true or false                               |
 
 Example
 ```

@@ -21,7 +21,6 @@
 | switch.{DEVICEID}_zero_cold_pulse      | switch        | Zero Cold Water (Pulse) | 零冷水(点动) |
 
 ## 服务
-生成以下扩展服务
 
 ### midea_ac_lan.set_attribute
 

@@ -19,7 +19,6 @@
 | sensor.{DEVICEID}_heating_power               | switch        | Heating power                     | 取暖电源   |
 
 ## 服务
-生成以下扩展服务
 
 ### midea_ac_lan.set_attribute
 
