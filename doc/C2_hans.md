@@ -6,7 +6,7 @@
 - 设置最大座温档位 (默认5)
 - 设置最大水温档位 (默认为 5)
 
-```
+```json
 {"max_dry_level": 3,"max_water_temp_level": 5, "max_seat_temp_level": 5}
 ```
 
@@ -51,7 +51,7 @@
 | value     | 0 到 最大档位                                                |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -59,7 +59,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

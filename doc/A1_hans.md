@@ -53,7 +53,7 @@
 | value     | "25"<br/>"50"<br/>"75"<br/>"100" |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -61,7 +61,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

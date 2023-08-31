@@ -44,7 +44,7 @@
 | value     | 60<br/>70<br/>80<br/>90<br/>100<br/>110<br/>"Oscillate" |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -52,7 +52,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -60,7 +60,7 @@ data:
   value: Bath
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

@@ -40,7 +40,7 @@ Set the attribute of appliance. Service data:
 | value     | 1 - 10                                      |
 
 Example
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -48,7 +48,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

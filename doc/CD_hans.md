@@ -5,7 +5,7 @@
 
 设置温度调整步长 (默认为1).
 
-```
+```json
 {"temperature_step": 0.5}
 ```
 
@@ -41,7 +41,7 @@
 | value     | true 或 false     |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

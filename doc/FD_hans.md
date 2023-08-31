@@ -49,7 +49,7 @@
 | value     | "Bright"<br/>"Dim"<br/>"Off" |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -57,7 +57,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

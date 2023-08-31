@@ -9,7 +9,7 @@
 
 Set the levels of the fan device except "Off" (3 by default).
 
-```
+```json
 {"speed_count": 5}
 ```
 

@@ -35,7 +35,7 @@
 | value     | true or false                                                                               |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

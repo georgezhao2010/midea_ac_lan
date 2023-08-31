@@ -9,7 +9,7 @@
 
 设置风扇的挡位, 不包括"Off"在内(默认为3)。
 
-```
+```json
 {"speed_count": 5}
 ```
 
@@ -63,7 +63,7 @@
 | value     | "Off"<br/>"30"<br/>"60"<br/>"90"<br/>"120"<br/>"180"<br/>"360"<br/>"+60"<br/>"-60"<br/>"40" |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -71,7 +71,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

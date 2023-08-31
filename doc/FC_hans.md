@@ -4,7 +4,7 @@
 
 设置自动打开或关闭待机模式的PM2.5检测数值
 
-```
+```json
 {"standby_detect": [50, 20]}
 ```
 
@@ -70,7 +70,7 @@
 | value     | "Bright"<br/>"Dim"<br/>"Off" |
 
 示例
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -78,7 +78,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

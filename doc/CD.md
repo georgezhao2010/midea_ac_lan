@@ -8,7 +8,7 @@
 
 Set the temperature step of water heater (1 by default).
 
-```
+```json
 {"temperature_step": 0.5}
 ```
 
@@ -44,7 +44,7 @@ Set the attribute of appliance. Service data:
 | value     | true or false                               |
 
 Example
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

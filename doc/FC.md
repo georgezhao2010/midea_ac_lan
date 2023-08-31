@@ -4,7 +4,7 @@
 
 Set the high/low value of PM2.5 to automatically turn standby mode on or off.
 
-```
+```json
 {"standby_detect": [50, 20]}
 ```
 
@@ -71,7 +71,7 @@ Set the attribute of appliance. Service data:
 | value     | "Bright"<br/>"Dim"<br/>"Off"                |
 
 Example
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -79,7 +79,7 @@ data:
   value: true
 ```
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

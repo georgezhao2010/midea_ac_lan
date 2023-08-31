@@ -17,7 +17,7 @@
 
 - Set the temperature step of AC (0.5 by default).
 
-```
+```json
 {"temperature_step": 1}
 ```
 
@@ -27,7 +27,7 @@
   If the power consumption data looks incorrect, try another method and see if they are correct. 
   The options include 1, 2, and 3.
   
-```
+```json
 {"power_analysis_method": 1}
 ```
 
@@ -89,7 +89,7 @@ Set the attribute of appliance. Service data:
 | value     | Range 1 to 100 or "auto"                    |
 
 Example
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
@@ -97,9 +97,7 @@ data:
   value: true
 ```
 
-
-Example
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

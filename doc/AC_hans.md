@@ -17,7 +17,7 @@
 
 - 设置温度调整步长(默认为0.5).
 
-```
+```json
 {"temperature_step": 1}
 ```
 
@@ -27,7 +27,7 @@
   如果空调的功耗数据看起来不正确, 换用其它方法试试看
   可选值有(1/2/3)
   
-```
+```json
 {"power_analysis_method": 1}
 ```
 
@@ -90,14 +90,14 @@
 
 示例
 
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
   attribute: eco_mode
   value: true
 ```
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX

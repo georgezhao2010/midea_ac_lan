@@ -10,7 +10,7 @@
 
 Set the levels of fan except "Auto" (7 by default).
 
-```
+```json
 {"speed_count": 5}
 ```
 
@@ -55,7 +55,7 @@ Set the attribute of appliance. Service data:
 | value     | true or false                                                                                                     |
 
 Example
-```
+```yaml
 service: midea_ac_lan.set_attribute
 data:
   device_id: XXXXXXXXXXXX
