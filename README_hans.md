@@ -15,7 +15,7 @@
 
 同时感谢[@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py)
 
-如果本集成对你有所帮助，请不吝为它点个星，这将是对我的极大激励
+如果本集成对你有所帮助，请不吝为它点个星，这将是对我的极大激励。
 
 ***注意: 本集成需要Home Assistant 2022.5或更高版本***
 
