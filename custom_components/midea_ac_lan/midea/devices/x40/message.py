@@ -41,7 +41,6 @@ class MessageSet(Message40Base):
             body_type=0x01)
         self.fields = {}
         self.light = False
-        self.power = False
         self.fan_speed = 0
         self.oscillate = False
         self.ventilation = False
@@ -79,7 +78,7 @@ class MessageSet(Message40Base):
             self.read_field("DRYING_TEMPERATURE"),
             self.read_field("DRYING_SPEED"),
             self.read_field("DRYING_DIRECTION"),
-            1 if self.power else 0,
+            1 if self.fan_speed > 0 else 0,
             fan_speed,
             0xFD if self.oscillate else 0x66,
             self.read_field("DELAY_ENABLE"),
@@ -142,11 +141,11 @@ class Message40Body(MessageBody):
         self.fields["SMELLY_THRESHOLD"] = body[46]
         if blow:
             if blow_speed <= 30:
-                self.mode = 1
+                self.fan_speed = 1
             else:
-                self.mode = 2
+                self.fan_speed = 2
         else:
-            self.mode = 0
+            self.fan_speed = 0
 
 
 class Message40Response(MessageResponse):

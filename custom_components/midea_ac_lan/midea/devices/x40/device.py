@@ -16,14 +16,13 @@ _LOGGER = logging.getLogger(__name__)
 
 class DeviceAttributes(StrEnum):
     light = "light"
-    mode = "mode"
+    fan_speed = "fan_speed"
     direction = "direction"
     ventilation = "ventilation"
     current_temperature = "current_temperature"
 
 
 class Midea40Device(MiedaDevice):
-    _modes = ["Off", "Low", "High"]
     _directions = ["60", "70", "80", "90", "100", "Oscillate"]
 
     def __init__(
@@ -50,16 +49,12 @@ class Midea40Device(MiedaDevice):
             model=model,
             attributes={
                 DeviceAttributes.light: False,
-                DeviceAttributes.mode: None,
+                DeviceAttributes.fan_speed: 0,
                 DeviceAttributes.direction: False,
                 DeviceAttributes.ventilation: False,
                 DeviceAttributes.current_temperature: None
             })
         self._fields = {}
-
-    @property
-    def preset_modes(self):
-        return Midea40Device._modes
 
     @property
     def directions(self):
@@ -93,9 +88,7 @@ class Midea40Device(MiedaDevice):
         for status in self._attributes.keys():
             if hasattr(message, str(status)):
                 value = getattr(message, str(status))
-                if status == DeviceAttributes.mode:
-                    self._attributes[status] = Midea40Device._modes[value]
-                elif status == DeviceAttributes.direction:
+                if status == DeviceAttributes.direction:
                     self._attributes[status] = Midea40Device._directions[
                         self._convert_from_midea_direction(value)
                     ]
@@ -106,20 +99,18 @@ class Midea40Device(MiedaDevice):
 
     def set_attribute(self, attr, value):
         if attr in [DeviceAttributes.light,
-                    DeviceAttributes.mode,
+                    DeviceAttributes.fan_speed,
                     DeviceAttributes.direction,
                     DeviceAttributes.ventilation]:
             message = MessageSet(self._device_protocol_version)
             message.fields = self._fields
             message.light = self._attributes[DeviceAttributes.light]
             message.ventilation = self._attributes[DeviceAttributes.ventilation]
-            message.mode = Midea40Device._modes.index(self._attributes[DeviceAttributes.mode])
+            message.fan_speed = self._attributes[DeviceAttributes.fan_speed]
             message.direction = self._convert_to_midea_direction(self._attributes[DeviceAttributes.direction])
-            if attr == DeviceAttributes.mode:
-                message.mode = Midea40Device._modes.index(value)
-            elif attr == DeviceAttributes.direction:
+            if attr == DeviceAttributes.direction:
                 message.direction = self._convert_to_midea_direction(value)
-            else:
+            elif attr == DeviceAttributes.fan_speed:
                 setattr(message, str(attr), value)
             self.build_send(message)
 

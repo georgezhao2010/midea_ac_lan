@@ -13,6 +13,7 @@ from .const import (
 )
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
 from .midea.devices.ce.device import DeviceAttributes as CEAttributes
+from .midea.devices.x40.device import DeviceAttributes as X40Attributes
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
@@ -36,6 +37,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 devs.append(MideaACFreshAirFan(device, entity_key))
             elif device.device_type == 0xCE:
                 devs.append(MideaCEFan(device, entity_key))
+            elif device.device_type == 0x40:
+                devs.append(Midea40Fan(device, entity_key))
     async_add_entities(devs)
 
 
@@ -57,7 +60,7 @@ class MideaFan(MideaEntity, FanEntity):
 
     @property
     def preset_modes(self):
-        return self._device.preset_modes
+        return self._device.preset_modes if hasattr(self._device, "preset_modes") else None
 
     @property
     def state(self):
@@ -182,3 +185,16 @@ class MideaCEFan(MideaFan):
 
     async def async_set_percentage(self, percentage: int):
         await self.hass.async_add_executor_job(self.set_percentage, percentage)
+
+
+class Midea40Fan(MideaFan):
+    def __init__(self, device, entity_key):
+        super().__init__(device, entity_key)
+        self._attr_supported_features = SUPPORT_SET_SPEED | SUPPORT_OSCILLATE
+        self._attr_speed_count = 2
+
+    def turn_on(self, percentage, preset_mode, **kwargs):
+        self._device.set_attribute(attr=X40Attributes.fan_speed, value=1)
+
+    def turn_off(self):
+        self._device.set_attribute(attr=X40Attributes.fan_speed, value=0)
