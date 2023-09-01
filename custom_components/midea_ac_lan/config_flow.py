@@ -415,25 +415,38 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         customize = self.config_entry.options.get(
             CONF_CUSTOMIZE, ""
         )
-
-        return self.async_show_form(
-            step_id="init",
-            data_schema=vol.Schema({
+        data_schema = vol.Schema({
                 vol.Required(
                     CONF_IP_ADDRESS,
                     default=ip_address
-                ): str,
+                ): str
+        })
+        if len(extra_sensors) > 0:
+            data_schema = data_schema.extend({
                 vol.Required(
                     CONF_SENSORS,
                     default=extra_sensors,
-                ): cv.multi_select(sensors),
+                ):
+                cv.multi_select(sensors)
+            })
+        if len(extra_switches) > 0:
+            data_schema = data_schema.extend({
                 vol.Required(
                     CONF_SWITCHES,
                     default=extra_switches,
-                ): cv.multi_select(switches),
-                vol.Optional(
-                    CONF_CUSTOMIZE,
-                    default=customize,
-                ): str
+                ):
+                cv.multi_select(switches)
+
             })
+        data_schema = data_schema.extend({
+            vol.Optional(
+                CONF_CUSTOMIZE,
+                default=customize,
+            ):
+            str
+        })
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=data_schema
         )
