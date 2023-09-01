@@ -94,7 +94,7 @@ If you already know following information, you could add the appliance manually.
 
 # Configure
 
-Configure can be found in `Settings -> Devices & Services -> Midea AC LAN -> Devices -> Device Info`.
+Configure can be found in `Settings -> Devices & Services -> Midea AC LAN -> Devices -> CONFIGURE`.
 You can re-set the IP address when device IP changed.
 You can also add extra sensor and switch entities or customize your own device.
 
