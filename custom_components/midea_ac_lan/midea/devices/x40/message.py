@@ -1,3 +1,4 @@
+import logging
 from ...core.message import (
     MessageType,
     MessageRequest,
@@ -5,6 +6,7 @@ from ...core.message import (
     MessageBody
 )
 
+_LOGGER = logging.getLogger(__name__)
 
 class Message40Base(MessageRequest):
     def __init__(self, device_protocol_version, message_type, body_type):
@@ -42,8 +44,9 @@ class MessageSet(Message40Base):
         self.fields = {}
         self.light = False
         self.fan_speed = 0
-        self.oscillate = False
+        self.direction = False
         self.ventilation = False
+        self.smelly_sensor = False
 
     def read_field(self, field):
         value = self.fields.get(field, 0)
@@ -51,9 +54,14 @@ class MessageSet(Message40Base):
 
     @property
     def _body(self):
+        light = 1 if self.light else 0
+        blow = 1 if self.fan_speed > 0 else 0
         fan_speed = 0xFF if self.fan_speed == 0 else 30 if self.fan_speed == 1 else 100
+        ventilation = 1 if self.ventilation else 0
+        direction = self.direction
+        smelly_sensor = 1 if self.smelly_sensor else 0
         return bytearray([
-            1 if self.light else 0,
+            light,
             self.read_field("MAIN_LIGHT_BRIGHTNESS"),
             self.read_field("NIGHT_LIGHT_ENABLE"),
             self.read_field("NIGHT_LIGHT_BRIGHTNESS"),
@@ -70,7 +78,7 @@ class MessageSet(Message40Base):
             self.read_field("BATH_TEMPERATURE"),
             self.read_field("BATH_SPEED"),
             self.read_field("BATH_DIRECTION"),
-            1 if self.ventilation else 0,
+            ventilation,
             self.read_field("VENTILATION_SPEED"),
             self.read_field("VENTILATION_DIRECTION"),
             self.read_field("DRYING_ENABLE"),
@@ -78,9 +86,9 @@ class MessageSet(Message40Base):
             self.read_field("DRYING_TEMPERATURE"),
             self.read_field("DRYING_SPEED"),
             self.read_field("DRYING_DIRECTION"),
-            1 if self.fan_speed > 0 else 0,
+            blow,
             fan_speed,
-            0xFD if self.oscillate else 0x66,
+            direction,
             self.read_field("DELAY_ENABLE"),
             self.read_field("DELAY_TIME"),
             self.read_field("SOFT_WIND_ENABLE"),
@@ -90,7 +98,7 @@ class MessageSet(Message40Base):
             self.read_field("SOFT_WIND_DIRECTION"),
             self.read_field("WINDLESS_ENABLE"),
             self.read_field("ANION_ENABLE"),
-            self.read_field("SMELLY_ENABLE"),
+            smelly_sensor,
             self.read_field("SMELLY_THRESHOLD")
         ])
 
@@ -126,7 +134,7 @@ class Message40Body(MessageBody):
         self.fields["DRYING_DIRECTION"] = body[25]
         blow = body[26] > 0
         blow_speed = body[27]
-        self.direction = (body[28] == 0xFD)
+        self.direction = body[28]
         self.fields["DELAY_ENABLE"] = body[29]
         self.fields["DELAY_TIME"] = body[30]
         self.current_temperature = body[33]
@@ -137,7 +145,7 @@ class Message40Body(MessageBody):
         self.fields["SOFT_WIND_DIRECTION"] = body[42]
         self.fields["WINDLESS_ENABLE"] = body[43]
         self.fields["ANION_ENABLE"] = body[44]
-        self.fields["SMELLY_ENABLE"] = body[45]
+        self.smelly_sensor = body[45]
         self.fields["SMELLY_THRESHOLD"] = body[46]
         if blow:
             if blow_speed <= 30:

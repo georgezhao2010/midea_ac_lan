@@ -193,6 +193,10 @@ class Midea40Fan(MideaFan):
         self._attr_supported_features = SUPPORT_SET_SPEED | SUPPORT_OSCILLATE
         self._attr_speed_count = 2
 
+    @property
+    def state(self):
+        return STATE_ON if self._device.get_attribute(attr=X40Attributes.fan_speed) > 0 else STATE_OFF
+
     def turn_on(self, percentage, preset_mode, **kwargs):
         self._device.set_attribute(attr=X40Attributes.fan_speed, value=1)
 

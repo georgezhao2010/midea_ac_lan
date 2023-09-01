@@ -19,6 +19,7 @@ class DeviceAttributes(StrEnum):
     fan_speed = "fan_speed"
     direction = "direction"
     ventilation = "ventilation"
+    smelly_sensor = "smelly_sensor"
     current_temperature = "current_temperature"
 
 
@@ -52,6 +53,7 @@ class Midea40Device(MiedaDevice):
                 DeviceAttributes.fan_speed: 0,
                 DeviceAttributes.direction: False,
                 DeviceAttributes.ventilation: False,
+                DeviceAttributes.smelly_sensor: False,
                 DeviceAttributes.current_temperature: None
             })
         self._fields = {}
@@ -101,16 +103,21 @@ class Midea40Device(MiedaDevice):
         if attr in [DeviceAttributes.light,
                     DeviceAttributes.fan_speed,
                     DeviceAttributes.direction,
-                    DeviceAttributes.ventilation]:
+                    DeviceAttributes.ventilation,
+                    DeviceAttributes.smelly_sensor]:
             message = MessageSet(self._device_protocol_version)
             message.fields = self._fields
             message.light = self._attributes[DeviceAttributes.light]
             message.ventilation = self._attributes[DeviceAttributes.ventilation]
+            message.smelly_sensor = self._attributes[DeviceAttributes.smelly_sensor]
             message.fan_speed = self._attributes[DeviceAttributes.fan_speed]
             message.direction = self._convert_to_midea_direction(self._attributes[DeviceAttributes.direction])
             if attr == DeviceAttributes.direction:
                 message.direction = self._convert_to_midea_direction(value)
-            elif attr == DeviceAttributes.fan_speed:
+            elif attr == DeviceAttributes.ventilation and message.fan_speed == 2:
+                message.fan_speed = 1
+                message.ventilation = value
+            else:
                 setattr(message, str(attr), value)
             self.build_send(message)
 

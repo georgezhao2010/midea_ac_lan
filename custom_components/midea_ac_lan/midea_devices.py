@@ -206,6 +206,16 @@ MIDEA_DEVICES = {
                 "name": "Light",
                 "icon": "mdi:lightbulb"
             },
+            X40Attributes.ventilation: {
+                "type": Platform.SWITCH,
+                "name": "Ventilation",
+                "icon": "mdi:air-filter"
+            },
+            X40Attributes.smelly_sensor: {
+                "type": Platform.SWITCH,
+                "name": "Smelly Sensor",
+                "icon": "mdi:scent"
+            },
             X40Attributes.direction: {
                 "type": Platform.SELECT,
                 "name": "Direction",
