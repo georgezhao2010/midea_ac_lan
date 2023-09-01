@@ -103,6 +103,9 @@ After configuration, one of few main entity (e.g. climate entity) may be generat
 
 ## Customize
 All types of device have the following common customizations, but some types of device also have their own configuration items. Refer to the device documentation for specific information.
+
+If your device is not working properly, you may need to customize it. Please refer to the device documentation for more information.
+
 The format of customizations must be JSON.
 
 - Set refresh interval of single device's status (the unit is second) (30 by default)
