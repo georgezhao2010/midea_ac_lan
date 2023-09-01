@@ -1,4 +1,3 @@
-import logging
 from ...core.message import (
     MessageType,
     MessageRequest,
@@ -6,7 +5,6 @@ from ...core.message import (
     MessageBody
 )
 
-_LOGGER = logging.getLogger(__name__)
 
 class Message40Base(MessageRequest):
     def __init__(self, device_protocol_version, message_type, body_type):
