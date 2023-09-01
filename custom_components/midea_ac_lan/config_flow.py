@@ -421,7 +421,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     default=ip_address
                 ): str
         })
-        if len(extra_sensors) > 0:
+        if len(sensors) > 0:
             data_schema = data_schema.extend({
                 vol.Required(
                     CONF_SENSORS,
@@ -429,14 +429,13 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 ):
                 cv.multi_select(sensors)
             })
-        if len(extra_switches) > 0:
+        if len(switches) > 0:
             data_schema = data_schema.extend({
                 vol.Required(
                     CONF_SWITCHES,
                     default=extra_switches,
                 ):
                 cv.multi_select(switches)
-
             })
         data_schema = data_schema.extend({
             vol.Optional(
