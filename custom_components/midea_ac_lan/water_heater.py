@@ -96,7 +96,7 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def current_operation(self):
-        return None
+        return self._device.get_attribute("mode")
 
     @property
     def current_temperature(self):

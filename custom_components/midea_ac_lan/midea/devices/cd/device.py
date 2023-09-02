@@ -28,7 +28,7 @@ class DeviceAttributes(StrEnum):
 
 
 class MideaCDDevice(MiedaDevice):
-    _modes = ["Electric", "Standard", "Dual", "Smart"]
+    _modes = ["Energy-save", "Standard", "Dual", "Smart"]
 
     def __init__(
             self,
@@ -97,7 +97,7 @@ class MideaCDDevice(MiedaDevice):
         return new_status
 
     def set_attribute(self, attr, value):
-        if attr in [DeviceAttributes.power, DeviceAttributes.target_temperature]:
+        if attr in [DeviceAttributes.mode, DeviceAttributes.power, DeviceAttributes.target_temperature]:
             message = MessageSet(self._device_protocol_version)
             message.fields = self._fields
             message.mode = MideaCDDevice._modes.index(self._attributes[DeviceAttributes.mode])
