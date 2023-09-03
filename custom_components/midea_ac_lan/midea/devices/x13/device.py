@@ -112,12 +112,7 @@ class Midea13Device(MiedaDevice):
                 setattr(message, str(attr), value)
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._color_temp_range = self._default_color_temp_range
         if customize and len(customize) > 0:
             try:

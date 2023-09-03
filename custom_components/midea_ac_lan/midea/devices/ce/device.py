@@ -141,12 +141,7 @@ class MideaCEDevice(MiedaDevice):
             setattr(message, str(attr), value)
         self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._speed_count = self._default_speed_count
         if customize and len(customize) > 0:
             try:

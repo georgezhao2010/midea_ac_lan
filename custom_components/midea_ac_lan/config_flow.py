@@ -5,6 +5,7 @@ from .const import (
     EXTRA_CONTROL,
     CONF_KEY,
     CONF_MODEL,
+    CONF_REFRESH_INTERVAL,
     MIDEA_DEFAULT_ACCOUNT,
     MIDEA_DEFAULT_PASSWORD,
     MIDEA_DEFAULT_SERVER
@@ -402,10 +403,13 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         ip_address = self.config_entry.options.get(
             CONF_IP_ADDRESS, None
         )
-        if not ip_address:
+        if ip_address is None:
             ip_address = self.config_entry.data.get(
                 CONF_IP_ADDRESS, None
             )
+        refresh_interval = self.config_entry.options.get(
+            CONF_REFRESH_INTERVAL, 30
+        )
         extra_sensors = self.config_entry.options.get(
             CONF_SENSORS, []
         )
@@ -416,10 +420,14 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             CONF_CUSTOMIZE, ""
         )
         data_schema = vol.Schema({
-                vol.Required(
-                    CONF_IP_ADDRESS,
-                    default=ip_address
-                ): str
+            vol.Required(
+                CONF_IP_ADDRESS,
+                default=ip_address
+            ): str,
+            vol.Required(
+                CONF_REFRESH_INTERVAL,
+                default=refresh_interval
+            ): int
         })
         if len(sensors) > 0:
             data_schema = data_schema.extend({

@@ -74,7 +74,7 @@ class MideaCDDevice(MiedaDevice):
         return self._temperature_step
 
     @property
-    def modes(self):
+    def preset_modes(self):
         return MideaCDDevice._modes
 
     def build_query(self):
@@ -110,12 +110,7 @@ class MideaCDDevice(MiedaDevice):
                 setattr(message, str(attr), value)
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._temperature_step = self._default_temperature_step
         if customize and len(customize) > 0:
             try:

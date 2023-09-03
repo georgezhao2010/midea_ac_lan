@@ -196,7 +196,6 @@ class MideaFCDevice(MiedaDevice):
             self.build_send(message)
 
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._standby_detect = self._standby_detect_default
         if customize and len(customize) > 0:
             try:
@@ -208,10 +207,6 @@ class MideaFCDevice(MiedaDevice):
             except Exception as e:
                 _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
             self.update_all({"standby_detect": self._standby_detect})
-
-    @property
-    def attributes(self):
-        return super().attributes
 
 
 class MideaAppliance(MideaFCDevice):

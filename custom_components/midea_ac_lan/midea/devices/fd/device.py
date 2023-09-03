@@ -169,10 +169,6 @@ class MideaFDDevice(MiedaDevice):
                 setattr(message, str(attr), value)
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def set_subtype(self):
         if self.sub_type > 5:
             self._speeds = MideaFDDevice._speeds_new

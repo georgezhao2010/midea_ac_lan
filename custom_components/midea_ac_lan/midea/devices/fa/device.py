@@ -251,10 +251,6 @@ class MideaFADevice(MiedaDevice):
         if message is not None:
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def turn_on(self, fan_speed=None, mode=None):
         message = MessageSet(self._device_protocol_version, self.sub_type)
         message.power = True
@@ -265,7 +261,6 @@ class MideaFADevice(MiedaDevice):
         self.build_send(message)
 
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._speed_count = self._default_speed_count
         if customize and len(customize) > 0:
             try:

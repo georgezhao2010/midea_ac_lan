@@ -114,7 +114,6 @@ class MideaE2Device(MiedaDevice):
             self.build_send(message)
 
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._old_protocol = self._default_old_protocol
         if customize and len(customize) > 0:
             try:

@@ -93,10 +93,6 @@ class MideaCFDevice(MiedaDevice):
             message.aux_heating = value
         self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
 
 class MideaAppliance(MideaCFDevice):
     pass

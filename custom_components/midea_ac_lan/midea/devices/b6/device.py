@@ -120,10 +120,6 @@ class MideaB6Device(MiedaDevice):
         if message is not None:
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def turn_on(self, fan_speed=None, mode=None):
         message = MessageSet(self._device_protocol_version)
         message.power = True
@@ -137,7 +133,6 @@ class MideaB6Device(MiedaDevice):
         self.build_send(message)
 
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._speeds = self._default_speeds
         self._power_speed = self._default_power_speed
         if customize and len(customize) > 0:

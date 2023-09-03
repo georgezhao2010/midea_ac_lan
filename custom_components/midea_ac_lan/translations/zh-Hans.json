@@ -60,6 +60,7 @@
             "init": {
                 "data": {
                     "ip_address": "IP地址",
+                    "refresh_interval": "刷新间隔(设0为不进行主动刷新)",
                     "sensors": "扩展传感器",
                     "switches": "扩展控制",
                     "customize": "自定义"
@@ -69,20 +70,6 @@
         }
     },
     "services": {
-        "set_ac_fan_speed": {
-            "name": "设置空调风速",
-            "description": "设置空调的风速",
-            "fields" : {
-                "device_id": {
-                    "name": "设备编码",
-                    "description": "设备编码(Deivce ID)"
-                },
-                "fan_speed": {
-                    "name": "风速",
-                    "description": "要设置的风速值(1 - 100 或 'auto')"
-                }
-            }
-        },
         "set_attribute": {
             "name": "设置属性",
             "description": "设置设备的属性值",

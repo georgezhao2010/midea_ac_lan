@@ -83,10 +83,6 @@ class MideaBFDevice(MiedaDevice):
     def set_attribute(self, attr, value):
         pass
 
-    @property
-    def attributes(self):
-        return super().attributes
-
 
 class MideaAppliance(MideaBFDevice):
     pass

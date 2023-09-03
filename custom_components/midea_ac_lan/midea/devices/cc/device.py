@@ -169,14 +169,10 @@ class MideaCCDevice(MiedaDevice):
                     setattr(message, DeviceAttributes.eco_mode.value, False)
                 elif attr == DeviceAttributes.aux_heating:
                     if value:
-                        setattr(message, DeviceAttributes.aux_heat_str(status), 1)
+                        setattr(message, DeviceAttributes.aux_heat_status, 1)
                     else:
-                        setattr(message, DeviceAttributes.aux_heat_str(status), 2)
+                        setattr(message, DeviceAttributes.aux_heat_status, 2)
             self.build_send(message)
-
-    @property
-    def attributes(self):
-        return super().attributes
 
 
 class MideaAppliance(MideaCCDevice):

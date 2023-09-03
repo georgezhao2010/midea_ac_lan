@@ -5,6 +5,7 @@ from .const import (
     DOMAIN,
     CONF_KEY,
     CONF_MODEL,
+    CONF_REFRESH_INTERVAL,
     DEVICES,
     EXTRA_SENSOR,
     EXTRA_SWITCH,
@@ -17,16 +18,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     CONF_NAME,
     CONF_TOKEN,
-    CONF_HOST,
     CONF_IP_ADDRESS,
     CONF_PORT,
     CONF_PROTOCOL,
     CONF_DEVICE_ID,
     CONF_TYPE,
     CONF_CUSTOMIZE,
-    TEMP_FAHRENHEIT,
-    ATTR_DEVICE_ID,
-    ATTR_ENTITY_ID
 )
 from .midea.devices import device_selector
 
@@ -46,11 +43,16 @@ async def update_listener(hass, config_entry):
     ip_address = config_entry.options.get(
         CONF_IP_ADDRESS, None
     )
+    refresh_interval = config_entry.options.get(
+        CONF_REFRESH_INTERVAL, None
+    )
     dev = hass.data[DOMAIN][DEVICES].get(device_id)
     if dev:
         dev.set_customize(customize)
-        if ip_address:
+        if ip_address is not None:
             dev.set_ip_address(ip_address)
+        if refresh_interval is not None:
+            dev.set_refresh_interval(refresh_interval)
 
 
 async def async_setup(hass: HomeAssistant, hass_config: dict):
@@ -150,8 +152,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
     token = config_entry.data.get(CONF_TOKEN)
     key = config_entry.data.get(CONF_KEY)
     ip_address = config_entry.options.get(CONF_IP_ADDRESS, None)
-    if not ip_address:
+    if ip_address is None:
         ip_address = config_entry.data.get(CONF_IP_ADDRESS)
+    refresh_interval = config_entry.options.get(CONF_REFRESH_INTERVAL)
     port = config_entry.data.get(CONF_PORT)
     model = config_entry.data.get(CONF_MODEL)
     protocol = config_entry.data.get(CONF_PROTOCOL)
@@ -171,6 +174,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         model=model,
         customize=customize,
     )
+    if refresh_interval is not None:
+        device.set_refresh_interval(refresh_interval)
     if device:
         device.open()
         if DOMAIN not in hass.data:

@@ -60,8 +60,9 @@
             "init": {
                 "data": {
                     "ip_address": "IP address",
-                    "sensors": "Extra Sensors",
-                    "switches": "Extra Controls",
+                    "refresh_interval": "Refresh interval (0 means not refreshing actively)",
+                    "sensors": "Extra sensors",
+                    "switches": "Extra controls",
                     "customize": "Customize"
                 },
                 "title": "Configure"
@@ -69,27 +70,13 @@
         }
     },
     "services": {
-        "set_ac_fan_speed": {
-            "name": "Set AC fan speed",
-            "description": "Set the fan speed of climate device",
-            "fields" : {
-                "device_id": {
-                    "name": "Appliance code",
-                    "description": "The Appliance code (Device ID) of appliance"
-                },
-                "fan_speed": {
-                    "name": "Fan speed",
-                    "description": "The fan gear value want to set (range from 1 to 100 or 'auto')"
-                }
-            }
-        },
         "set_attribute": {
             "name": "Set attribute",
             "description": "Set the attribute value of device",
             "fields" : {
                 "device_id": {
                     "name": "Appliance code",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "The appliance code (Device ID) of appliance"
                 },
                 "attribute": {
                     "name": "Attribute",
@@ -107,7 +94,7 @@
             "fields" : {
                 "device_id": {
                     "name": "Appliance code",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "The appliance code (Device ID) of appliance"
                 },
                 "cmd_type": {
                     "name": "command type",

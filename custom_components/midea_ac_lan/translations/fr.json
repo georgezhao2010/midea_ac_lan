@@ -60,6 +60,7 @@
             "init": {
                 "data": {
                     "ip_address": "Adresse IP",
+                    "refresh_interval": "Refresh interval (0 means not refreshing actively)",
                     "sensors": "Capteurs supplémentaire",
                     "switches": "Contrôles supplémentaire",
                     "customize": "Personnaliser"
@@ -69,20 +70,6 @@
         }
     },
     "services": {
-        "set_ac_fan_speed": {
-            "name": "Régler la vitesse du ventilateur AC",
-            "description": "Réglage de la vitesse du ventilateur de l'appareil climatique",
-            "fields" : {
-                "device_id": {
-                    "name": "Code appareil",
-                    "description": "Code de l'appareil (ID de l'appareil)"
-                },
-                "fan_speed": {
-                    "name": "Vitesse ventilateur",
-                    "description": "Valeur de vitesse du ventilateur que vous souhaitez définir (plage de 1 à 100 ou 'auto')"
-                }
-            }
-        },
         "set_attribute": {
             "name": "Définir l'attribut",
             "description": "Définir la valeur d'attribut de l'appareil",

@@ -117,7 +117,7 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def operation_list(self):
-        return getattr(self._device, "modes")
+        return getattr(self._device, "preset_modes")
 
     def turn_on(self):
         self._device.set_attribute(attr="power", value=True)

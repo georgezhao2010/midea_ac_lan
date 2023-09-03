@@ -76,6 +76,7 @@ class MideaC2Device(MiedaDevice):
         self._default_max_water_temp_level = 5
         self._default_max_seat_temp_level = 5
         self.set_customize(customize)
+
     @property
     def max_dry_level(self):
         return self._max_dry_level
@@ -119,12 +120,7 @@ class MideaC2Device(MiedaDevice):
         if message:
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._max_dry_level = self._default_max_dry_level
         self._max_water_temp_level = self._default_max_water_temp_level
         self._max_seat_temp_level = self._default_max_seat_temp_level

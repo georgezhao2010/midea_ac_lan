@@ -334,12 +334,7 @@ class MideaACDevice(MiedaDevice):
         message.swing_horizontal = swing_horizontal
         self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
     def set_customize(self, customize):
-        super().set_customize(customize)
         self._temperature_step = self._default_temperature_step
         self._power_analysis_method = self._default_power_analysis_method
         if customize and len(customize) > 0:

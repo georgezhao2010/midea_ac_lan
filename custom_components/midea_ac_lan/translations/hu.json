@@ -60,6 +60,7 @@
             "init": {
                 "data": {
                     "ip_address": "IP cím",
+                    "refresh_interval": "Refresh interval (0 means not refreshing actively)",
                     "sensors": "Extra Érzékelők",
                     "switches": "Extra Vezérlők",
                     "customize": "Személyre szabás"
@@ -69,20 +70,6 @@
         }
     },
     "services": {
-        "set_ac_fan_speed": {
-            "name": "Set AC fan speed",
-            "description": "Set the fan speed of climate deivce",
-            "fields" : {
-                "device_id": {
-                    "name": "Eszköz kód",
-                    "description": "The Appliance code (Device ID) of appliance"
-                },
-                "fan_speed": {
-                    "name": "Fan speed",
-                    "description": "The fan gear value want to set (range from 1 to 100 or 'auto')"
-                }
-            }
-        },
         "set_attribute": {
             "name": "Set attribute",
             "description": "Set the attribute value of device",

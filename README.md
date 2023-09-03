@@ -98,25 +98,22 @@ Configure can be found in `Settings -> Devices & Services -> Midea AC LAN -> Dev
 You can re-set the IP address when device IP changed.
 You can also add extra sensor and switch entities or customize your own device.
 
+## IP address
+Set the IP address of device. You can reset this when your device IP is changed.
+
+## Refresh interval
+Set the interval for actively refreshing the status of a single device (the unit is second) (30 by default and 0 means not refresh actively)
+Mostly the status update of Midea devices relies on the active information notification of the device, in which condition the status update in HA still works normally even if the refresh interval is set to be “0”. This component will also actively query the device status at regular intervals, and the default time is 30 seconds. Some devices do not have active information notifications when their status changed, so synchronization with the status in HA will be slower. If you are very concerned about the synchronization speed of the status, you can try to set a shorter status refresh interval.
+
+***None: shorter refresh interval may mean more power consumption***
+
 ## Extra sensor and switch entities
 After configuration, one of few main entity (e.g. climate entity) may be generated . If you want to make the attributes to extra sensor and switch entities, click CONFIGURE in Midea AC LAN integration card to choose (if your devices supported).
 
 ## Customize
-All types of device have the following common customizations, but some types of device also have their own configuration items. Refer to the device documentation for specific information.
-
-If your device is not working properly, you may need to customize it. Please refer to the device documentation for more information.
+Some types of device have their own configuration items, if your device does not work properly, you may need to customize it. Refer to the device documentation for specific information.
 
 The format of customizations must be JSON.
-
-- Set refresh interval of single device's status (the unit is second) (30 by default)
-
-In most cases, the status update of midea devices relies on the active information notification of the device, but this component will also actively query the device status at regular intervals, and the default time is 30 seconds. Some devices do not have active information notifications when their status changes, so synchronization with the status in HA will be slower. If you are very concerned about the synchronization speed of the status, you can try to set a shorter status refresh interval.
-
-```json
-{"refresh_interval": 15}
-```
-
-***None: shorter refresh interval may mean more power consumption***
 
 If multiple customization items need to be configured, the settings must comply with the JSON format.
 

@@ -60,6 +60,7 @@
             "init": {
                 "data": {
                     "ip_address": "IP-адрес",
+                    "refresh_interval": "Refresh interval (0 means not refreshing actively)",
                     "sensors": "Экстра сенсоры",
                     "switches": "Экстра элементы управления",
                     "customize": "Настроить"
@@ -69,20 +70,6 @@
         }
     },
     "services": {
-        "set_ac_fan_speed": {
-            "name": "Установить скорость вентилятора",
-            "description": "Установить скорость вентилятора климатического устройства",
-            "fields" : {
-                "device_id": {
-                    "name": "Идентификатор устройства",
-                    "description": "Код (Идентификатор) устройства"
-                },
-                "fan_speed": {
-                    "name": "Скорость вентилятора",
-                    "description": "Скорость вращения вентилятора (от 1 до 100, или 'auto')"
-                }
-            }
-        },
         "set_attribute": {
             "name": "Установить атрибут",
             "description": "Установить значение атрибута устройства",

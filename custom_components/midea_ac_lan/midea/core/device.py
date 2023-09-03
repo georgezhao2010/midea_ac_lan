@@ -9,7 +9,6 @@ from .packet_builder import PacketBuilder
 from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse, MessageQuestCustom
 import socket
 import logging
-import json
 import time
 
 _LOGGER = logging.getLogger(__name__)
@@ -156,19 +155,19 @@ class MiedaDevice(threading.Thread):
 
     def send_message(self, data):
         if self._protocol == 3:
-            self.send_message_V3(data, msg_type=MSGTYPE_ENCRYPTED_REQUEST)
+            self.send_message_v3(data, msg_type=MSGTYPE_ENCRYPTED_REQUEST)
         else:
-            self.send_message_V2(data)
+            self.send_message_v2(data)
 
-    def send_message_V2(self, data):
+    def send_message_v2(self, data):
         if self._socket is not None:
             self._socket.send(data)
         else:
             _LOGGER.debug(f"[{self._device_id}] Send failure, device disconnected, data: {data.hex()}")
 
-    def send_message_V3(self, data, msg_type=MSGTYPE_ENCRYPTED_REQUEST):
+    def send_message_v3(self, data, msg_type=MSGTYPE_ENCRYPTED_REQUEST):
         data = self._security.encode_8370(data, msg_type)
-        self.send_message_V2(data)
+        self.send_message_v2(data)
 
     def build_send(self, cmd):
         data = cmd.serialize()
@@ -317,9 +316,13 @@ class MiedaDevice(threading.Thread):
             self._socket = None
 
     def set_ip_address(self, ip_address):
-        _LOGGER.debug(f"[{self._device_id}] Update IP address to {ip_address}")
-        self._ip_address = ip_address
-        self.close_socket()
+        if self._ip_address != ip_address:
+            _LOGGER.debug(f"[{self._device_id}] Update IP address to {ip_address}")
+            self._ip_address = ip_address
+            self.close_socket()
+
+    def set_refresh_interval(self, refresh_interval):
+        self._refresh_interval = refresh_interval
 
     def run(self):
         while self._is_run:
@@ -337,7 +340,7 @@ class MiedaDevice(threading.Thread):
             while True:
                 try:
                     now = time.time()
-                    if now - previous_refresh >= self._refresh_interval:
+                    if 0 < self._refresh_interval <= now - previous_refresh:
                         self.refresh_status()
                         previous_refresh = now
                     if now - previous_heartbeat >= self._heartbeat_interval:
@@ -377,15 +380,7 @@ class MiedaDevice(threading.Thread):
         return self._attributes.get(attr)
 
     def set_customize(self, customize):
-        _LOGGER.debug(f"[{self.device_id}] Customize: {customize}")
-        self._refresh_interval = self._default_refresh_interval
-        if customize and len(customize) > 0:
-            try:
-                params = json.loads(customize)
-                if params and "refresh_interval" in params:
-                    self._refresh_interval = params.get("refresh_interval")
-            except Exception as e:
-                _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
+        pass
 
     @property
     def attributes(self):

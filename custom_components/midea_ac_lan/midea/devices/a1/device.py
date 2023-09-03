@@ -157,10 +157,6 @@ class MideaA1Device(MiedaDevice):
                 setattr(message, str(attr), value)
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
 
 class MideaAppliance(MideaA1Device):
     pass

@@ -231,10 +231,6 @@ class MideaC3Device(MiedaDevice):
             message.mode = mode
         self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
 
 class MideaAppliance(MideaC3Device):
     pass
