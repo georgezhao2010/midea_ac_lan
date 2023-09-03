@@ -133,10 +133,5 @@ class Midea26Device(MiedaDevice):
                 message.direction = self._convert_to_midea_direction(value)
             self.build_send(message)
 
-    @property
-    def attributes(self):
-        return super().attributes
-
-
 class MideaAppliance(Midea26Device):
     pass
