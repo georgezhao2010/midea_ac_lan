@@ -12,8 +12,8 @@
 | 实体ID                                  | 类型     | 名称                  | 描述   |
 |---------------------------------------|--------|---------------------|------|
 | sensor.{DEVICEID}_current_temperature | sensor | Current Temperature | 当前温度 |
-| sensor.{DEVICEID}_current_humidity      | sensor        | 当前湿度    |
-| binary_sensor.{DEVICEID}_current_radar  | binary_sensor | 人体传感器 |
+| sensor.{DEVICEID}_current_humidity      | sensor        | Current Humidity | 当前湿度  |
+| binary_sensor.{DEVICEID}_current_radar  | binary_sensor | Occupancy Status | 人体传感器 |
 | switch.{DEVICEID}_main_light          | switch | Main Light          | 主灯   |
 | switch.{DEVICEID}_night_light         | switch | Night Light         | 夜灯   |
 | select.{DEVICEID}_mode                | select | Mode                | 模式   |

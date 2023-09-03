@@ -133,5 +133,6 @@ class Midea26Device(MiedaDevice):
                 message.direction = self._convert_to_midea_direction(value)
             self.build_send(message)
 
+
 class MideaAppliance(Midea26Device):
     pass
