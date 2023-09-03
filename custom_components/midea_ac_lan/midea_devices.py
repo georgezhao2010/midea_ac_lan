@@ -10,7 +10,8 @@ from homeassistant.const import (
     VOLUME_LITERS,
     ENERGY_KILO_WATT_HOUR,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-    CONCENTRATION_PARTS_PER_MILLION
+    CONCENTRATION_PARTS_PER_MILLION,
+    CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
@@ -66,6 +67,18 @@ MIDEA_DEVICES = {
                 "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
+            },
+            X26Attributes.current_humidity: {
+                "type": Platform.SENSOR,
+                "name": "Current Humidity",
+                "device_class": SensorDeviceClass.HUMIDITY,
+                "unit": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            X26Attributes.current_radar: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Occupancy Status",
+                "device_class": BinarySensorDeviceClass.MOVING
             },
             X26Attributes.main_light: {
                 "type": Platform.SWITCH,

@@ -19,6 +19,8 @@ class DeviceAttributes(StrEnum):
     night_light = "night_light"
     mode = "mode"
     direction = "direction"
+    current_humidity = "current_humidity"
+    current_radar = "current_radar"
     current_temperature = "current_temperature"
 
 
@@ -53,6 +55,8 @@ class Midea26Device(MiedaDevice):
                 DeviceAttributes.night_light: False,
                 DeviceAttributes.mode: None,
                 DeviceAttributes.direction: None,
+                DeviceAttributes.current_humidity: None,
+                DeviceAttributes.current_radar: None,
                 DeviceAttributes.current_temperature: None
             })
         self._fields = {}
