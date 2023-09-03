@@ -128,10 +128,12 @@ class Message26Body(MessageBody):
         blow_direction = self.read_byte(body, 28)
         self.fields["DELAY_ENABLE"] = self.read_byte(body, 29)
         self.fields["DELAY_TIME"] = self.read_byte(body, 30)
-        self.current_humidity = self.read_byte(body, 31)
-        if (self.read_byte(body, 32) != 0xFF):
+        if self.read_byte(body, 31) != 0xFF:
+            self.current_humidity = self.read_byte(body, 31)
+        if self.read_byte(body, 32) != 0xFF:
             self.current_radar = self.read_byte(body, 32)
-        self.current_temperature = self.read_byte(body, 33)
+        if self.read_byte(body, 33) != 0xFF:
+            self.current_temperature = self.read_byte(body, 33)
         self.fields["SOFT_WIND_ENABLE"] = self.read_byte(body, 38)
         self.fields["SOFT_WIND_TIME"] = self.read_byte(body, 39)
         self.fields["SOFT_WIND_TEMPERATURE"] = self.read_byte(body, 40)

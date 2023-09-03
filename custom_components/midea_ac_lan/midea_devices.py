@@ -10,8 +10,7 @@ from homeassistant.const import (
     VOLUME_LITERS,
     ENERGY_KILO_WATT_HOUR,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-    CONCENTRATION_PARTS_PER_MILLION,
-    CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER
+    CONCENTRATION_PARTS_PER_MILLION
 )
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass, SensorDeviceClass
