@@ -81,7 +81,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     @property
     def temperature_unit(self):
-        return TEMP_FAHRENHEIT if self._device.get_attribute("temp_fahrenheit") else TEMP_CELSIUS
+        return TEMP_CELSIUS
 
     @property
     def target_temperature_low(self):
