@@ -131,8 +131,8 @@ class E3GeneralMessageBody(MessageBody):
         self.current_temperature = body[5]
         self.target_temperature = body[6]
         self.protection = (body[8] & 0x08) > 0
-        self.zero_cold_pulse = (body[20] & 0x01) > 0 if len(body) > 21 else False
-        self.smart_volume = (body[20] & 0x02) > 0 if len(body) > 21 else False
+        self.zero_cold_pulse = (body[20] & 0x01) > 0 if len(body) > 20 else False
+        self.smart_volume = (body[20] & 0x02) > 0 if len(body) > 20 else False
 
 
 class MessageE3Response(MessageResponse):

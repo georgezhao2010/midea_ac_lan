@@ -103,7 +103,7 @@ class E1GeneralMessageBody(MessageBody):
         self.progress = body[9]
         self.storage_remaining = body[18] if len(body) > 18 else False
         self.temperature = body[11]
-        self.humidity = body[33] if len(body) > 34 else None
+        self.humidity = body[33] if len(body) > 33 else None
         self.waterswitch = (body[4] & 0x4) > 0
         self.water_lack = (body[5] & 0x80) > 0
         self.error_code = body[10]
