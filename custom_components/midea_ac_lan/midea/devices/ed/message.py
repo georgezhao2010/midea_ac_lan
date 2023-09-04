@@ -158,7 +158,7 @@ class EDMessageBodyFF(MessageBody):
                 self.water_consumption = body[data_offset + 3] + \
                                         (body[4] << 8) + \
                                         (body[5] << 16) + \
-                                        (body[5] << 24)
+                                        (body[6] << 24)
             elif attr == 0x013:
                 self.in_tds = body[data_offset + 3] + (body[data_offset + 4] << 8)
                 self.out_tds = body[data_offset + 5] + (body[data_offset + 6] << 8)
