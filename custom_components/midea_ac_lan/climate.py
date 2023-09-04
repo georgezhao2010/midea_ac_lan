@@ -3,7 +3,6 @@ from homeassistant.components.climate.const import *
 from homeassistant.const import (
     Platform,
     TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
     PRECISION_WHOLE,
     PRECISION_HALVES,
     ATTR_TEMPERATURE,
