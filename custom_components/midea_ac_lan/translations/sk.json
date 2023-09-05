@@ -71,38 +71,38 @@
     },
     "services": {
         "set_attribute": {
-            "name": "Set attribute",
-            "description": "Set the attribute value of device",
+            "name": "Nastaviť atribút",
+            "description": "Nastavte hodnotu atribútu zariadenia",
             "fields" : {
                 "device_id": {
                     "name": "Kód spotrebiča",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "Kód spotrebiča (ID zariadenia) spotrebiča"
                 },
                 "attribute": {
-                    "name": "Attribute",
-                    "description": "The attribute name want to set"
+                    "name": "Atribút",
+                    "description": "Názov atribútu, ktorý chcete nastaviť"
                 },
                 "value": {
-                    "name": "Value",
-                    "description": "The attribute value want to set"
+                    "name": "Hodnota",
+                    "description": "Hodnota atribútu, ktorú chcete nastaviť"
                 }
             }
         },
         "send_command": {
-            "name": "Customize command",
-            "description": "Send a customize command to device",
+            "name": "Prispôsobiť príkaz",
+            "description": "Pošlite do zariadenia príkaz na prispôsobenie",
             "fields" : {
                 "device_id": {
                     "name": "Kód spotrebiča",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "Kód spotrebiča (ID zariadenia) spotrebiča"
                 },
                 "cmd_type": {
-                    "name": "command type",
-                    "description": "The type of command，should be 3（query) or 2（set)"
+                    "name": "typ príkazu",
+                    "description": "Typ príkazu by mal byť 3 (dopyt) alebo 2 (nastaviť)"
                 },
                 "cmd_body": {
-                    "name": "command body",
-                    "description": "The body of command, (not include MSmart protocol head and cheksum at the end)"
+                    "name": "obsah príkazu",
+                    "description": "Obsah príkazu, (nezahŕňa hlavičku protokolu MSmart a kontrolný súčet na konci)"
                 }
             }
         }
