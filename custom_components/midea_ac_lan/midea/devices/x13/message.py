@@ -86,10 +86,9 @@ class MessageMainLightResponseBody(MessageBody):
 class Message13Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._body_type == 0xa4:
-            self.set_body(MessageMainLightBody(body))
+            self.set_body(MessageMainLightBody(super().body))
         elif self.message_type == MessageType.set and self._body_type > 0x80:
-            self.set_body(MessageMainLightResponseBody(body))
+            self.set_body(MessageMainLightResponseBody(super().body))
         self.set_attr()
 

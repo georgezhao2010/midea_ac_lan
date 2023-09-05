@@ -144,10 +144,9 @@ class C3Notify1MessageBody(MessageBody):
 class MessageC3Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if (self._message_type in [MessageType.notify1, MessageType.query] and self._body_type == 0x01) or \
                 self._message_type == MessageType.notify2:
-            self.set_body(C3MessageBody(body, data_offset=1))
+            self.set_body(C3MessageBody(super().body, data_offset=1))
         elif self._message_type == MessageType.notify1 and self._body_type == 0x04:
-            self.set_body(C3Notify1MessageBody(body, data_offset=1))
+            self.set_body(C3Notify1MessageBody(super().body, data_offset=1))
         self.set_attr()

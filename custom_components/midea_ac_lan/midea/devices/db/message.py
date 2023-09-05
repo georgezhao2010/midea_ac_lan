@@ -95,8 +95,7 @@ class DBGeneralMessageBody(MessageBody):
 class MessageDBResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set] or \
                 (self._message_type == MessageType.notify1 and self._body_type == 0x04):
-            self.set_body(DBGeneralMessageBody(body))
+            self.set_body(DBGeneralMessageBody(super().body))
         self.set_attr()

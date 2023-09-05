@@ -126,10 +126,9 @@ class CENotifyMessageBody(MessageBody):
 class MessageCEResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if (self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0x01) or \
                 (self._message_type == MessageType.notify1 and self._body_type == 0x02):
-            self.set_body(CEGeneralMessageBody(body))
+            self.set_body(CEGeneralMessageBody(super().body))
         elif self._message_type == MessageType.notify1 and self._body_type == 0x01:
-            self.set_body(CENotifyMessageBody(body))
+            self.set_body(CENotifyMessageBody(super().body))
         self.set_attr()

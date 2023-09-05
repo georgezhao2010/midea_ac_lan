@@ -86,6 +86,5 @@ class E6GeneralMessageBody(MessageBody):
 class MessageE6Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
-        self.set_body(E6GeneralMessageBody(body))
+        self.set_body(E6GeneralMessageBody(super().body))
         self.set_attr()

@@ -99,9 +99,8 @@ class CD02MessageBody(MessageBody):
 class MessageCDResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.notify2]:
-            self.set_body(CDGeneralMessageBody(body))
+            self.set_body(CDGeneralMessageBody(super().body))
         elif self._message_type == MessageType.set and self._body_type == 0x01:
-            self.set_body(CD02MessageBody(body))
+            self.set_body(CD02MessageBody(super().body))
         self.set_attr()

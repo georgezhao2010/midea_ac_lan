@@ -49,8 +49,7 @@ class B1MessageBody(MessageBody):
 class MessageB1Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.notify1, MessageType.query]:
-            self.set_body(B1MessageBody(body))
+            self.set_body(B1MessageBody(super().body))
         self.set_attr()
 

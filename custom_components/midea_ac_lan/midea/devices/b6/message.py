@@ -186,32 +186,31 @@ class B6ExceptionBody(MessageBody):
 class MessageB6Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
-        if self._message_type == MessageType.set and self._body_type == 0x22 and body[1] == 0x01:
-            self.set_body(B6SpecialBody(body))
-        elif self._message_type == MessageType.set and self._body_type == 0x11 and body[1] == 0x01:
+        if self._message_type == MessageType.set and self._body_type == 0x22 and super().body[1] == 0x01:
+            self.set_body(B6SpecialBody(super().body))
+        elif self._message_type == MessageType.set and self._body_type == 0x11 and super().body[1] == 0x01:
             #############################
             pass
         elif self._message_type == MessageType.query:
             if self._body_type in [0x11, 0x31]:
                 if self._device_protocol_version in [0, 1]:
-                    self.set_body(B6GeneralBody(body))
+                    self.set_body(B6GeneralBody(super().body))
                 else:
-                    self.set_body(B6NewProtocolBody(body))
-            elif self._body_type == 0x32 and body[1] == 0x01:
-                self.set_body(B6ExceptionBody(body))
+                    self.set_body(B6NewProtocolBody(super().body))
+            elif self._body_type == 0x32 and super().body[1] == 0x01:
+                self.set_body(B6ExceptionBody(super().body))
         elif self._message_type == MessageType.notify1:
             if self._body_type in [0x11, 0x41]:
                 if self._device_protocol_version in [0, 1]:
-                    self.set_body(B6GeneralBody(body))
+                    self.set_body(B6GeneralBody(super().body))
                 else:
-                    self.set_body(B6NewProtocolBody(body))
+                    self.set_body(B6NewProtocolBody(super().body))
             elif self._body_type == 0x0A:
-                if body[1] == 0xA1:
-                    self.set_body(B6ExceptionBody(body))
-                elif body[1] == 0xA2:
-                    self.oilcup_full = (body[2] & 0x01) > 0
-                    self.cleaning_reminder = (body[2] & 0x02) > 0
+                if super().body[1] == 0xA1:
+                    self.set_body(B6ExceptionBody(super().body))
+                elif super().body[1] == 0xA2:
+                    self.oilcup_full = (super().body[2] & 0x01) > 0
+                    self.cleaning_reminder = (super().body[2] & 0x02) > 0
         elif self._message_type == MessageType.exception2 and self._body_type == 0xA1:
             pass
 

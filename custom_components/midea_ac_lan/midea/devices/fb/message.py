@@ -100,7 +100,6 @@ class FBGeneralMessageBody(MessageBody):
 class MessageFBResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1]:
-            self.set_body(FBGeneralMessageBody(body))
+            self.set_body(FBGeneralMessageBody(super().body))
         self.set_attr()

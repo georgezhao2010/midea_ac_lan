@@ -177,12 +177,11 @@ class A1NewProtocolMessageBody(NewProtocolMessageBody):
 class MessageA1Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1]:
             if self._body_type in [0xB0, 0xB1, 0xB5]:
-                self.set_body(A1NewProtocolMessageBody(body, self._body_type))
+                self.set_body(A1NewProtocolMessageBody(super().body, self._body_type))
             else:
-                self.set_body(A1GeneralMessageBody(body))
+                self.set_body(A1GeneralMessageBody(super().body))
         elif self._message_type == MessageType.notify2 and self._body_type == 0xA0:
-            self.set_body(A1GeneralMessageBody(body))
+            self.set_body(A1GeneralMessageBody(super().body))
         self.set_attr()

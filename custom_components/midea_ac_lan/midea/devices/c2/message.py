@@ -147,7 +147,6 @@ class C2Notify1MessageBody(MessageBody):
 class MessageC2Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.notify1, MessageType.query, MessageType.set]:
-            self.set_body(C2MessageBody(body))
+            self.set_body(C2MessageBody(super().body))
         self.set_attr()

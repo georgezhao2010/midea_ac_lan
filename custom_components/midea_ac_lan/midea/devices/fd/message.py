@@ -127,14 +127,13 @@ class FDA0MessageBody(MessageBody):
 class MessageFDResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        body = message[self.HEADER_LENGTH: -1]
         if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1]:
             if self._body_type in [0xB0, 0xB1]:
                 pass
             elif self._body_type == 0xA0:
-                self.set_body(FDA0MessageBody(body))
+                self.set_body(FDA0MessageBody(super().body))
             elif self._body_type == 0xC8:
-                self.set_body(FDC8MessageBody(body))
+                self.set_body(FDC8MessageBody(super().body))
         self.set_attr()
         if hasattr(self, "fan_speed") and self.fan_speed is not None and self.fan_speed < 5:
             self.fan_speed = 1
