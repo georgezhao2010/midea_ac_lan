@@ -21,7 +21,7 @@
 {"temperature_step": 1}
 ```
 
-- Power consumption analysis method (2 by default)
+- Power consumption analysis method (3 by default)
 
   There are 3 different methods to analyze the power consumption of an AC, but I don’t know which is right for your device. 
   If the power consumption data looks incorrect, try another method and see if they are correct. 
