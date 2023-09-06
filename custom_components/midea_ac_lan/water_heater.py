@@ -4,6 +4,7 @@ from homeassistant.const import (
     Platform,
     TEMP_CELSIUS,
     PRECISION_WHOLE,
+    PRECISION_HALVES,
     ATTR_TEMPERATURE,
     CONF_DEVICE_ID,
     CONF_SWITCHES,
@@ -162,6 +163,10 @@ class MideaE3WaterHeater(MideaWaterHeater):
     @property
     def max_temp(self):
         return E3_TEMPERATURE_MAX
+
+    @property
+    def precision(self):
+        return PRECISION_HALVES if self._device.precision_halves else PRECISION_WHOLE
 
 
 class MideaC3WaterHeater(MideaWaterHeater):
