@@ -295,8 +295,15 @@ MIDEA_DEVICES = {
                 "state_class": SensorStateClass.MEASUREMENT
             },
             A1Attributes.tank: {
+                "type": Platform.SENSOR,
+                "name": "Tank",
+                "icon": "mdi:cup-water",
+                "unit": PERCENTAGE,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            A1Attributes.tank_full: {
                 "type": Platform.BINARY_SENSOR,
-                "name": "Tank Status",
+                "name": "Tank status",
                 "icon": "mdi:alert-circle",
                 "device_class": BinarySensorDeviceClass.PROBLEM
             }

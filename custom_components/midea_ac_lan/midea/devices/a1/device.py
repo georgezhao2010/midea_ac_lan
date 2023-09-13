@@ -24,6 +24,7 @@ class DeviceAttributes(StrEnum):
     anion = "anion"
     tank = "tank"
     water_level_set = "water_level_set"
+    tank_full = "tank_full"
     current_humidity = "current_humidity"
     current_temperature = "current_temperature"
 
@@ -66,12 +67,13 @@ class MideaA1Device(MiedaDevice):
                 DeviceAttributes.prompt_tone: True,
                 DeviceAttributes.child_lock: False,
                 DeviceAttributes.mode: None,
-                DeviceAttributes.fan_speed: "60",
+                DeviceAttributes.fan_speed: 60,
                 DeviceAttributes.swing: False,
                 DeviceAttributes.target_humidity: 35,
                 DeviceAttributes.anion: False,
                 DeviceAttributes.tank: 0,
-                DeviceAttributes.water_level_set: "50",
+                DeviceAttributes.water_level_set: 50,
+                DeviceAttributes.tank_full: None,
                 DeviceAttributes.current_humidity: None,
                 DeviceAttributes.current_temperature: None
             })
@@ -114,6 +116,10 @@ class MideaA1Device(MiedaDevice):
                     self._attributes[status] = str(value)
                 else:
                     self._attributes[status] = value
+                tank_full = self._attributes[DeviceAttributes.tank] >= self._attributes[DeviceAttributes.water_level_set]
+                if self._attributes[DeviceAttributes.tank_full] is None or self._attributes[DeviceAttributes.tank_full] != tank_full:
+                    self._attributes[DeviceAttributes.tank_full] = tank_full
+                    new_status[str(DeviceAttributes.tank_full)] = tank_full
                 new_status[str(status)] = self._attributes[status]
         return new_status
 
