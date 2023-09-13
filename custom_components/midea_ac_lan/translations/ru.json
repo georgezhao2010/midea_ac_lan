@@ -60,9 +60,9 @@
             "init": {
                 "data": {
                     "ip_address": "IP-адрес",
-                    "refresh_interval": "Refresh interval (0 means not refreshing actively)",
-                    "sensors": "Экстра сенсоры",
-                    "switches": "Экстра элементы управления",
+                    "refresh_interval": "Интервал обновления (0 не выполняет активное обновление)",
+                    "sensors": "Доп. сенсоры",
+                    "switches": "Доп. элементы управления",
                     "customize": "Настроить"
                 },
                 "title": "Конфигурация"
@@ -89,20 +89,20 @@
             }
         },
         "send_command": {
-            "name": "Customize command",
-            "description": "Send a customize command to device",
+            "name": "Пользовательская команда",
+            "description": "Отправить пользовательскую команду на устройство",
             "fields" : {
                 "device_id": {
                     "name": "Идентификатор устройства",
                     "description": "Код (Идентификатор) устройства"
                 },
                 "cmd_type": {
-                    "name": "command type",
-                    "description": "The type of command，should be 3（query) or 2（set)"
+                    "name": "Тип команды",
+                    "description": "Тип команды, может быть 3 (запрос) или 2 (установка значения)"
                 },
                 "cmd_body": {
-                    "name": "command body",
-                    "description": "The body of command, (not include MSmart protocol head and cheksum at the end)"
+                    "name": "Тело команды",
+                    "description": "Тело команды (без заголовков протокола MSmart и контрольной суммы в конце)"
                 }
             }
         }
