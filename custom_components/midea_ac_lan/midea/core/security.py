@@ -49,6 +49,10 @@ class CloudSecurity:
         return sha.hexdigest()
 
     @staticmethod
+    def get_deviceid(username):
+        return md5(username.encode("utf-8")).digest().hex()[:16]
+
+    @staticmethod
     def get_udpid(data):
         data = bytearray(sha256(data).digest())
         for i in range(0, 16):

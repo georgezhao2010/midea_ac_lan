@@ -20,7 +20,6 @@ class MideaCloudBase:
     SRC = "1010"
     LOGIN_KEY = None
     IOT_KEY = None
-    DEVICE_ID = int(time.time() * 100000)
 
     def __init__(self, session: ClientSession, security, username: str, password: str, server: str = None):
         self.session = session
@@ -34,6 +33,7 @@ class MideaCloudBase:
         self.login_session = None
         self.security = security
         self.server = server
+        self._device_id = CloudSecurity.get_deviceid(username)
 
     async def api_request(self, endpoint, args=None, data=None):
         args = args or {}
@@ -46,7 +46,7 @@ class MideaCloudBase:
                 "language": self.LANGUAGE,
                 "src": self.SRC,
                 "stamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
-                "deviceId": self.DEVICE_ID,
+                "deviceId": self._device_id,
             }
         data.update(args)
 
@@ -100,7 +100,7 @@ class MideaCloudBase:
                     "data": {
                         "appKey": APP_KEY,
                         "platform": FORMAT,
-                        "deviceId": self.DEVICE_ID
+                        "deviceId": self._device_id
                     },
                     "iotData": {
                         "appId": self.APP_ID,
