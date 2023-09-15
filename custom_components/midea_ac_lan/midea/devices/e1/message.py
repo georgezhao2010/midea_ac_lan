@@ -109,7 +109,7 @@ class E1GeneralMessageBody(MessageBody):
         self.error_code = body[10]
         self.softwater = body[13]
         self.wrong_operation = body[16]
-        self.bright = body[24]
+        self.bright = body[24] if len(body) > 24 else None
 
 
 class MessageE1Response(MessageResponse):
