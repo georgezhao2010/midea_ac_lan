@@ -116,7 +116,8 @@ class MideaA1Device(MiedaDevice):
                     self._attributes[status] = str(value)
                 else:
                     self._attributes[status] = value
-                tank_full = self._attributes[DeviceAttributes.tank] >= self._attributes[DeviceAttributes.water_level_set]
+                tank_full = (self._attributes[DeviceAttributes.tank] >=
+                             int(self._attributes[DeviceAttributes.water_level_set]))
                 if self._attributes[DeviceAttributes.tank_full] is None or self._attributes[DeviceAttributes.tank_full] != tank_full:
                     self._attributes[DeviceAttributes.tank_full] = tank_full
                     new_status[str(DeviceAttributes.tank_full)] = tank_full
