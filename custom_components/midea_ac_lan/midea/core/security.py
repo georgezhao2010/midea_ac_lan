@@ -1,14 +1,10 @@
-import logging
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Util.strxor import strxor
 from Crypto.Random import get_random_bytes
 from hashlib import md5, sha256
-from urllib.parse import urlparse
 import hmac
-import urllib
 
-_LOGGER = logging.getLogger(__name__)
 
 MSGTYPE_HANDSHAKE_REQUEST = 0x0
 MSGTYPE_HANDSHAKE_RESPONSE = 0x1
@@ -17,70 +13,105 @@ MSGTYPE_ENCRYPTED_REQUEST = 0x6
 
 
 class CloudSecurity:
-    def __init__(self, iotKey, loginKey):
-        self._hmackey = "PROD_VnoClJI9aikS8dyy"
-        self._iotkey = iotKey
-        self._loginKey = loginKey
+    def __init__(self, login_key, iot_key, hmac_key, fixed_key=None, fixed_iv=None):
+        self._login_key = login_key
+        self._iot_key = iot_key
+        self._hmac_key = hmac_key
+        self._aes_key = None
+        self._aes_iv = None
+        self._fixed_key = format(fixed_key, 'x').encode("ascii") if fixed_key else None
+        self._fixed_iv = format(fixed_iv, 'x').encode("ascii") if fixed_iv else None
 
     def sign(self, data: str, random: str) -> str:
-        msg = self._iotkey
-        if data:
-            msg += data
+        msg = self._iot_key
+        msg += data
         msg += random
-        sign = hmac.new(self._hmackey.encode("ascii"), msg.encode("ascii"), sha256)
+        sign = hmac.new(self._hmac_key.encode("ascii"), msg.encode("ascii"), sha256)
         return sign.hexdigest()
 
-    def encryptPassword(self, loginId, data):
+    def encrypt_password(self, login_id, data):
         m = sha256()
         m.update(data.encode("ascii"))
-        loginHash = loginId + m.hexdigest() + self._loginKey
+        login_hash = login_id + m.hexdigest() + self._login_key
         m = sha256()
-        m.update(loginHash.encode("ascii"))
+        m.update(login_hash.encode("ascii"))
         return m.hexdigest()
 
-    def encrypt_iam_password(self, loginId, data) -> str:
-        md = md5()
-        md.update(data.encode("ascii"))
-        md_second = md5()
-        md_second.update(md.hexdigest().encode("ascii"))
-        login_hash = loginId + md_second.hexdigest() + self._loginKey
-        sha = sha256()
-        sha.update(login_hash.encode("ascii"))
-        return sha.hexdigest()
+    def encrypt_iam_password(self, login_id, data) -> str:
+        raise NotImplementedError
 
     @staticmethod
     def get_deviceid(username):
-        return md5(username.encode("utf-8")).digest().hex()[:16]
+        return md5(f"Hello, {username}!".encode("ascii")).digest().hex()[:16]
 
     @staticmethod
-    def get_udpid(data):
-        data = bytearray(sha256(data).digest())
+    def get_udp_id(appliance_id, method=0):
+        if method == 0:
+            bytes_id = bytes(reversed(appliance_id.to_bytes(8, "big")))
+        elif method == 1:
+            bytes_id = appliance_id.to_bytes(6, "big")
+        elif method == 2:
+            bytes_id = appliance_id.to_bytes(6, "little")
+        else:
+            return None
+        data = bytearray(sha256(bytes_id).digest())
         for i in range(0, 16):
             data[i] ^= data[i + 16]
         return data[0: 16].hex()
 
-    @staticmethod
-    def decrypt_with_key(data, key="96c7acdfdb8af79a"):
-        if isinstance(data, str):
-            data = bytes.fromhex(data)
+    def set_aes_keys(self, key, iv):
         if isinstance(key, str):
-            key = key.encode()
-        return unpad(AES.new(key, AES.MODE_ECB).decrypt(data), 16).decode()
+            key = key.encode("ascii")
+        if isinstance(iv, str):
+            iv = iv.encode("ascii")
+        self._aes_key = key
+        self._aes_iv = iv
 
-    @staticmethod
-    def encrypt_with_key(data, key="96c7acdfdb8af79a"):
+    def aes_encrypt_with_fixed_key(self, data):
+        return self.aes_encrypt(data, self._fixed_key, self._fixed_iv)
+
+    def aes_decrypt_with_fixed_key(self, data):
+        return self.aes_decrypt(data, self._fixed_key, self._fixed_iv)
+
+    def aes_encrypt(self, data, key=None, iv=None):
+        if key is not None:
+            aes_key = key
+            aes_iv = iv
+        else:
+            aes_key = self._aes_key
+            aes_iv = self._aes_iv
+        if aes_key is None:
+            raise ValueError("Encrypt need a key")
         if isinstance(data, str):
             data = bytes.fromhex(data)
-        if isinstance(key, str):
-            key = key.encode()
-        return AES.new(key, AES.MODE_ECB).encrypt(pad(data, 16))
+        if aes_iv is None:  # ECB
+            return AES.new(aes_key, AES.MODE_ECB).encrypt(pad(data, 16))
+        else:  # CBC
+            return AES.new(aes_key, AES.MODE_CBC,iv=aes_iv).encrypt(pad(data, 16))
+
+    def aes_decrypt(self, data, key=None, iv=None):
+        if key is not None:
+            aes_key = key
+            aes_iv = iv
+        else:
+            aes_key = self._aes_key
+            aes_iv = self._aes_iv
+        if aes_key is None:
+            raise ValueError("Encrypt need a key")
+        if isinstance(data, str):
+            data = bytes.fromhex(data)
+        if aes_iv is None:  # ECB
+            return unpad(AES.new(aes_key, AES.MODE_ECB).decrypt(data), len(aes_key)).decode()
+        else:  # CBC
+            return unpad(AES.new(aes_key, AES.MODE_CBC,iv=aes_iv).decrypt(data), len(aes_key)).decode()
 
 
 class MeijuCloudSecurity(CloudSecurity):
-    def __init__(self, iotKey, loginKey):
-        super().__init__(iotKey, loginKey)
+    def __init__(self, login_key, iot_key, hmac_key):
+        super().__init__(login_key, iot_key, hmac_key,
+                         10864842703515613082)
 
-    def encrypt_iam_password(self, loginId, data) -> str:
+    def encrypt_iam_password(self, login_id, data) -> str:
         md = md5()
         md.update(data.encode("ascii"))
         md_second = md5()
@@ -88,39 +119,52 @@ class MeijuCloudSecurity(CloudSecurity):
         return md_second.hexdigest()
 
 
-class SmartLifeSecurity(CloudSecurity):
-    def __init__(self, iotKey, loginKey):
-        super().__init__(iotKey, loginKey)
+class MSmartCloudSecurity(CloudSecurity):
+    def __init__(self, login_key, iot_key, hmac_key):
+        super().__init__(login_key, iot_key, hmac_key,
+                         13101328926877700970,
+                         16429062708050928556)
 
-    def sign(self, url, payload):
-        path = urlparse(url).path
-        query = sorted(payload.items(), key=lambda x: x[0])
-        query = urllib.parse.unquote_plus(urllib.parse.urlencode(query))
-        sign = path + query + self._loginKey
-        m = sha256()
-        m.update(sign.encode("ASCII"))
-        return m.hexdigest()
+    def encrypt_iam_password(self, login_id, data) -> str:
+        md = md5()
+        md.update(data.encode("ascii"))
+        md_second = md5()
+        md_second.update(md.hexdigest().encode("ascii"))
+        login_hash = login_id + md_second.hexdigest() + self._login_key
+        sha = sha256()
+        sha.update(login_hash.encode("ascii"))
+        return sha.hexdigest()
+
+    def set_aes_keys(self, encrypted_key, encrypted_iv):
+        key_digest = sha256(self._login_key.encode("ascii")).hexdigest()
+        tmp_key = key_digest[:16].encode("ascii")
+        tmp_iv = key_digest[16:32].encode("ascii")
+        self._aes_key = self.aes_decrypt(encrypted_key, tmp_key, tmp_iv).encode('ascii')
+        self._aes_iv = self.aes_decrypt(encrypted_iv, tmp_key, tmp_iv).encode('ascii')
 
 
 class LocalSecurity:
     def __init__(self):
         self.blockSize = 16
         self.iv = b"\0" * 16
-        self.aes_key = bytes.fromhex("6a92ef406bad2f0359baad994171ea6d")
-        self.salt = bytes.fromhex("78686469776a6e6368656b6434643531326368646a783564386534633339344432443753")
+        self.aes_key = bytes.fromhex(
+            format(141661095494369103254425781617665632877, 'x')
+        )
+        self.salt = bytes.fromhex(
+            format(233912452794221312800602098970898185176935770387238278451789080441632479840061417076563, 'x')
+        )
         self._tcp_key = None
         self._request_count = 0
         self._response_count = 0
 
     def aes_decrypt(self, raw):
         try:
-            return unpad(AES.new(self.aes_key, AES.MODE_ECB).decrypt(bytearray(raw)), self.blockSize)
+            return unpad(AES.new(self.aes_key, AES.MODE_ECB).decrypt(bytearray(raw)), 16)
         except ValueError as e:
-            _LOGGER.error(f"Error in aes_decrypt: {repr(e)} - data: {raw.hex()}")
-        return bytearray(0)
+            return bytearray(0)
 
     def aes_encrypt(self, raw):
-        return AES.new(self.aes_key, AES.MODE_ECB).encrypt(bytearray(pad(raw, self.blockSize)))
+        return AES.new(self.aes_key, AES.MODE_ECB).encrypt(bytearray(pad(raw, 16)))
 
     def aes_cbc_decrypt(self, raw, key):
         return AES.new(key=key, mode=AES.MODE_CBC, iv=self.iv).decrypt(raw)
