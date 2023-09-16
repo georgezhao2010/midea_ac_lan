@@ -241,7 +241,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="auto",
             data_schema=vol.Schema({
-                vol.Required(CONF_DEVICE, default=sorted(self.available_device)[0]):
+                vol.Required(CONF_DEVICE, default=list(self.available_device.keys())[0]):
                     vol.In(self.available_device),
             }),
             errors={"base": error} if error else None
