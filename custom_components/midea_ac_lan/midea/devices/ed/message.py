@@ -177,6 +177,8 @@ class MessageEDResponse(MessageResponse):
         super().__init__(message)
         if self._message_type in [MessageType.query, MessageType.notify1]:
             self.device_class = self._body_type
+            if self._body_type in [0x00, 0xFF]:
+                self.set_body(EDMessageBodyFF(super().body))
             if self._body_type == 0x01: # 净水器
                 self.set_body(EDMessageBody01(super().body))
             elif self._body_type in [0x03, 0x04]:
@@ -187,6 +189,5 @@ class MessageEDResponse(MessageResponse):
                 self.set_body(EDMessageBody06(super().body))
             elif self._body_type == 0x07:
                 self.set_body(EDMessageBody07(super().body))
-            elif self._body_type == 0xFF:
-                self.set_body(EDMessageBodyFF(super().body))
+
         self.set_attr()
