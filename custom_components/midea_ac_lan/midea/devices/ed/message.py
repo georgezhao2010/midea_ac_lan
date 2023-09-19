@@ -156,9 +156,9 @@ class EDMessageBodyFF(MessageBody):
                 self.power = (body[data_offset + 6] & 0x01) > 0
             elif attr == 0x011:
                 self.water_consumption = body[data_offset + 3] + \
-                                        (body[4] << 8) + \
-                                        (body[5] << 16) + \
-                                        (body[6] << 24)
+                                        (body[data_offset + 4] << 8) + \
+                                        (body[data_offset + 5] << 16) + \
+                                        (body[data_offset + 6] << 24)
             elif attr == 0x013:
                 self.in_tds = body[data_offset + 3] + (body[data_offset + 4] << 8)
                 self.out_tds = body[data_offset + 5] + (body[data_offset + 6] << 8)
@@ -166,7 +166,8 @@ class EDMessageBodyFF(MessageBody):
                 self.life1 = body[data_offset + 3]
                 self.life2 = body[data_offset + 4]
                 self.life3 = body[data_offset + 5]
-            if data_offset + length > len(body):
+            # fix index out of range error
+            if data_offset + length + 6 > len(body):
                 break
             data_offset += length
 
