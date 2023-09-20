@@ -57,11 +57,11 @@ class ECGeneralMessageBody(MessageBody):
 class MessageECResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if(self._message_type == MessageType.set and super().body[3] == 0x02) or \
-                (self._message_type == MessageType.query and super().body[3] == 0x03) or \
-                (self._message_type == MessageType.notify1 and super().body[3] == 0x04) or \
-                (self._message_type == MessageType.notify1 and super().body[3] == 0x3d):
+        if(self.message_type == MessageType.set and super().body[3] == 0x02) or \
+                (self.message_type == MessageType.query and super().body[3] == 0x03) or \
+                (self.message_type == MessageType.notify1 and super().body[3] == 0x04) or \
+                (self.message_type == MessageType.notify1 and super().body[3] == 0x3d):
             self.set_body(ECGeneralMessageBody(super().body))
-        elif self._message_type == MessageType.notify1 and super().body[3] == 0x06:
+        elif self.message_type == MessageType.notify1 and super().body[3] == 0x06:
             self.mode = super().body[4] + (super().body[5] << 8)
         self.set_attr()

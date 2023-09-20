@@ -1,9 +1,9 @@
 {
     "config": {
         "error": {
+            "login_failed": "Failed to login, account or password was wrong",
             "no_devices": "V sieti sa nenašli žiadne nové dostupné zariadenia",
             "device_exist": "Spotrebič je už nakonfigurovaný",
-            "cant_get_token": "Nedá sa pripojiť ku cloudu Midea a získať informácie o kľúči zariadenia (token a kľúč)",
             "config_incorrect": "Konfigurácia je nesprávna",
             "connect_error": "Nedá sa pripojiť k spotrebiču",
             "invalid_token": "Token alebo kľúč v nesprávnom formáte"
@@ -15,6 +15,14 @@
                 },
                 "description": "Ak chcete pridať nový spotrebič, vyberte možnosť „Automaticky“ alebo „Manuálne“.",
                 "title": "Pridať nový spotrebič"
+            },
+            "login": {
+                "data": {
+                    "account": "Account",
+                    "password": "Password"
+                },
+                "description": "Login and storage your Midea account only for getting the appliance info.\nYou can remove this configuration after all appliance configured.",
+                "title": "Login"
             },
             "discover": {
                 "description": "Objaviť nové zariadenia Midea?",

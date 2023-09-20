@@ -49,16 +49,16 @@ class MessageSet(Message13Base):
     def _body(self):
         body_byte = 0x00
         if self.power is not None:
-            self._body_type = 0x01
+            self.body_type = 0x01
             body_byte = 0x01 if self.power else 0x00
         elif self.effect is not None and self.effect in range(1, 6):
-            self._body_type = 0x02
+            self.body_type = 0x02
             body_byte = self.effect + 1
         elif self.color_temperature is not None:
-            self._body_type = 0x03
+            self.body_type = 0x03
             body_byte = self.color_temperature
         elif self.brightness is not None:
-            self._body_type = 0x04
+            self.body_type = 0x04
             body_byte = self.brightness
         return bytearray([body_byte, 0x00, 0x00, 0x00])
 
@@ -86,9 +86,9 @@ class MessageMainLightResponseBody(MessageBody):
 class Message13Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._body_type == 0xa4:
+        if self.body_type == 0xa4:
             self.set_body(MessageMainLightBody(super().body))
-        elif self.message_type == MessageType.set and self._body_type > 0x80:
+        elif self.message_type == MessageType.set and self.body_type > 0x80:
             self.set_body(MessageMainLightResponseBody(super().body))
         self.set_attr()
 

@@ -112,6 +112,8 @@ class EDMessageBody01(MessageBody):
 class EDMessageBody03(MessageBody):
     def __init__(self, body):
         super().__init__(body)
+        self.power = (body[51] & 0x01) > 0
+        self.child_lock = (body[51] & 0x08) > 0
         self.water_consumption = body[20] + (body[21] << 8)
         self.life1 = body[22]
         self.life2 = body[23]
@@ -155,10 +157,10 @@ class EDMessageBodyFF(MessageBody):
                 self.child_lock = (body[data_offset + 5] & 0x01) > 0
                 self.power = (body[data_offset + 6] & 0x01) > 0
             elif attr == 0x011:
-                self.water_consumption = (body[data_offset + 3] + \
-                                        (body[data_offset + 4] << 8) + \
-                                        (body[data_offset + 5] << 16) + \
-                                        (body[data_offset + 6] << 24)) / 1000
+                self.water_consumption = float((body[data_offset + 3] +
+                                                (body[data_offset + 4] << 8) +
+                                                (body[data_offset + 5] << 16) +
+                                                (body[data_offset + 6] << 24))) / 1000
             elif attr == 0x013:
                 self.in_tds = body[data_offset + 3] + (body[data_offset + 4] << 8)
                 self.out_tds = body[data_offset + 5] + (body[data_offset + 6] << 8)
@@ -179,15 +181,14 @@ class MessageEDResponse(MessageResponse):
             self.device_class = self._body_type
             if self._body_type in [0x00, 0xFF]:
                 self.set_body(EDMessageBodyFF(super().body))
-            if self._body_type == 0x01: # 净水器
+            if self.body_type == 0x01:
                 self.set_body(EDMessageBody01(super().body))
-            elif self._body_type in [0x03, 0x04]:
+            elif self.body_type in [0x03, 0x04]:
                 self.set_body(EDMessageBody03(super().body))
-            elif self._body_type == 0x05:
+            elif self.body_type == 0x05:
                 self.set_body(EDMessageBody05(super().body))
-            elif self._body_type == 0x06:
+            elif self.body_type == 0x06:
                 self.set_body(EDMessageBody06(super().body))
-            elif self._body_type == 0x07:
+            elif self.body_type == 0x07:
                 self.set_body(EDMessageBody07(super().body))
-
         self.set_attr()

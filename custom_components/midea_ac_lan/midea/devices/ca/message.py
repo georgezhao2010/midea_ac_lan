@@ -103,14 +103,14 @@ class CANotify01MessageBody(MessageBody):
 class MessageCAResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if (self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0x00) or \
-                (self._message_type == MessageType.notify1 and self._body_type == 0x02):
+        if ((self.message_type in [MessageType.query, MessageType.set] and self.body_type == 0x00) or
+                (self.message_type == MessageType.notify1 and self.body_type == 0x02)) and len(super().body) > 20:
             self.set_body(CAGeneralMessageBody(super().body))
-        elif (self._message_type == MessageType.exception and self._body_type == 0x01) or \
-                (self._message_type == 0x03 and self._body_type == 0x02):
+        elif (self.message_type == MessageType.exception and self.body_type == 0x01) or \
+                (self.message_type == 0x03 and self.body_type == 0x02):
             self.set_body(CAExceptionMessageBody(super().body))
-        elif self._message_type == MessageType.notify1 and self._body_type == 0x00:
+        elif self.message_type == MessageType.notify1 and self.body_type == 0x00:
             self.set_body(CANotify00MessageBody(super().body))
-        elif self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0x01:
+        elif self.message_type in [MessageType.query, MessageType.notify1] and self.body_type == 0x01:
             self.set_body(CANotify01MessageBody(super().body))
         self.set_attr()

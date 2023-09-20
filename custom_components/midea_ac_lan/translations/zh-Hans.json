@@ -1,9 +1,9 @@
 {
     "config": {
         "error": {
+            "login_failed": "登录失败, 用户名或密码错",
             "no_devices": "未在网络上发现可用新设备",
             "device_exist": "设备已经存在, 请添加其它设备",
-            "cant_get_token": "无法连接美的云获取设备关键信息(Token和Key)",
             "config_incorrect": "配置信息不正确, 请检查后重新输入",
             "connect_error": "无法连接到指定设备",
             "invalid_token": "Token或Key格式不正确"
@@ -15,6 +15,14 @@
                 },
                 "description": "选择添加设备的方式",
                 "title": "添加新设备"
+            },
+            "login": {
+                "data": {
+                    "account": "账号",
+                    "password": "密码"
+                },
+                "description": "登录并保存你的美的账户，仅用于获取添加设备时设备信息\n添加设备完成后，你可以删除该配置",
+                "title": "登录"
             },
             "discover": {
                 "description": "要查找并添加新的美的设备吗?",
@@ -94,7 +102,7 @@
             "fields" : {
                 "device_id": {
                     "name": "设备编码",
-                    "description": "设备编码(Deivce ID)"
+                    "description": "设备编码(Device ID)"
                 },
                 "cmd_type": {
                     "name": "命令类型",

@@ -81,20 +81,20 @@ class MessageEAResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
         if self._device_protocol_version == 0:
-            if self._message_type == MessageType.set and super().body[5] == 0x16:  # 381
+            if self.message_type == MessageType.set and super().body[5] == 0x16:  # 381
                 self.set_body(EABody1(super().body))
-            elif self._message_type == MessageType.query:
+            elif self.message_type == MessageType.query:
                 if super().body[6] == 0x52 and super().body[7] == 0xc3:  # 404
                     self.set_body(EABody2(super().body))
                 elif super().body[5] == 0x3d:  # 420
                     self.set_body(EABody1(super().body))
-            elif self._message_type == MessageType.notify1 and super().body[5] == 0x3d:  # 463
+            elif self.message_type == MessageType.notify1 and super().body[5] == 0x3d:  # 463
                 self.set_body(EABody1(super().body))
         else:
-            if(self._message_type == MessageType.set and super().body[3] == 0x02) or \
-                    (self._message_type == MessageType.query and super().body[3] == 0x03) or \
-                    (self._message_type == MessageType.notify1 and super().body[3] == 0x04):  # 351
+            if(self.message_type == MessageType.set and super().body[3] == 0x02) or \
+                    (self.message_type == MessageType.query and super().body[3] == 0x03) or \
+                    (self.message_type == MessageType.notify1 and super().body[3] == 0x04):  # 351
                 self.set_body(EABody3(super().body))
-            elif self._message_type == MessageType.notify1 and super().body[3] == 0x06:
+            elif self.message_type == MessageType.notify1 and super().body[3] == 0x06:
                 self.mode = super().body[4] + (super().body[5] << 8)
         self.set_attr()

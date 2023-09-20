@@ -52,7 +52,7 @@ class MideaB0Device(MiedaDevice):
             model=model,
             attributes={
                 DeviceAttributes.door: False,
-                DeviceAttributes.status: "Unknown",
+                DeviceAttributes.status: None,
                 DeviceAttributes.time_remaining: None,
                 DeviceAttributes.current_temperature: None,
                 DeviceAttributes.tank_ejected: False,
@@ -74,7 +74,7 @@ class MideaB0Device(MiedaDevice):
                     if value in MideaB0Device._status.keys():
                         self._attributes[DeviceAttributes.status] = MideaB0Device._status.get(value)
                     else:
-                        self._attributes[DeviceAttributes.status] = "Unknown"
+                        self._attributes[DeviceAttributes.status] = None
                 else:
                     self._attributes[status] = value
                 new_status[str(status)] = self._attributes[status]

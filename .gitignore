@@ -2,10 +2,8 @@
 sensitive/
 
 #exclude
-custom_components/midea_ac_lan/midea/devices/bc/
 custom_components/midea_ac_lan/midea/devices/b2/
-custom_components/midea_ac_lan/midea/devices/b4/
-custom_components/midea_ac_lan/midea/devices/b9/
+Wcustom_components/midea_ac_lan/midea/devices/b7/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

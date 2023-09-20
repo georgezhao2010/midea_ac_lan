@@ -21,6 +21,8 @@ from .midea.devices.a1.device import DeviceAttributes as A1Attributes
 from .midea.devices.ac.device import DeviceAttributes as ACAttributes
 from .midea.devices.b0.device import DeviceAttributes as B0Attributes
 from .midea.devices.b1.device import DeviceAttributes as B1Attributes
+from .midea.devices.b3.device import DeviceAttributes as B3Attributes
+from .midea.devices.b4.device import DeviceAttributes as B4Attributes
 from .midea.devices.b6.device import DeviceAttributes as B6Attributes
 from .midea.devices.bf.device import DeviceAttributes as BFAttributes
 from .midea.devices.c2.device import DeviceAttributes as C2Attributes
@@ -37,6 +39,7 @@ from .midea.devices.e1.device import DeviceAttributes as E1Attributes
 from .midea.devices.e2.device import DeviceAttributes as E2Attributes
 from .midea.devices.e3.device import DeviceAttributes as E3Attributes
 from .midea.devices.e6.device import DeviceAttributes as E6Attributes
+from .midea.devices.e8.device import DeviceAttributes as E8Attributes
 from .midea.devices.ea.device import DeviceAttributes as EAAttributes
 from .midea.devices.ec.device import DeviceAttributes as ECAttributes
 from .midea.devices.ed.device import DeviceAttributes as EDAttributes
@@ -540,6 +543,167 @@ MIDEA_DEVICES = {
                 "icon": "mdi:information",
             },
             B1Attributes.time_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            }
+        }
+    },
+    0xB3: {
+        "name": "Dish Sterilizer",
+        "entities": {
+            B3Attributes.top_compartment_door: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Top Compartment Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR,
+            },
+            B3Attributes.top_compartment_preheating: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Top Compartment Preheating",
+                "icon": "mdi:heat-wave",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            B3Attributes.top_compartment_cooling: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Top Compartment Cooling",
+                "icon": "snowflake-variant",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            B3Attributes.middle_compartment_door: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Middle Compartment Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR,
+            },
+            B3Attributes.middle_compartment_preheating: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Middle Compartment Preheating",
+                "icon": "mdi:heat-wave",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            B3Attributes.middle_compartment_cooling: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Middle Compartment Cooling",
+                "icon": "snowflake-variant",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            B3Attributes.bottom_compartment_door: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Bottom Compartment Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR,
+            },
+            B3Attributes.bottom_compartment_preheating: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Bottom Compartment Preheating",
+                "icon": "mdi:heat-wave",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            B3Attributes.bottom_compartment_cooling: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Bottom Compartment Cooling",
+                "icon": "snowflake-variant",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            B3Attributes.top_compartment_status: {
+                "type": Platform.SENSOR,
+                "name": "Top Compartment Status",
+                "icon": "mdi:information"
+            },
+            B3Attributes.top_compartment_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Top Compartment Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B3Attributes.top_compartment_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Top Compartment Remaining",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B3Attributes.middle_compartment_status: {
+                "type": Platform.SENSOR,
+                "name": "Middle Compartment Status",
+                "icon": "mdi:information"
+            },
+            B3Attributes.middle_compartment_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Middle Compartment Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B3Attributes.middle_compartment_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Middle Compartment Remaining",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B3Attributes.bottom_compartment_status: {
+                "type": Platform.SENSOR,
+                "name": "Bottom Compartment Status",
+                "icon": "mdi:information"
+            },
+            B3Attributes.bottom_compartment_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Bottom Compartment Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B3Attributes.bottom_compartment_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Bottom Compartment Remaining",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            }
+        }
+    },
+    0xB4: {
+        "name": "Toaster",
+        "entities": {
+            B4Attributes.door: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Door",
+                "icon": "mdi:box-shadow",
+                "device_class": BinarySensorDeviceClass.DOOR
+            },
+            B4Attributes.tank_ejected: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Tank ejected",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B4Attributes.water_change_reminder: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Water Change Reminder",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B4Attributes.water_shortage: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Water Shortage",
+                "icon": "mdi:cup-water",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            B4Attributes.current_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            B4Attributes.status: {
+                "type": Platform.SENSOR,
+                "name": "Status",
+                "icon": "mdi:information",
+            },
+            B4Attributes.time_remaining: {
                 "type": Platform.SENSOR,
                 "name": "Time Remaining",
                 "icon": "mdi:progress-clock",
@@ -1593,6 +1757,63 @@ MIDEA_DEVICES = {
                 "name": "Heating Power",
                 "icon": "mdi:heating-coil"
             }
+        }
+    },
+    0xE8: {
+        "name": "Electric Slow Cooker",
+        "entities": {
+            E8Attributes.finished: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Finished",
+                "icon": "",
+            },
+            E8Attributes.water_shortage: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "Water Shortage",
+                "icon": "mdi:drag",
+                "device_class": BinarySensorDeviceClass.PROBLEM
+            },
+            E8Attributes.status: {
+                "type": Platform.SENSOR,
+                "name": "Status",
+                "icon": "mdi:information"
+            },
+            E8Attributes.time_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Time Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            E8Attributes.keep_warm_remaining: {
+                "type": Platform.SENSOR,
+                "name": "Keep Warm Remaining",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            E8Attributes.working_time: {
+                "type": Platform.SENSOR,
+                "name": "Working Time",
+                "icon": "mdi:progress-clock",
+                "unit": TIME_SECONDS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            E8Attributes.target_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Target Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+            E8Attributes.current_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Current Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass.MEASUREMENT
+            },
+
         }
     },
     0xEA: {

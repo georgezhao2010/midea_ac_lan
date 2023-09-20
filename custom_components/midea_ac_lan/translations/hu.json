@@ -1,9 +1,9 @@
 {
     "config": {
         "error": {
+            "login_failed": "Failed to login, account or password was wrong",
             "no_devices": "Nem találhatóak új eszközök a hálózaton",
             "device_exist": "Az eszköz már be van állítva",
-            "cant_get_token": "Nem sikerül csatlakozni a Midea felhőhöz az eszköz kulcs-információjának (Token és Key) eléréséhez",
             "config_incorrect": "A beállítások helytelenek",
             "connect_error": "Nem sikerült csatlakozni az eszközhöz",
             "invalid_token": "A Token vagy a Key formátuma helytelen"
@@ -15,6 +15,14 @@
                 },
                 "description": "Válassza az 'Auto' vagy 'Manual' opciót új eszköz hozzáadásához",
                 "title": "Új eszköz hozzáadása"
+            },
+            "login": {
+                "data": {
+                    "account": "Account",
+                    "password": "Password"
+                },
+                "description": "Login and storage your Midea account only for getting the appliance info.\nYou can remove this configuration after all appliance configured.",
+                "title": "Login"
             },
             "discover": {
                 "description": "Új Midea eszközöket keres?",

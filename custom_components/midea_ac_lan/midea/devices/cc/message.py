@@ -119,8 +119,8 @@ class CCGeneralMessageBody(MessageBody):
 class MessageCCResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if (self._message_type == MessageType.query and self._body_type == 0x01) or \
-                (self._message_type in [MessageType.notify1, MessageType.notify2] and self._body_type == 0x01) or \
-                (self._message_type == MessageType.set and self._body_type == 0xC3):
+        if (self.message_type == MessageType.query and self.body_type == 0x01) or \
+                (self.message_type in [MessageType.notify1, MessageType.notify2] and self.body_type == 0x01) or \
+                (self.message_type == MessageType.set and self.body_type == 0xC3):
             self.set_body(CCGeneralMessageBody(super().body))
         self.set_attr()

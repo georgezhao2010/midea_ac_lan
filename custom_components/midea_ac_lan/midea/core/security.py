@@ -87,7 +87,7 @@ class CloudSecurity:
         if aes_iv is None:  # ECB
             return AES.new(aes_key, AES.MODE_ECB).encrypt(pad(data, 16))
         else:  # CBC
-            return AES.new(aes_key, AES.MODE_CBC,iv=aes_iv).encrypt(pad(data, 16))
+            return AES.new(aes_key, AES.MODE_CBC, iv=aes_iv).encrypt(pad(data, 16))
 
     def aes_decrypt(self, data, key=None, iv=None):
         if key is not None:
@@ -103,7 +103,7 @@ class CloudSecurity:
         if aes_iv is None:  # ECB
             return unpad(AES.new(aes_key, AES.MODE_ECB).decrypt(data), len(aes_key)).decode()
         else:  # CBC
-            return unpad(AES.new(aes_key, AES.MODE_CBC,iv=aes_iv).decrypt(data), len(aes_key)).decode()
+            return unpad(AES.new(aes_key, AES.MODE_CBC, iv=aes_iv).decrypt(data), len(aes_key)).decode()
 
 
 class MeijuCloudSecurity(CloudSecurity):

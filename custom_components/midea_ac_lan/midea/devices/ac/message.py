@@ -42,7 +42,7 @@ class MessageACBase(MessageRequest):
 
     @property
     def body(self):
-        body = bytearray([self._body_type]) + self._body + bytearray([self._message_id])
+        body = bytearray([self.body_type]) + self._body + bytearray([self._message_id])
         body.append(calculate(body))
         return body
 
@@ -80,7 +80,7 @@ class MessagePowerQuery(MessageACBase):
 
     @property
     def body(self):
-        body = bytearray([self._body_type]) + self._body
+        body = bytearray([self.body_type]) + self._body
         body.append(calculate(body))
         return body
 
@@ -137,11 +137,11 @@ class MessageSubProtocol(MessageACBase):
 
     @property
     def _subprotocol_body(self):
-        return None
+        return bytes([])
 
     @property
     def body(self):
-        body = bytearray([self._body_type]) + self._body
+        body = bytearray([self.body_type]) + self._body
         body.append(calculate(body))
         body.append(self.checksum(body))
         return body
@@ -494,20 +494,29 @@ class XC1MessageBody(MessageBody):
             pass
 
     @staticmethod
+    def parse_value(byte):
+        return (byte >> 4) * 10 + (byte & 0x0F)
+
+    @staticmethod
     def parse_power(analysis_method, byte1, byte2, byte3):
         if analysis_method == 1:
-            return byte1 + float(byte2) / 100 + byte3 / 10000
+            return float(XC1MessageBody.parse_value(byte1) * 10000 +
+                         XC1MessageBody.parse_value(byte2) * 100 +
+                         XC1MessageBody.parse_value(byte3)) / 10
         elif analysis_method == 2:
-            return float((byte1 << 16) + (byte2 << 8) + byte3) / 1000
+            return float((byte1 << 16) + (byte2 << 8) + byte3) / 10
         else:
             return float(byte1 * 10000 + byte2 * 100 + byte3) / 10
 
     @staticmethod
     def parse_consumption(analysis_method, byte1, byte2, byte3, byte4):
         if analysis_method == 1:
-            return byte1 * 10000 + byte2 * 100 + byte3 + float(byte4) / 100
+            return float(XC1MessageBody.parse_value(byte1) * 1000000 +
+                         XC1MessageBody.parse_value(byte2) * 10000 +
+                         XC1MessageBody.parse_value(byte3) * 100 +
+                         XC1MessageBody.parse_value(byte4)) / 100
         elif analysis_method == 2:
-            return float((byte1 << 32) + (byte2 << 16) + (byte3 << 8) + byte4) / 1000
+            return float((byte1 << 32) + (byte2 << 16) + (byte3 << 8) + byte4) / 10
         else:
             return float(byte1 * 1000000 + byte2 * 10000 + byte3 * 100 + byte4) / 100
 
@@ -554,19 +563,19 @@ class XBBMessageBody(MessageBody):
 class MessageACResponse(MessageResponse):
     def __init__(self, message, power_analysis_method=3):
         super().__init__(message)
-        if self._message_type == MessageType.notify2 and self._body_type == 0xA0:
+        if self.message_type == MessageType.notify2 and self.body_type == 0xA0:
             self.set_body(XA0MessageBody(super().body))
-        elif self._message_type == MessageType.notify1 and self._body_type == 0xA1:
+        elif self.message_type == MessageType.notify1 and self.body_type == 0xA1:
             self.set_body(XA1MessageBody(super().body))
-        elif self._message_type in [MessageType.query, MessageType.set, MessageType.notify2] and \
-                self._body_type in [0xB0, 0xB1, 0xB5]:
-            self.set_body(XBXMessageBody(super().body, self._body_type))
-        elif self._message_type in [MessageType.query, MessageType.set] and self._body_type == 0xC0:
+        elif self.message_type in [MessageType.query, MessageType.set, MessageType.notify2] and \
+                self.body_type in [0xB0, 0xB1, 0xB5]:
+            self.set_body(XBXMessageBody(super().body, self.body_type))
+        elif self.message_type in [MessageType.query, MessageType.set] and self.body_type == 0xC0:
             self.set_body(XC0MessageBody(super().body))
-        elif self._message_type == MessageType.query and self._body_type == 0xC1:
+        elif self.message_type == MessageType.query and self.body_type == 0xC1:
             self.set_body(XC1MessageBody(super().body, power_analysis_method))
-        elif self._message_type in [MessageType.set, MessageType.query, MessageType.notify2] and \
-                self._body_type == 0xBB and len(super().body) >= 21:
+        elif self.message_type in [MessageType.set, MessageType.query, MessageType.notify2] and \
+                self.body_type == 0xBB and len(super().body) >= 21:
             self.used_subprotocol = True
             self.set_body(XBBMessageBody(super().body))
         self.set_attr()

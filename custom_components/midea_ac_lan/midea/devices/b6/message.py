@@ -186,32 +186,32 @@ class B6ExceptionBody(MessageBody):
 class MessageB6Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._message_type == MessageType.set and self._body_type == 0x22 and super().body[1] == 0x01:
+        if self.message_type == MessageType.set and self.body_type == 0x22 and super().body[1] == 0x01:
             self.set_body(B6SpecialBody(super().body))
-        elif self._message_type == MessageType.set and self._body_type == 0x11 and super().body[1] == 0x01:
+        elif self.message_type == MessageType.set and self.body_type == 0x11 and super().body[1] == 0x01:
             #############################
             pass
-        elif self._message_type == MessageType.query:
-            if self._body_type in [0x11, 0x31]:
+        elif self.message_type == MessageType.query:
+            if self.body_type in [0x11, 0x31]:
                 if self._device_protocol_version in [0, 1]:
                     self.set_body(B6GeneralBody(super().body))
                 else:
                     self.set_body(B6NewProtocolBody(super().body))
-            elif self._body_type == 0x32 and super().body[1] == 0x01:
+            elif self.body_type == 0x32 and super().body[1] == 0x01:
                 self.set_body(B6ExceptionBody(super().body))
-        elif self._message_type == MessageType.notify1:
-            if self._body_type in [0x11, 0x41]:
+        elif self.message_type == MessageType.notify1:
+            if self.body_type in [0x11, 0x41]:
                 if self._device_protocol_version in [0, 1]:
                     self.set_body(B6GeneralBody(super().body))
                 else:
                     self.set_body(B6NewProtocolBody(super().body))
-            elif self._body_type == 0x0A:
+            elif self.body_type == 0x0A:
                 if super().body[1] == 0xA1:
                     self.set_body(B6ExceptionBody(super().body))
                 elif super().body[1] == 0xA2:
                     self.oilcup_full = (super().body[2] & 0x01) > 0
                     self.cleaning_reminder = (super().body[2] & 0x02) > 0
-        elif self._message_type == MessageType.exception2 and self._body_type == 0xA1:
+        elif self.message_type == MessageType.exception2 and self.body_type == 0xA1:
             pass
 
         self.set_attr()

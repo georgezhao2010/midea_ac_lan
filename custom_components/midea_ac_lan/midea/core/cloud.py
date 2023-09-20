@@ -1,3 +1,4 @@
+import logging
 import time
 import datetime
 import json
@@ -7,8 +8,12 @@ from aiohttp import ClientSession
 from secrets import token_hex
 from .security import CloudSecurity, MeijuCloudSecurity, MSmartCloudSecurity
 
+_LOGGER = logging.getLogger(__name__)
+
 clouds = {
-    "Meiju": {
+    "美的美居": {
+        "class_name": "MeijuCloud",
+        "app_id": "900",
         "app_key": "46579c15",
         "login_key": "ad0ee21d48a64bf49f4fb583ab76e799",
         "iot_key": bytes.fromhex(format(9795516279659324117647275084689641883661667, 'x')).decode(),
@@ -16,11 +21,13 @@ clouds = {
         "api_url": "https://mp-prod.smartmidea.net/mas/v5/app/proxy?alias=",
     },
     "MSmartHome": {
+        "class_name": "MSmartHomeCloud",
+        "app_id": "1010",
         "app_key": "ac21b9f9cbfe4ca5a88562ef25e2b768",
         "iot_key": bytes.fromhex(format(7882822598523843940, 'x')).decode(),
         "hmac_key": bytes.fromhex(format(117390035944627627450677220413733956185864939010425, 'x')).decode(),
         "api_url": "https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=",
-    },
+    }
 }
 
 default_keys = {
@@ -32,7 +39,7 @@ default_keys = {
 }
 
 
-class MideaCloud():
+class MideaCloud:
     def __init__(
             self,
             session: ClientSession,
@@ -86,6 +93,7 @@ class MideaCloud():
                 with self._api_lock:
                     r = await self._session.request("POST", url, headers=header, data=dump_data, timeout=10)
                     raw = await r.read()
+                    _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
                     response = json.loads(raw)
                     break
             except Exception as e:
@@ -139,6 +147,7 @@ class MeijuCloud(MideaCloud):
 
     def __init__(
             self,
+            cloud_name: str,
             session: ClientSession,
             account: str,
             password: str,
@@ -146,14 +155,14 @@ class MeijuCloud(MideaCloud):
         super().__init__(
             session=session,
             security=MeijuCloudSecurity(
-                login_key=clouds["Meiju"]["login_key"],
-                iot_key=clouds["Meiju"]["iot_key"],
-                hmac_key=clouds["Meiju"]["hmac_key"],
+                login_key=clouds[cloud_name].get("login_key"),
+                iot_key=clouds[cloud_name].get("iot_key"),
+                hmac_key=clouds[cloud_name].get("hmac_key"),
             ),
-            app_key=clouds["Meiju"]["app_key"],
+            app_key=clouds[cloud_name]["app_key"],
             account=account,
             password=password,
-            api_url=clouds["Meiju"]["api_url"]
+            api_url=clouds[cloud_name]["api_url"]
         )
 
     async def login(self) -> bool:
@@ -201,6 +210,7 @@ class MSmartHomeCloud(MideaCloud):
 
     def __init__(
             self,
+            cloud_name: str,
             session: ClientSession,
             account: str,
             password: str,
@@ -208,14 +218,14 @@ class MSmartHomeCloud(MideaCloud):
         super().__init__(
             session=session,
             security=MSmartCloudSecurity(
-                login_key=clouds["MSmartHome"]["app_key"],
-                iot_key=clouds["MSmartHome"]["iot_key"],
-                hmac_key=clouds["MSmartHome"]["hmac_key"],
+                login_key=clouds[cloud_name].get("app_key"),
+                iot_key=clouds[cloud_name].get("iot_key"),
+                hmac_key=clouds[cloud_name].get("hmac_key"),
             ),
-            app_key=clouds["MSmartHome"]["app_key"],
+            app_key=clouds[cloud_name]["app_key"],
             account=account,
             password=password,
-            api_url=clouds["MSmartHome"]["api_url"]
+            api_url=clouds[cloud_name]["api_url"]
         )
         self._auth_base = base64.b64encode(
             f"{self._app_key}:{clouds['MSmartHome']['iot_key']}".encode("ascii")
@@ -292,3 +302,15 @@ class MSmartHomeCloud(MideaCloud):
                 self._security.set_aes_keys(response["accessToken"], response["randomData"])
                 return True
         return False
+
+
+def get_midea_cloud(cloud_name: str, session: ClientSession, account: str, password: str) -> MideaCloud | None:
+    cloud = None
+    if cloud_name in clouds.keys():
+        cloud = globals()[clouds[cloud_name]["class_name"]](
+            cloud_name=cloud_name,
+            session=session,
+            account=account,
+            password=password
+        )
+    return cloud

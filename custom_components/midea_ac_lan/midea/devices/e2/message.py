@@ -43,9 +43,9 @@ class MessagePower(MessageE2Base):
     @property
     def _body(self):
         if self.power:
-            self._body_type = 0x01
+            self.body_type = 0x01
         else:
-            self._body_type = 0x02
+            self.body_type = 0x02
         return bytearray([0x01])
 
 
@@ -130,7 +130,7 @@ class E2GeneralMessageBody(MessageBody):
 class MessageE2Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0x01) or \
-                (self._message_type == MessageType.set and self._body_type in [0x01, 0x02, 0x04, 0x14]):
+        if (self.message_type in [MessageType.query, MessageType.notify1] and self.body_type == 0x01) or \
+                (self.message_type == MessageType.set and self.body_type in [0x01, 0x02, 0x04, 0x14]):
             self.set_body(E2GeneralMessageBody(super().body))
         self.set_attr()

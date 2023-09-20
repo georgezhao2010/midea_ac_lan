@@ -37,6 +37,8 @@ And more.
 | AC   | Air Conditioner            | [AC.md](doc/AC.md) |
 | B0   | Microwave Oven             | [B0.md](doc/B0.md) |
 | B1   | Electric Oven              | [B1.md](doc/B1.md) |
+| B3   | Dish Sterilizer            | [B3.md](doc/B3.md) |
+| B4   | Toaster                    | [B4.md](doc/B4.md) |
 | B6   | Range Hood                 | [B6.md](doc/B6.md) |
 | BF   | Microwave Steam Oven       | [BF.md](doc/BF.md) |
 | C2   | Toilet                     | [C2.md](doc/C2.md) |
@@ -53,6 +55,7 @@ And more.
 | E2   | Electric Water Heater      | [E2.md](doc/E2.md) |
 | E3   | Gas Water Heater           | [E3.md](doc/E3.md) |
 | E6   | Gas Stove                  | [E6.md](doc/E6.md) |
+| E8   | Electric Slow Cooker       | [E8.md](doc/E8.md) |
 | EA   | Electric Rice Cooker       | [EA.md](doc/EA.md) |
 | EC   | Electric Pressure Cooker   | [EC.md](doc/EC.md) |
 | ED   | Water Drinking Appliance   | [ED.md](doc/ED.md) |
@@ -72,6 +75,8 @@ Restart Home Assistant.
 After installation, search and add component Midea AC LAN in Home Assistant integrations page.
 
 Or click [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)
+
+***Note: During the configuration process, you may be asked to enter your Midea account and password. It's necessary to retrieve appliance information (Token and Key) from Midea cloud server. After all appliances configured, you can remove the Midea account configuration without affecting the use of the appliance.***
 
 ## Automatically
 This component could auto-discover and list Midea M-Smart appliances in network, select one and add it in. You could repeat the above action to add multiple devices.
