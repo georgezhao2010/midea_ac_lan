@@ -155,10 +155,10 @@ class EDMessageBodyFF(MessageBody):
                 self.child_lock = (body[data_offset + 5] & 0x01) > 0
                 self.power = (body[data_offset + 6] & 0x01) > 0
             elif attr == 0x011:
-                self.water_consumption = body[data_offset + 3] + \
-                                        (body[4] << 8) + \
-                                        (body[5] << 16) + \
-                                        (body[6] << 24)
+                self.water_consumption = (body[data_offset + 3] + \
+                                        (body[data_offset + 4] << 8) + \
+                                        (body[data_offset + 5] << 16) + \
+                                        (body[data_offset + 6] << 24)) / 1000
             elif attr == 0x013:
                 self.in_tds = body[data_offset + 3] + (body[data_offset + 4] << 8)
                 self.out_tds = body[data_offset + 5] + (body[data_offset + 6] << 8)
@@ -166,7 +166,8 @@ class EDMessageBodyFF(MessageBody):
                 self.life1 = body[data_offset + 3]
                 self.life2 = body[data_offset + 4]
                 self.life3 = body[data_offset + 5]
-            if data_offset + length > len(body):
+            # fix index out of range error
+            if data_offset + length + 6 > len(body):
                 break
             data_offset += length
 
@@ -176,6 +177,8 @@ class MessageEDResponse(MessageResponse):
         super().__init__(message)
         if self._message_type in [MessageType.query, MessageType.notify1]:
             self.device_class = self._body_type
+            if self._body_type in [0x00, 0xFF]:
+                self.set_body(EDMessageBodyFF(super().body))
             if self._body_type == 0x01: # 净水器
                 self.set_body(EDMessageBody01(super().body))
             elif self._body_type in [0x03, 0x04]:
@@ -186,6 +189,5 @@ class MessageEDResponse(MessageResponse):
                 self.set_body(EDMessageBody06(super().body))
             elif self._body_type == 0x07:
                 self.set_body(EDMessageBody07(super().body))
-            elif self._body_type == 0xFF:
-                self.set_body(EDMessageBodyFF(super().body))
+
         self.set_attr()
