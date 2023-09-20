@@ -42,7 +42,7 @@ class CloudSecurity:
 
     @staticmethod
     def get_deviceid(username):
-        return md5(f"Hello, {username}!".encode("ascii")).digest().hex()[:16]
+        return sha256(f"Hello, {username}!".encode("ascii")).digest().hex()[:16]
 
     @staticmethod
     def get_udp_id(appliance_id, method=0):
