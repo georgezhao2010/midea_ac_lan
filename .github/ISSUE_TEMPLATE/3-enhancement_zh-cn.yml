@@ -6,7 +6,7 @@ body:
     validations:
       required: true
     attributes:
-      label: 设备类型或型号 (或SN)
+      label: 设备类型及型号 (或SN)
       placeholder: Air Conditioner 22012225
       description: |
         > 设备型号可以在 配置 -> 设备与服务 -> Midea AC LAN -> 设备 -> 设备信息 找到
