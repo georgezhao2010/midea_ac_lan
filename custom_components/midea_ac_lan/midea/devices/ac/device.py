@@ -126,7 +126,7 @@ class MideaACDevice(MiedaDevice):
         self._bb_sn8_flag = False
         self._bb_timer = False
         self._power_analysis_method = None
-        self._default_power_analysis_method = 2
+        self._default_power_analysis_method = 1
         self.set_customize(customize)
 
     @property
