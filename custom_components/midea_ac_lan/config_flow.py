@@ -189,7 +189,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             device = self.devices.get(device_id)
             if device.get(CONF_PROTOCOL) == 3:
                 session = async_create_clientsession(self.hass)
-                _LOGGER.debug(f"server = {self._server}, account = {self._account}, password = {self._password}")
                 cloud = get_midea_cloud(self._server, session, self._account, self._password)
                 if await cloud.login():
                     keys = await cloud.get_keys(user_input[CONF_DEVICE])
