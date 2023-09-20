@@ -13,7 +13,7 @@
                 "data": {
                     "way": "Pridávanie spotrebičov"
                 },
-                "description": "Ak chcete pridať nový spotrebič, vyberte možnosť „Automaticky“ alebo „Manuálne“.",
+                "description": "Vyberte spôsob pridávania zariadení",
                 "title": "Pridať nový spotrebič"
             },
             "login": {
@@ -24,12 +24,8 @@
                 "description": "Login and storage your Midea account only for getting the appliance info.\nYou can remove this configuration after all appliance configured.",
                 "title": "Login"
             },
-            "discover": {
-                "description": "Objaviť nové zariadenia Midea?",
-                "title": "Objavte nové zariadenie"
-            },
-            "byip": {
-                "description": "Zadajte IP adresu pre zariadenie",
+            "discovery": {
+                "description": "Zadajte IP adresu pre zariadenie, zadajte \"auto\" pre automatické vyhľadávanie",
                 "title": "Podľa IP",
                 "data": {
                     "ip_address": "IP adresa"
@@ -46,7 +42,7 @@
                 "description": "Vyberte zariadenie, ktoré chcete pridať",
                 "title": "Našiel sa nový spotrebič"
             },
-            "manual": {
+            "manually": {
                 "data": {
                     "name": "Názov (napr. AC obývačka)",
                     "device_id": "Kód spotrebiča",

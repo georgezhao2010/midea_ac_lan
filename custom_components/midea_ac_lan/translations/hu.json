@@ -13,7 +13,7 @@
                 "data": {
                     "way": "Eszközök hozzáadása"
                 },
-                "description": "Válassza az 'Auto' vagy 'Manual' opciót új eszköz hozzáadásához",
+                "description": "Válassza ki az eszközök hozzáadásának módját",
                 "title": "Új eszköz hozzáadása"
             },
             "login": {
@@ -24,12 +24,8 @@
                 "description": "Login and storage your Midea account only for getting the appliance info.\nYou can remove this configuration after all appliance configured.",
                 "title": "Login"
             },
-            "discover": {
-                "description": "Új Midea eszközöket keres?",
-                "title": "Új eszköz keresése"
-            },
-            "byip": {
-                "description": "Adja meg az eszköz IP címét",
+            "discovery": {
+                "description": "Adja meg az eszköz IP címét, Írja be az \"auto\" kifejezést az automatikus kereséshez",
                 "title": "IP alapján",
                 "data": {
                     "ip_address": "IP cím"
@@ -46,7 +42,7 @@
                 "description": "Válassza ki a hozzáadandó eszközt",
                 "title": "Új eszköz található"
             },
-            "manual": {
+            "manually": {
                 "data": {
                     "name": "Név (pl. Nappali légkondicionáló)",
                     "device_id": "Eszköz kód",
