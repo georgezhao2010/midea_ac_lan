@@ -45,7 +45,7 @@ def discover(discover_type=None, ip_address=None):
         addrs = enum_all_broadcast()
     else:
         addrs = [ip_address]
-
+    _LOGGER.debug(f"All addresses for broadcast: {addrs}")
     for v in range(0, 3):
         for addr in addrs:
             sock.sendto(BROADCAST_MSG, (addr, 6445))
@@ -54,7 +54,7 @@ def discover(discover_type=None, ip_address=None):
         try:
             data, addr = sock.recvfrom(512)
             ip = addr[0]
-            _LOGGER.debug(f"Received broadcast from {addr}: {data.hex()}")
+            _LOGGER.debug(f"Received response from {addr}: {data.hex()}")
             if len(data) >= 104 and (data[:2].hex() == "5a5a" or data[8:10].hex() == "5a5a"):
                 if data[:2].hex() == "5a5a":
                     protocol = 2
@@ -110,7 +110,7 @@ def discover(discover_type=None, ip_address=None):
         except socket.timeout:
             break
         except socket.error as e:
-            _LOGGER.debug(f"Socket error: {repr(e)}")
+            _LOGGER.error(f"Socket error: {repr(e)}")
     return found_devices
 
 
@@ -166,5 +166,7 @@ def enum_all_broadcast():
             if ip.is_IPv4 and ip.network_prefix < 32:
                 localNet = IPv4Network(f"{ip.ip}/{ip.network_prefix}", strict=False)
                 if localNet.is_private and not localNet.is_loopback and not localNet.is_link_local:
-                    nets.append(str(localNet.broadcast_address))
+                    addr = str(localNet.broadcast_address)
+                    if addr not in nets:
+                        nets.append(addr)
     return nets

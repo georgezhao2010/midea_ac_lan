@@ -1,4 +1,5 @@
 import logging
+import json
 from .message import (
     MessageQuery,
     MessageSet,
@@ -62,6 +63,13 @@ class MideaE3Device(MiedaDevice):
         self._old_sub_types = [
             32, 33, 34, 35, 36, 37, 40, 43, 48, 49, 80
         ]
+        self._precision_halves = None
+        self._default_precision_halves = False
+        self.set_customize(customize)
+
+    @property
+    def precision_halves(self):
+        return self._precision_halves
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
@@ -72,8 +80,13 @@ class MideaE3Device(MiedaDevice):
         new_status = {}
         for status in self._attributes.keys():
             if hasattr(message, str(status)):
-                self._attributes[status] = getattr(message, str(status))
+                if self._precision_halves and status in [DeviceAttributes.current_temperature,
+                                                             DeviceAttributes.target_temperature]:
+                    self._attributes[status] = getattr(message, str(status)) / 2
+                else:
+                    self._attributes[status] = getattr(message, str(status))
                 new_status[str(status)] = self._attributes[status]
+
         return new_status
 
     def make_message_set(self):
@@ -89,6 +102,8 @@ class MideaE3Device(MiedaDevice):
         if attr not in [DeviceAttributes.burning_state,
                         DeviceAttributes.current_temperature,
                         DeviceAttributes.protection]:
+            if self._precision_halves and attr == DeviceAttributes.target_temperature:
+                value = int(value * 2)
             if attr == DeviceAttributes.power:
                 message = MessagePower(self._device_protocol_version)
                 message.power = value
@@ -100,6 +115,17 @@ class MideaE3Device(MiedaDevice):
                 setattr(message, "key", str(attr))
                 setattr(message, "value", value)
             self.build_send(message)
+
+    def set_customize(self, customize):
+        self._precision_halves = self._default_precision_halves
+        if customize and len(customize) > 0:
+            try:
+                params = json.loads(customize)
+                if params and "precision_halves" in params:
+                    self._precision_halves = params.get("precision_halves")
+            except Exception as e:
+                _LOGGER.error(f"[{self.device_id}] Set customize error: {repr(e)}")
+            self.update_all({"precision_halves": self._precision_halves})
 
 
 class MideaAppliance(MideaE3Device):

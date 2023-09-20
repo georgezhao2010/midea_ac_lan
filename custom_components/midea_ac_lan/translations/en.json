@@ -1,9 +1,9 @@
 {
     "config": {
         "error": {
+            "login_failed": "Failed to login, account or password was wrong",
             "no_devices": "No new available appliances found on the network",
             "device_exist": "Appliance is already configured",
-            "cant_get_token": "Can't connect to Midea cloud to take appliance‘s key-info(Token and Key)",
             "config_incorrect": "The configuration is incorrect",
             "connect_error": "Can't connect to appliance",
             "invalid_token": "Token or Key in an incorrect format"
@@ -13,15 +13,19 @@
                 "data": {
                     "way": "Adding appliances"
                 },
-                "description": "Choose 'Auto' or 'Manual' to add a new appliance",
+                "description": "Choose the way to add a appliance",
                 "title": "Add new appliance"
             },
-            "discover": {
-                "description": "Discover new Midea devices?",
-                "title": "New appliance discover"
+            "login": {
+                "data": {
+                    "account": "Account",
+                    "password": "Password"
+                },
+                "description": "Login and storage your Midea account only for getting the appliance info.\nYou can remove this configuration after all appliance configured.",
+                "title": "Login"
             },
-            "byip": {
-                "description": "Input IP address for device",
+            "discovery": {
+                "description": "IP address for device, enter \"auto\" to discover automatically",
                 "title": "By IP",
                 "data": {
                     "ip_address": "IP address"
@@ -38,7 +42,7 @@
                 "description": "Choose a appliance to add",
                 "title": "New appliance found"
             },
-            "manual": {
+            "manually": {
                 "data": {
                     "name": "Name (e.g. Living room AC)",
                     "device_id": "Appliance code",

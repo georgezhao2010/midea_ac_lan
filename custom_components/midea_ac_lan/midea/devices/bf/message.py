@@ -69,6 +69,6 @@ class MessageBFBody(MessageBody):
 class MessageBFResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._message_type in [MessageType.set, MessageType.notify1, MessageType.query] and self._body_type == 0x01:
+        if self.message_type in [MessageType.set, MessageType.notify1, MessageType.query] and self.body_type == 0x01:
             self.set_body(MessageBFBody(super().body))
         self.set_attr()

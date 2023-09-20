@@ -1,9 +1,9 @@
 {
     "config": {
         "error": {
+            "login_failed": "Failed to login, account or password was wrong",
             "no_devices": "Новые доступные устройства в локальной сети не найдены",
             "device_exist": "Устройство уже настроено",
-            "cant_get_token": "Не удается подключиться к облачному сервису Midea, чтобы получить ключи устройства (Токен и Ключ)",
             "config_incorrect": "Некорректная конфигурация",
             "connect_error": "Не удается подключиться к устройству",
             "invalid_token": "Некорректный формат Токена или Ключа"
@@ -13,15 +13,19 @@
                 "data": {
                     "way": "Добавление устройства"
                 },
-                "description": "Чтобы добавить новое устройство, выберите 'Авто' или 'Вручную'",
+                "description": "Выберите способ добавления устройств",
                 "title": "Добавить новое устройство"
             },
-            "discover": {
-                "description": "Выполнять поиск новых устройств Midea?",
-                "title": "Поиск новых устройств"
+            "login": {
+                "data": {
+                    "account": "Account",
+                    "password": "Password"
+                },
+                "description": "Login and storage your Midea account only for getting the appliance info.\nYou can remove this configuration after all appliance configured.",
+                "title": "Login"
             },
-            "byip": {
-                "description": "Введите IP-адрес устройства",
+            "discovery": {
+                "description": "Введите IP-адрес устройства, введите \"auto\", чтобы автоматически обнаружить",
                 "title": "По IP",
                 "data": {
                     "ip_address": "IP-адрес"
@@ -38,7 +42,7 @@
                 "description": "Выберите устройство для добавления",
                 "title": "Найдено новое устройство"
             },
-            "manual": {
+            "manually": {
                 "data": {
                     "name": "Название (например, Кондиционер в гостиной)",
                     "device_id": "Идентификатор устройства",

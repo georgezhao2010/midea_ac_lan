@@ -33,7 +33,7 @@ class MessageA1Base(MessageRequest):
 
     @property
     def body(self):
-        body = bytearray([self._body_type]) + self._body + bytearray([self._message_id])
+        body = bytearray([self.body_type]) + self._body + bytearray([self._message_id])
         body.append(calculate(body))
         return body
 
@@ -177,11 +177,11 @@ class A1NewProtocolMessageBody(NewProtocolMessageBody):
 class MessageA1Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1]:
-            if self._body_type in [0xB0, 0xB1, 0xB5]:
-                self.set_body(A1NewProtocolMessageBody(super().body, self._body_type))
+        if self.message_type in [MessageType.query, MessageType.set, MessageType.notify1]:
+            if self.body_type in [0xB0, 0xB1, 0xB5]:
+                self.set_body(A1NewProtocolMessageBody(super().body, self.body_type))
             else:
                 self.set_body(A1GeneralMessageBody(super().body))
-        elif self._message_type == MessageType.notify2 and self._body_type == 0xA0:
+        elif self.message_type == MessageType.notify2 and self.body_type == 0xA0:
             self.set_body(A1GeneralMessageBody(super().body))
         self.set_attr()

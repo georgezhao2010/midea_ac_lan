@@ -13,18 +13,19 @@
 
 ### 额外生成实体
 
-| EntityID                              | 类型     | 名称                  | 描述    |
-|---------------------------------------|--------|---------------------|-------|
-| binary_sensor.{DEVICEID}_tank         | sensor | Tank Status         | 水箱状态  |
-| sensor.{DEVICEID}_current_humidity    | sensor | Current Humidity    | 当前湿度  |
-| sensor.{DEVICEID}_current_temperature | sensor | Current Temperatur  | 当前温度  |
-| lock.{DEVICEID}_child_lock            | lock   | Child lock          | 童锁    |
-| switch.{DEVICEID}_anion               | switch | Anion               | 负离子开关 |
-| switch.{DEVICEID}_prompt_tone         | switch | Prompt Tone         | 提示音   |
-| switch.{DEVICEID}_power               | switch | Power               | 电源开关  |
-| switch.{DEVICEID}_swing               | switch | Swing               | 摆风开关  |
-| select.{DEVICEID}_fan_speed           | select | Fan Speed           | 风速设定  |
-| select.{DEVICEID}_water_level_set     | select | Water Level Setting | 水位设定  |
+| EntityID                              | 类型            | 名称                  | 描述       |
+|---------------------------------------|---------------|---------------------|----------|
+| sensor.{DEVICEID}_tank_full           | binary_sensor | Tank Full           | 水箱已达设置水位 |
+| sensor.{DEVICEID}_tank                | sensor        | Tank                | 水箱水位     |
+| sensor.{DEVICEID}_current_humidity    | sensor        | Current Humidity    | 当前湿度     |
+| sensor.{DEVICEID}_current_temperature | sensor        | Current Temperature | 当前温度     |
+| lock.{DEVICEID}_child_lock            | lock          | Child Lock          | 童锁       |
+| switch.{DEVICEID}_anion               | switch        | Anion               | 负离子开关    |
+| switch.{DEVICEID}_prompt_tone         | switch        | Prompt Tone         | 提示音      |
+| switch.{DEVICEID}_power               | switch        | Power               | 电源开关     |
+| switch.{DEVICEID}_swing               | switch        | Swing               | 摆风开关     |
+| select.{DEVICEID}_fan_speed           | select        | Fan Speed           | 风速设定     |
+| select.{DEVICEID}_water_level_set     | select        | Water Level Setting | 水位设定     |
 
 ## 服务
 

@@ -74,10 +74,10 @@ class B0Message01Body(MessageBody):
 class MessageB0Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._message_type in [MessageType.notify1, MessageType.query]:
-            if self._body_type == 0x01:
+        if self.message_type in [MessageType.notify1, MessageType.query]:
+            if self.body_type == 0x01:
                 self.set_body(B0Message01Body(super().body))
-            elif self._body_type == 0x04:
+            elif self.body_type == 0x04:
                 pass
             else:
                 self.set_body(B0MessageBody(super().body))

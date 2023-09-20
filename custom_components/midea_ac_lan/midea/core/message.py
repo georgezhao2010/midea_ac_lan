@@ -175,11 +175,15 @@ class MessageQuestCustom(MessageRequest):
 
 class MessageBody:
     def __init__(self, body):
-        self.data = body
+        self._data = body
+
+    @property
+    def data(self):
+        return self._data
 
     @property
     def body_type(self):
-        return self.data[0]
+        return self._data[0]
 
     @staticmethod
     def read_byte(body, byte, default_value=0):

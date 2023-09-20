@@ -3,6 +3,7 @@ import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from .const import (
     DOMAIN,
+    CONF_ACCOUNT,
     CONF_KEY,
     CONF_MODEL,
     CONF_REFRESH_INTERVAL,
@@ -63,15 +64,6 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
             if attribute.get("type") in EXTRA_SWITCH and attribute_name.value not in attributes:
                 attributes.append(attribute_name.value)
 
-    def service_set_ac_fan_speed(service):
-        device_id = service.data.get("device_id")
-        fan_speed = service.data.get("fan_speed")
-        if fan_speed == "auto":
-            fan_speed = 102
-        dev = hass.data[DOMAIN][DEVICES].get(device_id)
-        if dev and dev.device_type == 0xac:
-            dev.set_attribute(attr="fan_speed", value=fan_speed)
-
     def service_set_attribute(service):
         device_id = service.data.get("device_id")
         attr = service.data.get("attribute")
@@ -102,19 +94,6 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
 
     hass.services.async_register(
         DOMAIN,
-        "set_ac_fan_speed",
-        service_set_ac_fan_speed,
-        schema=vol.Schema(
-            {
-                vol.Required("device_id"): vol.Coerce(int),
-                vol.Required("fan_speed"): vol.Any(vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
-                                                   vol.All(str, vol.In(["auto"])))
-            }
-        )
-    )
-
-    hass.services.async_register(
-        DOMAIN,
         "set_attribute",
         service_set_attribute,
         schema=vol.Schema(
@@ -142,11 +121,13 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry):
+    device_type = config_entry.data.get(CONF_TYPE)
+    if device_type == CONF_ACCOUNT:
+        return True
     name = config_entry.data.get(CONF_NAME)
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     if name is None:
         name = f"{device_id}"
-    device_type = config_entry.data.get(CONF_TYPE)
     if device_type is None:
         device_type = 0xac
     token = config_entry.data.get(CONF_TOKEN)

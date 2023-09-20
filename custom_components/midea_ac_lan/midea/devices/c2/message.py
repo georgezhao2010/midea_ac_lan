@@ -62,9 +62,9 @@ class MessagePower(MessageC2Base):
     @property
     def _body(self):
         if self.power:
-            self._body_type = 0x01
+            self.body_type = 0x01
         else:
-            self._body_type = 0x02
+            self.body_type = 0x02
         return bytearray([0x01])
 
 
@@ -96,7 +96,7 @@ class MessageSet(MessageC2Base):
 
     @property
     def _body(self):
-        self._body_type = 0x14
+        self.body_type = 0x14
         key = 0x00
         value = 0x00
         if self.child_lock is not None:
@@ -147,6 +147,6 @@ class C2Notify1MessageBody(MessageBody):
 class MessageC2Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._message_type in [MessageType.notify1, MessageType.query, MessageType.set]:
+        if self.message_type in [MessageType.notify1, MessageType.query, MessageType.set]:
             self.set_body(C2MessageBody(super().body))
         self.set_attr()

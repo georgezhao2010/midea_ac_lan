@@ -101,7 +101,7 @@ class DAGeneralMessageBody(MessageBody):
 class MessageDAResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._message_type in [MessageType.query, MessageType.set] or \
-                (self._message_type == MessageType.notify1 and self._body_type == 0x04):
+        if self.message_type in [MessageType.query, MessageType.set] or \
+                (self.message_type == MessageType.notify1 and self.body_type == 0x04):
             self.set_body(DAGeneralMessageBody(super().body))
         self.set_attr()

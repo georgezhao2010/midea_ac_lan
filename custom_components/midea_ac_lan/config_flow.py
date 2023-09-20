@@ -1,14 +1,19 @@
+import voluptuous as vol
+import os
+try:
+    from homeassistant.helpers.json import save_json
+except ImportError:
+    from homeassistant.util.json import save_json
 import logging
 from .const import (
     DOMAIN,
     EXTRA_SENSOR,
     EXTRA_CONTROL,
+    CONF_ACCOUNT,
+    CONF_SERVER,
     CONF_KEY,
     CONF_MODEL,
-    CONF_REFRESH_INTERVAL,
-    MIDEA_DEFAULT_ACCOUNT,
-    MIDEA_DEFAULT_PASSWORD,
-    MIDEA_DEFAULT_SERVER
+    CONF_REFRESH_INTERVAL
 )
 from homeassistant import config_entries
 from homeassistant.core import callback
@@ -23,50 +28,32 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SWITCHES,
     CONF_SENSORS,
-    CONF_CUSTOMIZE
+    CONF_CUSTOMIZE,
+    CONF_PASSWORD,
 )
+import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-from homeassistant.util.json import load_json
-try:
-    from homeassistant.helpers.json import save_json
-except ImportError:
-    from homeassistant.util.json import save_json
 from .midea.core.discover import discover
-from .midea.core.cloud import MeijuCloud, MSmartHomeCloud, SmartLifeCloud
+from .midea.core.cloud import get_midea_cloud
 from .midea.core.device import MiedaDevice
 from .midea_devices import MIDEA_DEVICES
-import voluptuous as vol
-import os
-import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-ADD_WAY = {"auto": "Auto", "by_ip": "By IP", "manual": "Manual", "list": "Just list appliances"}
+ADD_WAY = {"discovery": "Discovery automatically", "manually": "Configure manually", "list": "List all appliances only"}
 PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
-DEFAULT_TOKEN = "EE755A84A115703768BCC7C6C13D3D629AA416F1E2FD798BEB9F78CBB1381D09" \
-                "1CC245D7B063AAD2A900E5B498FBD936C811F5D504B2E656D4F33B3BBC6D1DA3"
-DEFAULT_KEY = "ED37BD31558A4B039AAF4E7A7A59AA7A75FD9101682045F69BAF45D28380AE5C"
 STORAGE_PATH = f".storage/{DOMAIN}"
 
-
-def save_device_token(hass, device_id, toekn, key):
-    os.makedirs(hass.config.path(STORAGE_PATH), exist_ok=True)
-    record_file = hass.config.path(f"{STORAGE_PATH}/{device_id}.json")
-    json_data = {"token": toekn, "key": key}
-    save_json(record_file, json_data)
-
-
-def load_device_token(hass, device_id):
-    os.makedirs(hass.config.path(STORAGE_PATH), exist_ok=True)
-    record_file = hass.config.path(f"{STORAGE_PATH}/{device_id}.json")
-    json_data = load_json(record_file, default={})
-    if len(json_data) > 0:
-        return json_data.get("token"), json_data.get("key")
-    return None, None
+servers = {
+    1: "MSmartHome",
+    2: "美的美居",
+}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    _session = None
+    _account = None
+    _password = None
+    _server = None
     available_device = []
     devices = {}
     found_device = {}
@@ -79,6 +66,22 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     for item in unsorted:
         supports[item[0]] = item[1]
 
+    def _save_device_token(self, device_id, protocol, token, key):
+        os.makedirs(self.hass.config.path(STORAGE_PATH), exist_ok=True)
+        record_file = self.hass.config.path(f"{STORAGE_PATH}/{device_id}.json")
+        json_data = {"protocol": f"v{protocol}", "token": token, "key": key}
+        save_json(record_file, json_data)
+
+    def _get_configured_account(self):
+        for entry in self._async_current_entries():
+            if entry.data.get(CONF_TYPE) == CONF_ACCOUNT:
+                password = bytes.fromhex(format((
+                        int(entry.data.get(CONF_PASSWORD), 16) ^
+                        int(entry.data.get(CONF_ACCOUNT).encode("utf-8").hex(), 16)
+                ), 'X')).decode('UTF-8')
+                return entry.data.get(CONF_ACCOUNT), password, servers[entry.data.get(CONF_SERVER)]
+        return None, None, None
+
     def _already_configured(self, device_id, ip_address):
         for entry in self._async_current_entries():
             if device_id == entry.data.get(CONF_DEVICE_ID) or ip_address == entry.data.get(CONF_IP_ADDRESS):
@@ -87,37 +90,52 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None, error=None):
         if user_input is not None:
-            if user_input["action"] == "auto":
-                return await self.async_step_discover()
-            elif user_input["action"] == "manual":
+            if user_input["action"] == "discovery":
+                return await self.async_step_discovery()
+            elif user_input["action"] == "manually":
                 self.found_device = {}
-                return await self.async_step_manual()
-            elif user_input["action"] == "by_ip":
-                return await self.async_step_byip()
+                return await self.async_step_manually()
             else:
                 return await self.async_step_list()
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
-                vol.Required("action", default="auto"): vol.In(ADD_WAY)
+                vol.Required("action", default="discovery"): vol.In(ADD_WAY)
             }),
             errors={"base": error} if error else None
         )
 
-    async def async_step_discover(self, user_input=None, error=None):
+    async def async_step_login(self, user_input=None, error=None):
         if user_input is not None:
-            self.devices = discover(self.supports.keys())
-            self.available_device = {}
-            for device_id, device in self.devices.items():
-                if not self._already_configured(device_id, device.get(CONF_IP_ADDRESS)):
-                    self.available_device[device_id] = \
-                        f"{device_id} ({self.supports.get(device.get(CONF_TYPE))})"
-            if len(self.available_device) > 0:
-                return await self.async_step_auto()
+            session = async_create_clientsession(self.hass)
+            cloud = get_midea_cloud(
+                session=session,
+                cloud_name=servers[user_input[CONF_SERVER]],
+                account=user_input[CONF_ACCOUNT],
+                password=user_input[CONF_PASSWORD]
+            )
+            _LOGGER.debug(
+                f"account = {user_input[CONF_ACCOUNT]}, password = {user_input[CONF_PASSWORD]}, server = {servers[user_input[CONF_SERVER]]}")
+            if await cloud.login():
+                password = format((int(user_input[CONF_ACCOUNT].encode("utf-8").hex(), 16) ^
+                                   int(user_input[CONF_PASSWORD].encode("utf-8").hex(), 16)), 'x')
+                return self.async_create_entry(
+                    title=f"{user_input[CONF_ACCOUNT]}",
+                    data={
+                        CONF_TYPE: CONF_ACCOUNT,
+                        CONF_ACCOUNT: user_input[CONF_ACCOUNT],
+                        CONF_PASSWORD: password,
+                        CONF_SERVER: user_input[CONF_SERVER]
+                    })
             else:
-                return await self.async_step_user(error="no_devices")
+                return await self.async_step_login(error="login_failed")
         return self.async_show_form(
-            step_id="discover",
+            step_id="login",
+            data_schema=vol.Schema({
+                vol.Required(CONF_ACCOUNT): str,
+                vol.Required(CONF_PASSWORD): str,
+                vol.Required(CONF_SERVER, default=1): vol.In(servers)
+            }),
             errors={"base": error} if error else None
         )
 
@@ -138,9 +156,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors={"base": error} if error else None
         )
 
-    async def async_step_byip(self, user_input=None, error=None):
+    async def async_step_discovery(self, user_input=None, error=None):
+        self._account, self._password, self._server = self._get_configured_account()
+        if self._account is None:
+            return await self.async_step_login()
         if user_input is not None:
-            self.devices = discover(self.supports.keys(), ip_address=user_input[CONF_IP_ADDRESS])
+            if user_input[CONF_IP_ADDRESS].lower() == "auto":
+                ip_address = None
+            else:
+                ip_address = user_input[CONF_IP_ADDRESS]
+            self.devices = discover(self.supports.keys(), ip_address=ip_address)
             self.available_device = {}
             for device_id, device in self.devices.items():
                 if not self._already_configured(device_id, device.get(CONF_IP_ADDRESS)):
@@ -149,11 +174,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if len(self.available_device) > 0:
                 return await self.async_step_auto()
             else:
-                return await self.async_step_byip(error="no_devices")
+                return await self.async_step_discovery(error="no_devices")
         return self.async_show_form(
-            step_id="byip",
+            step_id="discovery",
             data_schema=vol.Schema({
-                vol.Required(CONF_IP_ADDRESS): str
+                vol.Required(CONF_IP_ADDRESS, default="auto"): str
             }),
             errors={"base": error} if error else None
         )
@@ -163,100 +188,41 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             device_id = user_input[CONF_DEVICE]
             device = self.devices.get(device_id)
             if device.get(CONF_PROTOCOL) == 3:
-                saved_token, saved_key = load_device_token(self.hass, device_id)
-                if saved_token is not None and saved_key is not None:
-                    _LOGGER.debug(f"Try to using saved token and key, token: {saved_token}, key: {saved_key}")
-                    dm = MiedaDevice(
-                        name="",
-                        device_id=device_id,
-                        device_type=device.get(CONF_TYPE),
-                        ip_address=device.get(CONF_IP_ADDRESS),
-                        port=device.get(CONF_PORT),
-                        token=saved_token,
-                        key=saved_key,
-                        protocol=3,
-                        model=device.get(CONF_MODEL),
-                        attributes={}
-                    )
-                    if dm.connect(refresh_status=False):
-                        self.found_device = {
-                            CONF_DEVICE_ID: device_id,
-                            CONF_TYPE: device.get(CONF_TYPE),
-                            CONF_PROTOCOL: 3,
-                            CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
-                            CONF_PORT: device.get(CONF_PORT),
-                            CONF_MODEL: device.get(CONF_MODEL),
-                            CONF_TOKEN: saved_token,
-                            CONF_KEY: saved_key,
-                        }
-                        dm.close_socket()
-                        return await self.async_step_manual()
-                if self._session is None:
-                    self._session = async_create_clientsession(self.hass)
-                if MIDEA_DEFAULT_SERVER == "美居":
-                    cloud = MeijuCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
-                elif MIDEA_DEFAULT_SERVER == "MSmartHome":
-                    cloud = MSmartHomeCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
-                else:
-                    cloud = SmartLifeCloud(self._session, MIDEA_DEFAULT_ACCOUNT, MIDEA_DEFAULT_PASSWORD)
-                dm = MiedaDevice(
-                    name="",
-                    device_id=device_id,
-                    device_type=device.get(CONF_TYPE),
-                    ip_address=device.get(CONF_IP_ADDRESS),
-                    port=device.get(CONF_PORT),
-                    token=DEFAULT_TOKEN,
-                    key=DEFAULT_KEY,
-                    protocol=3,
-                    model=device.get(CONF_MODEL),
-                    attributes={}
-                )
-                if dm.connect(refresh_status=False):
-                    self.found_device = {
-                        CONF_DEVICE_ID: device_id,
-                        CONF_TYPE: device.get(CONF_TYPE),
-                        CONF_PROTOCOL: 3,
-                        CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
-                        CONF_PORT: device.get(CONF_PORT),
-                        CONF_MODEL: device.get(CONF_MODEL),
-                        CONF_TOKEN: DEFAULT_TOKEN,
-                        CONF_KEY: DEFAULT_KEY,
-                    }
-                    dm.close_socket()
-                    return await self.async_step_manual()
-                elif await cloud.login():
-                    for byte_order_big in [False, True]:
-                        token, key = await cloud.get_token(user_input[CONF_DEVICE], byte_order_big=byte_order_big)
-                        if token and key:
-                            dm = MiedaDevice(
-                                name="",
-                                device_id=device_id,
-                                device_type=device.get(CONF_TYPE),
-                                ip_address=device.get(CONF_IP_ADDRESS),
-                                port=device.get(CONF_PORT),
-                                token=token,
-                                key=key,
-                                protocol=3,
-                                model=device.get(CONF_MODEL),
-                                attributes={}
-                            )
-                            _LOGGER.debug(f"Successful to take token and key, token: {token}, key: {key}, "
-                                          f"byte_order_big: {byte_order_big}")
-                            if dm.connect(refresh_status=False):
-                                self.found_device = {
-                                    CONF_DEVICE_ID: device_id,
-                                    CONF_TYPE: device.get(CONF_TYPE),
-                                    CONF_PROTOCOL: 3,
-                                    CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
-                                    CONF_PORT: device.get(CONF_PORT),
-                                    CONF_MODEL: device.get(CONF_MODEL),
-                                    CONF_TOKEN: token,
-                                    CONF_KEY: key,
-                                }
-                                dm.close_socket()
-                                return await self.async_step_manual()
+                session = async_create_clientsession(self.hass)
+                _LOGGER.debug(f"server = {self._server}, account = {self._account}, password = {self._password}")
+                cloud = get_midea_cloud(self._server, session, self._account, self._password)
+                if await cloud.login():
+                    keys = await cloud.get_keys(user_input[CONF_DEVICE])
+                    for method, key in keys.items():
+                        dm = MiedaDevice(
+                            name="",
+                            device_id=device_id,
+                            device_type=device.get(CONF_TYPE),
+                            ip_address=device.get(CONF_IP_ADDRESS),
+                            port=device.get(CONF_PORT),
+                            token=key["token"],
+                            key=key["key"],
+                            protocol=3,
+                            model=device.get(CONF_MODEL),
+                            attributes={}
+                        )
+                        _LOGGER.debug(f"Successful to take token and key, token: {key['token']},"
+                                      f" key: {key['key']}, method: {method}")
+                        if dm.connect(refresh_status=False):
+                            self.found_device = {
+                                CONF_DEVICE_ID: device_id,
+                                CONF_TYPE: device.get(CONF_TYPE),
+                                CONF_PROTOCOL: 3,
+                                CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
+                                CONF_PORT: device.get(CONF_PORT),
+                                CONF_MODEL: device.get(CONF_MODEL),
+                                CONF_TOKEN: key["token"],
+                                CONF_KEY: key["key"],
+                            }
+                            dm.close_socket()
+                            return await self.async_step_manually()
                     return await self.async_step_auto(error="connect_error")
-                return await self.async_step_auto(error="cant_get_token")
+                return await self.async_step_auto(error="login_failed")
             else:
                 self.found_device = {
                     CONF_DEVICE_ID: device_id,
@@ -266,17 +232,17 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_PORT: device.get(CONF_PORT),
                     CONF_MODEL: device.get(CONF_MODEL),
                 }
-                return await self.async_step_manual()
+                return await self.async_step_manually()
         return self.async_show_form(
             step_id="auto",
             data_schema=vol.Schema({
-                vol.Required(CONF_DEVICE, default=sorted(self.available_device)[0]):
+                vol.Required(CONF_DEVICE, default=list(self.available_device.keys())[0]):
                     vol.In(self.available_device),
             }),
             errors={"base": error} if error else None
         )
 
-    async def async_step_manual(self, user_input=None, error=None):
+    async def async_step_manually(self, user_input=None, error=None):
         if user_input is not None:
             self.found_device = {
                 CONF_DEVICE_ID: user_input[CONF_DEVICE_ID],
@@ -292,9 +258,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 bytearray.fromhex(user_input[CONF_TOKEN])
                 bytearray.fromhex(user_input[CONF_KEY])
             except ValueError:
-                return await self.async_step_manual(error="invalid_token")
+                return await self.async_step_manually(error="invalid_token")
             if user_input[CONF_PROTOCOL] == 3 and (len(user_input[CONF_TOKEN]) == 0 or len(user_input[CONF_KEY]) == 0):
-                return await self.async_step_manual(error="invalid_token")
+                return await self.async_step_manually(error="invalid_token")
             dm = MiedaDevice(
                 name="",
                 device_id=user_input[CONF_DEVICE_ID],
@@ -309,7 +275,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             if dm.connect(refresh_status=False):
                 dm.close_socket()
-                save_device_token(self.hass, user_input[CONF_DEVICE_ID], user_input[CONF_TOKEN], user_input[CONF_KEY])
+                self._save_device_token(
+                    user_input[CONF_DEVICE_ID],
+                    user_input[CONF_PROTOCOL],
+                    user_input[CONF_TOKEN],
+                    user_input[CONF_KEY]
+                )
                 return self.async_create_entry(
                     title=f"{user_input[CONF_NAME]}",
                     data={
@@ -324,9 +295,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_KEY: user_input[CONF_KEY],
                     })
             else:
-                return await self.async_step_manual(error="config_incorrect")
+                return await self.async_step_manually(error="config_incorrect")
         return self.async_show_form(
-            step_id="manual",
+            step_id="manually",
             data_schema=vol.Schema({
                 vol.Required(
                     CONF_NAME,
@@ -435,7 +406,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_SENSORS,
                     default=extra_sensors,
                 ):
-                cv.multi_select(sensors)
+                    cv.multi_select(sensors)
             })
         if len(switches) > 0:
             data_schema = data_schema.extend({
@@ -443,14 +414,14 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_SWITCHES,
                     default=extra_switches,
                 ):
-                cv.multi_select(switches)
+                    cv.multi_select(switches)
             })
         data_schema = data_schema.extend({
             vol.Optional(
                 CONF_CUSTOMIZE,
                 default=customize,
             ):
-            str
+                str
         })
 
         return self.async_show_form(

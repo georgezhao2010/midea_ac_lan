@@ -109,13 +109,13 @@ class E1GeneralMessageBody(MessageBody):
         self.error_code = body[10]
         self.softwater = body[13]
         self.wrong_operation = body[16]
-        self.bright = body[24]
+        self.bright = body[24] if len(body) > 24 else None
 
 
 class MessageE1Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if (self._message_type == MessageType.set and 0 <= self._body_type <= 7) or \
-                (self._message_type in [MessageType.query, MessageType.notify1] and self._body_type == 0):
+        if (self.message_type == MessageType.set and 0 <= self.body_type <= 7) or \
+                (self.message_type in [MessageType.query, MessageType.notify1] and self.body_type == 0):
             self.set_body(E1GeneralMessageBody(super().body))
         self.set_attr()

@@ -1,7 +1,7 @@
 import logging
 from .message import (
     MessageQuery,
-    MessageB1Response
+    MessageE8Response
 )
 try:
     from enum import StrEnum
@@ -13,19 +13,20 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class DeviceAttributes(StrEnum):
-    door = "door"
     status = "status"
     time_remaining = "time_remaining"
+    keep_warm_remaining = "keep_warm_remaining"
+    working_time = "working_time"
+    target_temperature = "target_temperature"
     current_temperature = "current_temperature"
-    tank_ejected = "tank_ejected"
-    water_change_reminder = "water_change_reminder"
+    finished = "finished"
     water_shortage = "water_shortage"
 
 
-class MideaB1Device(MiedaDevice):
+class MideaE8Device(MiedaDevice):
     _status = {
-        0x01: "Standby", 0x02: "Idle", 0x03: "Working",
-        0x04: "Finished", 0x05: "Delay", 0x06: "Paused"
+        0x00: "Standby", 0x01: "Delay", 0x02: "Working",
+        0x03: "Paused", 0x04: "Keep-Warming", 0xFF: "Error"
     }
 
     def __init__(
@@ -51,28 +52,29 @@ class MideaB1Device(MiedaDevice):
             protocol=protocol,
             model=model,
             attributes={
-                DeviceAttributes.door: False,
                 DeviceAttributes.status: None,
                 DeviceAttributes.time_remaining: None,
+                DeviceAttributes.keep_warm_remaining: None,
+                DeviceAttributes.working_time: None,
+                DeviceAttributes.target_temperature: None,
                 DeviceAttributes.current_temperature: None,
-                DeviceAttributes.tank_ejected: False,
-                DeviceAttributes.water_change_reminder: False,
-                DeviceAttributes.water_shortage: False,
+                DeviceAttributes.finished: None,
+                DeviceAttributes.water_shortage: None,
             })
 
     def build_query(self):
         return [MessageQuery(self._device_protocol_version)]
 
     def process_message(self, msg):
-        message = MessageB1Response(msg)
+        message = MessageE8Response(msg)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         for status in self._attributes.keys():
             if hasattr(message, str(status)):
                 value = getattr(message, str(status))
                 if status == DeviceAttributes.status:
-                    if value in MideaB1Device._status.keys():
-                        self._attributes[DeviceAttributes.status] = MideaB1Device._status.get(value)
+                    if value in MideaE8Device._status.keys():
+                        self._attributes[DeviceAttributes.status] = MideaE8Device._status.get(value)
                     else:
                         self._attributes[DeviceAttributes.status] = None
                 else:
@@ -84,5 +86,5 @@ class MideaB1Device(MiedaDevice):
         pass
 
 
-class MideaAppliance(MideaB1Device):
+class MideaAppliance(MideaE8Device):
     pass

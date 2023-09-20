@@ -37,6 +37,8 @@
 | AC | 空调器               | [AC_hans.md](doc/AC_hans.md) |
 | B0 | 微波炉               | [B0_hans.md](doc/B0_hans.md) |
 | B1 | 电烤箱               | [B1_hans.md](doc/B1_hans.md) |
+| B3 | 消毒碗柜              | [B3_hans.md](doc/B3_hans.md) |
+| B4 | 小烤箱               | [B4_hans.md](doc/B4_hans.md) |
 | B6 | 油烟机               | [B6_hans.md](doc/B6_hans.md) |
 | BF | 微蒸烤一体机            | [BF_hans.md](doc/BF_hans.md) |
 | C2 | 智能马桶              | [C2_hans.md](doc/C2_hans.md) |
@@ -53,6 +55,7 @@
 | E2 | 电热水器              | [E2_hans.md](doc/E2_hans.md) |
 | E3 | 燃气热水器             | [E3_hans.md](doc/E3_hans.md) |
 | E6 | 壁挂炉               | [E6_hans.md](doc/E6_hans.md) |
+| E8 | 慢炖锅               | [E8_hans.md](doc/E8_hans.md) |
 | EA | 电饭煲               | [EA_hans.md](doc/EA_hans.md) |
 | EC | 电压力锅              | [EC_hans.md](doc/EC_hans.md) |
 | ED | 饮用水设备             | [ED_hans.md](doc/ED_hans.md) |
@@ -72,6 +75,8 @@
 安装之后，在Home Assistant的集成界面搜索添加集成Midea AC LAN, 如果需要添加多台设备，多次添加本集成并执行自动配置即可。
 
 或者直接点击 [![Configuration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=midea_ac_lan)
+
+***注意: 配置过程中，可能会要求输入你的美的账号及密码，这是因为需要去美的云服务器获取设备的信息 (Token and Key)。在完成所有设备配置后，可以删除美的账户配置，不影响设备的使用***
 
 ## 自动
 自动配置会自动搜索网络上的美的M-Smart设备，并将搜索到的设备列出，选择一个设备执行添加。多台设备执行多次添加即可。

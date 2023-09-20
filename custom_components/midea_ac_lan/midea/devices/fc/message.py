@@ -28,7 +28,7 @@ class MessageFCBase(MessageRequest):
 
     @property
     def body(self):
-        body = bytearray([self._body_type]) + self._body + bytearray([self._message_id])
+        body = bytearray([self.body_type]) + self._body + bytearray([self._message_id])
         body.append(calculate(body))
         return body
 
@@ -168,12 +168,12 @@ class FCNotifyMessageBody(MessageBody):
 class MessageFCResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._body_type in [0xB0, 0xB1]:
+        if self.body_type in [0xB0, 0xB1]:
             pass
         else:
-            if self._message_type in [MessageType.query, MessageType.set, MessageType.notify1] and \
-                    self._body_type == 0xC8:
+            if self.message_type in [MessageType.query, MessageType.set, MessageType.notify1] and \
+                    self.body_type == 0xC8:
                 self.set_body(FCGeneralMessageBody(super().body))
-            elif self._message_type == MessageType.notify1 and self._body_type == 0xA0:
+            elif self.message_type == MessageType.notify1 and self.body_type == 0xA0:
                 self.set_body(FCNotifyMessageBody(super().body))
         self.set_attr()
