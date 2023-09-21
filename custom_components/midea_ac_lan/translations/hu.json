@@ -71,6 +71,9 @@
                 },
                 "title": "Konfigurálás"
             }
+        },
+        "abort": {
+            "account_option": "The account does not supports this operation.\nClick \"ADD DEVICE\" to  add a new device."
         }
     },
     "services": {

@@ -346,20 +346,22 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry):
-        self.config_entry = config_entry
+        self._config_entry = config_entry
         self._device_type = config_entry.data.get(CONF_TYPE)
         if self._device_type is None:
             self._device_type = 0xac
-        if CONF_SENSORS in self.config_entry.options:
-            for key in self.config_entry.options[CONF_SENSORS]:
+        if CONF_SENSORS in self._config_entry.options:
+            for key in self._config_entry.options[CONF_SENSORS]:
                 if key not in MIDEA_DEVICES[self._device_type]["entities"]:
-                    self.config_entry.options[CONF_SENSORS].remove(key)
-        if CONF_SWITCHES in self.config_entry.options:
-            for key in self.config_entry.options[CONF_SWITCHES]:
+                    self._config_entry.options[CONF_SENSORS].remove(key)
+        if CONF_SWITCHES in self._config_entry.options:
+            for key in self._config_entry.options[CONF_SWITCHES]:
                 if key not in MIDEA_DEVICES[self._device_type]["entities"]:
-                    self.config_entry.options[CONF_SWITCHES].remove(key)
+                    self._config_entry.options[CONF_SWITCHES].remove(key)
 
     async def async_step_init(self, user_input=None):
+        if self._device_type == CONF_ACCOUNT:
+            return self.async_abort(reason="account_option")
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
         sensors = {}
@@ -370,23 +372,23 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 sensors[attribute_name] = attribute_config.get("name")
             elif attribute_config.get("type") in EXTRA_CONTROL and not attribute_config.get("default"):
                 switches[attribute_name] = attribute_config.get("name")
-        ip_address = self.config_entry.options.get(
+        ip_address = self._config_entry.options.get(
             CONF_IP_ADDRESS, None
         )
         if ip_address is None:
-            ip_address = self.config_entry.data.get(
+            ip_address = self._config_entry.data.get(
                 CONF_IP_ADDRESS, None
             )
-        refresh_interval = self.config_entry.options.get(
+        refresh_interval = self._config_entry.options.get(
             CONF_REFRESH_INTERVAL, 30
         )
-        extra_sensors = self.config_entry.options.get(
+        extra_sensors = self._config_entry.options.get(
             CONF_SENSORS, []
         )
-        extra_switches = self.config_entry.options.get(
+        extra_switches = self._config_entry.options.get(
             CONF_SWITCHES, []
         )
-        customize = self.config_entry.options.get(
+        customize = self._config_entry.options.get(
             CONF_CUSTOMIZE, ""
         )
         data_schema = vol.Schema({
