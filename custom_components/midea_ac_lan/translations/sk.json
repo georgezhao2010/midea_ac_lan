@@ -6,7 +6,7 @@
             "device_exist": "Spotrebič je už nakonfigurovaný",
             "config_incorrect": "Konfigurácia je nesprávna",
             "connect_error": "Nedá sa pripojiť k spotrebiču",
-            "invalid_token": "Token alebo kľúč v nesprávnom formáte"
+            "invalid_token": "Token alebo Key v nesprávnom formáte"
         },
         "step": {
             "user": {
@@ -52,7 +52,7 @@
                     "model": "Model",
                     "protocol": "Protokol",
                     "token": "Token",
-                    "key": "Kľúč"
+                    "key": "Key"
                 },
                 "description": "Konfigurácia spotrebiča",
                 "title": "Nový spotrebič"

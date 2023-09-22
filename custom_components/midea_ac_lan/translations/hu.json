@@ -6,7 +6,7 @@
             "device_exist": "Az eszköz már be van állítva",
             "config_incorrect": "A beállítások helytelenek",
             "connect_error": "Nem sikerült csatlakozni az eszközhöz",
-            "invalid_token": "A token vagy a kulcs formátuma helytelen"
+            "invalid_token": "A Token vagy a Key formátuma helytelen"
         },
         "step": {
             "user": {
@@ -52,7 +52,7 @@
                     "model": "Modell",
                     "protocol": "Protokoll",
                     "token": "Token",
-                    "key": "Kulcs"
+                    "key": "Key"
                 },
                 "description": "Eszköz konfigurációja",
                 "title": "Új eszköz"

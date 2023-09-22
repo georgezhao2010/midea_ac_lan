@@ -6,7 +6,7 @@
             "device_exist": "L'appareil est déjà configurée",
             "config_incorrect": "La configuration est incorrecte",
             "connect_error": "Impossible de se connecter à l'appareil",
-            "invalid_token": "Jeton ou clé dans un format incorrect"
+            "invalid_token": "Token ou Key dans un format incorrect"
         },
         "step": {
             "user": {
@@ -51,8 +51,8 @@
                     "port": "Port",
                     "model": "Modèle",
                     "protocol": "Protocole",
-                    "token": "Jeton",
-                    "key": "Clé"
+                    "token": "Token",
+                    "key": "Key"
                 },
                 "description": "Configuration de l'appareil",
                 "title": "Nouvel appareil"
