@@ -173,6 +173,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry):
+    device_type = config_entry.data.get(CONF_TYPE)
+    if device_type == CONF_ACCOUNT:
+        return True
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     if device_id is not None:
         dm = hass.data[DOMAIN][DEVICES].get(device_id)
