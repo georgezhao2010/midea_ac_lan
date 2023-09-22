@@ -1,12 +1,12 @@
 {
     "config": {
         "error": {
-            "login_failed": "Failed to login, account or password was wrong",
+            "login_failed": "Bejelentkezés sikertelen, a fiók vagy a jelszó helytelen",
             "no_devices": "Nem találhatóak új eszközök a hálózaton",
             "device_exist": "Az eszköz már be van állítva",
             "config_incorrect": "A beállítások helytelenek",
             "connect_error": "Nem sikerült csatlakozni az eszközhöz",
-            "invalid_token": "A Token vagy a Key formátuma helytelen"
+            "invalid_token": "A token vagy a kulcs formátuma helytelen"
         },
         "step": {
             "user": {
@@ -18,14 +18,14 @@
             },
             "login": {
                 "data": {
-                    "account": "Account",
-                    "password": "Password"
+                    "account": "Fiók",
+                    "password": "Jelszó"
                 },
-                "description": "Login and storage your Midea account only for getting the appliance info.\nYou can remove this configuration after all appliance configured.",
-                "title": "Login"
+                "description": "Jelentkezzen be és tárolja el Midea-fiókját, kizárólag a készülékei információinak a megszerzéséhez.\nAz összes készülékének beállítása után eltávolíthatja ezt a konfigurációt.",
+                "title": "Bejelentkezés"
             },
             "discovery": {
-                "description": "Adja meg az eszköz IP címét, Írja be az \"auto\" kifejezést az automatikus kereséshez",
+                "description": "Adja meg az eszköz IP címét vagy írja be az \"auto\" kifejezést az automatikus kereséshez",
                 "title": "IP alapján",
                 "data": {
                     "ip_address": "IP cím"
@@ -64,52 +64,52 @@
             "init": {
                 "data": {
                     "ip_address": "IP cím",
-                    "refresh_interval": "Refresh interval (0 means not refreshing actively)",
-                    "sensors": "Extra Érzékelők",
-                    "switches": "Extra Vezérlők",
+                    "refresh_interval": "Frissítési intervallum (0 azt jelenti, hogy nincs aktív frissítés)",
+                    "sensors": "Extra érzékelők",
+                    "switches": "Extra vezérlők",
                     "customize": "Személyre szabás"
                 },
                 "title": "Konfigurálás"
             }
         },
         "abort": {
-            "account_option": "The account does not supports this operation.\nClick \"ADD DEVICE\" to  add a new device."
+            "account_option": "A fiók nem támogatja ezt a műveletet.\nKattintson az \"ESZKÖZ HOZZÁADÁSA\" gombra egy új eszköz hozzáadásához."
         }
     },
     "services": {
         "set_attribute": {
-            "name": "Set attribute",
-            "description": "Set the attribute value of device",
+            "name": "Attribútum beállítása",
+            "description": "Állítsa be az eszköz attribútumának értékét",
             "fields" : {
                 "device_id": {
                     "name": "Eszköz kód",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "A készülék kódja (eszköz ID)"
                 },
                 "attribute": {
-                    "name": "Attribute",
-                    "description": "The attribute name want to set"
+                    "name": "Attribútum",
+                    "description": "A beállítandó attribútum neve"
                 },
                 "value": {
-                    "name": "Value",
-                    "description": "The attribute value want to set"
+                    "name": "Érték",
+                    "description": "A beállítandó attribútum értéke"
                 }
             }
         },
         "send_command": {
-            "name": "Customize command",
-            "description": "Send a customize command to device",
+            "name": "Egyéni parancs",
+            "description": "Küldjön egy egyéni parancsot az eszköznek",
             "fields" : {
                 "device_id": {
                     "name": "Eszköz kód",
-                    "description": "The Appliance code (Device ID) of appliance"
+                    "description": "A készülék kódja (Eszköz ID)"
                 },
                 "cmd_type": {
-                    "name": "command type",
-                    "description": "The type of command，should be 3（query) or 2（set)"
+                    "name": "Parancs típusa",
+                    "description": "A parancs típusa, lehet 3 (lekérdezés) vagy 2 (beállítás)"
                 },
                 "cmd_body": {
-                    "name": "command body",
-                    "description": "The body of command, (not include MSmart protocol head and cheksum at the end)"
+                    "name": "Parancs törzse",
+                    "description": "A parancs törzse (nem tartalmazza az MSmart protokoll fejlécét és a végén lévő ellenőrző összeget)"
                 }
             }
         }
