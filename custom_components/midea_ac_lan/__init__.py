@@ -73,11 +73,11 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
             if attr == "fan_speed" and value == "auto":
                 value = 102
             item = MIDEA_DEVICES.get(dev.device_type).get("entities").get(attr)
-            if item and (item.get("type") in EXTRA_SWITCH or
+            if (item and (item.get("type") in EXTRA_SWITCH) or
                          (dev.device_type == 0xAC and attr == "fan_speed" and value in range(0, 103))):
                 dev.set_attribute(attr=attr, value=value)
             else:
-                _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} or invalid value")
+                _LOGGER.error(f"Appliance [{device_id}] has no attribute {attr} or value is invalid")
 
     def service_send_command(service):
         device_id = service.data.get("device_id")
@@ -100,7 +100,7 @@ async def async_setup(hass: HomeAssistant, hass_config: dict):
             {
                 vol.Required("device_id"): vol.Coerce(int),
                 vol.Required("attribute"): vol.In(attributes),
-                vol.Required("value"): vol.Any(cv.boolean, str)
+                vol.Required("value"): vol.Any(int, cv.boolean, str)
             }
         )
     )
