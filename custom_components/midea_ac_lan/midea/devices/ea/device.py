@@ -59,6 +59,7 @@ class MideaEADevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -71,6 +72,7 @@ class MideaEADevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.cooking: False,
                 DeviceAttributes.keep_warm: False,
@@ -83,7 +85,7 @@ class MideaEADevice(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageEAResponse(msg)

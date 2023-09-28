@@ -4,8 +4,6 @@ from homeassistant.const import (
     Platform,
     CONF_DEVICE_ID,
     CONF_SWITCHES,
-    STATE_ON,
-    STATE_OFF
 )
 from .const import (
     DOMAIN,
@@ -62,10 +60,6 @@ class MideaHumidifier(MideaEntity, HumidifierEntity):
         return self._max_humidity
 
     @property
-    def state(self):
-        return STATE_ON if self.is_on else STATE_OFF
-
-    @property
     def is_on(self):
         return self._device.get_attribute(attr="power")
 
@@ -79,7 +73,7 @@ class MideaHumidifier(MideaEntity, HumidifierEntity):
         try:
             self.schedule_update_ha_state()
         except Exception as e:
-            _LOGGER.debug(f"Entity {self.entity_id} update_state {repr(e)}, status = {status}")
+            pass
 
 
 class MideaA1Humidifier(MideaHumidifier):

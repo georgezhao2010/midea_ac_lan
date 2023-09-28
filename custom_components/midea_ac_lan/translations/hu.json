@@ -50,6 +50,7 @@
                     "ip_address": "IP cím",
                     "port": "Port",
                     "model": "Modell",
+                    "subtype": "Altípus",
                     "protocol": "Protokoll",
                     "token": "Token",
                     "key": "Key"

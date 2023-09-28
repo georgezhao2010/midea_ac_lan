@@ -25,7 +25,8 @@ class MideaEntity(Entity):
         return {
             "manufacturer": "Midea",
             "model": f"{MIDEA_DEVICES[self._device.device_type]['name']} "
-                     f"{self._device.model}",
+                     f"{self._device.model}"
+                     f" ({self._device.subtype})",
             "identifiers": {(DOMAIN, self._device.device_id)},
             "name": self._device_name
         }
@@ -37,10 +38,6 @@ class MideaEntity(Entity):
     @property
     def should_poll(self):
         return False
-
-    @property
-    def state(self):
-        return self._device.get_attribute(self._entity_key)
 
     @property
     def name(self):

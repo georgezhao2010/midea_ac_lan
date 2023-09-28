@@ -53,18 +53,20 @@ class MideaB2Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
             name=name,
             device_id=device_id,
-            device_type=0xB1,
+            device_type=0xB3,
             ip_address=ip_address,
             port=port,
             token=token,
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.top_compartment_status: None,
                 DeviceAttributes.top_compartment_mode: None,
@@ -91,7 +93,7 @@ class MideaB2Device(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageB3Response(msg)

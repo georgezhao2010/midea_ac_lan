@@ -50,6 +50,7 @@
                     "ip_address": "IP地址",
                     "port": "端口",
                     "model": "型号",
+                    "subtype": "子型号",
                     "protocol": "协议版本",
                     "token": "Token",
                     "key": "Key"

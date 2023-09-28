@@ -50,6 +50,7 @@
                     "ip_address": "IP-адрес",
                     "port": "Порт",
                     "model": "Модель",
+                    "subtype": "Подтип",
                     "protocol": "Протокол",
                     "token": "Token",
                     "key": "Key"

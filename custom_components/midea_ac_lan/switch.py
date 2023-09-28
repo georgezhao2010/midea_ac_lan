@@ -31,11 +31,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class MideaSwitch(MideaEntity, ToggleEntity):
     @property
     def is_on(self) -> bool:
-        return self.state == STATE_ON
-
-    @property
-    def state(self):
-        return STATE_ON if self._device.get_attribute(self._entity_key) else STATE_OFF
+        return self._device.get_attribute(self._entity_key)
 
     def turn_on(self):
         self._device.set_attribute(attr=self._entity_key, value=True)

@@ -24,9 +24,8 @@ class NewProtocolTags(IntEnum):
 class MessageACBase(MessageRequest):
     _message_serial = 0
 
-    def __init__(self, device_protocol_version, message_type, body_type):
+    def __init__(self, message_type, body_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             device_type=0xAC,
             message_type=message_type,
             body_type=body_type
@@ -48,9 +47,8 @@ class MessageACBase(MessageRequest):
 
 
 class MessageQuery(MessageACBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -66,9 +64,8 @@ class MessageQuery(MessageACBase):
 
 
 class MessagePowerQuery(MessageACBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -86,9 +83,8 @@ class MessagePowerQuery(MessageACBase):
 
 
 class MessageSwitchDisplay(MessageACBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -104,9 +100,8 @@ class MessageSwitchDisplay(MessageACBase):
 
 
 class MessageNewProtocolQuery(MessageACBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0xB1)
 
@@ -128,9 +123,8 @@ class MessageNewProtocolQuery(MessageACBase):
 
 
 class MessageSubProtocol(MessageACBase):
-    def __init__(self, device_protocol_version, message_type, subprotocol_query_type):
+    def __init__(self, message_type, subprotocol_query_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=message_type,
             body_type=0xAA)
         self._subprotocol_query_type = subprotocol_query_type
@@ -159,17 +153,15 @@ class MessageSubProtocol(MessageACBase):
 
 
 class MessageSubProtocolQuery(MessageSubProtocol):
-    def __init__(self, device_protocol_version, subprotocol_query_type):
+    def __init__(self, subprotocol_query_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             subprotocol_query_type=subprotocol_query_type)
 
 
 class MessageSubProtocolSet(MessageSubProtocol):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             subprotocol_query_type=0x20)
         self.power = False
@@ -218,9 +210,8 @@ class MessageSubProtocolSet(MessageSubProtocol):
 
 
 class MessageGeneralSet(MessageACBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x40)
         self.power = False
@@ -293,9 +284,8 @@ class MessageGeneralSet(MessageACBase):
 
 
 class MessageNewProtocolSet(MessageACBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0xB0)
         self.indirect_wind = None

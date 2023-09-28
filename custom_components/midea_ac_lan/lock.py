@@ -29,13 +29,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class MideaLock(MideaEntity, LockEntity):
-    @property
-    def state(self):
-        return STATE_LOCKED if self._device.get_attribute(self._entity_key) else STATE_UNLOCKED
 
     @property
     def is_locked(self):
-        return self.state == STATE_LOCKED
+        return self._device.get_attribute(self._entity_key)
 
     def lock(self, **kwargs) -> None:
         self._device.set_attribute(attr=self._entity_key, value=True)

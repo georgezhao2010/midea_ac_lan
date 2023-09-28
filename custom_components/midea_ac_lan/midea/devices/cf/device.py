@@ -34,6 +34,7 @@ class MideaCFDevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -46,6 +47,7 @@ class MideaCFDevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.mode: 0,
@@ -57,7 +59,7 @@ class MideaCFDevice(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageCFResponse(msg)
@@ -70,7 +72,7 @@ class MideaCFDevice(MiedaDevice):
         return new_status
 
     def set_target_temperature(self, target_temperature, mode):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.power = True
         message.mode = self._attributes[DeviceAttributes.mode]
         message.target_temperature = target_temperature
@@ -79,7 +81,7 @@ class MideaCFDevice(MiedaDevice):
         self.build_send(message)
 
     def set_attribute(self, attr, value):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.power = True
         message.mode = self._attributes[DeviceAttributes.mode]
         if attr == DeviceAttributes.power:

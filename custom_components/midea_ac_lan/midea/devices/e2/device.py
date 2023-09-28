@@ -41,6 +41,7 @@ class MideaE2Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -53,6 +54,7 @@ class MideaE2Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.heating: False,
@@ -71,10 +73,10 @@ class MideaE2Device(MiedaDevice):
         self.set_customize(customize)
 
     def old_protocol(self):
-        return self.sub_type <= 82 or self.sub_type == 85 or self.sub_type == 36353
+        return self.subtype <= 82 or self.subtype == 85 or self.subtype == 36353
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageE2Response(msg)
@@ -87,7 +89,7 @@ class MideaE2Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.protection = self._attributes[DeviceAttributes.protection]
         message.whole_tank_heating = self._attributes[DeviceAttributes.whole_tank_heating]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
@@ -103,13 +105,13 @@ class MideaE2Device(MiedaDevice):
             else:
                 old_protocol = self.old_protocol()
             if attr == DeviceAttributes.power:
-                message = MessagePower(self._device_protocol_version)
+                message = MessagePower()
                 message.power = value
             elif old_protocol:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
             else:
-                message = MessageNewProtocolSet(self._device_protocol_version)
+                message = MessageNewProtocolSet()
                 setattr(message, str(attr), value)
             self.build_send(message)
 

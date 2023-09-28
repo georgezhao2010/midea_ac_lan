@@ -15,9 +15,8 @@ class NewProtocolTags(IntEnum):
 class MessageA1Base(MessageRequest):
     _message_serial = 0
 
-    def __init__(self, device_protocol_version, message_type, body_type):
+    def __init__(self, message_type, body_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             device_type=0xA1,
             message_type=message_type,
             body_type=body_type
@@ -39,9 +38,8 @@ class MessageA1Base(MessageRequest):
 
 
 class MessageQuery(MessageA1Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -57,9 +55,8 @@ class MessageQuery(MessageA1Base):
 
 
 class MessageNewProtocolQuery(MessageA1Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0xB1)
 
@@ -75,9 +72,8 @@ class MessageNewProtocolQuery(MessageA1Base):
 
 
 class MessageSet(MessageA1Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x48)
         self.power = False
@@ -126,9 +122,8 @@ class MessageSet(MessageA1Base):
 
 
 class MessageNewProtocolSet(MessageA1Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0xB0)
         self.light = None
@@ -141,7 +136,7 @@ class MessageNewProtocolSet(MessageA1Base):
             pack_count += 1
             payload.extend(
                 NewProtocolMessageBody.pack(
-                    param=NewProtocolTags.indirect_wind,
+                    param=NewProtocolTags.light,
                     value=bytearray([0x01 if self.light else 0x00])
                 ))
         payload[0] = pack_count

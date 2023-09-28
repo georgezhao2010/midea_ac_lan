@@ -50,6 +50,7 @@ class MideaFADevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -62,6 +63,7 @@ class MideaFADevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.child_lock: False,
@@ -97,7 +99,7 @@ class MideaFADevice(MiedaDevice):
         return self._modes
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageFAResponse(msg)
@@ -141,14 +143,14 @@ class MideaFADevice(MiedaDevice):
         message = None
         if self._attributes[attr] != value:
             if attr == DeviceAttributes.oscillate:
-                message = MessageSet(self._device_protocol_version, self.sub_type)
+                message = MessageSet(self.sub_type)
                 message.oscillate = value
                 if value:
                     message.oscillation_angle = 3  # 90
                     message.oscillation_mode = 1  # Oscillation
             elif attr == DeviceAttributes.oscillation_mode and \
                     (value in MideaFADevice._oscillation_modes or not value):
-                message = MessageSet(self._device_protocol_version, self.sub_type)
+                message = MessageSet(self.sub_type)
                 if value == "Off" or not value:
                     message.oscillate = False
                 else:
@@ -183,7 +185,7 @@ class MideaFADevice(MiedaDevice):
                             )
             elif attr == DeviceAttributes.oscillation_angle and \
                     (value in MideaFADevice._oscillation_angles or not value):
-                message = MessageSet(self._device_protocol_version, self.sub_type)
+                message = MessageSet(self.sub_type)
                 if value == "Off" or not value:
                     if self._attributes[DeviceAttributes.tilting_angle] == "Off":
                         message.oscillate = False
@@ -205,7 +207,7 @@ class MideaFADevice(MiedaDevice):
                         )
             elif attr == DeviceAttributes.tilting_angle and \
                     (value in MideaFADevice._tilting_angles or not value):
-                message = MessageSet(self._device_protocol_version, self.sub_type)
+                message = MessageSet(self.sub_type)
                 if value == "Off" or not value:
                     if self._attributes[DeviceAttributes.oscillation_angle] == "Off":
                         message.oscillate = False
@@ -238,21 +240,21 @@ class MideaFADevice(MiedaDevice):
             message = self.set_oscillation(attr, value)
         elif attr == DeviceAttributes.fan_speed and value > 0 and \
                 not self._attributes[DeviceAttributes.power]:
-            message = MessageSet(self._device_protocol_version, self.sub_type)
+            message = MessageSet(self.sub_type)
             message.fan_speed = value
             message.power = True
         elif attr == DeviceAttributes.mode:
             if value in MideaFADevice._modes:
-                message = MessageSet(self._device_protocol_version, self.sub_type)
+                message = MessageSet(self.sub_type)
                 message.mode = MideaFADevice._modes.index(value)
         elif not (attr == DeviceAttributes.fan_speed and value == 0):
-            message = MessageSet(self._device_protocol_version, self.sub_type)
+            message = MessageSet(self.sub_type)
             setattr(message, str(attr), value)
         if message is not None:
             self.build_send(message)
 
     def turn_on(self, fan_speed=None, mode=None):
-        message = MessageSet(self._device_protocol_version, self.sub_type)
+        message = MessageSet(self.sub_type)
         message.power = True
         if fan_speed is not None:
             message.fan_speed = fan_speed

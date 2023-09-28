@@ -42,6 +42,7 @@ class MideaC2Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -54,6 +55,7 @@ class MideaC2Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.child_lock: False,
@@ -90,7 +92,7 @@ class MideaC2Device(MiedaDevice):
         return self._max_seat_temp_level
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageC2Response(msg)
@@ -105,7 +107,7 @@ class MideaC2Device(MiedaDevice):
     def set_attribute(self, attr, value):
         message = None
         if attr == DeviceAttributes.power:
-            message = MessagePower(self._device_protocol_version)
+            message = MessagePower()
             message.power = value
         elif attr in [
             DeviceAttributes.child_lock,
@@ -115,7 +117,7 @@ class MideaC2Device(MiedaDevice):
             DeviceAttributes.seat_temp_level,
             DeviceAttributes.dry_level
         ]:
-            message = MessageSet(self._device_protocol_version)
+            message = MessageSet()
             setattr(message, attr, value)
         if message:
             self.build_send(message)

@@ -37,6 +37,7 @@ class MideaE6Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -49,6 +50,7 @@ class MideaE6Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.main_power: False,
                 DeviceAttributes.heating_power: True,
@@ -63,7 +65,7 @@ class MideaE6Device(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageE6Response(msg)
@@ -80,7 +82,7 @@ class MideaE6Device(MiedaDevice):
                     DeviceAttributes.heating_power,
                     DeviceAttributes.heating_temperature,
                     DeviceAttributes.bathing_temperature]:
-            message = MessageSet(self._device_protocol_version)
+            message = MessageSet()
             setattr(message, str(attr), value)
             self.build_send(message)
 

@@ -50,6 +50,7 @@ class MideaA1Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -62,6 +63,7 @@ class MideaA1Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.prompt_tone: True,
@@ -92,7 +94,7 @@ class MideaA1Device(MiedaDevice):
 
     def build_query(self):
         return [
-            MessageQuery(self._device_protocol_version)
+            MessageQuery()
         ]
 
     def process_message(self, msg):
@@ -125,7 +127,7 @@ class MideaA1Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.power = self._attributes[DeviceAttributes.power]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
         message.child_lock = self._attributes[DeviceAttributes.child_lock]

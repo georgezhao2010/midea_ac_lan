@@ -6,7 +6,7 @@ except ImportError:
 from enum import IntEnum
 from .security import LocalSecurity, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
-from .message import MessageType, MessageQuerySubtype, MessageSubtypeResponse, MessageQuestCustom
+from .message import MessageQuestCustom
 import socket
 import logging
 import time
@@ -47,6 +47,7 @@ class MiedaDevice(threading.Thread):
                  key: str,
                  protocol: int,
                  model: str,
+                 subtype: int,
                  attributes: dict):
         threading.Thread.__init__(self)
         self._attributes = attributes if attributes else {}
@@ -62,13 +63,12 @@ class MiedaDevice(threading.Thread):
         self._device_type = device_type
         self._protocol = protocol
         self._model = model
+        self._subtype = subtype
+        self._protocol_version = 0
         self._updates = []
         self._unsupported_protocol = []
         self._is_run = False
         self._available = True
-        self._device_protocol_version = 0
-        self._sub_type = None
-        self._sn = None
         self._refresh_interval = 30
         self._heartbeat_interval = 10
         self._default_refresh_interval = 30
@@ -94,8 +94,8 @@ class MiedaDevice(threading.Thread):
         return self._model
 
     @property
-    def sub_type(self):
-        return self._sub_type if self._sub_type else 0
+    def subtype(self):
+        return self._subtype
 
     @staticmethod
     def fetch_v2_message(msg):
@@ -177,8 +177,6 @@ class MiedaDevice(threading.Thread):
 
     def refresh_status(self, wait_response=False):
         cmds = self.build_query()
-        if self._sub_type is None:
-            cmds = [MessageQuerySubtype(self.device_type)] + cmds
         error_count = 0
         for cmd in cmds:
             if cmd.__class__.__name__ not in self._unsupported_protocol:
@@ -211,18 +209,6 @@ class MiedaDevice(threading.Thread):
     def set_subtype(self):
         pass
 
-    def pre_process_message(self, msg):
-        if msg[9] == MessageType.querySubtype:
-            message = MessageSubtypeResponse(msg)
-            _LOGGER.debug(f"[{self.device_id}] Received: {message}")
-            self._sub_type = message.sub_type
-            self.set_subtype()
-            self._device_protocol_version = message.device_protocol_version
-            _LOGGER.debug(f"[{self._device_id}] Subtype: {self._sub_type}. "
-                          f"Device protocol version: {self._device_protocol_version}")
-            return False
-        return True
-
     def parse_message(self, msg):
         if self._protocol == 3:
             messages, self._buffer = self._security.decode_8370(self._buffer + msg)
@@ -242,15 +228,14 @@ class MiedaDevice(threading.Thread):
                 cryptographic = message[40:-16]
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
-                    if self.pre_process_message(decrypted):
-                        try:
-                            status = self.process_message(decrypted)
-                            if len(status) > 0:
-                                self.update_all(status)
-                            else:
-                                _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
-                        except Exception as e:
-                            _LOGGER.error(f"[{self._device_id}] Error in process message, msg = {decrypted.hex()}")
+                    try:
+                        status = self.process_message(decrypted)
+                        if len(status) > 0:
+                            self.update_all(status)
+                        else:
+                            _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
+                    except Exception as e:
+                        _LOGGER.error(f"[{self._device_id}] Error in process message, msg = {decrypted.hex()}")
                 else:
                     _LOGGER.warning(
                         f"[{self._device_id}] Illegal payload, "

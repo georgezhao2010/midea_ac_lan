@@ -47,11 +47,11 @@ class MideaFan(MideaEntity, FanEntity):
         super().__init__(device, entity_key)
 
     def turn_on(
-            self,
-            percentage,
-            preset_mode,
-            **kwargs,
-    ):
+        self,
+        percentage: int | None = None,
+        preset_mode: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         if percentage:
             fan_speed = int(percentage / self.percentage_step + 0.5)
         else:
@@ -63,12 +63,8 @@ class MideaFan(MideaEntity, FanEntity):
         return self._device.preset_modes if hasattr(self._device, "preset_modes") else None
 
     @property
-    def state(self):
-        return STATE_ON if self._device.get_attribute("power") else STATE_OFF
-
-    @property
     def is_on(self) -> bool:
-        return self.state == STATE_ON
+        return self._device.get_attribute("power")
 
     @property
     def oscillating(self):

@@ -6,10 +6,9 @@ from ...core.message import (
 )
 
 
-class MessageECBase(MessageRequest):
-    def __init__(self, device_protocol_version, message_type, body_type):
+class MessageEABase(MessageRequest):
+    def __init__(self, message_type, body_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             device_type=0xEA,
             message_type=message_type,
             body_type=body_type
@@ -20,17 +19,16 @@ class MessageECBase(MessageRequest):
         raise NotImplementedError
 
 
-class MessageQuery(MessageECBase):
-    def __init__(self, device_protocol_version):
+class MessageQuery(MessageEABase):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=None)
 
     @property
     def body(self):
         return bytearray([
-            0xAA, 0x55, self._device_protocol_version, 0x03, 0x00
+            0xAA, 0x55, 0x01, 0x03, 0x00
         ])
 
     @property
@@ -77,10 +75,26 @@ class EABody3(MessageBody):
         self.keep_warm_time = body[22] * 60 + body[23]
 
 
+class EABodyNew(MessageBody):
+    def __init__(self, body):
+        super().__init__(body)
+        if body[6] in [2, 4, 6, 8, 10, 0x62]:
+            self.mode = body[7] + (body[8] << 8)
+            self.progress = body[11]
+            self.cooking = self.progress == 2
+            self.keep_warm = self.progress == 3
+            self.time_remaining = body[16] * 60 + body[17]
+            self.top_temperature = body[60]
+            self.bottom_temperature = body[61]
+            self.keep_warm_time = body[19] * 60 + body[20]
+
+
 class MessageEAResponse(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if self._device_protocol_version == 0:
+        if self.message_type == MessageType.notify1 and super().body[3] == 0x01:
+            self.set_body(EABodyNew(super().body))
+        elif self.protocol_version == 0:
             if self.message_type == MessageType.set and super().body[5] == 0x16:  # 381
                 self.set_body(EABody1(super().body))
             elif self.message_type == MessageType.query:

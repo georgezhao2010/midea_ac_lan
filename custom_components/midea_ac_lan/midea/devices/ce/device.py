@@ -50,6 +50,7 @@ class MideaCEDevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -62,6 +63,7 @@ class MideaCEDevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.mode: None,
@@ -95,7 +97,7 @@ class MideaCEDevice(MiedaDevice):
         return self._modes
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageCEResponse(msg)
@@ -116,7 +118,7 @@ class MideaCEDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.power = self._attributes[DeviceAttributes.power]
         message.fan_speed = self._attributes[DeviceAttributes.fan_speed]
         message.link_to_ac = self._attributes[DeviceAttributes.link_to_ac]

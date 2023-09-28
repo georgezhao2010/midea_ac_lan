@@ -57,10 +57,6 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
         self._operations = []
 
     @property
-    def state(self):
-        return STATE_ON if self._device.get_attribute("power") else STATE_OFF
-
-    @property
     def supported_features(self):
         return WaterHeaterEntityFeature.TARGET_TEMPERATURE
 
@@ -97,7 +93,7 @@ class MideaWaterHeater(MideaEntity, WaterHeaterEntity):
 
     @property
     def current_operation(self):
-        return self._device.get_attribute("mode")
+        return self._device.get_attribute("mode") if self._device.get_attribute("power") else STATE_OFF
 
     @property
     def current_temperature(self):

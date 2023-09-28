@@ -44,6 +44,7 @@ class MideaCADevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -56,6 +57,7 @@ class MideaCADevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.energy_consumption: None,
                 DeviceAttributes.refrigerator_actual_temp: None,
@@ -78,7 +80,7 @@ class MideaCADevice(MiedaDevice):
         self._modes = [""]
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageCAResponse(msg)

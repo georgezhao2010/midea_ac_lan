@@ -52,6 +52,7 @@ class MideaCCDevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -64,7 +65,8 @@ class MideaCCDevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
-            attributes = {
+            subtype=subtype,
+            attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.mode: 1,
                 DeviceAttributes.target_temperature: 26.0,
@@ -89,7 +91,7 @@ class MideaCCDevice(MiedaDevice):
         return None if self._fan_speeds is None else list(self._fan_speeds.values())
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageCCResponse(msg)
@@ -124,7 +126,7 @@ class MideaCCDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.power = self._attributes[DeviceAttributes.power]
         message.mode = self._attributes[DeviceAttributes.mode]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]

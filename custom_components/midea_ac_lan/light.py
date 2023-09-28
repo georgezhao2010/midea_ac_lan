@@ -37,11 +37,7 @@ class MideaLight(MideaEntity, LightEntity):
 
     @property
     def is_on(self):
-        return self.state == STATE_ON
-
-    @property
-    def state(self):
-        return STATE_ON if self._device.get_attribute(X13Attributes.power) else STATE_OFF
+        return self._device.get_attribute(X13Attributes.power)
 
     @property
     def brightness(self):

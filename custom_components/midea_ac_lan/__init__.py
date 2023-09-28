@@ -6,6 +6,7 @@ from .const import (
     CONF_ACCOUNT,
     CONF_KEY,
     CONF_MODEL,
+    CONF_SUBTYPE,
     CONF_REFRESH_INTERVAL,
     DEVICES,
     EXTRA_SENSOR,
@@ -138,6 +139,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
     refresh_interval = config_entry.options.get(CONF_REFRESH_INTERVAL)
     port = config_entry.data.get(CONF_PORT)
     model = config_entry.data.get(CONF_MODEL)
+    subtype = config_entry.data.get(CONF_SUBTYPE, 0)
     protocol = config_entry.data.get(CONF_PROTOCOL)
     customize = config_entry.options.get(CONF_CUSTOMIZE)
     if protocol == 3 and (key is None or key is None):
@@ -153,6 +155,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
         key=key,
         protocol=protocol,
         model=model,
+        subtype=subtype,
         customize=customize,
     )
     if refresh_interval is not None:

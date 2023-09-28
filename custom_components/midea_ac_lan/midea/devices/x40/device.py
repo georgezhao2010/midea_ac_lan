@@ -36,6 +36,7 @@ class Midea40Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -48,6 +49,7 @@ class Midea40Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.light: False,
                 DeviceAttributes.fan_speed: 0,
@@ -80,7 +82,7 @@ class Midea40Device(MiedaDevice):
         return result
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = Message40Response(msg)
@@ -105,7 +107,7 @@ class Midea40Device(MiedaDevice):
                     DeviceAttributes.direction,
                     DeviceAttributes.ventilation,
                     DeviceAttributes.smelly_sensor]:
-            message = MessageSet(self._device_protocol_version)
+            message = MessageSet()
             message.fields = self._fields
             message.light = self._attributes[DeviceAttributes.light]
             message.ventilation = self._attributes[DeviceAttributes.ventilation]

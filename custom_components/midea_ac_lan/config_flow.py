@@ -13,6 +13,7 @@ from .const import (
     CONF_SERVER,
     CONF_KEY,
     CONF_MODEL,
+    CONF_SUBTYPE,
     CONF_REFRESH_INTERVAL
 )
 from homeassistant import config_entries
@@ -203,6 +204,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             key=key["key"],
                             protocol=3,
                             model=device.get(CONF_MODEL),
+                            subtype=0,
                             attributes={}
                         )
                         _LOGGER.debug(f"Successful to take token and key, token: {key['token']},"
@@ -219,6 +221,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                 CONF_KEY: key["key"],
                             }
                             dm.close_socket()
+                            if device_info := await cloud.get_device_info(device_id):
+                                self.found_device[CONF_NAME] = device_info.get("name")
+                                self.found_device[CONF_SUBTYPE] = device_info.get("model_number")
+
                             return await self.async_step_manually()
                     return await self.async_step_auto(error="connect_error")
                 return await self.async_step_auto(error="login_failed")
@@ -270,6 +276,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 key=user_input[CONF_KEY],
                 protocol=user_input[CONF_PROTOCOL],
                 model=user_input[CONF_MODEL],
+                subtype=0,
                 attributes={}
             )
             if dm.connect(refresh_status=False):
@@ -290,6 +297,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_IP_ADDRESS: user_input[CONF_IP_ADDRESS],
                         CONF_PORT: user_input[CONF_PORT],
                         CONF_MODEL: user_input[CONF_MODEL],
+                        CONF_SUBTYPE: user_input[CONF_SUBTYPE],
                         CONF_TOKEN: user_input[CONF_TOKEN],
                         CONF_KEY: user_input[CONF_KEY],
                     })
@@ -300,7 +308,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(
                     CONF_NAME,
-                    default=self.supports.get(self.found_device.get(CONF_TYPE))
+                    default=(self.found_device.get(CONF_NAME)
+                             if self.found_device.get(CONF_NAME)
+                             else self.supports.get(self.found_device.get(CONF_TYPE)))
                 ): str,
                 vol.Required(
                     CONF_DEVICE_ID,
@@ -325,6 +335,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(
                     CONF_MODEL,
                     default=self.found_device.get(CONF_MODEL) if self.found_device.get(CONF_MODEL) else "Unknown"
+                ): str,
+                vol.Required(
+                    CONF_SUBTYPE,
+                    default=self.found_device.get(CONF_SUBTYPE) if self.found_device.get(CONF_SUBTYPE) else 0
                 ): str,
                 vol.Optional(
                     CONF_TOKEN,

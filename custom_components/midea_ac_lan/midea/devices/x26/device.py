@@ -38,6 +38,7 @@ class Midea26Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -50,6 +51,7 @@ class Midea26Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.main_light: False,
                 DeviceAttributes.night_light: False,
@@ -87,7 +89,7 @@ class Midea26Device(MiedaDevice):
         return Midea26Device._directions
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = Message26Response(msg)
@@ -114,7 +116,7 @@ class Midea26Device(MiedaDevice):
                     DeviceAttributes.mode,
                     DeviceAttributes.direction
                     ]:
-            message = MessageSet(self._device_protocol_version)
+            message = MessageSet()
             message.fields = self._fields
             message.main_light = self._attributes[DeviceAttributes.main_light]
             message.night_light = self._attributes[DeviceAttributes.night_light]

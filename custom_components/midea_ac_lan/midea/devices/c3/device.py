@@ -63,6 +63,7 @@ class MideaC3Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -75,6 +76,7 @@ class MideaC3Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.zone1_power: False,
                 DeviceAttributes.zone2_power: False,
@@ -115,7 +117,7 @@ class MideaC3Device(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageC3Response(msg)
@@ -179,7 +181,7 @@ class MideaC3Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.zone1_power = self._attributes[DeviceAttributes.zone1_power]
         message.zone2_power = self._attributes[DeviceAttributes.zone2_power]
         message.dhw_power = self._attributes[DeviceAttributes.dhw_power]

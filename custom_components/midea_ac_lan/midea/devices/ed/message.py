@@ -19,9 +19,8 @@ class EDNewSetParamPack:
 
 
 class MessageEDBase(MessageRequest):
-    def __init__(self, device_protocol_version, message_type, body_type):
+    def __init__(self, message_type, body_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             device_type=0xED,
             message_type=message_type,
             body_type=body_type
@@ -33,9 +32,8 @@ class MessageEDBase(MessageRequest):
 
 
 class MessageQuery(MessageEDBase):
-    def __init__(self, device_protocol_version, device_class):
+    def __init__(self, device_class):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=device_class)
 
@@ -45,9 +43,8 @@ class MessageQuery(MessageEDBase):
 
 
 class MessageNewSet(MessageEDBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x15)
         self.power = None
@@ -78,9 +75,8 @@ class MessageNewSet(MessageEDBase):
 
 
 class MessageOldSet(MessageEDBase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=None)
 

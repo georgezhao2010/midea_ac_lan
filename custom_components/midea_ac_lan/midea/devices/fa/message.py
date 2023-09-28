@@ -7,9 +7,8 @@ from ...core.message import (
 
 
 class MessageFABase(MessageRequest):
-    def __init__(self, device_protocol_version, message_type, body_type):
+    def __init__(self, message_type, body_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             device_type=0xFA,
             message_type=message_type,
             body_type=body_type
@@ -21,9 +20,8 @@ class MessageFABase(MessageRequest):
 
 
 class MessageQuery(MessageFABase):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=None)
 
@@ -37,12 +35,11 @@ class MessageQuery(MessageFABase):
 
 
 class MessageSet(MessageFABase):
-    def __init__(self, device_protocol_version, sub_type):
+    def __init__(self, subtype):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x00)
-        self._sub_type = sub_type
+        self._subtype = subtype
         self.power = None
         self.lock = None
         self.mode = None
@@ -54,7 +51,7 @@ class MessageSet(MessageFABase):
 
     @property
     def _body(self):
-        if self._sub_type <= 10 or self._sub_type == 161:
+        if self._subtype <= 10 or self._subtype == 161:
             _body_return = bytearray([
                 0x00, 0x00, 0x00, 0x80,
                 0x00, 0x00, 0x00, 0x80,
@@ -62,7 +59,7 @@ class MessageSet(MessageFABase):
                 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00
             ])
-            if self._sub_type not in [0, 10]:
+            if self._subtype not in [0, 10]:
                 _body_return[13] = 0xFF
         else:
             _body_return = bytearray([

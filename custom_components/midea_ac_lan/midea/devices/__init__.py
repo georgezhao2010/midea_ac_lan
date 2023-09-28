@@ -11,6 +11,7 @@ def device_selector(
     key: str,
     protocol: int,
     model: str,
+    subtype: int,
     customize: str
 ):
     try:
@@ -29,6 +30,7 @@ def device_selector(
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             customize=customize
         )
     except ModuleNotFoundError:

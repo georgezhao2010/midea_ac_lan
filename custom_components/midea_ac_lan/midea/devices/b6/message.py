@@ -7,12 +7,12 @@ from ...core.message import (
 
 
 class MessageB6Base(MessageRequest):
-    def __init__(self, device_protocol_version, message_type, body_type):
+    def __init__(self, message_type, body_type, protocol_version):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             device_type=0xB6,
             message_type=message_type,
-            body_type=body_type
+            body_type=body_type,
+            protocol_version=protocol_version
         )
 
     @property
@@ -21,11 +21,12 @@ class MessageB6Base(MessageRequest):
 
 
 class MessageQuery(MessageB6Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self, protocol_version):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
-            body_type=0x11 if device_protocol_version == 2 else 0x31)
+            body_type=0x11 if protocol_version == 2 else 0x31,
+            protocol_version=protocol_version
+        )
 
     @property
     def _body(self):
@@ -33,11 +34,12 @@ class MessageQuery(MessageB6Base):
 
 
 class MessageQueryTips(MessageB6Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self, protocol_version):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
-            body_type=0x02)
+            body_type=0x02,
+            protocol_version=protocol_version
+        )
 
     @property
     def _body(self):
@@ -45,18 +47,19 @@ class MessageQueryTips(MessageB6Base):
 
 
 class MessageSet(MessageB6Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self, protocol_version):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
-            body_type=0x22 if device_protocol_version in [0x00, 0x01] else 0x11)
+            body_type=0x22 if protocol_version in [0x00, 0x01] else 0x11,
+            protocol_version=protocol_version
+        )
         self.light = None
         self.power = None
         self.fan_level = None
 
     @property
     def _body(self):
-        if self._device_protocol_version in [0x00, 0x01]:
+        if self.protocol_version in [0x00, 0x01]:
             light = 0xFF
             value2 = 0xFF
             value3 = 0xFF
@@ -193,7 +196,7 @@ class MessageB6Response(MessageResponse):
             pass
         elif self.message_type == MessageType.query:
             if self.body_type in [0x11, 0x31]:
-                if self._device_protocol_version in [0, 1]:
+                if self.protocol_version in [0, 1]:
                     self.set_body(B6GeneralBody(super().body))
                 else:
                     self.set_body(B6NewProtocolBody(super().body))
@@ -201,7 +204,7 @@ class MessageB6Response(MessageResponse):
                 self.set_body(B6ExceptionBody(super().body))
         elif self.message_type == MessageType.notify1:
             if self.body_type in [0x11, 0x41]:
-                if self._device_protocol_version in [0, 1]:
+                if self.protocol_version in [0, 1]:
                     self.set_body(B6GeneralBody(super().body))
                 else:
                     self.set_body(B6NewProtocolBody(super().body))

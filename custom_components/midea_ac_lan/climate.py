@@ -59,10 +59,6 @@ class MideaClimate(MideaEntity, ClimateEntity):
         super().__init__(device, entity_key)
 
     @property
-    def state(self):
-        return self.hvac_mode
-
-    @property
     def supported_features(self):
         return ClimateEntityFeature.TARGET_TEMPERATURE | \
                ClimateEntityFeature.FAN_MODE | \

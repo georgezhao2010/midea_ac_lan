@@ -28,6 +28,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 class MideaSensor(MideaEntity, SensorEntity):
     @property
+    def native_value(self):
+        return self._device.get_attribute(self._entity_key)
+
+    @property
     def device_class(self):
         return self._config.get("device_class")
 
@@ -36,7 +40,7 @@ class MideaSensor(MideaEntity, SensorEntity):
         return self._config.get("state_class")
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self):
         return self._config.get("unit")
 
     @property

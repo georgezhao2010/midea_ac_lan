@@ -40,6 +40,7 @@ class MideaEDDevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -52,6 +53,7 @@ class MideaEDDevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.water_consumption: None,
@@ -72,7 +74,7 @@ class MideaEDDevice(MiedaDevice):
 
     def build_query(self):
         return [
-            MessageQuery(self._device_protocol_version, self._device_class)
+            MessageQuery(self._device_class)
         ]
 
     def process_message(self, msg):
@@ -94,10 +96,10 @@ class MideaEDDevice(MiedaDevice):
                 DeviceAttributes.power,
                 DeviceAttributes.child_lock
             ]:
-                message = MessageNewSet(self._device_protocol_version)
+                message = MessageNewSet()
         else:
             if attr in []:
-                message = MessageOldSet(self._device_protocol_version)
+                message = MessageOldSet()
         if message is not None:
             setattr(message, str(attr), value)
             self.build_send(message)

@@ -27,7 +27,7 @@ clouds = {
         "iot_key": bytes.fromhex(format(7882822598523843940, 'x')).decode(),
         "hmac_key": bytes.fromhex(format(117390035944627627450677220413733956185864939010425, 'x')).decode(),
         "api_url": "https://mp-prod.appsmb.com/mas/v5/app/proxy?alias=",
-    }
+    },
 }
 
 default_keys = {
@@ -140,6 +140,24 @@ class MideaCloud:
         result.update(default_keys)
         return result
 
+    async def list_home(self) -> dict | None:
+        raise NotImplementedError()
+
+    async def list_appliances(self, home_id) -> dict | None:
+        raise NotImplementedError()
+
+    async def get_device_info(self, device_id: int) -> dict | None:
+        raise NotImplementedError()
+
+    async def download_lua(
+            self, path: str,
+            device_type: int,
+            sn: str,
+            model_number: str | None,
+            manufacturer_code: str = "0000",
+    ):
+        raise NotImplementedError()
+
 
 class MeijuCloud(MideaCloud):
     APP_ID = "900"
@@ -155,9 +173,9 @@ class MeijuCloud(MideaCloud):
         super().__init__(
             session=session,
             security=MeijuCloudSecurity(
-                login_key=clouds[cloud_name].get("login_key"),
-                iot_key=clouds[cloud_name].get("iot_key"),
-                hmac_key=clouds[cloud_name].get("hmac_key"),
+                login_key=clouds[cloud_name]["login_key"],
+                iot_key=clouds[cloud_name]["iot_key"],
+                hmac_key=clouds[cloud_name]["hmac_key"],
             ),
             app_key=clouds[cloud_name]["app_key"],
             account=account,
@@ -202,6 +220,105 @@ class MeijuCloud(MideaCloud):
                 return True
         return False
 
+    async def list_home(self):
+        if response := await self._api_request(
+            endpoint="/v1/homegroup/list/get",
+            data={}
+        ):
+            homes = {}
+            for home in response["homeList"]:
+                homes.update({
+                    int(home["homegroupId"]): home["name"]
+                })
+            return homes
+        return None
+
+    async def list_appliances(self, home_id) -> dict | None:
+        data = {
+            "homegroupId": home_id
+        }
+        if response := await self._api_request(
+            endpoint="/v1/appliance/home/list/get",
+            data=data
+        ):
+            appliances = {}
+            for home in response.get("homeList") or []:
+                for room in home.get("roomList") or []:
+                    for appliance in room.get("applianceList"):
+                        device_info = {
+                            "name": appliance.get("name"),
+                            "type": int(appliance.get("type"), 16),
+                            "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
+                            "sn8": appliance.get("sn8", "00000000"),
+                            "model_number": appliance.get("modelNumber", "0"),
+                            "manufacturer_code":appliance.get("enterpriseCode", "0000"),
+                            "model": appliance.get("productModel"),
+                            "online": appliance.get("onlineStatus") == "1",
+                        }
+                        if device_info.get("sn8") is None or len(device_info.get("sn8")) == 0:
+                            device_info["sn8"] = "00000000"
+                        if device_info.get("model") is None or len(device_info.get("model")) == 0:
+                            device_info["model"] = device_info["sn8"]
+                        appliances[int(appliance["applianceCode"])] = device_info
+            return appliances
+        return None
+
+    async def get_device_info(self, device_id: int):
+        data = {
+            "applianceCode": device_id
+        }
+        if response := await self._api_request(
+            endpoint="/v1/appliance/info/get",
+            data=data
+        ):
+            device_info = {
+                "name": response.get("name"),
+                "type": int(response.get("type"), 16),
+                "sn": self._security.aes_decrypt(response.get("sn")) if response.get("sn") else "",
+                "sn8": response.get("sn8", "00000000"),
+                "model_number": response.get("modelNumber", "0"),
+                "manufacturer_code": response.get("enterpriseCode", "0000"),
+                "model": response.get("productModel"),
+                "online": response.get("onlineStatus") == "1",
+            }
+            if device_info.get("sn8") is None or len(device_info.get("sn8")) == 0:
+                device_info["sn8"] = "00000000"
+            if device_info.get("model") is None or len(device_info.get("model")) == 0:
+                device_info["model"] = device_info["sn8"]
+            return device_info
+        return None
+
+    async def download_lua(
+            self, path: str,
+            device_type: int,
+            sn: str,
+            model_number: str | None,
+            manufacturer_code: str = "0000",
+    ):
+        data = {
+            "applianceSn": sn,
+            "applianceType": "0x%02X" % device_type,
+            "applianceMFCode": manufacturer_code,
+            'version': "0",
+            "iotAppId": self.APP_ID,
+        }
+        fnm = None
+        if response := await self._api_request(
+            endpoint="/v1/appliance/protocol/lua/luaGet",
+            data=data
+        ):
+            res = await self._session.get(response["url"])
+            if res.status == 200:
+                lua = await res.text()
+                if lua:
+                    stream = ('local bit = require "bit"\n' +
+                              self._security.aes_decrypt_with_fixed_key(lua))
+                    stream = stream.replace("\r\n", "\n")
+                    fnm = f"{path}/{response['fileName']}"
+                    with open(fnm, "w") as fp:
+                        fp.write(stream)
+        return fnm
+
 
 class MSmartHomeCloud(MideaCloud):
     APP_ID = "1010"
@@ -218,9 +335,9 @@ class MSmartHomeCloud(MideaCloud):
         super().__init__(
             session=session,
             security=MSmartCloudSecurity(
-                login_key=clouds[cloud_name].get("app_key"),
-                iot_key=clouds[cloud_name].get("iot_key"),
-                hmac_key=clouds[cloud_name].get("hmac_key"),
+                login_key=clouds[cloud_name]["app_key"],
+                iot_key=clouds[cloud_name]["iot_key"],
+                hmac_key=clouds[cloud_name]["hmac_key"],
             ),
             app_key=clouds[cloud_name]["app_key"],
             account=account,
@@ -234,7 +351,7 @@ class MSmartHomeCloud(MideaCloud):
 
     def _make_general_data(self):
         return {
-            "appVersion": self.APP_VERSION,
+            # "appVersion": self.APP_VERSION,
             "src": self.SRC,
             "format": "2",
             "stamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
@@ -302,6 +419,76 @@ class MSmartHomeCloud(MideaCloud):
                 self._security.set_aes_keys(response["accessToken"], response["randomData"])
                 return True
         return False
+
+    async def list_home(self) -> dict | None:
+        return {1: "My home"}
+
+    async def list_appliances(self, home_id=None) -> dict | None:
+        data = self._make_general_data()
+        if response := await self._api_request(
+            endpoint="/v1/appliance/user/list/get",
+            data=data
+        ):
+            appliances = {}
+            for appliance in response["list"]:
+                device_info = {
+                    "name": appliance.get("name"),
+                    "type": int(appliance.get("type"), 16),
+                    "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
+                    "sn8": "",
+                    "model_number": appliance.get("modelNumber", "0"),
+                    "manufacturer_code":appliance.get("enterpriseCode", "0000"),
+                    "model": "",
+                    "online": appliance.get("onlineStatus") == "1",
+                }
+                device_info["sn8"] = device_info.get("sn")[9:17] if len(device_info["sn"]) > 17 else ""
+                device_info["model"] = device_info.get("sn8")
+                appliances[int(appliance["id"])] = device_info
+            return appliances
+        return None
+
+    async def get_device_info(self, device_id: int):
+        if response := await self.list_appliances():
+            if device_id in response.keys():
+                return response[device_id]
+        return None
+
+    async def download_lua(
+        self, path: str,
+        device_type: int,
+        sn: str,
+        model_number: str | None,
+        manufacturer_code: str = "0000",
+    ):
+        data = {
+            "clientType": "1",
+            "appId": self.APP_ID,
+            "format": "2",
+            "deviceId": self._device_id,
+            "iotAppId": self.APP_ID,
+            "applianceMFCode": manufacturer_code,
+            "applianceType": "0x%02X" % device_type,
+            "modelNumber": model_number,
+            "applianceSn": self._security.aes_encrypt_with_fixed_key(sn.encode("ascii")).hex(),
+            "version": "0",
+            "encryptedType ": "2"
+        }
+        fnm = None
+        if response := await self._api_request(
+            endpoint="/v2/luaEncryption/luaGet",
+            data=data
+        ):
+            res = await self._session.get(response["url"])
+            if res.status == 200:
+                lua = await res.text()
+                if lua:
+                    stream = ('local bit = require "bit"\n' +
+                              self._security.aes_decrypt_with_fixed_key(lua))
+                    stream = stream.replace("\r\n", "\n")
+                    fnm = f"{path}/{response['fileName']}"
+                    with open(fnm, "w") as fp:
+                        fp.write(stream)
+        return fnm
 
 
 def get_midea_cloud(cloud_name: str, session: ClientSession, account: str, password: str) -> MideaCloud | None:

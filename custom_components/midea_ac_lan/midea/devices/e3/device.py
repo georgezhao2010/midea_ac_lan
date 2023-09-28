@@ -38,6 +38,7 @@ class MideaE3Device(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -50,6 +51,7 @@ class MideaE3Device(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.burning_state: False,
@@ -60,7 +62,7 @@ class MideaE3Device(MiedaDevice):
                 DeviceAttributes.current_temperature: None,
                 DeviceAttributes.target_temperature: 40,
             })
-        self._old_sub_types = [
+        self._old_subtypes = [
             32, 33, 34, 35, 36, 37, 40, 43, 48, 49, 80
         ]
         self._precision_halves = None
@@ -72,7 +74,7 @@ class MideaE3Device(MiedaDevice):
         return self._precision_halves
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageE3Response(msg)
@@ -90,7 +92,7 @@ class MideaE3Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet(self._device_protocol_version)
+        message = MessageSet()
         message.zero_cold_water = self._attributes[DeviceAttributes.zero_cold_water]
         message.protection = self._attributes[DeviceAttributes.protection]
         message.zero_clod_pulse = self._attributes[DeviceAttributes.zero_cold_pulse]
@@ -105,13 +107,13 @@ class MideaE3Device(MiedaDevice):
             if self._precision_halves and attr == DeviceAttributes.target_temperature:
                 value = int(value * 2)
             if attr == DeviceAttributes.power:
-                message = MessagePower(self._device_protocol_version)
+                message = MessagePower()
                 message.power = value
-            elif self.sub_type in self._old_sub_types:
+            elif self.subtype in self._old_subtypes:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
             else:
-                message = MessageNewProtocolSet(self._device_protocol_version)
+                message = MessageNewProtocolSet()
                 setattr(message, "key", str(attr))
                 setattr(message, "value", value)
             self.build_send(message)

@@ -28,9 +28,5 @@ class MideaSensor(MideaEntity, BinarySensorEntity):
         return self._config.get("device_class")
 
     @property
-    def state(self):
-        return STATE_ON if self._device.get_attribute(self._entity_key) else STATE_OFF
-
-    @property
     def is_on(self):
-        return self.state == STATE_ON
+        return self._device.get_attribute(self._entity_key)

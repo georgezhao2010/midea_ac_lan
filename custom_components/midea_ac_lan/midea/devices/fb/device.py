@@ -37,6 +37,7 @@ class MideaFBDevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -49,6 +50,7 @@ class MideaFBDevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.power: False,
                 DeviceAttributes.mode: None,
@@ -63,7 +65,7 @@ class MideaFBDevice(MiedaDevice):
         return list(MideaFBDevice._modes.values())
 
     def build_query(self):
-        return [MessageQuery(self._device_protocol_version)]
+        return [MessageQuery()]
 
     def process_message(self, msg):
         message = MessageFBResponse(msg)
@@ -84,13 +86,13 @@ class MideaFBDevice(MiedaDevice):
 
     def set_attribute(self, attr, value):
         if attr == DeviceAttributes.mode:
-            message = MessageSet(self._device_protocol_version, self.sub_type)
+            message = MessageSet(self.sub_type)
             if value in MideaFBDevice._modes.values():
                 message.mode = list(MideaFBDevice._modes.keys())[
                     list(MideaFBDevice._modes.values()).index(value)
                 ]
         else:
-            message = MessageSet(self._device_protocol_version, self.sub_type)
+            message = MessageSet(self.sub_type)
             setattr(message, str(attr), value)
         self.build_send(message)
 

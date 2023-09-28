@@ -72,6 +72,7 @@ class MideaACDevice(MiedaDevice):
             key: str,
             protocol: int,
             model: str,
+            subtype: int,
             customize: str
     ):
         super().__init__(
@@ -84,6 +85,7 @@ class MideaACDevice(MiedaDevice):
             key=key,
             protocol=protocol,
             model=model,
+            subtype=subtype,
             attributes={
                 DeviceAttributes.prompt_tone: True,
                 DeviceAttributes.power: False,
@@ -140,14 +142,14 @@ class MideaACDevice(MiedaDevice):
     def build_query(self):
         if self._used_subprotocol:
             return [
-                MessageSubProtocolQuery(self._device_protocol_version, 0x10),
-                MessageSubProtocolQuery(self._device_protocol_version, 0x11),
-                MessageSubProtocolQuery(self._device_protocol_version, 0x30)
+                MessageSubProtocolQuery(0x10),
+                MessageSubProtocolQuery(0x11),
+                MessageSubProtocolQuery(0x30)
             ]
         return [
-            MessageQuery(self._device_protocol_version),
-            MessageNewProtocolQuery(self._device_protocol_version),
-            MessagePowerQuery(self._device_protocol_version)
+            MessageQuery(),
+            MessageNewProtocolQuery(),
+            MessagePowerQuery()
         ]
 
     def process_message(self, msg):
@@ -192,7 +194,7 @@ class MideaACDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageGeneralSet(self._device_protocol_version)
+        message = MessageGeneralSet()
         message.power = self._attributes[DeviceAttributes.power]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
         message.mode = self._attributes[DeviceAttributes.mode]
@@ -213,7 +215,7 @@ class MideaACDevice(MiedaDevice):
         return message
 
     def make_subptotocol_message_set(self):
-        message = MessageSubProtocolSet(self._device_protocol_version)
+        message = MessageSubProtocolSet()
         message.power = self._attributes[DeviceAttributes.power]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
         message.aux_heating = self._attributes[DeviceAttributes.aux_heating]
@@ -250,21 +252,21 @@ class MideaACDevice(MiedaDevice):
                 self.update_all({DeviceAttributes.prompt_tone.value: value})
             elif attr == DeviceAttributes.screen_display:
                 if self._attributes[DeviceAttributes.screen_display_new]:
-                    message = MessageNewProtocolSet(self._device_protocol_version)
+                    message = MessageNewProtocolSet()
                     message.screen_display = value
                     message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
                 else:
-                    message = MessageSwitchDisplay(self._device_protocol_version)
+                    message = MessageSwitchDisplay()
             elif attr in [
                     DeviceAttributes.indirect_wind,
                     DeviceAttributes.breezeless
             ]:
-                message = MessageNewProtocolSet(self._device_protocol_version)
+                message = MessageNewProtocolSet()
                 setattr(message, str(attr), value)
                 message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
             elif attr == DeviceAttributes.fresh_air_power:
                 if self._fresh_air_version is not None:
-                    message = MessageNewProtocolSet(self._device_protocol_version)
+                    message = MessageNewProtocolSet()
                     setattr(
                         message,
                         str(self._fresh_air_version),
@@ -277,14 +279,14 @@ class MideaACDevice(MiedaDevice):
                     ]
                     fresh_air = [True, speed] if speed > 0 else \
                         [False, self._attributes[DeviceAttributes.fresh_air_fan_speed]]
-                    message = MessageNewProtocolSet(self._device_protocol_version)
+                    message = MessageNewProtocolSet()
                     setattr(
                         message,
                         str(self._fresh_air_version),
                         fresh_air
                     )
                 elif not value:
-                    message = MessageNewProtocolSet(self._device_protocol_version)
+                    message = MessageNewProtocolSet()
                     setattr(
                         message,
                         str(self._fresh_air_version),
@@ -292,7 +294,7 @@ class MideaACDevice(MiedaDevice):
                     )
             elif attr == DeviceAttributes.fresh_air_fan_speed:
                 if self._fresh_air_version is not None:
-                    message = MessageNewProtocolSet(self._device_protocol_version)
+                    message = MessageNewProtocolSet()
                     fresh_air = [True, value] if value > 0 else \
                         [False, self._attributes[DeviceAttributes.fresh_air_fan_speed]]
                     setattr(

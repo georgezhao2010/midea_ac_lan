@@ -27,9 +27,8 @@ C2_MESSAGE_KEYS = {
 
 
 class MessageC2Base(MessageRequest):
-    def __init__(self, device_protocol_version, message_type, body_type):
+    def __init__(self, message_type, body_type):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             device_type=0xC2,
             message_type=message_type,
             body_type=body_type
@@ -41,9 +40,8 @@ class MessageC2Base(MessageRequest):
 
 
 class MessageQuery(MessageC2Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.query,
             body_type=0x01)
 
@@ -53,9 +51,8 @@ class MessageQuery(MessageC2Base):
 
 
 class MessagePower(MessageC2Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x00)
         self.power = False
@@ -69,9 +66,8 @@ class MessagePower(MessageC2Base):
 
 
 class MessagePowerOff(MessageC2Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x02)
 
@@ -81,9 +77,8 @@ class MessagePowerOff(MessageC2Base):
 
 
 class MessageSet(MessageC2Base):
-    def __init__(self, device_protocol_version):
+    def __init__(self):
         super().__init__(
-            device_protocol_version=device_protocol_version,
             message_type=MessageType.set,
             body_type=0x00)
 
