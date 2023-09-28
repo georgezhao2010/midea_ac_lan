@@ -142,9 +142,10 @@ class MessageRequest(MessageBase):
 
 
 class MessageQuestCustom(MessageRequest):
-    def __init__(self, device_type, cmd_type, cmd_body):
+    def __init__(self, device_type, protocol_version, cmd_type, cmd_body):
         super().__init__(
             device_type=device_type,
+            protocol_version=protocol_version,
             message_type=cmd_type,
             body_type=None)
         self._cmd_body = cmd_body
@@ -162,6 +163,7 @@ class MessageQueryAppliance(MessageRequest):
     def __init__(self, device_type):
         super().__init__(
             device_type=device_type,
+            protocol_version=0,
             message_type=MessageType.query_appliance,
             body_type=None)
 

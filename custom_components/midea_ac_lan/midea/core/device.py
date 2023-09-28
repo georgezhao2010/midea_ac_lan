@@ -278,7 +278,7 @@ class MiedaDevice(threading.Thread):
         raise NotImplementedError
 
     def send_command(self, cmd_type, cmd_body: bytearray):
-        cmd = MessageQuestCustom(self._device_type, cmd_type, cmd_body)
+        cmd = MessageQuestCustom(self._device_type, self._protocol_version, cmd_type, cmd_body)
         try:
             self.build_send(cmd)
         except socket.error as e:
