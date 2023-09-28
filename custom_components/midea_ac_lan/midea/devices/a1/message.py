@@ -15,11 +15,12 @@ class NewProtocolTags(IntEnum):
 class MessageA1Base(MessageRequest):
     _message_serial = 0
 
-    def __init__(self, message_type, body_type):
+    def __init__(self, protocol_version, message_type, body_type):
         super().__init__(
             device_type=0xA1,
+            protocol_version=protocol_version,
             message_type=message_type,
-            body_type=body_type
+            body_type=body_type,
         )
         MessageA1Base._message_serial += 1
         if MessageA1Base._message_serial >= 100:
@@ -38,8 +39,9 @@ class MessageA1Base(MessageRequest):
 
 
 class MessageQuery(MessageA1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.query,
             body_type=0x41)
 
@@ -55,8 +57,9 @@ class MessageQuery(MessageA1Base):
 
 
 class MessageNewProtocolQuery(MessageA1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.query,
             body_type=0xB1)
 
@@ -72,8 +75,9 @@ class MessageNewProtocolQuery(MessageA1Base):
 
 
 class MessageSet(MessageA1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x48)
         self.power = False
@@ -122,8 +126,9 @@ class MessageSet(MessageA1Base):
 
 
 class MessageNewProtocolSet(MessageA1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0xB0)
         self.light = None

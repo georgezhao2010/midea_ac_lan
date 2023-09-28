@@ -77,7 +77,7 @@ class Midea13Device(MiedaDevice):
             self._color_temp_range[0]
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = Message13Response(msg)
@@ -105,7 +105,7 @@ class Midea13Device(MiedaDevice):
                     DeviceAttributes.color_temperature,
                     DeviceAttributes.effect,
                     DeviceAttributes.power]:
-            message = MessageSet()
+            message = MessageSet(self._protocol_version)
             if attr == DeviceAttributes.effect and value in self._effects:
                 setattr(message, str(attr), Midea13Device._effects.index(value))
             elif attr == DeviceAttributes.color_temperature:

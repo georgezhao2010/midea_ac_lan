@@ -121,7 +121,7 @@ class Midea34Device(MiedaDevice):
         self._progress = ["Idle", "Pre-wash", "Wash", "Rinse", "Dry", "Complete"]
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = Message34Response(msg)
@@ -151,15 +151,15 @@ class Midea34Device(MiedaDevice):
 
     def set_attribute(self, attr, value):
         if attr == DeviceAttributes.power:
-            message = MessagePower()
+            message = MessagePower(self._protocol_version)
             message.power = value
             self.build_send(message)
         elif attr == DeviceAttributes.child_lock:
-            message = MessageLock()
+            message = MessageLock(self._protocol_version)
             message.lock = value
             self.build_send(message)
         elif attr == DeviceAttributes.storage:
-            message = MessageStorage()
+            message = MessageStorage(self._protocol_version)
             message.storage = value
             self.build_send(message)
 

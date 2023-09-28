@@ -91,7 +91,7 @@ class MideaCCDevice(MiedaDevice):
         return None if self._fan_speeds is None else list(self._fan_speeds.values())
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageCCResponse(msg)
@@ -126,7 +126,7 @@ class MideaCCDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet()
+        message = MessageSet(self._protocol_version)
         message.power = self._attributes[DeviceAttributes.power]
         message.mode = self._attributes[DeviceAttributes.mode]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
@@ -164,11 +164,11 @@ class MideaCCDevice(MiedaDevice):
             else:
                 setattr(message, str(attr), value)
                 if attr == DeviceAttributes.mode:
-                    setattr(message, DeviceAttributes.power.value, True)
+                    setattr(message, str(DeviceAttributes.power.value), True)
                 elif attr == DeviceAttributes.eco_mode and value:
-                    setattr(message, DeviceAttributes.sleep_mode.value, False)
+                    setattr(message, str(DeviceAttributes.sleep_mode.value), False)
                 elif attr == DeviceAttributes.sleep_mode and value:
-                    setattr(message, DeviceAttributes.eco_mode.value, False)
+                    setattr(message, str(DeviceAttributes.eco_mode.value), False)
                 elif attr == DeviceAttributes.aux_heating:
                     if value:
                         setattr(message, DeviceAttributes.aux_heat_status, 1)

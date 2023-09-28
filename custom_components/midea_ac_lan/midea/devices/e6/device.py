@@ -65,7 +65,7 @@ class MideaE6Device(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageE6Response(msg)
@@ -82,7 +82,7 @@ class MideaE6Device(MiedaDevice):
                     DeviceAttributes.heating_power,
                     DeviceAttributes.heating_temperature,
                     DeviceAttributes.bathing_temperature]:
-            message = MessageSet()
+            message = MessageSet(self._protocol_version)
             setattr(message, str(attr), value)
             self.build_send(message)
 

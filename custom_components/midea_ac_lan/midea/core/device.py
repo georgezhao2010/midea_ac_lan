@@ -6,7 +6,12 @@ except ImportError:
 from enum import IntEnum
 from .security import LocalSecurity, MSGTYPE_HANDSHAKE_REQUEST, MSGTYPE_ENCRYPTED_REQUEST
 from .packet_builder import PacketBuilder
-from .message import MessageQuestCustom
+from .message import (
+    MessageType,
+    MessageQuestCustom,
+    MessageQueryAppliance,
+    MessageApplianceResponse
+)
 import socket
 import logging
 import time
@@ -69,6 +74,7 @@ class MiedaDevice(threading.Thread):
         self._unsupported_protocol = []
         self._is_run = False
         self._available = True
+        self._appliance_query = True
         self._refresh_interval = 30
         self._heartbeat_interval = 10
         self._default_refresh_interval = 30
@@ -176,7 +182,9 @@ class MiedaDevice(threading.Thread):
         self.send_message(msg)
 
     def refresh_status(self, wait_response=False):
-        cmds = self.build_query()
+        cmds:list = self.build_query()
+        if self._appliance_query:
+            cmds.extend([MessageQueryAppliance(self.device_type)])
         error_count = 0
         for cmd in cmds:
             if cmd.__class__.__name__ not in self._unsupported_protocol:
@@ -206,8 +214,15 @@ class MiedaDevice(threading.Thread):
         if error_count == len(cmds):
             raise RefreshFailed
 
-    def set_subtype(self):
-        pass
+    def pre_process_message(self, msg):
+        if msg[9] == MessageType.query_appliance:
+            message = MessageApplianceResponse(msg)
+            self._appliance_query = False
+            _LOGGER.debug(f"[{self.device_id}] Received: {message}")
+            self._protocol_version = message.protocol_version
+            _LOGGER.debug(f"[{self._device_id}] Device protocol version: {self._protocol_version}")
+            return False
+        return True
 
     def parse_message(self, msg):
         if self._protocol == 3:
@@ -229,11 +244,15 @@ class MiedaDevice(threading.Thread):
                 if payload_len % 16 == 0:
                     decrypted = self._security.aes_decrypt(cryptographic)
                     try:
-                        status = self.process_message(decrypted)
-                        if len(status) > 0:
-                            self.update_all(status)
-                        else:
-                            _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
+                        cont = True
+                        if self._appliance_query:
+                            cont = self.pre_process_message(decrypted)
+                        if cont:
+                            status = self.process_message(decrypted)
+                            if len(status) > 0:
+                                self.update_all(status)
+                            else:
+                                _LOGGER.debug(f"[{self._device_id}] Unidentified protocol")
                     except Exception as e:
                         _LOGGER.error(f"[{self._device_id}] Error in process message, msg = {decrypted.hex()}")
                 else:

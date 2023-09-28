@@ -85,7 +85,7 @@ class MideaEADevice(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageEAResponse(msg)

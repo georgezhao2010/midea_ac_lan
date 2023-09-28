@@ -82,7 +82,7 @@ class Midea40Device(MiedaDevice):
         return result
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = Message40Response(msg)
@@ -107,7 +107,7 @@ class Midea40Device(MiedaDevice):
                     DeviceAttributes.direction,
                     DeviceAttributes.ventilation,
                     DeviceAttributes.smelly_sensor]:
-            message = MessageSet()
+            message = MessageSet(self._protocol_version)
             message.fields = self._fields
             message.light = self._attributes[DeviceAttributes.light]
             message.ventilation = self._attributes[DeviceAttributes.ventilation]

@@ -97,7 +97,7 @@ class MideaCEDevice(MiedaDevice):
         return self._modes
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageCEResponse(msg)
@@ -118,7 +118,7 @@ class MideaCEDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet()
+        message = MessageSet(self._protocol_version)
         message.power = self._attributes[DeviceAttributes.power]
         message.fan_speed = self._attributes[DeviceAttributes.fan_speed]
         message.link_to_ac = self._attributes[DeviceAttributes.link_to_ac]

@@ -7,9 +7,10 @@ from ...core.message import (
 
 
 class MessageE1Base(MessageRequest):
-    def __init__(self,  message_type, body_type):
+    def __init__(self, protocol_version, message_type, body_type):
         super().__init__(
             device_type=0xE1,
+            protocol_version=protocol_version,
             message_type=message_type,
             body_type=body_type
         )
@@ -20,8 +21,9 @@ class MessageE1Base(MessageRequest):
 
 
 class MessagePower(MessageE1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x08)
         self.power = False
@@ -36,8 +38,9 @@ class MessagePower(MessageE1Base):
 
 
 class MessageLock(MessageE1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x83)
         self.lock = False
@@ -49,8 +52,9 @@ class MessageLock(MessageE1Base):
 
 
 class MessageStorage(MessageE1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x81)
         self.storage = False
@@ -63,8 +67,9 @@ class MessageStorage(MessageE1Base):
 
 
 class MessageQuery(MessageE1Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.query,
             body_type=0x00)
 

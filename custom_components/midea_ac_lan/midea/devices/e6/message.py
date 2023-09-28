@@ -7,9 +7,10 @@ from ...core.message import (
 
 
 class MessageE6Base(MessageRequest):
-    def __init__(self, message_type):
+    def __init__(self, protocol_version, message_type):
         super().__init__(
             device_type=0xE6,
+            protocol_version=protocol_version,
             message_type=message_type,
             body_type=None
         )
@@ -24,9 +25,11 @@ class MessageE6Base(MessageRequest):
 
 
 class MessageQuery(MessageE6Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
-            message_type=MessageType.query)
+            protocol_version=protocol_version,
+            message_type=MessageType.query
+        )
 
     @property
     def _body(self):
@@ -34,9 +37,11 @@ class MessageQuery(MessageE6Base):
 
 
 class MessageSet(MessageE6Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
-            message_type=MessageType.set)
+            protocol_version=protocol_version,
+            message_type=MessageType.set
+        )
         self.main_power = None
         self.heating_temperature = None
         self.bathing_temperature = None

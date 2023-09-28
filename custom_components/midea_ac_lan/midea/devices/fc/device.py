@@ -105,7 +105,7 @@ class MideaFCDevice(MiedaDevice):
         return self._detect_modes
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageFCResponse(msg)
@@ -141,7 +141,7 @@ class MideaFCDevice(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet()
+        message = MessageSet(self._protocol_version)
         message.power = self._attributes[DeviceAttributes.power]
         message.child_lock = self._attributes[DeviceAttributes.child_lock]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]

@@ -63,7 +63,7 @@ class MideaB0Device(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery01()]
+        return [MessageQuery01(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageB0Response(msg)

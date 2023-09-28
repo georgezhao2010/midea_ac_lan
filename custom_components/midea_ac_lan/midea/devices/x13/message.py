@@ -7,9 +7,10 @@ from ...core.message import (
 
 
 class Message13Base(MessageRequest):
-    def __init__(self, message_type, body_type):
+    def __init__(self, protocol_version, message_type, body_type):
         super().__init__(
             device_type=0x13,
+            protocol_version=protocol_version,
             message_type=message_type,
             body_type=body_type
         )
@@ -20,8 +21,9 @@ class Message13Base(MessageRequest):
 
 
 class MessageQuery(Message13Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.query,
             body_type=0x24)
 
@@ -33,8 +35,9 @@ class MessageQuery(Message13Base):
 
 
 class MessageSet(Message13Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x00)
         self.brightness = None
@@ -74,6 +77,7 @@ class MessageMainLightBody(MessageBody):
                           self.read_byte(body, 7)]
         '''
         self.power = self.read_byte(body, 8) > 0
+
 
 class MessageMainLightResponseBody(MessageBody):
     def __init__(self, body):

@@ -7,9 +7,10 @@ from ...core.message import (
 
 
 class MessageFBBase(MessageRequest):
-    def __init__(self, message_type, body_type):
+    def __init__(self, protocol_version, message_type, body_type):
         super().__init__(
             device_type=0xFB,
+            protocol_version=protocol_version,
             message_type=message_type,
             body_type=body_type
         )
@@ -20,8 +21,9 @@ class MessageFBBase(MessageRequest):
 
 
 class MessageQuery(MessageFBBase):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.query,
             body_type=None)
 
@@ -35,8 +37,9 @@ class MessageQuery(MessageFBBase):
 
 
 class MessageSet(MessageFBBase):
-    def __init__(self, subtype):
+    def __init__(self, protocol_version, subtype):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x00)
         self._subtype = subtype

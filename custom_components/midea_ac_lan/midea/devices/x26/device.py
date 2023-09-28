@@ -89,7 +89,7 @@ class Midea26Device(MiedaDevice):
         return Midea26Device._directions
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = Message26Response(msg)
@@ -116,7 +116,7 @@ class Midea26Device(MiedaDevice):
                     DeviceAttributes.mode,
                     DeviceAttributes.direction
                     ]:
-            message = MessageSet()
+            message = MessageSet(self._protocol_version)
             message.fields = self._fields
             message.main_light = self._attributes[DeviceAttributes.main_light]
             message.night_light = self._attributes[DeviceAttributes.night_light]

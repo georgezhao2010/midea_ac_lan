@@ -74,7 +74,7 @@ class MideaE3Device(MiedaDevice):
         return self._precision_halves
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageE3Response(msg)
@@ -92,7 +92,7 @@ class MideaE3Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet()
+        message = MessageSet(self._protocol_version)
         message.zero_cold_water = self._attributes[DeviceAttributes.zero_cold_water]
         message.protection = self._attributes[DeviceAttributes.protection]
         message.zero_clod_pulse = self._attributes[DeviceAttributes.zero_cold_pulse]
@@ -107,13 +107,13 @@ class MideaE3Device(MiedaDevice):
             if self._precision_halves and attr == DeviceAttributes.target_temperature:
                 value = int(value * 2)
             if attr == DeviceAttributes.power:
-                message = MessagePower()
+                message = MessagePower(self._protocol_version)
                 message.power = value
             elif self.subtype in self._old_subtypes:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
             else:
-                message = MessageNewProtocolSet()
+                message = MessageNewProtocolSet(self._protocol_version)
                 setattr(message, "key", str(attr))
                 setattr(message, "value", value)
             self.build_send(message)

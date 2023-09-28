@@ -74,7 +74,7 @@ class MideaEDDevice(MiedaDevice):
 
     def build_query(self):
         return [
-            MessageQuery(self._device_class)
+            MessageQuery(self._protocol_version, self._device_class)
         ]
 
     def process_message(self, msg):
@@ -96,10 +96,10 @@ class MideaEDDevice(MiedaDevice):
                 DeviceAttributes.power,
                 DeviceAttributes.child_lock
             ]:
-                message = MessageNewSet()
+                message = MessageNewSet(self._protocol_version)
         else:
             if attr in []:
-                message = MessageOldSet()
+                message = MessageOldSet(self._protocol_version)
         if message is not None:
             setattr(message, str(attr), value)
             self.build_send(message)

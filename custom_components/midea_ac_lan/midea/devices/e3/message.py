@@ -16,9 +16,10 @@ NEW_PROTOCOL_PARAMS = {
 
 
 class MessageE3Base(MessageRequest):
-    def __init__(self,  message_type, body_type):
+    def __init__(self, protocol_version, message_type, body_type):
         super().__init__(
             device_type=0xE3,
+            protocol_version=protocol_version,
             message_type=message_type,
             body_type=body_type
         )
@@ -29,8 +30,9 @@ class MessageE3Base(MessageRequest):
 
 
 class MessageQuery(MessageE3Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.query,
             body_type=0x01)
 
@@ -40,8 +42,9 @@ class MessageQuery(MessageE3Base):
 
 
 class MessagePower(MessageE3Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x02)
         self.power = False
@@ -56,8 +59,9 @@ class MessagePower(MessageE3Base):
 
 
 class MessageSet(MessageE3Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x04)
 
@@ -93,8 +97,9 @@ class MessageSet(MessageE3Base):
 
 
 class MessageNewProtocolSet(MessageE3Base):
-    def __init__(self):
+    def __init__(self, protocol_version):
         super().__init__(
+            protocol_version=protocol_version,
             message_type=MessageType.set,
             body_type=0x14)
         self.key = None

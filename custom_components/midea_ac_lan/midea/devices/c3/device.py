@@ -117,7 +117,7 @@ class MideaC3Device(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageC3Response(msg)
@@ -181,7 +181,7 @@ class MideaC3Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet()
+        message = MessageSet(self._protocol_version)
         message.zone1_power = self._attributes[DeviceAttributes.zone1_power]
         message.zone2_power = self._attributes[DeviceAttributes.zone2_power]
         message.dhw_power = self._attributes[DeviceAttributes.dhw_power]

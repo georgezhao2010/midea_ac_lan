@@ -80,7 +80,7 @@ class MideaCDDevice(MiedaDevice):
         return MideaCDDevice._modes
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageCDResponse(msg)
@@ -100,7 +100,7 @@ class MideaCDDevice(MiedaDevice):
 
     def set_attribute(self, attr, value):
         if attr in [DeviceAttributes.mode, DeviceAttributes.power, DeviceAttributes.target_temperature]:
-            message = MessageSet()
+            message = MessageSet(self._protocol_version)
             message.fields = self._fields
             message.mode = MideaCDDevice._modes.index(self._attributes[DeviceAttributes.mode])
             message.power = self._attributes[DeviceAttributes.power]

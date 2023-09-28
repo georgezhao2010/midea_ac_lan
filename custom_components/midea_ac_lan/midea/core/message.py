@@ -24,6 +24,7 @@ class MessageType(IntEnum):
     notify2 = 0x05,
     exception = 0x06,
     exception2 = 0x0A,
+    query_appliance = 0xA0
 
 
 class MessageBase(ABC):
@@ -90,12 +91,12 @@ class MessageBase(ABC):
 
 
 class MessageRequest(MessageBase):
-    def __init__(self, device_type, message_type, body_type, protocol_version=0):
+    def __init__(self, device_type, protocol_version, message_type, body_type):
         super().__init__()
         self.device_type = device_type
+        self.protocol_version = protocol_version
         self.message_type = message_type
         self.body_type = body_type
-        self.protocol_version = protocol_version
 
     @property
     def header(self):
@@ -106,7 +107,7 @@ class MessageRequest(MessageBase):
             # length
             length,
             # device type
-            self._device_type,
+            self.device_type,
             # frame checksum
             0x00,  # self._device_type ^ length,
             # unused
@@ -116,9 +117,9 @@ class MessageRequest(MessageBase):
             # frame protocol version
             0x00,
             # device protocol version
-            self._protocol_version,
+            self.protocol_version,
             # frame type
-            self._message_type
+            self.message_type
         ])
 
     @property
@@ -155,6 +156,22 @@ class MessageQuestCustom(MessageRequest):
     @property
     def body(self):
         return self._cmd_body
+
+
+class MessageQueryAppliance(MessageRequest):
+    def __init__(self, device_type):
+        super().__init__(
+            device_type=device_type,
+            message_type=MessageType.query_appliance,
+            body_type=None)
+
+    @property
+    def _body(self):
+        return bytearray([])
+
+    @property
+    def body(self):
+        return bytearray([0x00] * 19)
 
 
 class MessageBody:
@@ -241,3 +258,6 @@ class MessageResponse(MessageBase):
                 setattr(self, key, value)
 
 
+class MessageApplianceResponse(MessageResponse):
+    def __init__(self, message):
+        super().__init__(message)

@@ -80,7 +80,7 @@ class MideaDADevice(MiedaDevice):
             })
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageDAResponse(msg)
@@ -128,11 +128,11 @@ class MideaDADevice(MiedaDevice):
 
     def set_attribute(self, attr, value):
         if attr == DeviceAttributes.power:
-            message = MessagePower()
+            message = MessagePower(self._protocol_version)
             message.power = value
             self.build_send(message)
         elif attr == DeviceAttributes.start:
-            message = MessageStart()
+            message = MessageStart(self._protocol_version)
             message.start = value
             message.washing_data = self._attributes[DeviceAttributes.washing_data]
             self.build_send(message)

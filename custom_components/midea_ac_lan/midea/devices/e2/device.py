@@ -76,7 +76,7 @@ class MideaE2Device(MiedaDevice):
         return self.subtype <= 82 or self.subtype == 85 or self.subtype == 36353
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageE2Response(msg)
@@ -89,7 +89,7 @@ class MideaE2Device(MiedaDevice):
         return new_status
 
     def make_message_set(self):
-        message = MessageSet()
+        message = MessageSet(self._protocol_version)
         message.protection = self._attributes[DeviceAttributes.protection]
         message.whole_tank_heating = self._attributes[DeviceAttributes.whole_tank_heating]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
@@ -105,13 +105,13 @@ class MideaE2Device(MiedaDevice):
             else:
                 old_protocol = self.old_protocol()
             if attr == DeviceAttributes.power:
-                message = MessagePower()
+                message = MessagePower(self._protocol_version)
                 message.power = value
             elif old_protocol:
                 message = self.make_message_set()
                 setattr(message, str(attr), value)
             else:
-                message = MessageNewProtocolSet()
+                message = MessageNewProtocolSet(self._protocol_version)
                 setattr(message, str(attr), value)
             self.build_send(message)
 
