@@ -123,7 +123,7 @@ class MideaB6Device(MiedaDevice):
             self.build_send(message)
 
     def turn_on(self, fan_speed=None, mode=None):
-        message = MessageSet()
+        message = MessageSet(self._protocol_version)
         message.power = True
         if fan_speed is not None and fan_speed < len(self._speeds):
             message.fan_level = list(self._speeds.keys())[fan_speed]
