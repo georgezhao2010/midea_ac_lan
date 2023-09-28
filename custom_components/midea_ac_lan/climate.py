@@ -22,6 +22,7 @@ from .midea.devices.fb.device import DeviceAttributes as FBAttributes
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
+import logging
 _LOGGER = logging.getLogger(__name__)
 
 

@@ -1,4 +1,4 @@
-import logging
+
 from homeassistant.components.water_heater import *
 from homeassistant.const import (
     Platform,
@@ -21,12 +21,13 @@ from .midea.devices.cd.device import DeviceAttributes as CDAttributes
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
+import logging
+_LOGGER = logging.getLogger(__name__)
+
 E2_TEMPERATURE_MAX = 75
 E2_TEMPERATURE_MIN = 30
 E3_TEMPERATURE_MAX = 65
 E3_TEMPERATURE_MIN = 35
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):

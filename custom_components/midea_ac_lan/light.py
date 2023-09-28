@@ -4,8 +4,6 @@ from homeassistant.const import (
     Platform,
     CONF_DEVICE_ID,
     CONF_SWITCHES,
-    STATE_ON,
-    STATE_OFF
 )
 from .const import (
     DOMAIN,

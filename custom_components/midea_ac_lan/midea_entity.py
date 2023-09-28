@@ -1,8 +1,8 @@
-import logging
 from homeassistant.helpers.entity import Entity
 from .const import DOMAIN
 from .midea_devices import MIDEA_DEVICES
 
+import logging
 _LOGGER = logging.getLogger(__name__)
 
 

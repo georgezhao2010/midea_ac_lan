@@ -3,8 +3,6 @@ from .midea_devices import MIDEA_DEVICES
 from homeassistant.components.lock import LockEntity
 from homeassistant.const import (
     Platform,
-    STATE_LOCKED,
-    STATE_UNLOCKED,
     CONF_DEVICE_ID,
     CONF_SWITCHES
 )

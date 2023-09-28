@@ -1,5 +1,5 @@
 from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.const import Platform, CONF_DEVICE_ID, CONF_SENSORS, STATE_ON, STATE_OFF
+from homeassistant.const import Platform, CONF_DEVICE_ID, CONF_SENSORS
 from .const import (
     DOMAIN,
     DEVICES

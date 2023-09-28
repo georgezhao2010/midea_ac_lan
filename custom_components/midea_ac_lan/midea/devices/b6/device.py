@@ -75,7 +75,7 @@ class MideaB6Device(MiedaDevice):
         return list(self._speeds.values())
 
     def build_query(self):
-        return [MessageQuery()]
+        return [MessageQuery(self._protocol_version)]
 
     def process_message(self, msg):
         message = MessageB6Response(msg)
@@ -102,22 +102,22 @@ class MideaB6Device(MiedaDevice):
         message = None
         if attr == DeviceAttributes.fan_speed:
             if value < len(self._speeds):
-                message = MessageSet()
+                message = MessageSet(self._protocol_version)
                 message.fan_level = list(self._speeds.keys())[value]
         elif attr == DeviceAttributes.mode:
             if value in self._speeds.values():
-                message = MessageSet()
+                message = MessageSet(self._protocol_version)
                 message.fan_level = \
                     list(self._speeds.keys())[list(self._speeds.values()).index(value)]
             elif not value:
-                message = MessageSet()
+                message = MessageSet(self._protocol_version)
                 message.power = False
         elif attr == DeviceAttributes.power:
-            message = MessageSet()
+            message = MessageSet(self._protocol_version)
             message.power = value
             message.fan_level = self._power_speed
         elif attr == DeviceAttributes.light:
-            message = MessageSet()
+            message = MessageSet(self._protocol_version)
             message.light = value
         if message is not None:
             self.build_send(message)

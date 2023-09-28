@@ -12,6 +12,9 @@ from .const import (
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
+import logging
+_LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     device_id = config_entry.data.get(CONF_DEVICE_ID)
@@ -73,7 +76,7 @@ class MideaHumidifier(MideaEntity, HumidifierEntity):
         try:
             self.schedule_update_ha_state()
         except Exception as e:
-            pass
+            _LOGGER.debug(f"Entity {self.entity_id} update_state {repr(e)}, status = {status}")
 
 
 class MideaA1Humidifier(MideaHumidifier):

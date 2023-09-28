@@ -1,4 +1,3 @@
-import logging
 from homeassistant.components.fan import *
 from homeassistant.const import (
     Platform,
@@ -17,6 +16,7 @@ from .midea.devices.x40.device import DeviceAttributes as X40Attributes
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
+import logging
 _LOGGER = logging.getLogger(__name__)
 
 

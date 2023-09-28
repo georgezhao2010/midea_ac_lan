@@ -448,7 +448,7 @@ class MSmartHomeCloud(MideaCloud):
         return None
 
     async def get_device_info(self, device_id: int):
-        if response := await self.list_appliances():
+        if response := await self.list_appliances(home_id=None):
             if device_id in response.keys():
                 return response[device_id]
         return None

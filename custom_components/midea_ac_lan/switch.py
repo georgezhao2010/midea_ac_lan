@@ -3,8 +3,6 @@ from .midea_devices import MIDEA_DEVICES
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.const import (
     Platform,
-    STATE_ON,
-    STATE_OFF,
     CONF_DEVICE_ID,
     CONF_SWITCHES
 )
