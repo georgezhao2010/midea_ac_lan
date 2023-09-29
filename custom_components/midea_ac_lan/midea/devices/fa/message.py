@@ -54,7 +54,7 @@ class MessageSet(MessageFABase):
 
     @property
     def _body(self):
-        if self._subtype <= 10 or self._subtype == 161:
+        if 1 <= self._subtype <= 10 or self._subtype == 161:
             _body_return = bytearray([
                 0x00, 0x00, 0x00, 0x80,
                 0x00, 0x00, 0x00, 0x80,
@@ -62,7 +62,7 @@ class MessageSet(MessageFABase):
                 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00
             ])
-            if self._subtype not in [0, 10]:
+            if self._subtype != 10:
                 _body_return[13] = 0xFF
         else:
             _body_return = bytearray([
