@@ -224,7 +224,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             if device_info := await cloud.get_device_info(device_id):
                                 self.found_device[CONF_NAME] = device_info.get("name")
                                 self.found_device[CONF_SUBTYPE] = device_info.get("model_number")
-
                             return await self.async_step_manually()
                     return await self.async_step_auto(error="connect_error")
                 return await self.async_step_auto(error="login_failed")
@@ -339,7 +338,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(
                     CONF_SUBTYPE,
                     default=self.found_device.get(CONF_SUBTYPE) if self.found_device.get(CONF_SUBTYPE) else 0
-                ): str,
+                ): int,
                 vol.Optional(
                     CONF_TOKEN,
                     default=self.found_device.get(CONF_TOKEN) if self.found_device.get(CONF_TOKEN) else ""

@@ -245,12 +245,16 @@ class MeijuCloud(MideaCloud):
             for home in response.get("homeList") or []:
                 for room in home.get("roomList") or []:
                     for appliance in room.get("applianceList"):
+                        try:
+                            model_number = int(appliance.get("modelNumber", 0))
+                        except ValueError:
+                            model_number = 0
                         device_info = {
                             "name": appliance.get("name"),
                             "type": int(appliance.get("type"), 16),
                             "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
                             "sn8": appliance.get("sn8", "00000000"),
-                            "model_number": appliance.get("modelNumber", "0"),
+                            "model_number": model_number,
                             "manufacturer_code":appliance.get("enterpriseCode", "0000"),
                             "model": appliance.get("productModel"),
                             "online": appliance.get("onlineStatus") == "1",
@@ -271,12 +275,16 @@ class MeijuCloud(MideaCloud):
             endpoint="/v1/appliance/info/get",
             data=data
         ):
+            try:
+                model_number = int(response.get("modelNumber", 0))
+            except ValueError:
+                model_number = 0
             device_info = {
                 "name": response.get("name"),
                 "type": int(response.get("type"), 16),
                 "sn": self._security.aes_decrypt(response.get("sn")) if response.get("sn") else "",
                 "sn8": response.get("sn8", "00000000"),
-                "model_number": response.get("modelNumber", "0"),
+                "model_number": model_number,
                 "manufacturer_code": response.get("enterpriseCode", "0000"),
                 "model": response.get("productModel"),
                 "online": response.get("onlineStatus") == "1",
@@ -431,12 +439,16 @@ class MSmartHomeCloud(MideaCloud):
         ):
             appliances = {}
             for appliance in response["list"]:
+                try:
+                    model_number = int(appliance.get("modelNumber", 0))
+                except ValueError:
+                    model_number = 0
                 device_info = {
                     "name": appliance.get("name"),
                     "type": int(appliance.get("type"), 16),
                     "sn": self._security.aes_decrypt(appliance.get("sn")) if appliance.get("sn") else "",
                     "sn8": "",
-                    "model_number": appliance.get("modelNumber", "0"),
+                    "model_number": model_number,
                     "manufacturer_code":appliance.get("enterpriseCode", "0000"),
                     "model": "",
                     "online": appliance.get("onlineStatus") == "1",
