@@ -46,10 +46,12 @@ def discover(discover_type=None, ip_address=None):
     else:
         addrs = [ip_address]
     _LOGGER.debug(f"All addresses for broadcast: {addrs}")
-    for v in range(0, 3):
-        for addr in addrs:
+    for addr in addrs:
+        try:
             sock.sendto(BROADCAST_MSG, (addr, 6445))
             sock.sendto(BROADCAST_MSG, (addr, 20086))
+        except Exception:
+            _LOGGER.warning(f"Can't access network {addr}")
     while True:
         try:
             data, addr = sock.recvfrom(512)
@@ -164,9 +166,9 @@ def enum_all_broadcast():
     for adapter in adapters:
         for ip in adapter.ips:
             if ip.is_IPv4 and ip.network_prefix < 32:
-                localNet = IPv4Network(f"{ip.ip}/{ip.network_prefix}", strict=False)
-                if localNet.is_private and not localNet.is_loopback and not localNet.is_link_local:
-                    addr = str(localNet.broadcast_address)
+                local_network = IPv4Network(f"{ip.ip}/{ip.network_prefix}", strict=False)
+                if local_network.is_private and not local_network.is_loopback and not local_network.is_link_local:
+                    addr = str(local_network.broadcast_address)
                     if addr not in nets:
                         nets.append(addr)
     return nets
