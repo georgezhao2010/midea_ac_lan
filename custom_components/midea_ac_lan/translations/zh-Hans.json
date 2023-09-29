@@ -26,7 +26,7 @@
             },
             "discovery": {
                 "description": "输入设备的IP地址, 输入\"auto\"自动搜索设备",
-                "title": "指定IP",
+                "title": "搜索",
                 "data": {
                     "ip_address": "IP地址"
                 }

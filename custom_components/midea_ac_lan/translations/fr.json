@@ -26,7 +26,7 @@
             },
             "discovery": {
                 "description": "Saisissez l'adresse IP de l'appareil, entrez \"auto\" pour découvrir automatiquement.",
-                "title": "Par IP",
+                "title": "Recherche",
                 "data": {
                     "ip_address": "Adresse IP"
                 }

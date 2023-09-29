@@ -26,7 +26,7 @@
             },
             "discovery": {
                 "description": "Zadajte IP adresu pre zariadenie, zadajte \"auto\" pre automatické vyhľadávanie",
-                "title": "Podľa IP",
+                "title": "Hľadať",
                 "data": {
                     "ip_address": "IP adresa"
                 }
