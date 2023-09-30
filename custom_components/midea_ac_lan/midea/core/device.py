@@ -182,9 +182,9 @@ class MiedaDevice(threading.Thread):
         self.send_message(msg)
 
     def refresh_status(self, wait_response=False):
-        cmds:list = self.build_query()
+        cmds: list = self.build_query()
         if self._appliance_query:
-            cmds.extend([MessageQueryAppliance(self.device_type)])
+            cmds = [MessageQueryAppliance(self.device_type)] + cmds
         error_count = 0
         for cmd in cmds:
             if cmd.__class__.__name__ not in self._unsupported_protocol:

@@ -2,7 +2,7 @@ import logging
 import json
 from .message import (
     MessageQuery,
-    MessageSwitchDisplay,
+    MessageToggleDisplay,
     MessageNewProtocolQuery,
     MessageACResponse,
     MessageGeneralSet,
@@ -37,7 +37,7 @@ class DeviceAttributes(StrEnum):
     natural_wind = "natural_wind"
     temp_fahrenheit = "temp_fahrenheit"
     screen_display = "screen_display"
-    screen_display_new = "screen_display_new"
+    screen_display_alternate = "screen_display_alternate"
     full_dust = "full_dust"
     frost_protect = "frost_protect"
     comfort_mode = "comfort_mode"
@@ -105,7 +105,7 @@ class MideaACDevice(MiedaDevice):
                 DeviceAttributes.natural_wind: False,
                 DeviceAttributes.temp_fahrenheit: False,
                 DeviceAttributes.screen_display: False,
-                DeviceAttributes.screen_display_new: False,
+                DeviceAttributes.screen_display_alternate: False,
                 DeviceAttributes.full_dust: False,
                 DeviceAttributes.indoor_temperature: None,
                 DeviceAttributes.outdoor_temperature: None,
@@ -251,15 +251,12 @@ class MideaACDevice(MiedaDevice):
                 self._attributes[DeviceAttributes.prompt_tone] = value
                 self.update_all({DeviceAttributes.prompt_tone.value: value})
             elif attr == DeviceAttributes.screen_display:
-                if self._attributes[DeviceAttributes.screen_display_new]:
-                    message = MessageNewProtocolSet(self._protocol_version)
-                    message.screen_display = value
-                    message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
-                else:
-                    message = MessageSwitchDisplay(self._protocol_version)
+                message = MessageToggleDisplay(self._protocol_version)
+                message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
             elif attr in [
                     DeviceAttributes.indirect_wind,
-                    DeviceAttributes.breezeless
+                    DeviceAttributes.breezeless,
+                    DeviceAttributes.screen_display_alternate
             ]:
                 message = MessageNewProtocolSet(self._protocol_version)
                 setattr(message, str(attr), value)

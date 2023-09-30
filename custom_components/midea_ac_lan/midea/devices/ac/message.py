@@ -57,11 +57,11 @@ class MessageQuery(MessageACBase):
     @property
     def _body(self):
         return bytearray([
-            0x81, 0x00, 0xFF, 0x03,
-            0xFF, 0x00, 0x02,
+            0x81, 0x00, 0xFF, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00,
         ])
 
 
@@ -85,21 +85,24 @@ class MessagePowerQuery(MessageACBase):
         return body
 
 
-class MessageSwitchDisplay(MessageACBase):
+class MessageToggleDisplay(MessageACBase):
     def __init__(self, protocol_version):
         super().__init__(
             protocol_version=protocol_version,
             message_type=MessageType.query,
             body_type=0x41)
+        self.prompt_tone = False
 
     @property
     def _body(self):
+        prompt_tone = 0x40 if self.prompt_tone else 0
         return bytearray([
-            0x81, 0x00, 0xFF, 0x02,
-            0xFF, 0x02, 0x02,
+            0x02 | prompt_tone,
+            0x00, 0xFF, 0x02,
+            0x00, 0x02, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00
+            0x00, 0x00, 0x00
         ])
 
 
@@ -204,7 +207,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         prompt_tone = 0x01 if self.prompt_tone else 0
         timer = 0x04 if (self.sn8_flag and self.timer) else 0
         return bytearray([
-            boost_mode | power | dry,  aux_heating, sleep_mode, 0x00,
+            0x02 | boost_mode | power | dry,  aux_heating, sleep_mode, 0x00,
             0x00, mode, target_temperature, fan_speed,
             0x32, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x01,
@@ -301,7 +304,7 @@ class MessageNewProtocolSet(MessageACBase):
         self.indirect_wind = None
         self.prompt_tone = None
         self.breezeless = None
-        self.screen_display = None
+        self.screen_display_alternate = None
         self.fresh_air_1 = None
         self.fresh_air_2 = None
 
@@ -330,12 +333,12 @@ class MessageNewProtocolSet(MessageACBase):
                     param=NewProtocolTags.prompt_tone,
                     value=bytearray([0x01 if self.prompt_tone else 0x00])
                 ))
-        if self.screen_display is not None:
+        if self.screen_display_alternate is not None:
             pack_count += 1
             payload.extend(
                 NewProtocolMessageBody.pack(
                     param=NewProtocolTags.screen_display,
-                    value=bytearray([0x64 if self.screen_display else 0x00])
+                    value=bytearray([0x64 if self.screen_display_alternate else 0x00])
                 ))
         if self.fresh_air_1 is not None and len(self.fresh_air_1) == 2:
             pack_count += 1
@@ -421,7 +424,7 @@ class XBXMessageBody(NewProtocolMessageBody):
         if NewProtocolTags.breezeless in params:
             self.breezeless = (params[NewProtocolTags.breezeless][0] == 1)
         if NewProtocolTags.screen_display in params:
-            self.screen_display = (params[NewProtocolTags.screen_display][0] > 0)
+            self.screen_display_alternate = (params[NewProtocolTags.screen_display][0] > 0)
             self.screen_display_new = True
         if NewProtocolTags.fresh_air_1 in params:
             self.fresh_air_1 = True
@@ -470,8 +473,8 @@ class XC0MessageBody(MessageBody):
                 self.outdoor_temperature = temp_integer - temp_decimal
         self.full_dust = (body[13] & 0x20) > 0
         self.screen_display = ((body[14] >> 4 & 0x7) != 0x07) and self.power
-        self.frost_protect = (body[21] & 0x80) > 0 if len(body) > 23 else False
-        self.comfort_mode = (body[22] & 0x1) > 0 if len(body) > 24 else False
+        self.frost_protect = (body[21] & 0x80) > 0 if len(body) >= 22 else False
+        self.comfort_mode = (body[22] & 0x1) > 0 if len(body) >= 23 else False
 
 
 class XC1MessageBody(MessageBody):

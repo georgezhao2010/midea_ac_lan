@@ -385,6 +385,11 @@ MIDEA_DEVICES = {
                 "name": "Screen Display",
                 "icon": "mdi:television-ambient-light"
             },
+            ACAttributes.screen_display_alternate: {
+                "type": Platform.SWITCH,
+                "name": "Screen Display Alternate",
+                "icon": "mdi:television-ambient-light"
+            },
             ACAttributes.sleep_mode: {
                 "type": Platform.SWITCH,
                 "name": "Sleep Mode",

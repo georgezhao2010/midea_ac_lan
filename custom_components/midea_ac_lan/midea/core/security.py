@@ -2,7 +2,9 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Util.strxor import strxor
 from Crypto.Random import get_random_bytes
+from urllib.parse import unquote_plus, urlencode, urlparse
 from hashlib import md5, sha256
+from typing import Any
 import hmac
 
 
@@ -22,9 +24,9 @@ class CloudSecurity:
         self._fixed_key = format(fixed_key, 'x').encode("ascii") if fixed_key else None
         self._fixed_iv = format(fixed_iv, 'x').encode("ascii") if fixed_iv else None
 
-    def sign(self, data: str, random: str) -> str:
+    def sign(self, url: str, data: Any, random: str) -> str:
         msg = self._iot_key
-        msg += data
+        msg += str(data)
         msg += random
         sign = hmac.new(self._hmac_key.encode("ascii"), msg.encode("ascii"), sha256)
         return sign.hexdigest()
@@ -141,6 +143,17 @@ class MSmartCloudSecurity(CloudSecurity):
         tmp_iv = key_digest[16:32].encode("ascii")
         self._aes_key = self.aes_decrypt(encrypted_key, tmp_key, tmp_iv).encode('ascii')
         self._aes_iv = self.aes_decrypt(encrypted_iv, tmp_key, tmp_iv).encode('ascii')
+
+
+class MideaAirSecurity(CloudSecurity):
+    def __init__(self, login_key):
+        super().__init__(login_key, None, None)
+
+    def sign(self, url: str, data: Any, random: str) -> str:
+        payload = unquote_plus(urlencode(sorted(data.items(), key=lambda x: x[0])))
+        sha = sha256()
+        sha.update((urlparse(url).path + payload + self._login_key).encode("ascii"))
+        return sha.hexdigest()
 
 
 class LocalSecurity:

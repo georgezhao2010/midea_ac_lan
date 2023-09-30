@@ -48,6 +48,8 @@ STORAGE_PATH = f".storage/{DOMAIN}"
 servers = {
     1: "MSmartHome",
     2: "美的美居",
+    3: "Midea Air",
+    4: "NetHome Plus",
 }
 
 
@@ -67,11 +69,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     for item in unsorted:
         supports[item[0]] = item[1]
 
-    def _save_device_token(self, device_id, protocol, token, key):
+    def _save_device_config(self, data: dict):
         os.makedirs(self.hass.config.path(STORAGE_PATH), exist_ok=True)
-        record_file = self.hass.config.path(f"{STORAGE_PATH}/{device_id}.json")
-        json_data = {"protocol": f"v{protocol}", "token": token, "key": key}
-        save_json(record_file, json_data)
+        record_file = self.hass.config.path(f"{STORAGE_PATH}/{data[CONF_DEVICE_ID]}.json")
+        save_json(record_file, data)
 
     def _get_configured_account(self):
         for entry in self._async_current_entries():
@@ -280,26 +281,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             if dm.connect(refresh_status=False):
                 dm.close_socket()
-                self._save_device_token(
-                    user_input[CONF_DEVICE_ID],
-                    user_input[CONF_PROTOCOL],
-                    user_input[CONF_TOKEN],
-                    user_input[CONF_KEY]
-                )
+                data = {
+                    CONF_NAME: user_input[CONF_NAME],
+                    CONF_DEVICE_ID: user_input[CONF_DEVICE_ID],
+                    CONF_TYPE: user_input[CONF_TYPE],
+                    CONF_PROTOCOL: user_input[CONF_PROTOCOL],
+                    CONF_IP_ADDRESS: user_input[CONF_IP_ADDRESS],
+                    CONF_PORT: user_input[CONF_PORT],
+                    CONF_MODEL: user_input[CONF_MODEL],
+                    CONF_SUBTYPE: user_input[CONF_SUBTYPE],
+                    CONF_TOKEN: user_input[CONF_TOKEN],
+                    CONF_KEY: user_input[CONF_KEY],
+                    }
+                self._save_device_config(data)
                 return self.async_create_entry(
                     title=f"{user_input[CONF_NAME]}",
-                    data={
-                        CONF_NAME: user_input[CONF_NAME],
-                        CONF_DEVICE_ID: user_input[CONF_DEVICE_ID],
-                        CONF_TYPE: user_input[CONF_TYPE],
-                        CONF_PROTOCOL: user_input[CONF_PROTOCOL],
-                        CONF_IP_ADDRESS: user_input[CONF_IP_ADDRESS],
-                        CONF_PORT: user_input[CONF_PORT],
-                        CONF_MODEL: user_input[CONF_MODEL],
-                        CONF_SUBTYPE: user_input[CONF_SUBTYPE],
-                        CONF_TOKEN: user_input[CONF_TOKEN],
-                        CONF_KEY: user_input[CONF_KEY],
-                    })
+                    data=data
+                )
             else:
                 return await self.async_step_manually(error="config_incorrect")
         return self.async_show_form(
