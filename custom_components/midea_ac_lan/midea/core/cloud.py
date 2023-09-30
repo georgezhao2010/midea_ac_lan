@@ -116,7 +116,7 @@ class MideaCloud:
                     response = json.loads(raw)
                     break
             except Exception as e:
-                pass
+                _LOGGER.warning(f"Midea cloud API error, url: {url}, error: {repr(e)}")
         if int(response["code"]) == 0 and "data" in response:
             return response["data"]
         return None
@@ -576,8 +576,8 @@ class MideaAirCloud(MideaCloud):
                     _LOGGER.debug(f"Midea cloud API url: {url}, data: {data}, response: {raw}")
                     response = json.loads(raw)
                     break
-            except Exception:
-                pass
+            except Exception as e:
+                _LOGGER.warning(f"Midea cloud API error, url: {url}, error: {repr(e)}")
         if int(response["errorCode"]) == 0 and "result" in response:
             return response["result"]
         return None
