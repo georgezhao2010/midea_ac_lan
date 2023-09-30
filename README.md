@@ -80,8 +80,10 @@ Or click [![Configuration](https://my.home-assistant.io/badges/config_flow_start
 
 After the account is configured, Click 'ADD DEVICE' once more to add new device. You could repeat the above action to add multiple devices.
 
-## Discovery automatically
+## Discover automatically
 Using this option, the component could auto-discover and list Midea M-Smart appliances in network or specified IP address, select one and add it in.
+
+You can also use an IP address to search within a specified network, such as `192.168.1.255`.
 
 ***❗Note: Discovery automatically requires your appliances and your Home Assistant must be in the same sub-network. Otherwise, devices may not be auto-discovered.  Check this by yourself.***
 

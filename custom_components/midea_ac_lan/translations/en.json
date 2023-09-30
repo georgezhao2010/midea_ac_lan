@@ -25,7 +25,7 @@
                 "title": "Login"
             },
             "discovery": {
-                "description": "IP address for device, enter \"auto\" to discover automatically",
+                "description": "IP address for device, enter \"auto\" to discover automatically\nYou can also use an IP address to search within a specified network, such as \"192.168.1.255\"",
                 "title": "Search",
                 "data": {
                     "ip_address": "IP address"

@@ -25,7 +25,7 @@
                 "title": "Login"
             },
             "discovery": {
-                "description": "Zadajte IP adresu pre zariadenie, zadajte \"auto\" pre automatické vyhľadávanie",
+                "description": "Zadajte IP adresu pre zariadenie, zadajte \"auto\" pre automatické vyhľadávanie.\nNa vyhľadávanie v rámci určitej siete môžete použiť aj IP adresu, napríklad \"192.168.1.255\".",
                 "title": "Hľadať",
                 "data": {
                     "ip_address": "IP adresa"

@@ -25,7 +25,7 @@
                 "title": "登录"
             },
             "discovery": {
-                "description": "输入设备的IP地址, 输入\"auto\"自动搜索设备",
+                "description": "输入设备的IP地址, 输入\"auto\"自动搜索设备\n你也可以使用IP地址在指定网络中搜索, 比如`192.168.1.255`",
                 "title": "搜索",
                 "data": {
                     "ip_address": "IP地址"

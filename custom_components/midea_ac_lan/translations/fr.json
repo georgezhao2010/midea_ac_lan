@@ -25,7 +25,7 @@
                 "title": "Login"
             },
             "discovery": {
-                "description": "Saisissez l'adresse IP de l'appareil, entrez \"auto\" pour découvrir automatiquement.",
+                "description": "Saisissez l'adresse IP de l'appareil, entrez \"auto\" pour découvrir automatiquement.\nVous pouvez également utiliser une adresse IP pour rechercher dans un réseau spécifié, comme \"192.168.1.255\".",
                 "title": "Recherche",
                 "data": {
                     "ip_address": "Adresse IP"

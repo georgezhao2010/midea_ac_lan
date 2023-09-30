@@ -41,7 +41,7 @@ from .midea_devices import MIDEA_DEVICES
 
 _LOGGER = logging.getLogger(__name__)
 
-ADD_WAY = {"discovery": "Discovery automatically", "manually": "Configure manually", "list": "List all appliances only"}
+ADD_WAY = {"discovery": "Discover automatically", "manually": "Configure manually", "list": "List all appliances only"}
 PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
 STORAGE_PATH = f".storage/{DOMAIN}"
 
