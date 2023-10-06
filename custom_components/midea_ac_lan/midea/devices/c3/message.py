@@ -73,6 +73,46 @@ class MessageSet(MessageC3Base):
         ])
 
 
+class MessageSetSilent(MessageC3Base):
+    def __init__(self, protocol_version):
+        super().__init__(
+            protocol_version=protocol_version,
+            message_type=MessageType.set,
+            body_type=0x05)
+        self.silent_mode = False
+        self.super_silent = False
+
+    @property
+    def _body(self):
+        silent_mode = 0x01 if self.silent_mode else 0
+        super_silent = 0x02 if self.super_silent else 0
+
+        return bytearray([
+            silent_mode | super_silent,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00
+        ])
+
+
+class MessageSetECO(MessageC3Base):
+    def __init__(self, protocol_version):
+        super().__init__(
+            protocol_version=protocol_version,
+            message_type=MessageType.set,
+            body_type=0x07)
+        self.eco_mode = False
+
+    @property
+    def _body(self):
+        eco_mode = 0x01 if self.eco_mode else 0
+
+        return bytearray([
+            eco_mode,
+            0x00, 0x00, 0x00, 0x00,
+            0x00
+        ])
+
+
 class C3MessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
@@ -87,6 +127,8 @@ class C3MessageBody(MessageBody):
             body[data_offset + 1] & 0x10 > 0,
             body[data_offset + 1] & 0x20 > 0
         ]
+        self.silent_mode = body[data_offset + 2] & 0x02 > 0
+        self.eco_mode = body[data_offset + 2] & 0x08 > 0
         self.mode = body[data_offset + 3]
         self.mode_auto = body[data_offset + 4]
         self.zone_target_temp = [

@@ -921,10 +921,20 @@ MIDEA_DEVICES = {
                 "name": "DHW Power",
                 "icon": "mdi:power"
             },
+            C3Attributes.eco_mode: {
+                "type": Platform.SWITCH,
+                "name": "ECO Mode",
+                "icon": "mdi:leaf-circle"
+            },
             C3Attributes.fast_dhw: {
                 "type": Platform.SWITCH,
                 "name": "Fast DHW",
                 "icon": "mdi:rotate-orbit"
+            },
+            C3Attributes.silent_mode:{
+                "type": Platform.SWITCH,
+                "name": "Silent Mode",
+                "icon": "mdi:fan-remove"
             },
             C3Attributes.zone1_curve: {
                 "type": Platform.SWITCH,

@@ -1,6 +1,8 @@
 import logging
 from .message import (
     MessageQuery,
+    MessageSetSilent,
+    MessageSetECO,
     MessageC3Response,
     MessageSet
 )
@@ -50,6 +52,8 @@ class DeviceAttributes(StrEnum):
     total_energy_consumption = "total_energy_consumption"
     total_produced_energy = "total_produced_energy"
     outdoor_temperature = "outdoor_temperature"
+    silent_mode = "silent_mode"
+    eco_mode = "eco_mode"
 
 
 class MideaC3Device(MiedaDevice):
@@ -90,6 +94,8 @@ class MideaC3Device(MiedaDevice):
                 DeviceAttributes.zone2_room_temp_mode: False,
                 DeviceAttributes.zone1_water_temp_mode: False,
                 DeviceAttributes.zone2_water_temp_mode: False,
+                DeviceAttributes.silent_mode: False,
+                DeviceAttributes.eco_mode: False,
                 DeviceAttributes.mode: 1,
                 DeviceAttributes.mode_auto: 1,
                 DeviceAttributes.zone_target_temp: [25, 25],
@@ -196,6 +202,7 @@ class MideaC3Device(MiedaDevice):
         return message
 
     def set_attribute(self, attr, value):
+        message= None
         if attr in [
             DeviceAttributes.zone1_power,
             DeviceAttributes.zone2_power,
@@ -208,6 +215,13 @@ class MideaC3Device(MiedaDevice):
         ]:
             message = self.make_message_set()
             setattr(message, str(attr), value)
+        elif attr == DeviceAttributes.eco_mode:
+            message = MessageSetECO(self._protocol_version)
+            setattr(message, str(attr), value)
+        elif attr == DeviceAttributes.silent_mode:
+            message = MessageSetSilent(self._protocol_version)
+            setattr(message, str(attr), value)
+        if message is not None:
             self.build_send(message)
 
     def set_mode(self, zone, mode):
