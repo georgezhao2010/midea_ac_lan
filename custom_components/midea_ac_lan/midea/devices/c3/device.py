@@ -46,14 +46,13 @@ class DeviceAttributes(StrEnum):
     temperature_max = "temperature_max"
     temperature_min = "temperature_min"
     status_heating = "status_heating"
-    status_dhw = "status_dhw"
-    status_tbh = "status_tbh"
     status_ibh = "status_ibh"
     total_energy_consumption = "total_energy_consumption"
     total_produced_energy = "total_produced_energy"
     outdoor_temperature = "outdoor_temperature"
     silent_mode = "silent_mode"
     eco_mode = "eco_mode"
+    tbh = "tbh"
 
 
 class MideaC3Device(MiedaDevice):
@@ -96,6 +95,7 @@ class MideaC3Device(MiedaDevice):
                 DeviceAttributes.zone2_water_temp_mode: False,
                 DeviceAttributes.silent_mode: False,
                 DeviceAttributes.eco_mode: False,
+                DeviceAttributes.tbh: False,
                 DeviceAttributes.mode: 1,
                 DeviceAttributes.mode_auto: 1,
                 DeviceAttributes.zone_target_temp: [25, 25],
@@ -115,8 +115,6 @@ class MideaC3Device(MiedaDevice):
                 DeviceAttributes.temperature_min: [0, 0],
                 DeviceAttributes.total_energy_consumption: None,
                 DeviceAttributes.status_heating: None,
-                DeviceAttributes.status_dhw: None,
-                DeviceAttributes.status_tbh: None,
                 DeviceAttributes.status_ibh: None,
                 DeviceAttributes.total_produced_energy: None,
                 DeviceAttributes.outdoor_temperature: None
@@ -198,6 +196,7 @@ class MideaC3Device(MiedaDevice):
         message.zone1_curve = self._attributes[DeviceAttributes.zone1_curve]
         message.zone2_curve = self._attributes[DeviceAttributes.zone2_curve]
         message.disinfect = self._attributes[DeviceAttributes.disinfect]
+        message.tbh = self._attributes[DeviceAttributes.tbh]
         message.fast_dhw = self._attributes[DeviceAttributes.fast_dhw]
         return message
 
@@ -211,7 +210,8 @@ class MideaC3Device(MiedaDevice):
             DeviceAttributes.zone2_curve,
             DeviceAttributes.disinfect,
             DeviceAttributes.fast_dhw,
-            DeviceAttributes.dhw_target_temp
+            DeviceAttributes.dhw_target_temp,
+            DeviceAttributes.tbh
         ]:
             message = self.make_message_set()
             setattr(message, str(attr), value)

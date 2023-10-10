@@ -931,10 +931,15 @@ MIDEA_DEVICES = {
                 "name": "Fast DHW",
                 "icon": "mdi:rotate-orbit"
             },
-            C3Attributes.silent_mode:{
+            C3Attributes.silent_mode: {
                 "type": Platform.SWITCH,
                 "name": "Silent Mode",
                 "icon": "mdi:fan-remove"
+            },
+            C3Attributes.tbh: {
+                "type": Platform.SWITCH,
+                "name": "TBH",
+                "icon": "mdi:water-boiler"
             },
             C3Attributes.zone1_curve: {
                 "type": Platform.SWITCH,
@@ -986,18 +991,6 @@ MIDEA_DEVICES = {
                 "device_class": SensorDeviceClass.TEMPERATURE,
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
-            },
-            C3Attributes.status_tbh: {
-                "type": Platform.BINARY_SENSOR,
-                "name": "TBH status",
-                "icon": "mdi:water-boiler",
-                "device_class": BinarySensorDeviceClass.RUNNING,
-            },
-            C3Attributes.status_dhw: {
-                "type": Platform.BINARY_SENSOR,
-                "name": "DHW status",
-                "icon": "mdi:heat-pump",
-                "device_class": BinarySensorDeviceClass.RUNNING,
             },
             C3Attributes.status_ibh: {
                 "type": Platform.BINARY_SENSOR,

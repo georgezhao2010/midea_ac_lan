@@ -393,12 +393,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         refresh_interval = self._config_entry.options.get(
             CONF_REFRESH_INTERVAL, 30
         )
-        extra_sensors = self._config_entry.options.get(
+        extra_sensors = list(set(sensors.keys()) & set(self._config_entry.options.get(
             CONF_SENSORS, []
-        )
-        extra_switches = self._config_entry.options.get(
+        )))
+        extra_switches = list(set(switches.keys()) & set(self._config_entry.options.get(
             CONF_SWITCHES, []
-        )
+        )))
         customize = self._config_entry.options.get(
             CONF_CUSTOMIZE, ""
         )

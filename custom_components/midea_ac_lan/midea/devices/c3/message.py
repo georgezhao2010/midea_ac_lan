@@ -49,6 +49,7 @@ class MessageSet(MessageC3Base):
         self.zone2_curve = False
         self.disinfect = False
         self.fast_dhw = False
+        self.tbh = False
 
     @property
     def _body(self):
@@ -59,7 +60,7 @@ class MessageSet(MessageC3Base):
         # Byte 7
         zone1_curve = 0x01 if self.zone1_curve else 0x00
         zone2_curve = 0x02 if self.zone2_curve else 0x00
-        disinfect = 0x04 if self.disinfect else 0x00
+        disinfect = 0x04 if self.disinfect or self.tbh else 0x00
         fast_dhw = 0x08 if self.fast_dhw else 0x00
         room_target_temp = int(self.room_target_temp * 2)
         zone1_target_temp = int(self.zone_target_temp[0])
@@ -122,6 +123,7 @@ class C3MessageBody(MessageBody):
         self.zone1_curve = body[data_offset + 0] & 0x08 > 0
         self.zone2_curve = body[data_offset + 0] & 0x10 > 0
         self.disinfect = body[data_offset + 0] & 0x20 > 0
+        self.tbh = body[data_offset + 0] & 0x20 > 0
         self.fast_dhw = body[data_offset + 0] & 0x40 > 0
         self.zone_temp_type = [
             body[data_offset + 1] & 0x10 > 0,
@@ -164,8 +166,8 @@ class C3Notify1MessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
         status_byte = body[data_offset]
-        self.status_tbh = (status_byte & 0x08) > 0
-        self.status_dhw = (status_byte & 0x04) > 0
+        self.tbh = (status_byte & 0x08) > 0
+        self.dhw_power = (status_byte & 0x04) > 0
         self.status_ibh = (status_byte & 0x02) > 0
         self.status_heating = (status_byte & 0x01) > 0
 
