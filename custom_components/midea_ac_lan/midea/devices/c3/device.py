@@ -53,6 +53,7 @@ class DeviceAttributes(StrEnum):
     silent_mode = "silent_mode"
     eco_mode = "eco_mode"
     tbh = "tbh"
+    error_code = "error_code"
 
 
 class MideaC3Device(MiedaDevice):
@@ -117,7 +118,8 @@ class MideaC3Device(MiedaDevice):
                 DeviceAttributes.status_heating: None,
                 DeviceAttributes.status_ibh: None,
                 DeviceAttributes.total_produced_energy: None,
-                DeviceAttributes.outdoor_temperature: None
+                DeviceAttributes.outdoor_temperature: None,
+                DeviceAttributes.error_code: 0
             })
 
     def build_query(self):

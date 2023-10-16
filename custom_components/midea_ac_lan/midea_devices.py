@@ -985,6 +985,11 @@ MIDEA_DEVICES = {
                 "icon": "mdi:home-thermometer-outline",
                 "device_class": BinarySensorDeviceClass.RUNNING,
             },
+            C3Attributes.error_code: {
+                "type": Platform.SENSOR,
+                "name": "Error Code",
+                "icon": "mdi:alpha-e-circle"
+            },
             C3Attributes.tank_actual_temperature: {
                 "type": Platform.SENSOR,
                 "name": "Tank Actual Temperature",

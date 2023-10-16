@@ -21,6 +21,7 @@
 | binary_sensor.{DEVICEID}_zone2_room_temp_mode  | binary_sensor | Zone2 Room Temperature Mode  | 区域2室温模式                              |
 | binary_sensor.{DEVICEID}_status_ibh            | binary_sensor | IBH Status                   | IBH状态                                |
 | binary_sensor.{DEVICEID}_status_heating        | binary_sensor | Heating Status               | 加热状态                                 |
+| sensor.{DEVICEID}_error_code                   | sensor        | Error Code                   | 错误码                                  |
 | sensor.{DEVICEID}_tank_actual_temperature      | sensor        | Tank Actual Temperature      | 水箱实际温度                               |
 | sensor.{DEVICEID}_total_energy_consumption     | sensor        | Total Energy Consumption     | 总能耗。</br>第一个值可能会延迟，因为更新仅在设备处于活动状态时发送 |
 | sensor.{DEVICEID}_total_produced_energy        | sensor        | Total Produced Energy        | 总计产生能量                               |

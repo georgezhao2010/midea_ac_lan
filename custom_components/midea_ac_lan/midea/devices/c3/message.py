@@ -160,6 +160,7 @@ class C3MessageBody(MessageBody):
         self.dhw_temp_max = body[data_offset + 19]
         self.dhw_temp_min = body[data_offset + 20]
         self.tank_actual_temperature = body[data_offset + 21]
+        self.error_code = body[data_offset + 22]
 
 
 class C3Notify1MessageBody(MessageBody):
