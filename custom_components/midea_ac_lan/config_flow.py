@@ -46,7 +46,7 @@ ADD_WAY = {"discovery": "Discover automatically", "manually": "Configure manuall
 PROTOCOLS = {1: "V1", 2: "V2", 3: "V3"}
 STORAGE_PATH = f".storage/{DOMAIN}"
 
-servers = {
+SERVERS = {
     1: "MSmartHome",
     2: "美的美居",
     3: "Midea Air",
@@ -61,14 +61,14 @@ PRESET_ACCOUNT = [
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    _account = None
-    _password = None
-    _server = None
     available_device = []
     devices = {}
     found_device = {}
     supports = {}
     unsorted = {}
+    account = {}
+    cloud = None
+    session = None
     for device_type, device_info in MIDEA_DEVICES.items():
         unsorted[device_type] = device_info["name"]
 
@@ -82,9 +82,25 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         save_json(record_file, data)
 
     def _load_device_config(self, device_id):
-        os.makedirs(self.hass.config.path(STORAGE_PATH), exist_ok=True)
         record_file = self.hass.config.path(f"{STORAGE_PATH}/{device_id}.json")
         json_data = load_json(record_file, default={})
+        return json_data
+
+    def _save_account(self, account: dict):
+        os.makedirs(self.hass.config.path(STORAGE_PATH), exist_ok=True)
+        record_file = self.hass.config.path(f"{STORAGE_PATH}/account.json")
+        account[CONF_PASSWORD] = format((int(account[CONF_ACCOUNT].encode("utf-8").hex(), 16) ^
+                                         int(account[CONF_PASSWORD].encode("utf-8").hex(), 16)), 'x')
+        save_json(record_file, account)
+
+    def _load_account(self):
+        record_file = self.hass.config.path(f"{STORAGE_PATH}/account.json")
+        json_data = load_json(record_file, default={})
+        if CONF_ACCOUNT in json_data.keys():
+            json_data[CONF_PASSWORD] = bytes.fromhex(format((
+                    int(json_data[CONF_PASSWORD], 16) ^
+                    int(json_data[CONF_ACCOUNT].encode("utf-8").hex(), 16)), 'X')
+            ).decode('UTF-8')
         return json_data
 
     @staticmethod
@@ -95,16 +111,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 (storage_device.get(CONF_TOKEN) is None or storage_device.get(CONF_KEY) is None)):
             return False
         return True
-
-    def _get_configured_account(self):
-        for entry in self._async_current_entries():
-            if entry.data.get(CONF_TYPE) == CONF_ACCOUNT:
-                password = bytes.fromhex(format((
-                        int(entry.data.get(CONF_PASSWORD), 16) ^
-                        int(entry.data.get(CONF_ACCOUNT).encode("utf-8").hex(), 16)
-                ), 'X')).decode('UTF-8')
-                return entry.data.get(CONF_ACCOUNT), password, servers[entry.data.get(CONF_SERVER)]
-        return None, None, None
 
     def _already_configured(self, device_id, ip_address):
         for entry in self._async_current_entries():
@@ -131,26 +137,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_login(self, user_input=None, error=None):
         if user_input is not None:
-            session = async_create_clientsession(self.hass)
-            cloud = get_midea_cloud(
-                session=session,
-                cloud_name=servers[user_input[CONF_SERVER]],
-                account=user_input[CONF_ACCOUNT],
-                password=user_input[CONF_PASSWORD]
-            )
-            _LOGGER.debug(
-                f"account = {user_input[CONF_ACCOUNT]}, password = {user_input[CONF_PASSWORD]}, server = {servers[user_input[CONF_SERVER]]}")
-            if await cloud.login():
-                password = format((int(user_input[CONF_ACCOUNT].encode("utf-8").hex(), 16) ^
-                                   int(user_input[CONF_PASSWORD].encode("utf-8").hex(), 16)), 'x')
-                return self.async_create_entry(
-                    title=f"{user_input[CONF_ACCOUNT]}",
-                    data={
-                        CONF_TYPE: CONF_ACCOUNT,
-                        CONF_ACCOUNT: user_input[CONF_ACCOUNT],
-                        CONF_PASSWORD: password,
-                        CONF_SERVER: user_input[CONF_SERVER]
-                    })
+            if self.session is None:
+                self.session = async_create_clientsession(self.hass)
+            if self.cloud is None:
+                self.cloud = get_midea_cloud(
+                    session=self.session,
+                    cloud_name=SERVERS[user_input[CONF_SERVER]],
+                    account=user_input[CONF_ACCOUNT],
+                    password=user_input[CONF_PASSWORD]
+                )
+            if await self.cloud.login():
+                self.account = {
+                    CONF_ACCOUNT: user_input[CONF_ACCOUNT],
+                    CONF_PASSWORD: user_input[CONF_PASSWORD],
+                    CONF_SERVER:  SERVERS[user_input[CONF_SERVER]]
+                }
+                self._save_account(self.account)
+                return await self.async_step_auto()
             else:
                 return await self.async_step_login(error="login_failed")
         return self.async_show_form(
@@ -158,7 +161,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_ACCOUNT): str,
                 vol.Required(CONF_PASSWORD): str,
-                vol.Required(CONF_SERVER, default=1): vol.In(servers)
+                vol.Required(CONF_SERVER, default=1): vol.In(SERVERS)
             }),
             errors={"base": error} if error else None
         )
@@ -181,9 +184,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_discovery(self, user_input=None, error=None):
-        self._account, self._password, self._server = self._get_configured_account()
-        if self._account is None:
-            return await self.async_step_login()
         if user_input is not None:
             if user_input[CONF_IP_ADDRESS].lower() == "auto":
                 ip_address = None
@@ -228,8 +228,18 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.debug(f"Loaded configuration for device {device_id} from storage")
                 return await self.async_step_manually()
             else:
-                session = async_create_clientsession(self.hass)
-                cloud = get_midea_cloud(self._server, session, self._account, self._password)
+                if CONF_ACCOUNT not in self.account.keys():
+                    self.account = self._load_account()
+                    if CONF_ACCOUNT not in self.account.keys():
+                        return await self.async_step_login()
+                if self.session is None:
+                    self.session = async_create_clientsession(self.hass)
+                if self.cloud is None:
+                    self.cloud = get_midea_cloud(
+                        self.account[CONF_SERVER], self.session, self.account[CONF_ACCOUNT],
+                        self.account[CONF_PASSWORD])
+                if not await self.cloud.login():
+                    return await self.async_step_login()
                 self.found_device = {
                     CONF_DEVICE_ID: device_id,
                     CONF_TYPE: device.get(CONF_TYPE),
@@ -238,23 +248,22 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_PORT: device.get(CONF_PORT),
                     CONF_MODEL: device.get(CONF_MODEL),
                 }
-                if await cloud.login():
-                    if device_info := await cloud.get_device_info(device_id):
-                        self.found_device[CONF_NAME] = device_info.get("name")
-                        self.found_device[CONF_SUBTYPE] = device_info.get("model_number")
+                if device_info := await self.cloud.get_device_info(device_id):
+                    self.found_device[CONF_NAME] = device_info.get("name")
+                    self.found_device[CONF_SUBTYPE] = device_info.get("model_number")
                 else:
                     return await self.async_step_auto(error="login_failed")
                 if device.get(CONF_PROTOCOL) == 3:
-                    if self._server == "美的美居":
+                    if self.account[CONF_SERVER] == "美的美居":
                         _LOGGER.debug(f"Try to get the Token and the Key use the preset MSmartHome account")
-                        cloud = get_midea_cloud(
+                        self.cloud = get_midea_cloud(
                             "MSmartHome",
-                            session,
+                            self.session,
                             bytes.fromhex(format((PRESET_ACCOUNT[0] ^ PRESET_ACCOUNT[1]), 'X')).decode('ASCII'),
                             bytes.fromhex(format((PRESET_ACCOUNT[0] ^ PRESET_ACCOUNT[2]), 'X')).decode('ASCII'))
-                        if not await cloud.login():
+                        if not await self.cloud.login():
                             return await self.async_step_auto(error="preset_account")
-                    keys = await cloud.get_keys(user_input[CONF_DEVICE])
+                    keys = await self.cloud.get_keys(user_input[CONF_DEVICE])
                     for method, key in keys.items():
                         dm = MiedaDevice(
                             name="",

@@ -631,6 +631,7 @@ class MideaAirCloud(MideaCloud):
 
 def get_midea_cloud(cloud_name: str, session: ClientSession, account: str, password: str) -> MideaCloud | None:
     cloud = None
+    _LOGGER.debug(f"cloud_name: {cloud_name}, account: {account}, password: {password}")
     if cloud_name in clouds.keys():
         cloud = globals()[clouds[cloud_name]["class_name"]](
             cloud_name=cloud_name,
