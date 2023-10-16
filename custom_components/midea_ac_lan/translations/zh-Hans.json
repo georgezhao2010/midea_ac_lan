@@ -1,6 +1,7 @@
 {
     "config": {
         "error": {
+            "preset_account": "预置账户登录失败，请报告此问题",
             "login_failed": "登录失败, 用户名或密码错",
             "no_devices": "未在网络上发现可用新设备",
             "device_exist": "设备已经存在, 请添加其它设备",

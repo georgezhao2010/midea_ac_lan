@@ -1,6 +1,7 @@
 {
     "config": {
         "error": {
+            "preset_account": "Failed to login with preset account, please report this issue",
             "login_failed": "Bejelentkezés sikertelen, a fiók vagy a jelszó helytelen",
             "no_devices": "Nem találhatóak új eszközök a hálózaton",
             "device_exist": "Az eszköz már be van állítva",

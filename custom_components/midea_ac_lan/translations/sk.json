@@ -1,6 +1,7 @@
 {
     "config": {
         "error": {
+            "preset_account": "Failed to login with preset account, please report this issue",
             "login_failed": "Failed to login, account or password was wrong",
             "no_devices": "V sieti sa nenašli žiadne nové dostupné zariadenia",
             "device_exist": "Spotrebič je už nakonfigurovaný",

@@ -368,8 +368,9 @@ class MiedaDevice(threading.Thread):
                         self.close_socket()
                         break
                 except socket.error as e:
-                    _LOGGER.debug(f"[{self._device_id}] Socket error {repr(e)}")
-                    self.close_socket()
+                    if self._is_run:
+                        _LOGGER.debug(f"[{self._device_id}] Socket error {repr(e)}")
+                        self.close_socket()
                     break
                 except Exception as e:
                     _LOGGER.error(f"[{self._device_id}] Unknown error :{e.__traceback__.tb_frame.f_globals['__file__']}, "

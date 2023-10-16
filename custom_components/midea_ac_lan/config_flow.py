@@ -4,6 +4,7 @@ try:
     from homeassistant.helpers.json import save_json
 except ImportError:
     from homeassistant.util.json import save_json
+from homeassistant.util.json import load_json
 import logging
 from .const import (
     DOMAIN,
@@ -52,6 +53,12 @@ servers = {
     4: "NetHome Plus",
 }
 
+PRESET_ACCOUNT = [
+    39182118275972017797890111985649342047468653967530949796945843010512,
+    29406100301096535908214728322278519471982973450672552249652548883645,
+    39182118275972017797890111985649342050088014265865102175083010656997
+]
+
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     _account = None
@@ -73,6 +80,21 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         os.makedirs(self.hass.config.path(STORAGE_PATH), exist_ok=True)
         record_file = self.hass.config.path(f"{STORAGE_PATH}/{data[CONF_DEVICE_ID]}.json")
         save_json(record_file, data)
+
+    def _load_device_config(self, device_id):
+        os.makedirs(self.hass.config.path(STORAGE_PATH), exist_ok=True)
+        record_file = self.hass.config.path(f"{STORAGE_PATH}/{device_id}.json")
+        json_data = load_json(record_file, default={})
+        return json_data
+
+    @staticmethod
+    def _check_storage_device(device: dict, storage_device: dict):
+        if storage_device.get(CONF_SUBTYPE) is None:
+            return False
+        if (device.get(CONF_PROTOCOL) == 3 and
+                (storage_device.get(CONF_TOKEN) is None or storage_device.get(CONF_KEY) is None)):
+            return False
+        return True
 
     def _get_configured_account(self):
         for entry in self._async_current_entries():
@@ -189,10 +211,49 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             device_id = user_input[CONF_DEVICE]
             device = self.devices.get(device_id)
-            if device.get(CONF_PROTOCOL) == 3:
+            storage_device = self._load_device_config(device_id)
+            if self._check_storage_device(device, storage_device):
+                self.found_device = {
+                    CONF_DEVICE_ID: device_id,
+                    CONF_TYPE: device.get(CONF_TYPE),
+                    CONF_PROTOCOL: device.get(CONF_PROTOCOL),
+                    CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
+                    CONF_PORT: device.get(CONF_PORT),
+                    CONF_MODEL: device.get(CONF_MODEL),
+                    CONF_NAME: storage_device.get(CONF_NAME),
+                    CONF_SUBTYPE: storage_device.get(CONF_SUBTYPE),
+                    CONF_TOKEN: storage_device.get(CONF_TOKEN),
+                    CONF_KEY: storage_device.get(CONF_KEY)
+                }
+                _LOGGER.debug(f"Loaded configuration for device {device_id} from storage")
+                return await self.async_step_manually()
+            else:
                 session = async_create_clientsession(self.hass)
                 cloud = get_midea_cloud(self._server, session, self._account, self._password)
+                self.found_device = {
+                    CONF_DEVICE_ID: device_id,
+                    CONF_TYPE: device.get(CONF_TYPE),
+                    CONF_PROTOCOL: device.get(CONF_PROTOCOL),
+                    CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
+                    CONF_PORT: device.get(CONF_PORT),
+                    CONF_MODEL: device.get(CONF_MODEL),
+                }
                 if await cloud.login():
+                    if device_info := await cloud.get_device_info(device_id):
+                        self.found_device[CONF_NAME] = device_info.get("name")
+                        self.found_device[CONF_SUBTYPE] = device_info.get("model_number")
+                else:
+                    return await self.async_step_auto(error="login_failed")
+                if device.get(CONF_PROTOCOL) == 3:
+                    if self._server == "美的美居":
+                        _LOGGER.debug(f"Try to get the Token and the Key use the preset MSmartHome account")
+                        cloud = get_midea_cloud(
+                            "MSmartHome",
+                            session,
+                            bytes.fromhex(format((PRESET_ACCOUNT[0] ^ PRESET_ACCOUNT[1]), 'X')).decode('ASCII'),
+                            bytes.fromhex(format((PRESET_ACCOUNT[0] ^ PRESET_ACCOUNT[2]), 'X')).decode('ASCII'))
+                        if not await cloud.login():
+                            return await self.async_step_auto(error="preset_account")
                     keys = await cloud.get_keys(user_input[CONF_DEVICE])
                     for method, key in keys.items():
                         dm = MiedaDevice(
@@ -208,36 +269,15 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             subtype=0,
                             attributes={}
                         )
-                        _LOGGER.debug(f"Successful to take token and key, token: {key['token']},"
-                                      f" key: {key['key']}, method: {method}")
                         if dm.connect(refresh_status=False):
-                            self.found_device = {
-                                CONF_DEVICE_ID: device_id,
-                                CONF_TYPE: device.get(CONF_TYPE),
-                                CONF_PROTOCOL: 3,
-                                CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
-                                CONF_PORT: device.get(CONF_PORT),
-                                CONF_MODEL: device.get(CONF_MODEL),
-                                CONF_TOKEN: key["token"],
-                                CONF_KEY: key["key"],
-                            }
                             dm.close_socket()
-                            if device_info := await cloud.get_device_info(device_id):
-                                self.found_device[CONF_NAME] = device_info.get("name")
-                                self.found_device[CONF_SUBTYPE] = device_info.get("model_number")
+                            self.found_device[CONF_TOKEN] = key["token"]
+                            self.found_device[CONF_KEY] = key["key"]
                             return await self.async_step_manually()
                     return await self.async_step_auto(error="connect_error")
-                return await self.async_step_auto(error="login_failed")
-            else:
-                self.found_device = {
-                    CONF_DEVICE_ID: device_id,
-                    CONF_TYPE: device.get(CONF_TYPE),
-                    CONF_PROTOCOL: 2,
-                    CONF_IP_ADDRESS: device.get(CONF_IP_ADDRESS),
-                    CONF_PORT: device.get(CONF_PORT),
-                    CONF_MODEL: device.get(CONF_MODEL),
-                }
-                return await self.async_step_manually()
+                else:
+                    return await self.async_step_manually()
+
         return self.async_show_form(
             step_id="auto",
             data_schema=vol.Schema({

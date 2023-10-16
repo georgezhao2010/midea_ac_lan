@@ -1,6 +1,7 @@
 {
     "config": {
         "error": {
+            "preset_account": "Failed to login with preset account, please report this issue",
             "login_failed": "Failed to login, account or password was wrong",
             "no_devices": "No new available appliances found on the network",
             "device_exist": "Appliance is already configured",
