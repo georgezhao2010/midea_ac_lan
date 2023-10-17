@@ -251,8 +251,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if device_info := await self.cloud.get_device_info(device_id):
                     self.found_device[CONF_NAME] = device_info.get("name")
                     self.found_device[CONF_SUBTYPE] = device_info.get("model_number")
-                else:
-                    return await self.async_step_auto(error="login_failed")
                 if device.get(CONF_PROTOCOL) == 3:
                     if self.account[CONF_SERVER] == "美的美居":
                         _LOGGER.debug(f"Try to get the Token and the Key use the preset MSmartHome account")
