@@ -167,8 +167,8 @@ class C3Notify1MessageBody(MessageBody):
     def __init__(self, body, data_offset=0):
         super().__init__(body)
         status_byte = body[data_offset]
-        self.tbh = (status_byte & 0x08) > 0
-        self.dhw_power = (status_byte & 0x04) > 0
+        self.status_tbh = (status_byte & 0x08) > 0
+        self.status_dhw = (status_byte & 0x04) > 0
         self.status_ibh = (status_byte & 0x02) > 0
         self.status_heating = (status_byte & 0x01) > 0
 
@@ -189,8 +189,8 @@ class C3Notify1MessageBody(MessageBody):
 class MessageC3Response(MessageResponse):
     def __init__(self, message):
         super().__init__(message)
-        if (self.message_type in [MessageType.notify1, MessageType.query] and self.body_type == 0x01) or \
-                self.message_type == MessageType.notify2:
+        if (self.message_type in [MessageType.set, MessageType.notify1, MessageType.query]
+                and self.body_type == 0x01) or self.message_type == MessageType.notify2:
             self.set_body(C3MessageBody(super().body, data_offset=1))
         elif self.message_type == MessageType.notify1 and self.body_type == 0x04:
             self.set_body(C3Notify1MessageBody(super().body, data_offset=1))

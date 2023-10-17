@@ -997,6 +997,18 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            C3Attributes.status_dhw: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "DHW status",
+                "icon": "mdi:heat-pump",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
+            C3Attributes.status_tbh: {
+                "type": Platform.BINARY_SENSOR,
+                "name": "TBH status",
+                "icon": "mdi:water-boiler",
+                "device_class": BinarySensorDeviceClass.RUNNING,
+            },
             C3Attributes.status_ibh: {
                 "type": Platform.BINARY_SENSOR,
                 "name": "IBH status",

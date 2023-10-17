@@ -46,6 +46,8 @@ class DeviceAttributes(StrEnum):
     temperature_max = "temperature_max"
     temperature_min = "temperature_min"
     status_heating = "status_heating"
+    status_dhw = "status_dhw"
+    status_tbh = "status_tbh"
     status_ibh = "status_ibh"
     total_energy_consumption = "total_energy_consumption"
     total_produced_energy = "total_produced_energy"
@@ -116,6 +118,8 @@ class MideaC3Device(MiedaDevice):
                 DeviceAttributes.temperature_min: [0, 0],
                 DeviceAttributes.total_energy_consumption: None,
                 DeviceAttributes.status_heating: None,
+                DeviceAttributes.status_dhw: None,
+                DeviceAttributes.status_tbh: None,
                 DeviceAttributes.status_ibh: None,
                 DeviceAttributes.total_produced_energy: None,
                 DeviceAttributes.outdoor_temperature: None,
