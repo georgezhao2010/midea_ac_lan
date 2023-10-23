@@ -1707,6 +1707,13 @@ MIDEA_DEVICES = {
                 "unit": TEMP_CELSIUS,
                 "state_class": SensorStateClass.MEASUREMENT
             },
+            E3Attributes.target_temperature: {
+                "type": Platform.SENSOR,
+                "name": "Target Temperature",
+                "device_class": SensorDeviceClass.TEMPERATURE,
+                "unit": TEMP_CELSIUS,
+                "state_class": SensorStateClass
+            },
             E3Attributes.power: {
                 "type": Platform.SWITCH,
                 "name": "Power",

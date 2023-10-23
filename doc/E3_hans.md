@@ -24,7 +24,8 @@
 |----------------------------------------|---------------|-------------------------|---------|
 | binary_sensor.{DEVICEID}_burning_state | binary_sensor | Burning State           | 燃烧状态    |
 | binary_sensor.{DEVICEID}_protection    | binary_sensor | Protection              | 安全防护    |
-| sensor.{DEVICEID}_current_temperature  | sensor        | Current Temperature     | 温度      |
+| sensor.{DEVICEID}_current_temperature  | sensor        | Current Temperature     | 当前温度      |
+| sensor.{DEVICEID}_target_temperature   | sensor        | Target Temperature      | 目标温度      |
 | switch.{DEVICEID}_power                | switch        | Power                   | 电源开关    |
 | switch.{DEVICEID}_smart_volume         | switch        | Smart Volume            | 智能变容    |
 | switch.{DEVICEID}_zero_cold_water      | switch        | Zero Cold Water         | 零冷水     |
