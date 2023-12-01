@@ -41,7 +41,7 @@ class MideaB6Device(MiedaDevice):
         super().__init__(
             name=name,
             device_id=device_id,
-            device_type=0xB5,
+            device_type=0xB6,
             ip_address=ip_address,
             port=port,
             token=token,
