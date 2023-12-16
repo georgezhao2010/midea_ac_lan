@@ -449,7 +449,7 @@ MIDEA_DEVICES = {
                 "name": "Current Energy Consumption",
                 "device_class": SensorDeviceClass.ENERGY,
                 "unit": ENERGY_KILO_WATT_HOUR,
-                "state_class": SensorStateClass.MEASUREMENT
+                "state_class": SensorStateClass.TOTAL_INCREASING
             },
             ACAttributes.realtime_power: {
                 "type": Platform.SENSOR,
