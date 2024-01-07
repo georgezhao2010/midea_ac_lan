@@ -1,5 +1,5 @@
-from homeassistant.components.humidifier import *
-from homeassistant.components.humidifier.const import *
+from homeassistant.components.humidifier import HumidifierDeviceClass, HumidifierEntity
+from homeassistant.components.humidifier.const import HumidifierEntityFeature
 from homeassistant.const import (
     Platform,
     CONF_DEVICE_ID,

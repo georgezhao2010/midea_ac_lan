@@ -1,5 +1,9 @@
+import functools as ft
 
-from homeassistant.components.water_heater import *
+from homeassistant.components.water_heater import (
+    WaterHeaterEntity,
+    WaterHeaterEntityFeature,
+)
 from homeassistant.const import (
     Platform,
     UnitOfTemperature,

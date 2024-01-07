@@ -1,4 +1,6 @@
-from homeassistant.components.fan import *
+from typing import Any
+
+from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.const import (
     Platform,
     CONF_DEVICE_ID,

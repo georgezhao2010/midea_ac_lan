@@ -1,5 +1,24 @@
-from homeassistant.components.climate import *
-from homeassistant.components.climate.const import *
+from homeassistant.components.climate import ClimateEntity
+from homeassistant.components.climate.const import (
+    ATTR_HVAC_MODE,
+    ClimateEntityFeature,
+    FAN_AUTO,
+    FAN_HIGH,
+    FAN_LOW,
+    FAN_MEDIUM,
+    HVACMode,
+    PRESET_AWAY,
+    PRESET_BOOST,
+    PRESET_COMFORT,
+    PRESET_ECO,
+    PRESET_NONE,
+    PRESET_SLEEP,
+    SWING_BOTH,
+    SWING_HORIZONTAL,
+    SWING_OFF,
+    SWING_ON,
+    SWING_VERTICAL,
+)
 from homeassistant.const import (
     Platform,
     UnitOfTemperature,
@@ -7,7 +26,7 @@ from homeassistant.const import (
     PRECISION_HALVES,
     ATTR_TEMPERATURE,
     CONF_DEVICE_ID,
-    CONF_SWITCHES
+    CONF_SWITCHES,
 )
 
 from .const import (
