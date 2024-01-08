@@ -1,6 +1,6 @@
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
+from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
+    ClimateEntity,
     ClimateEntityFeature,
     FAN_AUTO,
     FAN_HIGH,
