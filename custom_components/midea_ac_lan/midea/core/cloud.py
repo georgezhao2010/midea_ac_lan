@@ -39,6 +39,12 @@ clouds = {
         "app_id": "1017",
         "app_key": "3742e9e5842d4ad59c2db887e12449f9",
         "api_url": "https://mapp.appsmb.com",
+    },
+    "Ariston Clima": {
+        "class_name": "MideaAirCloud",
+        "app_id": "1005",
+        "app_key": "434a209a5ce141c3b726de067835d7f0",
+        "api_url": "https://mapp.appsmb.com",
     }
 }
 

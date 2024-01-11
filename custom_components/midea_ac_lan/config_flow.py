@@ -51,6 +51,7 @@ SERVERS = {
     2: "美的美居",
     3: "Midea Air",
     4: "NetHome Plus",
+    5: "Ariston Clima",
 }
 
 PRESET_ACCOUNT = [
