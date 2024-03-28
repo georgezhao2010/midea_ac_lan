@@ -183,7 +183,7 @@ class C3Notify1MessageBody(MessageBody):
             (body[data_offset + 6] << 16) +
             (body[data_offset + 7] << 8) +
             (body[data_offset + 8]))
-        self.outdoor_temperature = int(body[data_offset + 9])
+        self.outdoor_temperature = body[data_offset + 9] - 256 if body[data_offset + 9] > 127 else body[data_offset + 9]
 
 
 class MessageC3Response(MessageResponse):
@@ -195,3 +195,4 @@ class MessageC3Response(MessageResponse):
         elif self.message_type == MessageType.notify1 and self.body_type == 0x04:
             self.set_body(C3Notify1MessageBody(super().body, data_offset=1))
         self.set_attr()
+        
