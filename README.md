@@ -17,7 +17,7 @@ Thanks also to [@NeoAcheron](https://github.com/NeoAcheron/midea-ac-py).
 
 ⭐If this component is helpful for you, please star it, it encourages me a lot.
 
-***❗Note: Home Assistant 2022.5 or higher required for this integration***
+***❗Note: Home Assistant 2023.1 or higher required for this integration***
 
 # Supported brands
 
