@@ -26,6 +26,8 @@ from homeassistant.const import (
     CONF_DEVICE_ID,
     CONF_TYPE,
     CONF_CUSTOMIZE,
+    MAJOR_VERSION,
+    MINOR_VERSION,
 )
 from .midea.devices import device_selector
 
@@ -145,19 +147,25 @@ async def async_setup_entry(hass: HomeAssistant, config_entry):
     if protocol == 3 and (key is None or key is None):
         _LOGGER.error("For V3 devices, the key and the token is required.")
         return False
-    device = device_selector(
-        name=name,
-        device_id=device_id,
-        device_type=device_type,
-        ip_address=ip_address,
-        port=port,
-        token=token,
-        key=key,
-        protocol=protocol,
-        model=model,
-        subtype=subtype,
-        customize=customize,
-    )
+
+    def _device_selector():
+        return device_selector(
+            name=name,
+            device_id=device_id,
+            device_type=device_type,
+            ip_address=ip_address,
+            port=port,
+            token=token,
+            key=key,
+            protocol=protocol,
+            model=model,
+            subtype=subtype,
+            customize=customize,
+        )
+    if (MAJOR_VERSION, MINOR_VERSION) >= (2024, 3):
+        device = await hass.async_add_import_executor_job(_device_selector)
+    else:
+        device = _device_selector()
     if refresh_interval is not None:
         device.set_refresh_interval(refresh_interval)
     if device:
