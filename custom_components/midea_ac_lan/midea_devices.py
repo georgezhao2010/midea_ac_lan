@@ -325,11 +325,6 @@ MIDEA_DEVICES = {
                 "icon": "mdi:fan",
                 "name": "Fresh Air"
             },
-            ACAttributes.aux_heating: {
-                "type": Platform.SWITCH,
-                "name": "Aux Heating",
-                "icon": "mdi:heat-wave"
-            },
             ACAttributes.boost_mode: {
                 "type": Platform.SWITCH,
                 "name": "Boost Mode",
@@ -1168,11 +1163,6 @@ MIDEA_DEVICES = {
                 "icon": "hass:air-conditioner",
                 "default": True
             },
-            CCAttributes.aux_heating: {
-                "type": Platform.SWITCH,
-                "name": "Aux Heating",
-                "icon": "mdi:heat-wave"
-            },
             CCAttributes.eco_mode: {
                 "type": Platform.SWITCH,
                 "name": "ECO Mode",
@@ -1308,11 +1298,6 @@ MIDEA_DEVICES = {
                 "type": Platform.LOCK,
                 "name": "Child Lock"
             },
-            CEAttributes.aux_heating: {
-                "type": Platform.SWITCH,
-                "name": "Aux Heating",
-                "icon": "mdi:heat-wave"
-            },
             CEAttributes.eco_mode: {
                 "type": Platform.SWITCH,
                 "name": "ECO Mode",
@@ -1347,11 +1332,6 @@ MIDEA_DEVICES = {
                 "type": Platform.CLIMATE,
                 "icon": "hass:air-conditioner",
                 "default": True
-            },
-            CFAttributes.aux_heating: {
-                "type": Platform.SWITCH,
-                "name": "Aux Heating",
-                "icon": "mdi:heat-wave"
             },
             CFAttributes.power: {
                 "type": Platform.SWITCH,

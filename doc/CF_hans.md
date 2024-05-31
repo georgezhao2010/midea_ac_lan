@@ -15,7 +15,6 @@
 | EntityID                              | 类型     | 名称                  | 描述   |
 |---------------------------------------|--------|---------------------|------|
 | sensor.{DEVICEID}_current_temperature | sensor | Current Temperature | 当前温度 |
-| switch.{DEVICEID}_aux_heating         | switch | Aux Heating         | 电辅热  |
 | switch.{DEVICEID}_power               | switch | Power               | 电源开关 |
 
 ## Service
@@ -29,14 +28,6 @@
 | 名称        | 描述                        |
 |-----------|---------------------------|
 | device_id | 设备的编号(Device ID)          |
-| attribute | "aux_heating"<br/>"power" |
+| attribute | "power" |
 | value     | true 或 false              |
 
-示例
-```yaml
-service: midea_ac_lan.set_attribute
-data:
-  device_id: XXXXXXXXXXXX
-  attribute: aux_heating
-  value: true
-```

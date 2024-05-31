@@ -48,7 +48,7 @@ class MessageSet(MessageCFBase):
         power = 0x01 if self.power else 0x00
         mode = self.mode
         target_temperature = 0xFF if self.target_temperature is None else (int(self.target_temperature) & 0xFF)
-        aux_heating = 0xFF if self.aux_heating is None else (0x01 if self.aux_heating else 0x00)
+        aux_heating = 0xFF
         return bytearray([
             power, mode, target_temperature, aux_heating
         ])

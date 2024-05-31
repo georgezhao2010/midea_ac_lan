@@ -46,8 +46,6 @@ class MessageSet(MessageCCBase):
         self.sleep_mode = False
         self.night_light = False
         self.ventilation = False
-        self.aux_heat_status = 0
-        self.auto_aux_heat_running = False
         self.swing = False
 
     @property
@@ -61,12 +59,7 @@ class MessageSet(MessageCCBase):
         temperature_integer = int(self.target_temperature) & 0xFF
         # Byte6 eco_mode ventilation aux_heating
         eco_mode = 0x01 if self.eco_mode else 0
-        if self.aux_heat_status == 1:
-            aux_heating = 0x10
-        elif self.aux_heat_status == 2:
-            aux_heating = 0x20
-        else:
-            aux_heating = 0
+        aux_heating = 0
         swing = 0x04 if self.swing else 0
         ventilation = 0x08 if self.ventilation else 0
         # Byte8 sleep_mode night_light

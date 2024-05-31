@@ -180,7 +180,6 @@ class MessageSubProtocolSet(MessageSubProtocol):
         self.target_temperature = 20.0
         self.fan_speed = 102
         self.boost_mode = False
-        self.aux_heating = False
         self.dry = False
         self.eco_mode = False
         self.sleep_mode = False
@@ -193,7 +192,6 @@ class MessageSubProtocolSet(MessageSubProtocol):
         power = 0x01 if self.power else 0
         dry = 0x10 if self.power and self.dry else 0
         boost_mode = 0x20 if self.boost_mode else 0
-        aux_heating = 0x40 if self.aux_heating else 0x80
         sleep_mode = 0x80 if self.sleep_mode else 0
         try:
             mode = 0 if self.mode == 0 else BB_AC_MODES[self.mode] - 1
@@ -207,7 +205,7 @@ class MessageSubProtocolSet(MessageSubProtocol):
         prompt_tone = 0x01 if self.prompt_tone else 0
         timer = 0x04 if (self.sn8_flag and self.timer) else 0
         return bytearray([
-            0x02 | boost_mode | power | dry,  aux_heating, sleep_mode, 0x00,
+            0x02 | boost_mode | power | dry, sleep_mode, 0x00,
             0x00, mode, target_temperature, fan_speed,
             0x32, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x01,
@@ -236,7 +234,6 @@ class MessageGeneralSet(MessageACBase):
         self.boost_mode = False
         self.smart_eye = False
         self.dry = False
-        self.aux_heating = False
         self.eco_mode = False
         self.temp_fahrenheit = False
         self.sleep_mode = False
@@ -264,7 +261,7 @@ class MessageGeneralSet(MessageACBase):
         # Byte 9 aux_heating eco_mode
         smart_eye = 0x01 if self.smart_eye else 0
         dry = 0x04 if self.dry else 0
-        aux_heating = 0x08 if self.aux_heating else 0
+        aux_heating = 0
         eco_mode = 0x80 if self.eco_mode else 0
         # Byte 10 temp_fahrenheit
         temp_fahrenheit = 0x04 if self.temp_fahrenheit else 0

@@ -4,7 +4,6 @@
 - Supports run mode
 - Supports fan mode
 - Supports swing mode
-- Supports auxiliary heating
 
 ### Supported Run-Modes
 - Sleep Mode
@@ -21,7 +20,7 @@
 | EntityID                             | Class  | Description        |
 |--------------------------------------|--------|--------------------|
 | sensor.{DEVICEID}_indoor_temperature | sensor | Indoor Temperature |
-| switch.{DEVICEID}_aux_heating        | switch | Aux Heating        |
+
 | switch.{DEVICEID}_eco_mode           | switch | ECO Mode           |
 | switch.{DEVICEID}_night_light        | switch | Night Light        |
 | switch.{DEVICEID}_power              | switch | Power              |
@@ -39,7 +38,7 @@ Set the attribute of appliance. Service data:
 | Name      | Description                                                                              |
 |-----------|------------------------------------------------------------------------------------------|
 | device_id | The Appliance code (Device ID) of appliance                                              |
-| attribute | "aux_heating"<br/>"eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing" |
+| attribute | "eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing" |
 | value     | true or false                                                                            |
 
 Example

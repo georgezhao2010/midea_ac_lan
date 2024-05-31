@@ -5,7 +5,6 @@
 - Supports fan mode
 - Supports swing mode
 - Supports preset mode
-- Supports auxiliary heating
 - Supports build-in fresh air system
 
 ### Supported Run-Modes
@@ -49,7 +48,6 @@
 | sensor.{DEVICEID}_current_energy_consumption | sensor        | Current Energy Consumption |
 | sensor.{DEVICEID}_realtime_power             | sensor        | Realtime Power             |
 | fan.{DEVICEID}_fresh_air                     | fan           | Fresh Air Fan              |
-| switch.{DEVICEID}_aux_heating                | switch        | Aux Heating                |
 | switch.{DEVICEID}_boost_mode                 | switch        | Boost Mode                 |
 | switch.{DEVICEID}_breezeless                 | switch        | Breezeless                 |
 | switch.{DEVICEID}_comfort_mode               | switch        | Comfort Mode               |
@@ -80,7 +78,7 @@ Set the attribute of appliance. Service data:
 | Name      | Description                                                                                                                                                                                                                                                              |
 |-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | device_id | The Appliance code (Device ID) of appliance                                                                                                                                                                                                                              |
-| attribute | "aux_heating"<br/>"breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode" |
+| attribute | "breezeless"<br/>"comfort_mode"<br/>"dry"<br/>"eco_mode"<br/>"indirect_wind"<br/>"natural_wind"<br/>"prompt_tone"<br/>"power"<br/>"screen_display"<br/>"screen_display_2"<br/>"smart_eye"<br/>"swing_horizontal"<br/>"swing_vertical"<br/>"turbo_mode" |
 | value     | true or false                                                                                                                                                                                                                                                            |
 
 | Name      | Description                                 |

@@ -21,7 +21,6 @@
 | EntityID                             | 类型     | 名称                 | 描述    |
 |--------------------------------------|--------|--------------------|-------|
 | sensor.{DEVICEID}_indoor_temperature | sensor | Indoor Temperature | 室内温度  |
-| switch.{DEVICEID}_aux_heating        | switch | Aux Heating        | 电辅热   |
 | switch.{DEVICEID}_eco_mode           | switch | ECO Mode           | ECO模式 |
 | switch.{DEVICEID}_night_light        | switch | Night Light        | 夜灯    |
 | switch.{DEVICEID}_power              | switch | Power              | 电源开关  |
@@ -40,7 +39,7 @@
 | 名称        | 描述                                                                                       |
 |-----------|------------------------------------------------------------------------------------------|
 | device_id | 设备的编号(Device ID)                                                                         |
-| attribute | "aux_heating"<br/>"eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing" |
+| attribute | "eco_mode"<br/>"night_light"<br/>"power"<br />"sleep_mode"<br/>"swing" |
 | value     | true 或 false                                                                             |
 
 示例

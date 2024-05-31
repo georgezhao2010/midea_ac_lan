@@ -21,14 +21,11 @@ class DeviceAttributes(StrEnum):
     eco_mode = "eco_mode"
     sleep_mode = "sleep_mode"
     night_light = "night_light"
-    aux_heating = "aux_heating"
     swing = "swing"
     ventilation = "ventilation"
     temperature_precision = "temperature_precision"
     fan_speed_level = "fan_speed_level"
     indoor_temperature = "indoor_temperature"
-    aux_heat_status = "aux_heat_status"
-    auto_aux_heat_running = "auto_aux_heat_running"
     temp_fahrenheit = "temp_fahrenheit"
 
 
@@ -75,9 +72,6 @@ class MideaCCDevice(MiedaDevice):
                 DeviceAttributes.eco_mode: False,
                 DeviceAttributes.night_light: False,
                 DeviceAttributes.ventilation: False,
-                DeviceAttributes.aux_heating: False,
-                DeviceAttributes.aux_heat_status: 0,
-                DeviceAttributes.auto_aux_heat_running: False,
                 DeviceAttributes.swing: False,
                 DeviceAttributes.fan_speed_level: None,
                 DeviceAttributes.indoor_temperature: None,
@@ -117,12 +111,6 @@ class MideaCCDevice(MiedaDevice):
             else:
                 self._attributes[DeviceAttributes.fan_speed] = None
             new_status[DeviceAttributes.fan_speed.value] = self._attributes[DeviceAttributes.fan_speed]
-        aux_heating = \
-            self._attributes[DeviceAttributes.aux_heat_status] == 1 or \
-            self._attributes[DeviceAttributes.auto_aux_heat_running]
-        if self._attributes[DeviceAttributes.aux_heating] != aux_heating:
-            self._attributes[DeviceAttributes.aux_heating] = aux_heating
-            new_status[DeviceAttributes.aux_heating.value] = self._attributes[DeviceAttributes.aux_heating]
         return new_status
 
     def make_message_set(self):
@@ -136,7 +124,6 @@ class MideaCCDevice(MiedaDevice):
         message.eco_mode = self._attributes[DeviceAttributes.eco_mode]
         message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
         message.night_light = self._attributes[DeviceAttributes.night_light]
-        message.aux_heat_status = self._attributes[DeviceAttributes.aux_heat_status]
         message.swing = self._attributes[DeviceAttributes.swing]
         return message
 
@@ -152,9 +139,7 @@ class MideaCCDevice(MiedaDevice):
         # if nat a sensor
         if attr not in [DeviceAttributes.indoor_temperature,
                         DeviceAttributes.temperature_precision,
-                        DeviceAttributes.fan_speed_level,
-                        DeviceAttributes.aux_heat_status,
-                        DeviceAttributes.auto_aux_heat_running]:
+                        DeviceAttributes.fan_speed_level]:
             message = self.make_message_set()
             if attr == DeviceAttributes.fan_speed:
                 if value in self._fan_speeds.values():
@@ -169,11 +154,6 @@ class MideaCCDevice(MiedaDevice):
                     setattr(message, str(DeviceAttributes.sleep_mode.value), False)
                 elif attr == DeviceAttributes.sleep_mode and value:
                     setattr(message, str(DeviceAttributes.eco_mode.value), False)
-                elif attr == DeviceAttributes.aux_heating:
-                    if value:
-                        setattr(message, DeviceAttributes.aux_heat_status, 1)
-                    else:
-                        setattr(message, DeviceAttributes.aux_heat_status, 2)
             self.build_send(message)
 
 

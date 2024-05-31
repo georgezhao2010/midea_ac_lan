@@ -32,7 +32,6 @@ class DeviceAttributes(StrEnum):
     smart_eye = "smart_eye"
     dry = "dry"
     eco_mode = "eco_mode"
-    aux_heating = "aux_heating"
     sleep_mode = "sleep_mode"
     natural_wind = "natural_wind"
     temp_fahrenheit = "temp_fahrenheit"
@@ -96,7 +95,6 @@ class MideaACDevice(MiedaDevice):
                 DeviceAttributes.swing_horizontal: False,
                 DeviceAttributes.smart_eye: False,
                 DeviceAttributes.dry: False,
-                DeviceAttributes.aux_heating: False,
                 DeviceAttributes.boost_mode: False,
                 DeviceAttributes.sleep_mode: False,
                 DeviceAttributes.frost_protect: False,
@@ -206,7 +204,6 @@ class MideaACDevice(MiedaDevice):
         message.smart_eye = self._attributes[DeviceAttributes.smart_eye]
         message.dry = self._attributes[DeviceAttributes.dry]
         message.eco_mode = self._attributes[DeviceAttributes.eco_mode]
-        message.aux_heating = self._attributes[DeviceAttributes.aux_heating]
         message.sleep_mode = self._attributes[DeviceAttributes.sleep_mode]
         message.natural_wind = self._attributes[DeviceAttributes.natural_wind]
         message.temp_fahrenheit = self._attributes[DeviceAttributes.temp_fahrenheit]
@@ -218,7 +215,6 @@ class MideaACDevice(MiedaDevice):
         message = MessageSubProtocolSet(self._protocol_version)
         message.power = self._attributes[DeviceAttributes.power]
         message.prompt_tone = self._attributes[DeviceAttributes.prompt_tone]
-        message.aux_heating = self._attributes[DeviceAttributes.aux_heating]
         message.mode = self._attributes[DeviceAttributes.mode]
         message.target_temperature = self._attributes[DeviceAttributes.target_temperature]
         message.fan_speed = self._attributes[DeviceAttributes.fan_speed]

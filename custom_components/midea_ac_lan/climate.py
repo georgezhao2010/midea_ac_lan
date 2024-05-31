@@ -64,8 +64,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
         return ClimateEntityFeature.TARGET_TEMPERATURE | \
                ClimateEntityFeature.FAN_MODE | \
                ClimateEntityFeature.PRESET_MODE | \
-               ClimateEntityFeature.SWING_MODE | \
-               ClimateEntityFeature.AUX_HEAT
+               ClimateEntityFeature.SWING_MODE
 
     @property
     def min_temp(self):
@@ -114,9 +113,6 @@ class MideaClimate(MideaEntity, ClimateEntity):
     def current_temperature(self):
         return self._device.get_attribute("indoor_temperature")
 
-    @property
-    def is_aux_heat(self):
-        return self._device.get_attribute("aux_heating")
 
     @property
     def preset_modes(self):
@@ -200,11 +196,6 @@ class MideaClimate(MideaEntity, ClimateEntity):
         except Exception as e:
             _LOGGER.debug(f"Entity {self.entity_id} update_state {repr(e)}, status = {status}")
 
-    def turn_aux_heat_on(self) -> None:
-        self._device.set_attribute(attr="aux_heating", value=True)
-
-    def turn_aux_heat_off(self) -> None:
-        self._device.set_attribute(attr="aux_heating", value=False)
 
 
 class MideaACClimate(MideaClimate):
@@ -316,7 +307,7 @@ class MideaCFClimate(MideaClimate):
 
     @property
     def supported_features(self):
-        return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.AUX_HEAT
+        return ClimateEntityFeature.TARGET_TEMPERATURE 
 
     @property
     def target_temperature_step(self):

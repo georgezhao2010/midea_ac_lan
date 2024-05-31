@@ -40,7 +40,6 @@ class MessageSet(MessageCDBase):
             body_type=0x01)
         self.power = False
         self.target_temperature = 0
-        self.aux_heating = False
         self.fields = {}
         self.mode = 1
 
