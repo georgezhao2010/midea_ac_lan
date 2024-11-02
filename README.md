@@ -7,7 +7,7 @@ English | [简体中文](README_hans.md)
 
 Control your Midea M-Smart appliances via local area network.
 
-- Automated device discover and configuration based Home Assistant config flow UI.
+- Automated device discovery and configuration based Home Assistant config flow UI.
 - Extra sensors and switches.
 - Synchronize status with the appliance by long TCP connection in time.
 
@@ -45,7 +45,7 @@ And more.
 | C3   | Heat Pump Wi-Fi Controller | [C3.md](doc/C3.md) |
 | CA   | Refrigerator               | [CA.md](doc/CA.md) |
 | CC   | MDV Wi-Fi Controller       | [CC.md](doc/CC.md) |
-| CD   | Heat Pump Water Heater     | [CC.md](doc/CD.md) |
+| CD   | Heat Pump Water Heater     | [CD.md](doc/CD.md) |
 | CE   | Fresh Air Appliance        | [CE.md](doc/CE.md) |
 | CF   | Heat Pump                  | [CF.md](doc/CF.md) |
 | DA   | Top Load Washer            | [DA.md](doc/DA.md) |
