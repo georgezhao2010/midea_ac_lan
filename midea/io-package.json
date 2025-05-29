@@ -1,0 +1,30 @@
+{
+  "common": {
+    "name": "midea",
+    "version": "0.0.1",
+    "title": "Midea AC (LAN)",
+    "desc": "Adapter für Midea Klimageräte (LAN)",
+    "authors": [
+      "Dein Name <dein.email@example.com>"
+    ],
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "icon": "midea.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.repositories/master/images/midea.png",
+    "keywords": [
+      "midea",
+      "klima",
+      "ac",
+      "lan"
+    ],
+    "readme": "https://github.com/deinuser/ioBroker.midea/blob/main/README.md",
+    "license": "MIT",
+    "loglevel": "info",
+    "restartAdapters": ""
+  },
+  "native": {
+    "devices": []
+  },
+  "instanceObjects": []
+}

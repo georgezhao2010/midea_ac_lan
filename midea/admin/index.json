@@ -1,0 +1,24 @@
+{
+  "type": "panel",
+  "items": [
+    {
+      "type": "text",
+      "text": "Midea Adapter Konfiguration"
+    },
+    {
+      "type": "input",
+      "attr": "deviceIp",
+      "label": "Geräte-IP"
+    },
+    {
+      "type": "input",
+      "attr": "deviceToken",
+      "label": "Geräte-Token"
+    },
+    {
+      "type": "input",
+      "attr": "deviceKey",
+      "label": "Geräte-Key"
+    }
+  ]
+}

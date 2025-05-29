@@ -1,0 +1,14 @@
+{
+  "name": "iobroker.midea",
+  "version": "0.0.1",
+  "description": "ioBroker Adapter für Midea Klimageräte (Portierung von Home Assistant)",
+  "author": "",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "@iobroker/adapter-core": "^3.0.4"
+  }
+}
