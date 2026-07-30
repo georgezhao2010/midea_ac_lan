@@ -2,7 +2,7 @@ from homeassistant.components.climate import *
 from homeassistant.components.climate.const import *
 from homeassistant.const import (
     Platform,
-    TEMP_CELSIUS,
+    UnitOfTemperature,
     PRECISION_WHOLE,
     PRECISION_HALVES,
     ATTR_TEMPERATURE,
@@ -65,7 +65,8 @@ class MideaClimate(MideaEntity, ClimateEntity):
                ClimateEntityFeature.FAN_MODE | \
                ClimateEntityFeature.PRESET_MODE | \
                ClimateEntityFeature.SWING_MODE | \
-               ClimateEntityFeature.AUX_HEAT
+               ClimateEntityFeature.TURN_ON | \
+               ClimateEntityFeature.TURN_OFF
 
     @property
     def min_temp(self):
@@ -77,7 +78,7 @@ class MideaClimate(MideaEntity, ClimateEntity):
 
     @property
     def temperature_unit(self):
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     @property
     def target_temperature_low(self):
@@ -316,7 +317,9 @@ class MideaCFClimate(MideaClimate):
 
     @property
     def supported_features(self):
-        return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.AUX_HEAT
+        return ClimateEntityFeature.TARGET_TEMPERATURE | \
+               ClimateEntityFeature.TURN_ON | \
+               ClimateEntityFeature.TURN_OFF
 
     @property
     def target_temperature_step(self):
