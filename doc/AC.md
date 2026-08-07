@@ -31,6 +31,14 @@
 {"power_analysis_method": 2}
 ```
 
+  By default, the energy consumption (total/current) uses the same method as `power_analysis_method`. To use a different
+  method for energy consumption, set `consumption_analysis_method` independently. Use `null` to fall back to
+  `power_analysis_method`.
+
+```json
+{"power_analysis_method": 2, "consumption_analysis_method": 3}
+```
+
 ## Entities
 ### Default entity
 | EntityID                   | Class   | Description    |
