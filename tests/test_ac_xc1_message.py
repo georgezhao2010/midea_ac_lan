@@ -1,48 +1,5 @@
 """Tests for XC1MessageBody decoupled analysis methods."""
-import sys
-import os
-import importlib.util
-import types
-
-_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-_midea = os.path.join(_root, "custom_components", "midea_ac_lan", "midea")
-
-
-def _load(name, path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules[name] = mod
-    spec.loader.exec_module(mod)
-    return mod
-
-
-# Load dependencies in order
-_crc8 = _load("_midea_crc8", os.path.join(_midea, "core", "crc8.py"))
-_core = _load("_midea_core_msg", os.path.join(_midea, "core", "message.py"))
-
-# Build a thin fake package so relative imports inside ac/message.py resolve
-_pkg_midea = types.ModuleType("_midea_pkg")
-_pkg_midea_core = types.ModuleType("_midea_pkg.core")
-_pkg_midea_core.message = _core
-_pkg_midea_core.crc8 = _crc8
-for _attr in dir(_core):
-    setattr(_pkg_midea_core, _attr, getattr(_core, _attr))
-_pkg_midea.core = _pkg_midea_core
-sys.modules["_midea_pkg"] = _pkg_midea
-sys.modules["_midea_pkg.core"] = _pkg_midea_core
-sys.modules["_midea_pkg.core.message"] = _core
-sys.modules["_midea_pkg.core.crc8"] = _crc8
-
-# Read ac/message.py source and replace relative imports
-_ac_path = os.path.join(_midea, "devices", "ac", "message.py")
-with open(_ac_path) as _f:
-    _src = _f.read()
-_src = _src.replace("from ...core.message import", "from _midea_pkg.core.message import")
-_src = _src.replace("from ...core.crc8 import", "from _midea_pkg.core.crc8 import")
-
-_ac_mod = types.ModuleType("_midea_ac_message")
-exec(compile(_src, _ac_path, "exec"), _ac_mod.__dict__)
-XC1MessageBody = _ac_mod.XC1MessageBody
+from custom_components.midea_ac_lan.midea.devices.ac.message import XC1MessageBody
 
 
 def _make_body(total_bytes, current_bytes, power_bytes):

@@ -154,7 +154,7 @@ class MideaACDevice(MiedaDevice):
         ]
 
     def process_message(self, msg):
-        message = MessageACResponse(msg, self._power_analysis_method, self._consumption_analysis_method)
+        message = MessageACResponse(msg, power_analysis_method=self._power_analysis_method, consumption_analysis_method=self._consumption_analysis_method)
         _LOGGER.debug(f"[{self.device_id}] Received: {message}")
         new_status = {}
         has_fresh_air = False

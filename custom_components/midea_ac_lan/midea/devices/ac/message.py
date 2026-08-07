@@ -1,3 +1,4 @@
+import warnings
 from enum import IntEnum
 from ...core.message import (
     MessageType,
@@ -478,7 +479,14 @@ class XC0MessageBody(MessageBody):
 
 
 class XC1MessageBody(MessageBody):
-    def __init__(self, body, power_analysis_method=3, consumption_analysis_method=None):
+    def __init__(self, body, power_analysis_method=3, consumption_analysis_method=None, **kwargs):
+        if "analysis_method" in kwargs:
+            warnings.warn(
+                "The 'analysis_method' keyword argument is deprecated; use 'power_analysis_method' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            power_analysis_method = kwargs.pop("analysis_method")
         super().__init__(body)
         if consumption_analysis_method is None:
             consumption_analysis_method = power_analysis_method
@@ -578,7 +586,7 @@ class MessageACResponse(MessageResponse):
         elif self.message_type in [MessageType.query, MessageType.set] and self.body_type == 0xC0:
             self.set_body(XC0MessageBody(super().body))
         elif self.message_type == MessageType.query and self.body_type == 0xC1:
-            self.set_body(XC1MessageBody(super().body, power_analysis_method, consumption_analysis_method))
+            self.set_body(XC1MessageBody(super().body, power_analysis_method=power_analysis_method, consumption_analysis_method=consumption_analysis_method))
         elif self.message_type in [MessageType.set, MessageType.query, MessageType.notify2] and \
                 self.body_type == 0xBB and len(super().body) >= 21:
             self.used_subprotocol = True
