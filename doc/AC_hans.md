@@ -31,6 +31,13 @@
 {"power_analysis_method": 2}
 ```
 
+  默认情况下, 总能耗/当前能耗使用与 `power_analysis_method` 相同的方法. 如需对能耗数据单独指定分析方法,
+  可设置 `consumption_analysis_method`. 设置为 `null` 时将回退到 `power_analysis_method` 的方法.
+
+```json
+{"power_analysis_method": 2, "consumption_analysis_method": 3}
+```
+
 ## 生成实体
 ### 默认生成实体
 | 实体ID                       | 类型      | 描述    |
