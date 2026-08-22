@@ -1,109 +1,156 @@
-from homeassistant.components.humidifier import *
-from homeassistant.components.humidifier.const import *
-from homeassistant.const import (
-    Platform,
-    CONF_DEVICE_ID,
-    CONF_SWITCHES,
+"""Midea Humidifier entries."""
+
+import logging
+from typing import Any, cast
+
+from homeassistant.components.humidifier import (
+    HumidifierDeviceClass,
+    HumidifierEntity,
+    HumidifierEntityFeature,
 )
-from .const import (
-    DOMAIN,
-    DEVICES,
-)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_DEVICE_ID, CONF_SWITCHES, Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from midealan.device import DeviceType
+from midealan.devices.a1 import MideaA1Device
+from midealan.devices.fd import MideaFDDevice
+
+from .const import DEVICES, DOMAIN
 from .midea_devices import MIDEA_DEVICES
 from .midea_entity import MideaEntity
 
-import logging
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up humidifier entries."""
     device_id = config_entry.data.get(CONF_DEVICE_ID)
     device = hass.data[DOMAIN][DEVICES].get(device_id)
-    extra_switches = config_entry.options.get(
-        CONF_SWITCHES, []
-    )
-    devs = []
-    for entity_key, config in MIDEA_DEVICES[device.device_type]["entities"].items():
-        if config["type"] == Platform.HUMIDIFIER and (config.get("default") or entity_key in extra_switches):
-            if device.device_type == 0xA1:
+    extra_switches = config_entry.options.get(CONF_SWITCHES, [])
+    devs: list[MideaA1Humidifier | MideaFDHumidifier] = []
+    for entity_key, config in cast(
+        "dict",
+        MIDEA_DEVICES[device.device_type]["entities"],
+    ).items():
+        if config["type"] == Platform.HUMIDIFIER and (
+            config.get("default") or entity_key in extra_switches
+        ):
+            if device.device_type == DeviceType.A1:
                 devs.append(MideaA1Humidifier(device, entity_key))
-            if device.device_type == 0xFD:
+            if device.device_type == DeviceType.FD:
                 devs.append(MideaFDHumidifier(device, entity_key))
     async_add_entities(devs)
 
 
+type MideaHumidifierDevice = MideaFDDevice | MideaA1Device
+
+
 class MideaHumidifier(MideaEntity, HumidifierEntity):
-    def __init__(self, device, entity_key):
+    """Midea Humidifier Entries Base Class."""
+
+    _device: MideaHumidifierDevice
+
+    def __init__(self, device: MideaHumidifierDevice, entity_key: str) -> None:
+        """Midea Humidifier entity init."""
         super().__init__(device, entity_key)
 
     @property
-    def target_humidity(self):
-        return self._device.get_attribute("target_humidity")
+    def current_humidity(self) -> float | None:
+        """Midea Humidifier current humidity."""
+        return cast("float", self._device.get_attribute("current_humidity"))
 
     @property
-    def mode(self):
-        return self._device.get_attribute("mode")
+    def target_humidity(self) -> float:
+        """Midea Humidifier target humidity."""
+        return cast("float", self._device.get_attribute("target_humidity"))
 
     @property
-    def available_modes(self):
-        return self._device.modes
+    def mode(self) -> str:
+        """Midea Humidifier mode."""
+        return cast("str", self._device.get_attribute("mode"))
 
-    def set_humidity(self, humidity: int):
+    @property
+    def available_modes(self) -> list[str] | None:
+        """Midea Humidifier available modes."""
+        return cast("list", self._device.modes)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return the optional state attributes."""
+        attrs = super().extra_state_attributes or {}
+        
+        tank_val = self._device.get_attribute("tank")
+        is_full = False
+        if isinstance(tank_val, (int, float)):
+            is_full = tank_val >= 100
+        
+        attrs.update({
+            "tank": tank_val,
+            "tank_full": is_full,
+        })
+        return attrs
+
+    def set_humidity(self, humidity: int) -> None:
+        """Midea Humidifier set humidity."""
         self._device.set_attribute("target_humidity", humidity)
 
-    def set_mode(self, mode: str):
+    def set_mode(self, mode: str) -> None:
+        """Midea Humidifier set mode."""
         self._device.set_attribute("mode", mode)
 
     @property
-    def min_humidity(self):
-        return self._min_humidity
+    def is_on(self) -> bool:
+        """Midea Humidifier is on."""
+        return cast("bool", self._device.get_attribute(attr="power"))
 
-    @property
-    def max_humidity(self):
-        return self._max_humidity
-
-    @property
-    def is_on(self):
-        return self._device.get_attribute(attr="power")
-
-    def turn_on(self):
+    def turn_on(self, **kwargs: Any) -> None:  # ruff:ignore[any-type, unused-method-argument]
+        """Midea Humidifier turn on."""
         self._device.set_attribute(attr="power", value=True)
 
-    def turn_off(self):
+    def turn_off(self, **kwargs: Any) -> None:  # ruff:ignore[any-type, unused-method-argument]
+        """Midea Humidifier turn off."""
         self._device.set_attribute(attr="power", value=False)
 
-    def update_state(self, status):
-        try:
-            self.schedule_update_ha_state()
-        except Exception as e:
-            _LOGGER.debug(f"Entity {self.entity_id} update_state {repr(e)}, status = {status}")
+    def update_state(self, status: Any) -> None:  # ruff:ignore[any-type, unused-method-argument]
+        """Midea Humidifier update state."""
+        if not self.hass:
+            _LOGGER.warning(
+                "Humidifier update_state skipped for %s [%s]: HASS is None",
+                self.name,
+                type(self),
+            )
+            return
+        self.schedule_update_if_running()
 
 
 class MideaA1Humidifier(MideaHumidifier):
-    def __init__(self, device, entity_key):
+    """Midea A1 Humidifier Entries."""
+
+    _device: MideaA1Device
+
+    def __init__(self, device: MideaA1Device, entity_key: str) -> None:
+        """Midea A1 Humidifier entity init."""
         super().__init__(device, entity_key)
-        self._min_humidity = 35
-        self._max_humidity = 85
-
-    @property
-    def device_class(self):
-        return HumidifierDeviceClass.DEHUMIDIFIER
-
-    @property
-    def supported_features(self):
-        return HumidifierEntityFeature.MODES
+        self._attr_min_humidity: float = 35.0
+        self._attr_max_humidity: float = 85.0
+        self._attr_device_class = HumidifierDeviceClass.DEHUMIDIFIER
+        self._attr_supported_features = HumidifierEntityFeature.MODES
 
 
 class MideaFDHumidifier(MideaHumidifier):
-    def __init__(self, device, entity_key):
+    """Midea FD Humidifier Entries."""
+
+    _device: MideaFDDevice
+
+    def __init__(self, device: MideaFDDevice, entity_key: str) -> None:
+        """Midea FD Humidifier entity init."""
         super().__init__(device, entity_key)
-        self._min_humidity = 35
-        self._max_humidity = 85
-
-    @property
-    def device_class(self):
-        return HumidifierDeviceClass.HUMIDIFIER
-
-    @property
-    def supported_features(self):
-        return HumidifierEntityFeature.MODES
+        self._attr_min_humidity: float = 35.0
+        self._attr_max_humidity: float = 85.0
+        self._attr_device_class = HumidifierDeviceClass.HUMIDIFIER
+        self._attr_supported_features = HumidifierEntityFeature.MODES
